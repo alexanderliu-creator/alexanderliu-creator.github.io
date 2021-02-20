@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-center-atom.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="-大一学习," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="周一无课的早上整理一下树和图中运用到的DFS算法和思想">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DFS">
+<meta property="og:url" content="http://example.com/2020/06/08/DFS/index.html">
+<meta property="og:site_name" content="Alexnadner Liu">
+<meta property="og:description" content="周一无课的早上整理一下树和图中运用到的DFS算法和思想">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-06-08T02:00:34.000Z">
+<meta property="article:modified_time" content="2020-09-15T11:47:07.895Z">
+<meta property="article:author" content="Alex家的兔子">
+<meta property="article:tag" content="-大一学习">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2020/06/08/DFS/"/>
+
+
+
+
+
+  <title>DFS | Alexnadner Liu</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alexnadner Liu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/08/DFS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/alex.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alexnadner Liu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DFS</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-08T10:00:34+08:00">
+                2020-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="周一无课的早上整理一下树和图中运用到的DFS算法和思想"><a href="#周一无课的早上整理一下树和图中运用到的DFS算法和思想" class="headerlink" title="周一无课的早上整理一下树和图中运用到的DFS算法和思想"></a>周一无课的早上整理一下树和图中运用到的DFS算法和思想</h2><a id="more"></a>
+
+<h1 id="树中的DFS算法的应用："><a href="#树中的DFS算法的应用：" class="headerlink" title="树中的DFS算法的应用："></a>树中的DFS算法的应用：</h1><h2 id="主要体现在树的先根遍历上。"><a href="#主要体现在树的先根遍历上。" class="headerlink" title="主要体现在树的先根遍历上。"></a>主要体现在树的先根遍历上。</h2><h2 id="树的先根遍历非递归算法代码"><a href="#树的先根遍历非递归算法代码" class="headerlink" title="树的先根遍历非递归算法代码:"></a>树的先根遍历非递归算法代码:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">void pre_order(BiTree root)&#123;</span><br><span class="line">    if(root!&#x3D;NULL)&#123;</span><br><span class="line">        Visit(root-&gt;data);</span><br><span class="line">        pre_order(root-&gt;left);</span><br><span class="line">        pre_order(root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"># 先根遍历是明显的深度优先算法，不断地往下走去遍历。</span><br></pre></td></tr></table></figure>
+<h2 id="二叉树的先根遍历递归算法代码"><a href="#二叉树的先根遍历递归算法代码" class="headerlink" title="二叉树的先根遍历递归算法代码:"></a>二叉树的先根遍历递归算法代码:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">void Preorder(BiTree root)</span><br><span class="line">&#123;</span><br><span class="line">    InitStack(&amp;s);</span><br><span class="line">    BiTree p &#x3D; root;</span><br><span class="line">    while (p !&#x3D; NULL || !IsEmpty(&amp;S))</span><br><span class="line">    &#123;</span><br><span class="line">        if (p !&#x3D; NULL)</span><br><span class="line">        &#123;</span><br><span class="line">            printf(&quot;%2d&quot;, p-&gt;data);</span><br><span class="line">            Push(&amp;s, p);</span><br><span class="line">            p &#x3D; p-&gt;LChild;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            Pop(&amp;s,&amp;p);</span><br><span class="line">            p &#x3D; p-&gt;RChild;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"># 本质十分易见的，通过栈的方式去实现先根遍历的思想。</span><br><span class="line">读取一个结点的值，然后把它的儿子都push到栈里面，</span><br><span class="line">每次pop一个出来重复上述操作，其实本质十分清楚。</span><br><span class="line">运用了栈的特性。</span><br></pre></td></tr></table></figure>
+<h2 id="将二叉树的先根遍历拓展到树的先根遍历："><a href="#将二叉树的先根遍历拓展到树的先根遍历：" class="headerlink" title="将二叉树的先根遍历拓展到树的先根遍历："></a>将二叉树的先根遍历拓展到树的先根遍历：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">void RootFirst(CSTree root)&#123;</span><br><span class="line">    if(root!&#x3D;NULL)&#123;</span><br><span class="line">        Visit(root-&gt;data);</span><br><span class="line">        p &#x3D; root-&gt;FirstChild;</span><br><span class="line">        while(p!&#x3D;NULL)&#123;</span><br><span class="line">            RootFirst(p);</span><br><span class="line">            p &#x3D; p-&gt;Nextsibling;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"># 本质上就是栈的性质的运用而已</span><br></pre></td></tr></table></figure>
+<h2 id="将树的先根遍历拓展到图的DFS算法思路"><a href="#将树的先根遍历拓展到图的DFS算法思路" class="headerlink" title="将树的先根遍历拓展到图的DFS算法思路"></a>将树的先根遍历拓展到图的DFS算法思路</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">void TraverseGraph(Graph G)&#123;</span><br><span class="line">    for(vi&#x3D;0;vi&lt;g.venxum;vi++) visited[vi]&#x3D;False;</span><br><span class="line">    for(vi&#x3D;0;vi&lt;g.vexnum;vi++)&#123;</span><br><span class="line">        if(!visited[vi]) DepthFirstSearch(g,vi);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"># 图的遍历</span><br><span class="line"></span><br><span class="line">void DepthFirstSearch(Graph G,int v0)&#123;</span><br><span class="line">    visit(v0);visited[v0] &#x3D; True;</span><br><span class="line"></span><br><span class="line">    w &#x3D; FirstAdjVertex(g,v0);</span><br><span class="line">    while(w!&#x3D;-1)&#123;</span><br><span class="line">        if(!visited[w]) DepthFirstSearch(g,w);</span><br><span class="line">        </span><br><span class="line">        w &#x3D; NextAdjVertex(g,v0,w);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="将树的先根遍历拓展到图的邻接矩阵的DFS"><a href="#将树的先根遍历拓展到图的邻接矩阵的DFS" class="headerlink" title="将树的先根遍历拓展到图的邻接矩阵的DFS"></a>将树的先根遍历拓展到图的邻接矩阵的DFS</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">void DepthFirstSearch(AdjMatrix g,int v0)&#123;</span><br><span class="line">    visit(v0); visited[v0] &#x3D; True;</span><br><span class="line">    for(vj&#x3D;0;vj&lt;g,vexnum;vj++)&#123;</span><br><span class="line">        if(!visited[vj]&amp;&amp;arcs[v0][vj].adj&#x3D;&#x3D;1)&#123;</span><br><span class="line">            DepthFirstSearch(g,vj);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="将树的先根遍历拓展到图的邻接表的DFS"><a href="#将树的先根遍历拓展到图的邻接表的DFS" class="headerlink" title="将树的先根遍历拓展到图的邻接表的DFS"></a>将树的先根遍历拓展到图的邻接表的DFS</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">void DepthFirstSearch(AdjList g, int v0)&#123;</span><br><span class="line">    visit(v0); visited[v0] &#x3D; True;</span><br><span class="line">    p &#x3D; g.vertex[v0].firstarc;</span><br><span class="line">    while(p!&#x3D;NULL)&#123;</span><br><span class="line">        if(!visited[p-&gt;adjvex]) DepthFirstSearch(g,p-&gt;adjvex);</span><br><span class="line">        p &#x3D; p-&gt;nextarc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="summary"><a href="#summary" class="headerlink" title="summary:"></a>summary:</h1><h2 id="DFS使用的是栈的结构去实现的，秉承着一直向下走走到底的感觉"><a href="#DFS使用的是栈的结构去实现的，秉承着一直向下走走到底的感觉" class="headerlink" title="DFS使用的是栈的结构去实现的，秉承着一直向下走走到底的感觉"></a>DFS使用的是栈的结构去实现的，秉承着一直向下走走到底的感觉</h2><h2 id="相比之下BFS则使用的是队列去实现以达到广度优先搜索的目的"><a href="#相比之下BFS则使用的是队列去实现以达到广度优先搜索的目的" class="headerlink" title="相比之下BFS则使用的是队列去实现以达到广度优先搜索的目的"></a>相比之下BFS则使用的是队列去实现以达到广度优先搜索的目的</h2><h2 id="下周有时间把广度优先搜索做了吧，树的那一章有一个层次遍历，图的那一张还有图的BFS"><a href="#下周有时间把广度优先搜索做了吧，树的那一章有一个层次遍历，图的那一张还有图的BFS" class="headerlink" title="下周有时间把广度优先搜索做了吧，树的那一章有一个层次遍历，图的那一张还有图的BFS"></a>下周有时间把广度优先搜索做了吧，树的那一章有一个层次遍历，图的那一张还有图的BFS</h2>
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/微信.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信，顺带订阅我的博客嗷！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/uploads/打赏.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" rel="tag"># -大一学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/30/%E6%A0%88%E7%9A%84%E6%80%BB%E7%BB%93%E6%8F%90%E9%AB%98/" rel="next" title="栈的总结提高">
+                <i class="fa fa-chevron-left"></i> 栈的总结提高
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/14/AVLTree/" rel="prev" title="AVLTree">
+                AVLTree <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/alex.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/alexanderliu-creator" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:2632746476@qq.com" target="_blank" title="E-mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友人账
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://stardust567.github.io/" title="曹导" target="_blank">曹导</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://wushenghao666.github.io/" title="吴晟昊" target="_blank">吴晟昊</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://duxinhao52.github.io/" title="杜鑫豪" target="_blank">杜鑫豪</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://fessorpro.top/basic_learn/CET6_learn/start_up.html" title="孙轶扬" target="_blank">孙轶扬</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://fatorange.xyz/" title="梁亮" target="_blank">梁亮</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://geminiplanet.cn/2020/05/14/Github%E5%85%A5%E9%97%A8%E6%95%99%E5%AD%A6/#more" title="Gemini" target="_blank">Gemini</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://Minoo-web.github.io/" title="肖杨" target="_blank">肖杨</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          <div id="music163player">
+              <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=450795499&auto=1&height=66">
+              </iframe>
+          </div>
+
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%A8%E4%B8%80%E6%97%A0%E8%AF%BE%E7%9A%84%E6%97%A9%E4%B8%8A%E6%95%B4%E7%90%86%E4%B8%80%E4%B8%8B%E6%A0%91%E5%92%8C%E5%9B%BE%E4%B8%AD%E8%BF%90%E7%94%A8%E5%88%B0%E7%9A%84DFS%E7%AE%97%E6%B3%95%E5%92%8C%E6%80%9D%E6%83%B3"><span class="nav-number">1.</span> <span class="nav-text">周一无课的早上整理一下树和图中运用到的DFS算法和思想</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%91%E4%B8%AD%E7%9A%84DFS%E7%AE%97%E6%B3%95%E7%9A%84%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="nav-number"></span> <span class="nav-text">树中的DFS算法的应用：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E4%BD%93%E7%8E%B0%E5%9C%A8%E6%A0%91%E7%9A%84%E5%85%88%E6%A0%B9%E9%81%8D%E5%8E%86%E4%B8%8A%E3%80%82"><span class="nav-number">1.</span> <span class="nav-text">主要体现在树的先根遍历上。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E7%9A%84%E5%85%88%E6%A0%B9%E9%81%8D%E5%8E%86%E9%9D%9E%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">树的先根遍历非递归算法代码:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%85%88%E6%A0%B9%E9%81%8D%E5%8E%86%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">二叉树的先根遍历递归算法代码:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%85%88%E6%A0%B9%E9%81%8D%E5%8E%86%E6%8B%93%E5%B1%95%E5%88%B0%E6%A0%91%E7%9A%84%E5%85%88%E6%A0%B9%E9%81%8D%E5%8E%86%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">将二叉树的先根遍历拓展到树的先根遍历：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E6%A0%91%E7%9A%84%E5%85%88%E6%A0%B9%E9%81%8D%E5%8E%86%E6%8B%93%E5%B1%95%E5%88%B0%E5%9B%BE%E7%9A%84DFS%E7%AE%97%E6%B3%95%E6%80%9D%E8%B7%AF"><span class="nav-number">5.</span> <span class="nav-text">将树的先根遍历拓展到图的DFS算法思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E6%A0%91%E7%9A%84%E5%85%88%E6%A0%B9%E9%81%8D%E5%8E%86%E6%8B%93%E5%B1%95%E5%88%B0%E5%9B%BE%E7%9A%84%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%E7%9A%84DFS"><span class="nav-number">6.</span> <span class="nav-text">将树的先根遍历拓展到图的邻接矩阵的DFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E6%A0%91%E7%9A%84%E5%85%88%E6%A0%B9%E9%81%8D%E5%8E%86%E6%8B%93%E5%B1%95%E5%88%B0%E5%9B%BE%E7%9A%84%E9%82%BB%E6%8E%A5%E8%A1%A8%E7%9A%84DFS"><span class="nav-number">7.</span> <span class="nav-text">将树的先根遍历拓展到图的邻接表的DFS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#summary"><span class="nav-number"></span> <span class="nav-text">summary:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DFS%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AF%E6%A0%88%E7%9A%84%E7%BB%93%E6%9E%84%E5%8E%BB%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%8C%E7%A7%89%E6%89%BF%E7%9D%80%E4%B8%80%E7%9B%B4%E5%90%91%E4%B8%8B%E8%B5%B0%E8%B5%B0%E5%88%B0%E5%BA%95%E7%9A%84%E6%84%9F%E8%A7%89"><span class="nav-number">1.</span> <span class="nav-text">DFS使用的是栈的结构去实现的，秉承着一直向下走走到底的感觉</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E6%AF%94%E4%B9%8B%E4%B8%8BBFS%E5%88%99%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AF%E9%98%9F%E5%88%97%E5%8E%BB%E5%AE%9E%E7%8E%B0%E4%BB%A5%E8%BE%BE%E5%88%B0%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E7%9A%84%E7%9B%AE%E7%9A%84"><span class="nav-number">2.</span> <span class="nav-text">相比之下BFS则使用的是队列去实现以达到广度优先搜索的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E5%91%A8%E6%9C%89%E6%97%B6%E9%97%B4%E6%8A%8A%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E5%81%9A%E4%BA%86%E5%90%A7%EF%BC%8C%E6%A0%91%E7%9A%84%E9%82%A3%E4%B8%80%E7%AB%A0%E6%9C%89%E4%B8%80%E4%B8%AA%E5%B1%82%E6%AC%A1%E9%81%8D%E5%8E%86%EF%BC%8C%E5%9B%BE%E7%9A%84%E9%82%A3%E4%B8%80%E5%BC%A0%E8%BF%98%E6%9C%89%E5%9B%BE%E7%9A%84BFS"><span class="nav-number">3.</span> <span class="nav-text">下周有时间把广度优先搜索做了吧，树的那一章有一个层次遍历，图的那一张还有图的BFS</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex家的兔子</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+<div class="powered-by">
+  <i class="fa fa-user-md"></i>
+  <span id="busuanzi_container_site_uv">
+    本站总访客数:<span id="busuanzi_value_site_uv"></span>&nbsp;&nbsp;| 
+  </span>
+  <span id="busuanzi_container_site_pv">
+      &nbsp;本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  </div>
+  </div>
+
+<script>
+      var now = new Date(); 
+      function createtime() { 
+          var grt= new Date("03/12/2019 12:00:00");//此处修改你的建站时间或者网站上线时间 
+          now.setTime(now.getTime()+250); 
+          days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+          hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+          if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+          mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+          seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+          snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+          document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 "; 
+          document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+      } 
+  setInterval("createtime()",250);
+</script>
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
