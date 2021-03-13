@@ -101,7 +101,7 @@
 
 
 
-  <meta name="keywords" content="美赛," />
+  <meta name="keywords" content="后端," />
 
 
 
@@ -112,20 +112,20 @@
 
 
 
-<meta name="description" content="美赛模拟赛或正赛中的一个小模块~">
+<meta name="description" content="由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！">
 <meta property="og:type" content="article">
-<meta property="og:title" content="美赛小分析文章(42)">
-<meta property="og:url" content="http://example.com/2021/02/21/%E6%A8%A1%E5%9E%8B%E9%AA%8C%E8%AF%81&%E4%BC%98%E7%BC%BA%E7%82%B9%E5%88%86%E6%9E%90/index.html">
+<meta property="og:title" content="初识Java反射机制">
+<meta property="og:url" content="http://example.com/2021/03/13/%E5%88%9D%E8%AF%86Java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/index.html">
 <meta property="og:site_name" content="Alexander Liu">
-<meta property="og:description" content="美赛模拟赛或正赛中的一个小模块~">
+<meta property="og:description" content="由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！">
 <meta property="og:locale">
-<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210130202202.png">
-<meta property="article:published_time" content="2021-02-21T08:05:21.000Z">
-<meta property="article:modified_time" content="2021-02-20T13:59:33.747Z">
+<meta property="og:image" content="https://i.loli.net/2021/03/13/9FweQxUuaSnrdXl.png">
+<meta property="article:published_time" content="2021-03-13T11:10:26.000Z">
+<meta property="article:modified_time" content="2021-03-13T11:12:45.597Z">
 <meta property="article:author" content="Alex家的兔子">
-<meta property="article:tag" content="美赛">
+<meta property="article:tag" content="后端">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210130202202.png">
+<meta name="twitter:image" content="https://i.loli.net/2021/03/13/9FweQxUuaSnrdXl.png">
 
 
 
@@ -155,13 +155,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2021/02/21/模型验证&优缺点分析/"/>
+  <link rel="canonical" href="http://example.com/2021/03/13/初识Java反射机制/"/>
 
 
 
 
 
-  <title>美赛小分析文章(42) | Alexander Liu</title>
+  <title>初识Java反射机制 | Alexander Liu</title>
   
 
 
@@ -283,7 +283,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/21/%E6%A8%A1%E5%9E%8B%E9%AA%8C%E8%AF%81&%E4%BC%98%E7%BC%BA%E7%82%B9%E5%88%86%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/13/%E5%88%9D%E8%AF%86Java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -300,7 +300,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">美赛小分析文章(42)</h1>
+          <h1 class="post-title" itemprop="name headline">初识Java反射机制</h1>
         
 
         <div class="post-meta">
@@ -312,8 +312,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-02-21T16:05:21+08:00">
-                2021-02-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-13T19:10:26+08:00">
+                2021-03-13
               </time>
             
 
@@ -344,7 +344,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  401
+                  1.4k
                 </span>
               
 
@@ -360,7 +360,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1
+                  5
                 </span>
               
             </div>
@@ -381,29 +381,123 @@
       
 
       
-        <h1 id="美赛模拟赛或正赛中的一个小模块"><a href="#美赛模拟赛或正赛中的一个小模块" class="headerlink" title="美赛模拟赛或正赛中的一个小模块~"></a>美赛模拟赛或正赛中的一个小模块~</h1><hr>
-<a id="more"></a>
+        <h1 id="由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！"><a href="#由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！" class="headerlink" title="由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！"></a>由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！</h1><a id="more"></a>
 
 
 
-<h1 id="模型验证"><a href="#模型验证" class="headerlink" title="模型验证"></a>模型验证</h1><ol>
-<li>通过我们得出的 ARIMA 模型预测 2000 ~ 2020 年的水温上升程度，约为 0.24℃，这与苏格兰海域 2000 ~ 2020 实际水温上升是一致的</li>
-<li>鱼群正态分布验证：</li>
-</ol>
-<p>了验证鱼分布的正态性 , 我们采用<code>正态Q-Q图</code>来对于数据进行验证，并得到下图：</p>
-<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210130202202.png" alt="image-20210130202155348"></p>
-<p>由于苏格兰官网提供相关数据为离散型数据，且数据本身不是特别精细。我们使用<code>Q-Q</code>图进行验证，我们可以从图中看出，点较均匀分布在曲线两侧。由此我们得出结论：鱼的分布确实符合正态分布。</p>
-<h1 id="优缺点分析"><a href="#优缺点分析" class="headerlink" title="优缺点分析"></a>优缺点分析</h1><p>优点：</p>
+
+
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1C4411373T">网课bilibili资源</a></p>
+<h1 id="反射基本概念"><a href="#反射基本概念" class="headerlink" title="反射基本概念"></a>反射基本概念</h1><h2 id="反射三阶段"><a href="#反射三阶段" class="headerlink" title="反射三阶段"></a>反射三阶段</h2><p><img src="https://i.loli.net/2021/03/13/9FweQxUuaSnrdXl.png" alt="image-20210311185113030"></p>
 <ul>
-<li>季节性分解 + ARIMA 模型对单时间序列具有很好的拟合效果，且可以将趋势序列和季节序列从原序列中分离出来单独进行分析，其他模型很难做到这一点</li>
-<li>模型使用模拟退火算法解决问题，鱼群分布的密度函数可以任意修改，也就是说，模型可以处理任意情况的鱼群分布，无论鱼群有几群或是分布方式如何，具有很强的泛化能力</li>
-<li>建立的收入模型考虑都为主要因素，与现实情况较为符合</li>
+<li>第一部分在硬盘上，先进行了编译的过程。（保存代码Idea就自动编译好了）</li>
+<li>然后通过类加载器<code>ClassLoader</code>，将编译好的<code>Person.class</code>，读取到内存中，此时为第二个阶段，Class类对象阶段。里面将原来代码中的成员变量，构造方法和成员方法分别表示出来。</li>
+<li>当调用构造方法的时候，从内存中构造出相关的Person对象，这是才到了第三个部分，Runtime运行时阶段。</li>
 </ul>
-<p>缺点：</p>
+<h2 id="反射好处："><a href="#反射好处：" class="headerlink" title="反射好处："></a>反射好处：</h2><ul>
+<li>可以在程序的运行过程中，操作这些对象</li>
+<li>可以解耦合，提高可拓展性。</li>
+</ul>
+<h1 id="API操作"><a href="#API操作" class="headerlink" title="API操作"></a>API操作</h1><ul>
+<li><p>获取class类的对象：</p>
 <ul>
-<li><p>模型没有考虑鱼的数量由于捕捞而减少的问题</p>
+<li><code>Class.forName(&quot;全类名&quot;)</code>，这种方式是将字节码文件加载进入内存，返回Class对象，这是在第一阶段。<ul>
+<li>这种方法多用于<strong>配置文件</strong>，将类名定义在配置文件中。读取文件，加载类。</li>
+</ul>
 </li>
-<li><p>模型注重讨论纬度对鱼群分布的影响，对地形、洋流等方面考虑欠佳</p>
+<li><code>类名.class</code>，通过类名的属性来获取，这是在第二阶段。<ul>
+<li>多用于<strong>参数传递</strong></li>
+</ul>
+</li>
+<li><code>对象.getClass()</code>在，所有对象都有这种方法！！！<ul>
+<li>多用于<strong>对象</strong>的获取字节码的方式</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>这里注意一下，Idea中保存运行中，java文件会自动编译，所有一开始是有字节码的。</p>
+</li>
+<li><p>结论：同一个字节码文件，它在一次程序的运行中，只会被加载一次。只是在运行的不同过程被</p>
+</li>
+<li><p>使用Class对象：</p>
+<ul>
+<li>大部分是获取功能！！！</li>
+<li>详细获取功能：<ul>
+<li>过去成员变量们（Field）<ul>
+<li><code>Field[] getFields()</code>   #获取所有public修饰的成员变量</li>
+<li><code>Field getField(String name)</code></li>
+<li><code>Field[] getDeclaredFields()</code>   #获取所有的成员变量</li>
+<li><code>Field getDeclaredField(String name)</code> </li>
+</ul>
+</li>
+<li>获取构造方法们（Constructor）<ul>
+<li><code>Constructor&lt;?&gt;[] getConstructors()</code></li>
+<li><code>Constructor&lt;T&gt; getConstructor(类&lt;?&gt;... parameterTypes)</code></li>
+<li>还有类似于上面的</li>
+</ul>
+</li>
+<li>获取成员变量们（Method)<ul>
+<li><code>Method[] getMethods()</code></li>
+<li>类似于上面的</li>
+</ul>
+</li>
+<li>获取类名（）<ul>
+<li><code>String getName()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Field成员变量</p>
+<ul>
+<li><p>操作：</p>
+<ul>
+<li>设置值<ul>
+<li>set</li>
+</ul>
+</li>
+<li>获取值<ul>
+<li>get</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>一些操作例子(Field)</p>
+<ul>
+<li>```java<br>Class personClass = Person.class;<br>Field a = personClass.getField(“a”);<br>Person p = new Person;<br>Object value = a.get(p);<br>//下面这个是设置！！！<br>//1.首先获得了Class对象<br>//2.由Class对象获取Field对象<br>//3.通过Field对象，对于特定的构造出来的对象进行设置或者读取操作。<br>a.set(p,”张三”)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- &#96;&#96;&#96;java</span><br><span class="line">  Field d &#x3D; personClass.getDeclaredField(&quot;d&quot;);</span><br><span class="line">  Object values &#x3D; d.get(p);</span><br><span class="line">  &#x2F;&#x2F;私有的利用反射也不访问的嗷QAQ！！！</span><br><span class="line">  &#x2F;&#x2F;但是可以“暴力反射”。忽略安全检查！！！</span><br><span class="line">  d.setAccessible(true);</span><br><span class="line">  Object values &#x3D; d.get(p);</span><br></pre></td></tr></table></figure></li>
+<li>这里其实可以先康康有哪些Field，然后再去获取Field进行类的操作！！！</li>
+</ul>
+</li>
+<li><p>一些操作例子(构造器)</p>
+<ul>
+<li><p>```java<br>Class personClass = Person.class;</p>
+<p>//由于不同构造器传入值不同，所以这里要给定参数，在第二部分的位置，所有东西都是以class存在的，因此要得到相应的构造器，就需要传入对应的.class。<br>Constructor constructor = personClass.getConstructor(String.class,int.class)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- &#96;&#96;&#96;java</span><br><span class="line">  &#x2F;&#x2F;可以用于创建对象</span><br><span class="line">  Object person &#x3D; constructor.newInstance(&quot;兔兔&quot;,20);</span><br><span class="line">  &#x2F;&#x2F;这样就能够获取到构造器</span><br><span class="line">  &#x2F;&#x2F;同时获取空参的构造器，我们可以简化操作</span><br><span class="line">  Object person2 &#x3D; personClass.newInstance();</span><br><span class="line">  &#x2F;&#x2F;和上面一样的，若调用私有的构造器，也需要</span><br><span class="line">  constructor.setAccessible(true);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>一些操作例子(操作方法)</p>
+<ul>
+<li>```java<br>Class personClass = Person.class;<br>personClass.getMethod();<br>//方法三要素：方法名，返回值列表，参数列表<br>//确定方法：方法名，参数列表<br>//方法名一样，参数列表不一样能构成重载关系<br>Method eat_method = personClass.getMethod(“eat”);<br>Person p = new Person();<br>eat_method.invoke(p); //执行eat方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- &#96;&#96;&#96;java</span><br><span class="line">  Method eat_method2 &#x3D; personClass.getMethod(&quot;eat&quot;,String.class);</span><br><span class="line">  Person p &#x3D; new Person();</span><br><span class="line">  </span><br><span class="line">  eat_method2.invoke(p,&quot;饭&quot;);</span><br></pre></td></tr></table></figure></li>
+<li>```java<br>Method[] methods = personClass.getMethods();<br>for (Method method : methods){<pre><code>System.out.println(method);
+String name = method.getName();//获取方法的名称
+System.out.println(name);
+</code></pre>
+}//这个能获取所有的public方法，object的方法也在其中嗷！！！<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- &#96;&#96;&#96;java</span><br><span class="line">  &#x2F;&#x2F;获取全类名</span><br><span class="line">  String className &#x3D; personClass.getName();</span><br><span class="line">  &#x2F;&#x2F;这里获得的的是全类名！！！</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>不管什么私有啊，还是什么修饰符修饰方法，在反射面前都是可以被执行的嗷！！！在反射面前没有什么是隐私！！！</p>
+</li>
+</ul>
+<h1 id="案例：写一个框架可以帮我们取创建任意类的对象，并且执行其中的任意方法"><a href="#案例：写一个框架可以帮我们取创建任意类的对象，并且执行其中的任意方法" class="headerlink" title="案例：写一个框架可以帮我们取创建任意类的对象，并且执行其中的任意方法"></a>案例：写一个框架可以帮我们取创建任意类的对象，并且执行其中的任意方法</h1><ul>
+<li><p>```properties<br>//这儿如果新建一个对象，再调用方法，意义就不大了，所以要用到反射<br>//1.配置文件   2.反射<br>//1.将需要创建的对象的全类名和执行的方法的定义配置在文件中<br>//2.程序读取配置文件<br>//3.反射技术加载文件到内存<br>//4.创建对象<br>//5.执行方法</p>
+<p>className = //包名字<br>methodName = //方法名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- &#96;&#96;&#96;java</span><br><span class="line">  Properties pro &#x3D; new Properties();</span><br><span class="line">  </span><br><span class="line">  ClassLoader classLoader &#x3D; ReflectTest.class.getClassLoader();&#x2F;&#x2F;获取了类加载器，类加载器把类加载到内存，它就会知道类的位置啊，所以就可以在那个目录下找到properties</span><br><span class="line">  </span><br><span class="line">  InputStream is &#x3D; classLoader.getResourceAsStream(&quot;pro.properties&quot;);</span><br><span class="line">  &#x2F;&#x2F;加载配置文件，转换为一个集合</span><br><span class="line">  pro.load(is);</span><br><span class="line">  </span><br><span class="line">  &#x2F;&#x2F;获取配置文件中的数据</span><br><span class="line">  String className &#x3D; pro.getProperty(&quot;className&quot;);</span><br><span class="line">  String methodName &#x3D; pro.getPropety(&quot;methodName&quot;);</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  Class cls &#x3D; Class.forName(className);  &#x2F;&#x2F;把对应的class加载进入内存</span><br><span class="line">  Method method &#x3D; cls.getMethod(methodName);</span><br><span class="line">  &#x2F;&#x2F;执行方法</span><br><span class="line">  Object obj &#x3D; cls.newInstance();</span><br><span class="line">  Method method &#x3D; cls.getMethod(methodName);</span><br><span class="line">  method.invoke(obj);</span><br></pre></td></tr></table></figure></li>
+<li><p>这个框架就很有意思嗷！！！一个是改代码，一个是改配置文件，反射实现了这种方式，使得程序更加简洁。</p>
+</li>
+<li><p>以后看到了要知道使用了反射嗷！！！</p>
 </li>
 </ul>
 
@@ -423,7 +517,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/%E7%BE%8E%E8%B5%9B/" rel="tag"># 美赛</a>
+            <a href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag"># 后端</a>
           
         </div>
       
@@ -436,8 +530,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/02/21/%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95/" rel="next" title="美赛小分析文章(16)">
-                <i class="fa fa-chevron-left"></i> 美赛小分析文章(16)
+              <a href="/2021/03/09/MySQL%E5%AD%A6%E4%B9%A0/" rel="next" title="MySQL学习">
+                <i class="fa fa-chevron-left"></i> MySQL学习
               </a>
             
           </div>
@@ -445,10 +539,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2021/02/21/%E6%9C%80%E4%BC%98%E5%8C%96/" rel="prev" title="美赛小分析文章(40)">
-                美赛小分析文章(40) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -635,7 +725,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BE%8E%E8%B5%9B%E6%A8%A1%E6%8B%9F%E8%B5%9B%E6%88%96%E6%AD%A3%E8%B5%9B%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E6%A8%A1%E5%9D%97"><span class="nav-number">1.</span> <span class="nav-text">美赛模拟赛或正赛中的一个小模块~</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E9%AA%8C%E8%AF%81"><span class="nav-number">2.</span> <span class="nav-text">模型验证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">优缺点分析</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%B1%E4%BA%8EJDBC%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%BF%87%E7%A8%8B%E4%B8%AD%EF%BC%8C%E7%94%A8%E5%88%B0%E4%BA%86%E5%8F%8D%E5%B0%84%EF%BC%8C%E5%B0%B1%E5%8E%BB%E7%B2%97%E6%B5%85%E7%9C%8B%E4%BA%86%E7%9C%8B%E5%8F%8D%E5%B0%84%E7%9A%84%E5%8E%9F%E7%90%86%EF%BC%8C%E7%AC%94%E8%AE%B0%E5%A6%82%E4%B8%8B%EF%BC%81%EF%BC%81%EF%BC%81"><span class="nav-number">1.</span> <span class="nav-text">由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">反射基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E4%B8%89%E9%98%B6%E6%AE%B5"><span class="nav-number">2.1.</span> <span class="nav-text">反射三阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E5%A5%BD%E5%A4%84%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">反射好处：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#API%E6%93%8D%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">API操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%86%99%E4%B8%80%E4%B8%AA%E6%A1%86%E6%9E%B6%E5%8F%AF%E4%BB%A5%E5%B8%AE%E6%88%91%E4%BB%AC%E5%8F%96%E5%88%9B%E5%BB%BA%E4%BB%BB%E6%84%8F%E7%B1%BB%E7%9A%84%E5%AF%B9%E8%B1%A1%EF%BC%8C%E5%B9%B6%E4%B8%94%E6%89%A7%E8%A1%8C%E5%85%B6%E4%B8%AD%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">案例：写一个框架可以帮我们取创建任意类的对象，并且执行其中的任意方法</span></a></li></ol></div>
             
 
           </div>
