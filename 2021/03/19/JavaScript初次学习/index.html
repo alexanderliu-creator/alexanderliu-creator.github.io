@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="老杜的JS教程讲的还不错，学到了很多东西，收获满满！！！课程连接，概念十分清晰。因为我先对于Vue进行了学习，JS这一块儿几乎没碰，导致这一块儿基础薄弱，这下补上了，感觉十分舒适。对于前后端的帮助感觉都很大！！！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript初次学习">
+<meta property="og:url" content="http://example.com/2021/03/19/JavaScript%E5%88%9D%E6%AC%A1%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Alexander Liu">
+<meta property="og:description" content="老杜的JS教程讲的还不错，学到了很多东西，收获满满！！！课程连接，概念十分清晰。因为我先对于Vue进行了学习，JS这一块儿几乎没碰，导致这一块儿基础薄弱，这下补上了，感觉十分舒适。对于前后端的帮助感觉都很大！！！">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/03/19/VCKaSGo8EzdkiIN.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/19/mIn2ZHPaj71zJFo.png">
+<meta property="article:published_time" content="2021-03-19T12:00:25.000Z">
+<meta property="article:modified_time" content="2021-03-19T12:03:42.516Z">
+<meta property="article:author" content="Alex家的兔子">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/03/19/VCKaSGo8EzdkiIN.png">
+
+<link rel="canonical" href="http://example.com/2021/03/19/JavaScript%E5%88%9D%E6%AC%A1%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JavaScript初次学习 | Alexander Liu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <a target="_blank" rel="noopener" href="https://github.com/alexanderliu-creator" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Alexander Liu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/19/JavaScript%E5%88%9D%E6%AC%A1%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alex家的兔子">
+      <meta itemprop="description" content="Steping forward">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alexander Liu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript初次学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-19 20:00:25 / 修改时间：20:03:42" itemprop="dateCreated datePublished" datetime="2021-03-19T20:00:25+08:00">2021-03-19</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="老杜的JS教程讲的还不错，学到了很多东西，收获满满！！！课程连接，概念十分清晰。因为我先对于Vue进行了学习，JS这一块儿几乎没碰，导致这一块儿基础薄弱，这下补上了，感觉十分舒适。对于前后端的帮助感觉都很大！！！"><a href="#老杜的JS教程讲的还不错，学到了很多东西，收获满满！！！课程连接，概念十分清晰。因为我先对于Vue进行了学习，JS这一块儿几乎没碰，导致这一块儿基础薄弱，这下补上了，感觉十分舒适。对于前后端的帮助感觉都很大！！！" class="headerlink" title="老杜的JS教程讲的还不错，学到了很多东西，收获满满！！！课程连接，概念十分清晰。因为我先对于Vue进行了学习，JS这一块儿几乎没碰，导致这一块儿基础薄弱，这下补上了，感觉十分舒适。对于前后端的帮助感觉都很大！！！"></a>老杜的JS教程讲的还不错，学到了很多东西，收获满满！！！<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av62653534/?spm_id_from=333.788.b_765f64657363.1">课程连接</a>，概念十分清晰。因为我先对于Vue进行了学习，JS这一块儿几乎没碰，导致这一块儿基础薄弱，这下补上了，<del>感觉十分舒适</del>。对于前后端的帮助感觉都很大！！！</h1><a id="more"></a>
+
+
+
+
+
+
+
+<h1 id="JavaScript是啥"><a href="#JavaScript是啥" class="headerlink" title="JavaScript是啥"></a>JavaScript是啥</h1><ul>
+<li>运行在浏览器中的脚本语言。</li>
+<li>交互性增强了！！！</li>
+<li>JS的<strong>目标程序</strong>以普通文本形式保存，Java的目标程序实际上是class文件，是不能够以普通文本保存打开的，因此Java不是脚本语言，JS是脚本语言。JS目标程序是由浏览器解释执行的。</li>
+<li>JS能对于DOM树进行增删改查。</li>
+</ul>
+<h1 id="嵌入HTML页面的方式"><a href="#嵌入HTML页面的方式" class="headerlink" title="嵌入HTML页面的方式"></a>嵌入HTML页面的方式</h1><ol>
+<li><p>使用事件句柄：</p>
+<p><code>onclick=&quot;JS代码&quot;</code></p>
+<ul>
+<li>打开页面的时候，js代码不会执行，只是将代码注册到click事件上，当发生事件的时候，js代码会被浏览器自动调用</li>
+</ul>
+<p><code>&lt;input type=&quot;button&quot; value=&quot;hello&quot; onclick=&quot;window.alert(&#39;hello jscode!!!&#39;);</code></p>
+<p><code>window.alert(&#39;hello liututu!!!&#39;);&quot;&gt;</code></p>
+<ul>
+<li>JS语言写不写分号都可以</li>
+<li>可以用双引号也可以用单引号，但是引号里面再使用引号要反过来</li>
+<li>window可以省略不写，只写alert即可。</li>
+<li>alert之前见过的啦</li>
+</ul>
+</li>
+<li><p>使用脚本块儿</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="built_in">window</span>.alert(<span class="string">&quot;Hello World!!!&quot;</span>);</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>这个页面打开就执行了！！！</li>
+<li>暴露在脚本块儿中的程序，在页面打开过程中执行，并且自上而下执行，这个代码的执行是不需要事件的！！！</li>
+<li>所有的HTML程序，都是从上往下载入浏览器执行的！！！</li>
+<li>脚本块儿可以由多个，可以出现在页面的任何位置，不需要任何事件，按照写的顺序执行。</li>
+<li>JS代码的单行注释是//，多行注释和Java是一样的。</li>
+<li>alert事件会阻塞当前页面代码的加载，直到用户点击确定按钮为止。因为当前代码直到用户点击才算执行完成。</li>
+</ul>
+</li>
+<li><p>将JS代码写到对应的JS文件中，引入JS脚本</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;JS文件路径&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>引入JS代码的时候，也会自上而下自动执行。执行完成之后，才算此条语句执行完成。</li>
+<li>同一个JS文件可以被引入多次。</li>
+<li>引入JS文件的script标签中写JS代码是没有用的嗷！写的代码是不会执行的，一个脚本块儿，要么引入，要么自己写代码。</li>
+<li>引入文件的script标签和写的script标签这个是可以并存的，没啥问题。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>第一种方法有注册事件，后面两种貌似举的例子没有嗷！</li>
+</ul>
+<h1 id="事件与事件句柄"><a href="#事件与事件句柄" class="headerlink" title="事件与事件句柄"></a>事件与事件句柄</h1><ul>
+<li>事件句柄是在事件前面加上一个on</li>
+<li>事件句柄是以HTML标签的属性存在的！！！</li>
+</ul>
+<h1 id="标识符和关键字和变量"><a href="#标识符和关键字和变量" class="headerlink" title="标识符和关键字和变量"></a>标识符和关键字和变量</h1><ol>
+<li>Java中的变量：</li>
+</ol>
+<ul>
+<li>Java规则：只能由几种类型的字符构成，可以有数字，不能以数字开始，不能使用关键字作标识符，严格区分大小写，理论上没有字数限制。（语法的规定）</li>
+<li>Java规则：类名和接口名，首字母大写，后面每个单词首字母大写。方法名和变量名首字母小写，后面每个单词首字母大写。所有的常量要求全部大写，单词与单词之间用下划线连接。见名知意！！！（默认的规范）</li>
+<li><code>byte short int long float double boolean char 12484812 </code>后面的那个是所占的字节数量。</li>
+<li>Java是强类型语言，编译器强行固定了变量的数据类型，为强类型语言。</li>
+</ul>
+<ol start="2">
+<li>JS中的变量：</li>
+</ol>
+<ul>
+<li>声明变量：<ul>
+<li>var variable_name</li>
+</ul>
+</li>
+<li>复制：variable = value</li>
+<li>弱类型编程语言，没有编译阶段，一个变量可以随意赋值。JS中变量的类型是由右边说了算嗷！赋什么类型的值都可以嗷！！！</li>
+<li><code>var i</code>这个时候i的值是undefined，js中变量没有赋值的时候默认就是undefined。<code>var k = undefined</code>, undefined在js语言中是一个值！！！</li>
+<li>没有声名直接访问一个变量，实际上是会出现语法错误的，是不能这么干的，语法不对嗷！！！</li>
+<li><code>var a,b,c=200</code>，a,b都是undefined，c是200。</li>
+</ul>
+<h1 id="JS函数"><a href="#JS函数" class="headerlink" title="JS函数"></a>JS函数</h1><ul>
+<li><p>JS函数等同于java中的方法，可以完成特定功能，但是JS是弱类型语言，其函数的方式更加类似于Python。</p>
+</li>
+<li><p>JS中的函数不用返回值的</p>
+</li>
+<li><p>语法格式：</p>
+<ul>
+<li><code>function 函数名(形式参数列表)&#123;函数体&#125;;</code></li>
+<li><code>函数名 = function(形式参数列表)&#123;函数体&#125;;</code></li>
+</ul>
+</li>
+<li><p>两个例子:</p>
+<ul>
+<li>```javascript<br>function sum(a,b){<pre><code>return a+b;
+</code></pre>
+}<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- &#96;&#96;&#96;javascript</span><br><span class="line">  sayHello &#x3D; function(username)&#123;</span><br><span class="line">      alert(&quot;hello &quot;+username);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>函数必须调用才能执行，所以放在脚本块儿中没用嗷，不会自动执行嗷！！！</p>
+</li>
+<li><p>函数调用：<code>&lt;input type=&quot;button&quot; value=&quot;hello&quot; onclick=&quot;sayHello(&#39;tutu!&#39;)&quot;&gt;</code></p>
+</li>
+</ul>
+<ul>
+<li>如果只传一个参数，没有赋值的参数，就会自动赋予undefined</li>
+<li>NaN是一个具体存在的值，这个值不是数字，Not a number</li>
+<li>如果传的参数多于形式参数，多给的值就失效了。</li>
+<li>JS中不需要重载啊兄弟，它本身弱类型猛的亚匹。</li>
+<li>如果定义同名函数的话，下面的说的算，从上向下执行，下面的会覆盖上面的。</li>
+<li>JS中，函数是不能够重名的！！！</li>
+</ul>
+<h1 id="局部变量和全局变量"><a href="#局部变量和全局变量" class="headerlink" title="局部变量和全局变量"></a>局部变量和全局变量</h1><ol>
+<li><p>全局变量：在函数体之外声明变量，生命周期是打开时声明，浏览器关闭时销毁，尽量少用，占浏览器的内存。全局变量会一直在浏览器中，耗费内存空间。如果能够使用局部变量，尽量使用局部变量。局部变量使用过后就被释放了！！！‘</p>
+</li>
+<li><p>一样的，局部变量符合就近原则。</p>
+</li>
+<li><p>一下语法很奇怪</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myfun</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	myname = <span class="string">&quot;tutu&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myfun();</span><br><span class="line">alert(<span class="string">&quot;myname = &quot;</span>+myname);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>一个变量声明的时候如果没有用var声明，那不管在哪儿申明，它都是全局变量。<strong>这个特性只有JavaScript才有</strong></li>
+</ul>
+</li>
+</ol>
+<h1 id="JS的数据类型"><a href="#JS的数据类型" class="headerlink" title="JS的数据类型"></a>JS的数据类型</h1><ul>
+<li>赋值的时候，等号右边每一个数据都是由类型的。</li>
+<li>JS中数据类型有原始类型时引用类型：<ul>
+<li>EcmaScript(ES)，ES6之前和之后的数据类型不同</li>
+<li>ES之前：<ul>
+<li>Undifined</li>
+<li>Number</li>
+<li>String</li>
+<li>Null</li>
+<li>Boolean</li>
+<li>Object</li>
+</ul>
+</li>
+<li>ES6之后：<ul>
+<li>Undifined</li>
+<li>Number</li>
+<li>String</li>
+<li>Null</li>
+<li>Boolean</li>
+<li>Object</li>
+<li><strong>Symbol</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>原始类型：<ul>
+<li>Undifined</li>
+<li>Number</li>
+<li>String</li>
+<li>Boolean</li>
+<li>Null</li>
+</ul>
+</li>
+<li>引用类型：<ul>
+<li>Object和其子类</li>
+</ul>
+</li>
+<li>ES6之后添加了Symbol</li>
+<li>JS中有一个叫做typeof的运算符，可以在程序运行阶段获取变量的数据类型。由于JS是弱类型语言，无法确定传入参数的类型，这个时候typeof的作用即体现出来了：<ul>
+<li>语法：typeof + 变量名</li>
+<li>返回结果为下列六个字符串之一：<ul>
+<li>undifined</li>
+<li>number</li>
+<li>string</li>
+<li>boolean</li>
+<li>object</li>
+<li>fuction</li>
+</ul>
+</li>
+<li>注意，上面没有null！！！没有Symbol。null属于null类型，null的typeof的结果是object嗷。</li>
+<li>JS中 比较字符串相同用””来进行比较， <code>if(type a == &quot;number&quot;)&#123;...&#125;</code></li>
+<li>函数没有返回值的话，默认值为undefined，如果调用变量等于函数，这个变量就为undefined。</li>
+<li>typeof + 变量名这种方式也可以用于判断函数的嗷！！！</li>
+</ul>
+</li>
+</ul>
+<h2 id="Undefined"><a href="#Undefined" class="headerlink" title="Undefined"></a>Undefined</h2><ul>
+<li>Undefined类型只有一个值，这个值就是undefined</li>
+<li>当一个变量没有手动赋值，默认undefined，undefined可以用于赋值的。</li>
+<li><code>var k = undefined; var j = &quot;undefined&quot;;</code>，第一个才是undefined嗷，第二个是字符串。</li>
+</ul>
+<h2 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h2><ul>
+<li><p>包含的值：</p>
+<ul>
+<li>数字</li>
+<li>浮点数</li>
+<li>所有的数字</li>
+<li>Infinity</li>
+<li>NaN（不是数字，但是属于Number类型）</li>
+</ul>
+</li>
+<li><p>NaN：运算结果应该是一个数字，但是结果不是数字！！！</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">var</span> b = <span class="string">&quot;刘兔兔&quot;</span>;</span><br><span class="line">alert(a/b);</span><br><span class="line"><span class="comment">//这个结果就是NaN</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意哈，如果是相加的话，返回就是字符串哦，字符串还有自动转换拼接的属性。</li>
+<li>当除数为0的时候，结果是Infinity嗷。</li>
+</ul>
+</li>
+<li><p>除法不是地板除法嗷，结果和python一样是真实的除法</p>
+</li>
+<li><p>相关函数：</p>
+<ol>
+<li>isNaN(data) -&gt; true表示不是一个数字，false表示是一个数字</li>
+</ol>
+<ul>
+<li>```javascript<br>function sum(a,b){<pre><code>if(isNaN(a) || isNaN(b))&#123;
+    alert(&quot;参与运算的要是数字！！！&quot;);
+    return;
+&#125;
+return a+b;
+</code></pre>
+}<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  - 上面是一个例子嗷！！！</span><br><span class="line"></span><br><span class="line">  2. parseInt()函数   &#96;parseInt(&quot;3.999&quot;);&#96; -&gt; 将字符串转换为整数，只取整数位。也可以把float只取整数位</span><br><span class="line">  3. parseFloat()函数   &#96;parseFloat(&quot;3.2&quot;)+1&#96;   -&gt; 将字符串转换为Float</span><br><span class="line">  4. Math.ceil()函数 -&gt; 用于向上取整！！！   &#96;alert(Math.ceil(&quot;2.1&quot;))&#96;  ，返回值为3！！！</span><br><span class="line"></span><br><span class="line">## Boolean</span><br><span class="line"></span><br><span class="line">1. JS中的bool类型永远都只有true和false</span><br><span class="line"></span><br><span class="line">2. if后面跟着的一定要是boolean类型, 如果不是布尔类型，**JS中会自动调用布尔函数转换为布尔类型**。</span><br><span class="line"></span><br><span class="line">3. Boolean()函数，作用如上！！！</span><br><span class="line"></span><br><span class="line">   &#96;&#96;&#96;javascript</span><br><span class="line">   var username&#x3D;&quot;&quot;</span><br><span class="line">   </span><br><span class="line">   if(username)&#123;</span><br><span class="line">       alert(&quot;Welcome!!!&quot;);</span><br><span class="line">   &#125;else&#123;</span><br><span class="line">       alert(&quot;用户名不可以为空！！！&quot;);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li><p>会被Boolean自动转换为false的东西：</p>
+<ul>
+<li>0</li>
+<li>空字符串</li>
+<li>null</li>
+<li>NaN</li>
+<li>undefined</li>
+</ul>
+</li>
+<li><p>“有”就转换为false，”真”就转换为true。</p>
+</li>
+</ol>
+<h2 id="Null"><a href="#Null" class="headerlink" title="Null"></a>Null</h2><ul>
+<li>这个类型只有一个值叫null</li>
+<li>typeof null = object</li>
+</ul>
+<h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><ol>
+<li><p>JS中单引号，双引号都可以用嗷</p>
+</li>
+<li><p>JS当中，创建字符串对象：</p>
+<ul>
+<li><p>var s = “abc”;</p>
+<ul>
+<li>typeof s = “string”</li>
+</ul>
+</li>
+<li><p>var s2 = new String(“abc”);</p>
+<ul>
+<li>typeof s2 = “object”</li>
+</ul>
+</li>
+<li><p>String的父类是Object</p>
+</li>
+<li><p>上面是小string，下面是大string，属于object类型</p>
+</li>
+<li><p>无论大小string，函数和方法都是通用的</p>
+</li>
+</ul>
+</li>
+<li><p>String类型常用属性和方法</p>
+<ul>
+<li>length属性！！！<code>s.length</code></li>
+<li>indexOf(substring) - &gt; 和python一样，存在&gt;0，不存在 = -1</li>
+<li>lastindexOf(substring) -&gt; python中最后一次出现的字符串的下表</li>
+<li>replace -&gt; string.replace(“原”,”新”)，只替换了第一个？？？-&gt; 多次调用可以的，全部替换的话正则表达式嗷！</li>
+<li>split</li>
+<li>substr</li>
+<li>substring</li>
+<li>toLowerCase</li>
+<li>tuUpperCase</li>
+</ul>
+</li>
+<li><p>三目运算符依旧成立<code>&quot;string&quot;.indexOf(&quot;s&quot;) &gt;= 0 ? &quot;包含&quot; : &quot;不包含&quot;</code></p>
+</li>
+<li><p>substr和substring的区别，substr -&gt; start index , length , substring -&gt; [start , end)</p>
+</li>
+</ol>
+<h2 id="Object-重点"><a href="#Object-重点" class="headerlink" title="Object(重点)"></a>Object(重点)</h2><ul>
+<li><p>所有类型的超类，自定义的任何类型默认继承Object</p>
+</li>
+<li><p>Object类包含的属性有：</p>
+<ul>
+<li>prototype（常用）</li>
+<li>constructor</li>
+</ul>
+</li>
+<li><p>Object类包含的方法有：</p>
+<ul>
+<li>toLocaleString</li>
+<li>toString</li>
+<li>valueOf</li>
+</ul>
+</li>
+<li><p>自己定义的类继承自Object，自然有上述属性和方法</p>
+</li>
+<li><p>定义类已知，new对象？</p>
+<ul>
+<li><p>定义类同样是调用函数的方法</p>
+</li>
+<li><p>但是如果调用“函数”的时候，使用了new，就是构造了对象！！！</p>
+</li>
+<li><p>```javascript<br>function Student(){</p>
+<pre><code>alert(&quot;...student&quot;);
+</code></pre>
+<p>}</p>
+<p>Student()</p>
+<p>//构造的过程中会执行代码块，所以下面new过程也会执行<br>var stu = new Student();<br>alert(stu)<br>// 上面的执行结果为[object Object]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 类的定义和构造函数的定义是放在一起的，function就是构造函数，可以声明属性</span><br><span class="line"></span><br><span class="line">- &#96;&#96;&#96;javascript</span><br><span class="line">  function User(a,b,c)&#123;</span><br><span class="line">      this.sno &#x3D; a;</span><br><span class="line">      this.sname &#x3D; b;</span><br><span class="line">      this.sage &#x3D; c;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  var u1 &#x3D; new User(111,&quot;zhangsan&quot;,30);</span><br><span class="line">  </span><br><span class="line">  alert(u1.sname);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>访问对象的属性还可以：<code>u1[&quot;sno&quot;]</code></p>
+</li>
+<li><p>定义类的另外一种方法：<code>Emp = function(ename,sal)&#123;this.ename = ename; this.salary = sal;&#125;</code></p>
+</li>
+<li><p>例子：</p>
+<ul>
+<li><pre><code class="javascript">Product = function(pno,pname,price)&#123;
+    this.pno = pno;
+    this.pname = pname;
+    this.price = price;
+    
+    this.getPrice = function()&#123;
+        return this.price;
+    &#125;
+&#125;
+
+var pro = new Product(111,&#39;西瓜&#39;,4.0);
+var pri = pro.getPrice();
+alter(pri);
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 可以**通过propotype来对于类动态拓展属性以及函数**&#96;Product.prototype.getPname &#x3D; function()&#123;return this.pname&#125;;&#96;</span><br><span class="line"></span><br><span class="line">- 给系统自带的类也可以拓展函数：&#96;String.propotype.suiyi &#x3D; function()&#123;alert(&quot;This a a extended fuction of js&quot;)&#125;;&#96;</span><br><span class="line"></span><br><span class="line">  调用的方法：&#96;&quot;abc&quot;.suiyi();&#96;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># null-NaN-undefined的区别</span><br><span class="line"></span><br><span class="line">- null -&gt; object , undefined -&gt; undefined , NaN -&gt; number</span><br><span class="line">- ![image-20210319191758936](https:&#x2F;&#x2F;i.loli.net&#x2F;2021&#x2F;03&#x2F;19&#x2F;oDVLbf7AetkQ6Om.png)</span><br><span class="line"></span><br><span class="line">- JS中两个不中不同的等号：</span><br><span class="line">  - &#x3D;&#x3D; -&gt; 判断值是否相同</span><br><span class="line">  - &#x3D;&#x3D;&#x3D; -&gt; 即判断值是否相同，又判断数据类型是否相同</span><br><span class="line">- 然后你就会发现&#96;1 &#x3D;&#x3D; true&#96;是相同的，这是和C语言是一样的嗷！</span><br><span class="line">- &#96;1 &#x3D;&#x3D;&#x3D; true&#96;和Java中的equals一样的嗷！</span><br><span class="line">- 综上，一般比较的时候用的是&#96;&#x3D;&#x3D;&#x3D;&#96;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># JS的常用事件</span><br><span class="line"></span><br><span class="line">## 事件种类</span><br><span class="line"></span><br><span class="line">1. 焦点</span><br><span class="line"></span><br><span class="line">- blur -》失去</span><br><span class="line">- focus -》获得</span><br><span class="line"></span><br><span class="line">2. </span><br><span class="line"></span><br><span class="line">- change -》下拉列表中项改变，文本内容改变</span><br><span class="line"></span><br><span class="line">3. 键盘</span><br><span class="line"></span><br><span class="line">- keydown -》按下</span><br><span class="line">- keyup -》弹起</span><br><span class="line"></span><br><span class="line">4. 鼠标</span><br><span class="line"></span><br><span class="line">- click</span><br><span class="line"></span><br><span class="line">- dblclick</span><br><span class="line">- mousedown</span><br><span class="line">- mouseover</span><br><span class="line">- mousemove</span><br><span class="line">- mouseout</span><br><span class="line">- mouseup</span><br><span class="line"></span><br><span class="line">5. 表单</span><br><span class="line"></span><br><span class="line">- reset</span><br><span class="line">- submit</span><br><span class="line"></span><br><span class="line">6. 文本</span><br><span class="line"></span><br><span class="line">- select -》文本选定</span><br><span class="line"></span><br><span class="line">7. 页面</span><br><span class="line"></span><br><span class="line">- load -》整个HTML所有元素加载完毕后发生</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 事件属性</span><br><span class="line"></span><br><span class="line">- 任何一个事件都会对应一个事件句柄，就是在事件前面加上on</span><br><span class="line">- onXXX这个事件句柄出现在一个标签的属性位置上</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 注册事件</span><br><span class="line"></span><br><span class="line">1. &#96;&lt;input onclick&#x3D;&quot;sayHello()&quot;&gt;&#96;，这个sayHello()函数叫做回调函数，callback-&gt;函数自己写的，调用函数是由别的函数调用的。这是一种直接注册的方式。</span><br><span class="line"></span><br><span class="line">2. 使用纯纯的JS代码:</span><br><span class="line"></span><br><span class="line">   - 获取按钮对象</span><br><span class="line"></span><br><span class="line">   - document是全部小写，内置对象，直接用，document是整个HTML页面</span><br><span class="line"></span><br><span class="line">   - var btnObj &#x3D; document.getElementById(&quot;mybtn&quot;)</span><br><span class="line"></span><br><span class="line">   - 获得对象后，注册回调函数</span><br><span class="line"></span><br><span class="line">   - &#96;btnObj.onclick &#x3D; doSome;&#96;，千万别加小括号，加上酷哦好是错的</span><br><span class="line"></span><br><span class="line">   - window是窗口，document是文档。</span><br><span class="line"></span><br><span class="line">   - 匿名函数使用！！！</span><br><span class="line"></span><br><span class="line">     - &#96;&#96;&#96;javascript</span><br><span class="line">       var btn1 &#x3D; document.getElementById(&quot;mybtn1&quot;);</span><br><span class="line">       btn1.onclick &#x3D; function()&#123;</span><br><span class="line">       	alert(&quot;test...&quot;);</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       &#x2F;&#x2F;这里的匿名函数也是回调函数，事件被注册，只有被调用时才发生</span><br></pre></td></tr></table></figure>
+ - `document.getElementId(&quot;id&quot;).onclick = function()&#123;...&#125;`，注意这里用的是onclick，这是一个属性。
+</code></pre>
+</li>
+<li><p>注意脚本的位置哈，页面从上往下加载的，id要先存在于内存中，我们才能从页面中取到这个结点对象嗷！！！</p>
+</li>
+</ul>
+</li>
+<li><p>为了解决这个问题，我们先让整个页面元素加载完毕之后，再去调用js代码。这个时候就想到了onload ！！！<code>&lt;body onload=&quot;ready()&quot;&gt;;</code></p>
+</li>
+</ul>
+<h2 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h2><ul>
+<li><p><img src="https://i.loli.net/2021/03/19/VCKaSGo8EzdkiIN.png" alt="image-20210319194433415"></p>
+</li>
+<li><p><img src="https://i.loli.net/2021/03/19/mIn2ZHPaj71zJFo.png" alt="image-20210319194504082"></p>
+</li>
+<li><p>理清楚加载的关系，这个代码才好些，简化为window先加载完毕，回调函数才能发生。</p>
+</li>
+<li><p>加载过程中，a函数注册给了load事件。加载之后，load事件发生了，此时执行回调函数fuction，执行的时候，把onclick函数注册给了btn按钮。btn按钮被点击的时候，事件发生了。</p>
+</li>
+<li><p>固定搭配：<code>window.onload = function()&#123;...&#125;;</code></p>
+</li>
+</ul>
+<h2 id="小栗子（文本框点击-gt-复选框）"><a href="#小栗子（文本框点击-gt-复选框）" class="headerlink" title="小栗子（文本框点击-&gt;复选框）"></a>小栗子（文本框点击-&gt;复选框）</h2><ul>
+<li>结点对象有的属性你都可以通过.来获得和修改</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>This is a test<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span>&gt;</span></span><br><span class="line"><span class="javascript">        	<span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">                <span class="built_in">document</span>.getElementById(<span class="string">&quot;btn&quot;</span>).onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">                    <span class="keyword">var</span> test = <span class="built_in">document</span>.getElementById(<span class="string">&quot;mytext&quot;</span>);</span></span><br><span class="line"><span class="javascript">                    test.type = <span class="string">&quot;checkbox&quot;</span>;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">id</span>=<span class="string">&quot;mytext&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span> <span class="attr">value</span>=<span class="string">&quot;单击变为复选框&quot;</span> <span class="attr">id</span>=<span class="string">&quot;btn&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="回车键按下的捕捉！！！"><a href="#回车键按下的捕捉！！！" class="headerlink" title="回车键按下的捕捉！！！"></a>回车键按下的捕捉！！！</h2>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag"># 后端</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/18/CSS%E7%AE%80%E5%8D%95%E5%A4%8D%E4%B9%A0-%E5%90%8E%E7%AB%AF%E5%B8%B8%E7%94%A8%E6%A0%B7%E5%BC%8F%E5%BC%BA%E5%8C%96/" rel="prev" title="CSS简单复习-后端常用样式强化">
+      <i class="fa fa-chevron-left"></i> CSS简单复习-后端常用样式强化
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%80%81%E6%9D%9C%E7%9A%84JS%E6%95%99%E7%A8%8B%E8%AE%B2%E7%9A%84%E8%BF%98%E4%B8%8D%E9%94%99%EF%BC%8C%E5%AD%A6%E5%88%B0%E4%BA%86%E5%BE%88%E5%A4%9A%E4%B8%9C%E8%A5%BF%EF%BC%8C%E6%94%B6%E8%8E%B7%E6%BB%A1%E6%BB%A1%EF%BC%81%EF%BC%81%EF%BC%81%E8%AF%BE%E7%A8%8B%E8%BF%9E%E6%8E%A5%EF%BC%8C%E6%A6%82%E5%BF%B5%E5%8D%81%E5%88%86%E6%B8%85%E6%99%B0%E3%80%82%E5%9B%A0%E4%B8%BA%E6%88%91%E5%85%88%E5%AF%B9%E4%BA%8EVue%E8%BF%9B%E8%A1%8C%E4%BA%86%E5%AD%A6%E4%B9%A0%EF%BC%8CJS%E8%BF%99%E4%B8%80%E5%9D%97%E5%84%BF%E5%87%A0%E4%B9%8E%E6%B2%A1%E7%A2%B0%EF%BC%8C%E5%AF%BC%E8%87%B4%E8%BF%99%E4%B8%80%E5%9D%97%E5%84%BF%E5%9F%BA%E7%A1%80%E8%96%84%E5%BC%B1%EF%BC%8C%E8%BF%99%E4%B8%8B%E8%A1%A5%E4%B8%8A%E4%BA%86%EF%BC%8C%E6%84%9F%E8%A7%89%E5%8D%81%E5%88%86%E8%88%92%E9%80%82%E3%80%82%E5%AF%B9%E4%BA%8E%E5%89%8D%E5%90%8E%E7%AB%AF%E7%9A%84%E5%B8%AE%E5%8A%A9%E6%84%9F%E8%A7%89%E9%83%BD%E5%BE%88%E5%A4%A7%EF%BC%81%EF%BC%81%EF%BC%81"><span class="nav-number">1.</span> <span class="nav-text">老杜的JS教程讲的还不错，学到了很多东西，收获满满！！！课程连接，概念十分清晰。因为我先对于Vue进行了学习，JS这一块儿几乎没碰，导致这一块儿基础薄弱，这下补上了，感觉十分舒适。对于前后端的帮助感觉都很大！！！</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JavaScript%E6%98%AF%E5%95%A5"><span class="nav-number">2.</span> <span class="nav-text">JavaScript是啥</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5HTML%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">嵌入HTML页面的方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E4%B8%8E%E4%BA%8B%E4%BB%B6%E5%8F%A5%E6%9F%84"><span class="nav-number">4.</span> <span class="nav-text">事件与事件句柄</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%87%E8%AF%86%E7%AC%A6%E5%92%8C%E5%85%B3%E9%94%AE%E5%AD%97%E5%92%8C%E5%8F%98%E9%87%8F"><span class="nav-number">5.</span> <span class="nav-text">标识符和关键字和变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JS%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">JS函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E5%92%8C%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="nav-number">7.</span> <span class="nav-text">局部变量和全局变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JS%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">8.</span> <span class="nav-text">JS的数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Undefined"><span class="nav-number">8.1.</span> <span class="nav-text">Undefined</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Number"><span class="nav-number">8.2.</span> <span class="nav-text">Number</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Null"><span class="nav-number">8.3.</span> <span class="nav-text">Null</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String"><span class="nav-number">8.4.</span> <span class="nav-text">String</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object-%E9%87%8D%E7%82%B9"><span class="nav-number">8.5.</span> <span class="nav-text">Object(重点)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">8.6.</span> <span class="nav-text">执行顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E6%A0%97%E5%AD%90%EF%BC%88%E6%96%87%E6%9C%AC%E6%A1%86%E7%82%B9%E5%87%BB-gt-%E5%A4%8D%E9%80%89%E6%A1%86%EF%BC%89"><span class="nav-number">8.7.</span> <span class="nav-text">小栗子（文本框点击-&gt;复选框）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E8%BD%A6%E9%94%AE%E6%8C%89%E4%B8%8B%E7%9A%84%E6%8D%95%E6%8D%89%EF%BC%81%EF%BC%81%EF%BC%81"><span class="nav-number">8.8.</span> <span class="nav-text">回车键按下的捕捉！！！</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Alex家的兔子</p>
+  <div class="site-description" itemprop="description">Steping forward</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/alexanderliu-creator" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;alexanderliu-creator" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:alexanderliurab@gmail.com" title="E-Mail → mailto:alexanderliurab@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://stardust567.github.io/" title="https:&#x2F;&#x2F;stardust567.github.io&#x2F;" rel="noopener" target="_blank">曹导</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wushenghao666.github.io/" title="https:&#x2F;&#x2F;wushenghao666.github.io&#x2F;" rel="noopener" target="_blank">吴晟昊</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://duxinhao52.github.io/" title="https:&#x2F;&#x2F;duxinhao52.github.io&#x2F;" rel="noopener" target="_blank">杜鑫豪</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://fessorpro.top/basic_learn/CET6_learn/start_up.html" title="https:&#x2F;&#x2F;fessorpro.top&#x2F;basic_learn&#x2F;CET6_learn&#x2F;start_up.html" rel="noopener" target="_blank">孙轶扬</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://fatorange.xyz/" title="https:&#x2F;&#x2F;fatorange.xyz&#x2F;" rel="noopener" target="_blank">梁亮</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://geminiplanet.cn/2020/05/14/Github%E5%85%A5%E9%97%A8%E6%95%99%E5%AD%A6/#more" title="http:&#x2F;&#x2F;geminiplanet.cn&#x2F;2020&#x2F;05&#x2F;14&#x2F;Github%E5%85%A5%E9%97%A8%E6%95%99%E5%AD%A6&#x2F;#more" rel="noopener" target="_blank">Gemini</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://minoo-web.github.io/" title="http:&#x2F;&#x2F;Minoo-web.github.io&#x2F;" rel="noopener" target="_blank">肖杨</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex家的兔子</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">313k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:45</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
