@@ -455,21 +455,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-03-29
+                    2021-04-01
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    421
+                    1.5k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    5 分
                 </div>
                 
 
@@ -547,6 +547,155 @@
 <p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210329172819845.png" alt="image-20210329172819845"></p>
 <h1 id="Tomcat服务器"><a href="#Tomcat服务器" class="headerlink" title="Tomcat服务器"></a>Tomcat服务器</h1><ul>
 <li>安装在服务端的软件，响应客户端的请求</li>
+<li>服务器分类：<ul>
+<li><code>JBOSS</code>服务器</li>
+<li><code>Glassfish</code>服务器</li>
+<li><code>Jetty</code>服务器</li>
+<li><code>Webphere</code>服务器</li>
+<li><code>Tomcat</code>服务器（可以用于模拟互联网通信）</li>
+</ul>
+</li>
+</ul>
+<h2 id="服务器的下载："><a href="#服务器的下载：" class="headerlink" title="服务器的下载："></a>服务器的下载：</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://tomcat.apache.org/">官网</a></li>
+<li>解压之后就算安装成功了。</li>
+<li>只要<code>java_home</code>配置好就好了，其他不用配置的嗷。</li>
+</ul>
+<h2 id="服务器启动与关闭："><a href="#服务器启动与关闭：" class="headerlink" title="服务器启动与关闭："></a>服务器启动与关闭：</h2><ul>
+<li>startup，进入tomcat的bin目录下输入cmd进入控制台输入startup.bat即可启动。</li>
+<li>关闭弹出来的小窗口，在cmd下输入shutdown.bat即可关闭，出现异常就对了？？？就是酱的。</li>
+</ul>
+<h1 id="一些基本概念："><a href="#一些基本概念：" class="headerlink" title="一些基本概念："></a>一些基本概念：</h1><h2 id="重载与重写"><a href="#重载与重写" class="headerlink" title="重载与重写:"></a>重载与重写:</h2><ul>
+<li><p>重载的目的是让方法在接收不同参数实现不同的功能。</p>
+</li>
+<li><p>重写：</p>
+<ul>
+<li>发生在继承的过程中</li>
+<li>子类对于父类实现细节进行重新定义</li>
+<li>规则：<ul>
+<li>重写方法时，子类不能降低方法的访问权限</li>
+<li>可以扩大访问权限</li>
+<li>由private和final修饰的方法是不能够被重写的</li>
+</ul>
+</li>
+<li>重写方法时，抛出的异常可以是父类抛出异常的全集，子集，空集。不能抛出父类方法里，没有声明的异常。（因为父类实例可以指向子类对象，抛出来父类不认识处理不了就会显得父类很呆）。</li>
+<li>重写方法返回值，返回值可以是返回类型的子类型。（父类可以返回子类，子类不可以返回父类）</li>
+</ul>
+</li>
+</ul>
+<h2 id="throw与throws"><a href="#throw与throws" class="headerlink" title="throw与throws:"></a>throw与throws:</h2><ul>
+<li>throws在方法名之后，通知开发人员可能抛出异常</li>
+<li>一个throws后面可以携带多个异常。</li>
+<li>throw执行时抛出一个指定异常对象</li>
+<li>一个throw一次只能携带一个异常对象</li>
+<li>throws必须处理，但是throw不一定要处理嗷！！！</li>
+</ul>
+<h2 id="接口与抽象类："><a href="#接口与抽象类：" class="headerlink" title="接口与抽象类："></a>接口与抽象类：</h2><ul>
+<li>接口是一种特殊文件</li>
+<li>作用：<ul>
+<li>指定规则</li>
+<li>降低耦合度</li>
+</ul>
+</li>
+<li>使用规则：<ul>
+<li>接口中属性默认都是静态常量属性</li>
+<li>接口中方法都是抽象的</li>
+<li>方法访问权限不能是private</li>
+<li>接口见可以多继承，但是不能相互实现</li>
+</ul>
+</li>
+<li>抽象类：<ul>
+<li>作用：<ul>
+<li>降低接口实现类与接口之间实现难度</li>
+</ul>
+</li>
+<li>抽象类的作用是降低了接口实现类和接口之间的实现难度（抽象类就是一个过渡！！！）</li>
+<li>抽象类可以声明抽象方法，也可以生成具体方法，抽象类的抽象方法必须由子类重写</li>
+<li>抽象类有构造方法，但是不能使用</li>
+</ul>
+</li>
+</ul>
+<h1 id="Tomcat内部结构："><a href="#Tomcat内部结构：" class="headerlink" title="Tomcat内部结构："></a>Tomcat内部结构：</h1><ul>
+<li>bin文件夹：<ul>
+<li>关闭</li>
+<li>开启</li>
+</ul>
+</li>
+<li>conf文件夹：<ul>
+<li>核心配置文件</li>
+<li>server.xml是核心文件，里面包括对于端口啊，高并发啊之类的属性的调整。</li>
+</ul>
+</li>
+<li>lib文件夹：<ul>
+<li>中存放了tomcat需要用的jar包依赖</li>
+</ul>
+</li>
+<li>logs文件夹：<ul>
+<li>记录了相关的日志信息</li>
+</ul>
+</li>
+<li>temp文件夹：<ul>
+<li>存放一些临时文件</li>
+<li>tomcat会自动销毁其中的文件</li>
+</ul>
+</li>
+<li>webapps文件夹：<ul>
+<li>找到相关的文件返回给客户端</li>
+<li>如果没有的话就告诉客户端没有</li>
+</ul>
+</li>
+<li>work文件夹：<ul>
+<li>工作空间</li>
+</ul>
+</li>
+</ul>
+<h1 id="模拟一次互联网通信"><a href="#模拟一次互联网通信" class="headerlink" title="模拟一次互联网通信"></a>模拟一次互联网通信</h1><ul>
+<li>在Tomcat的/webapps文件夹创建一个网站（myWeb)</li>
+<li>网站不过是一个文件夹罢了。</li>
+<li><code>localhost:8080/myWeb/资源名</code>这样即可向服务器请求对应的文件。</li>
+<li>URL格式：<code>网络协议包：//服务端计算机IP地址:Http端口号/网站名/资源名字</code></li>
+<li>点击回车之后浏览器会发送请求，服务器收到请求之后会找到相应资源发送回浏览器。</li>
+</ul>
+<h1 id="IDEA管理Tomcat"><a href="#IDEA管理Tomcat" class="headerlink" title="IDEA管理Tomcat"></a>IDEA管理Tomcat</h1><h2 id="添加Tomcat服务器："><a href="#添加Tomcat服务器：" class="headerlink" title="添加Tomcat服务器："></a>添加Tomcat服务器：</h2><ul>
+<li>步骤：<ul>
+<li>告诉idea，去管理哪个服务器</li>
+<li>建立一个开关：可以用开关来开启或者关闭Tomcat</li>
+</ul>
+</li>
+<li>IDEA配置Tomcat步骤：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210331220512107.png" alt="image-20210331220512107"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210331220617507.png" alt="image-20210331220617507"></p>
+<h2 id="添加Tomcat的开关："><a href="#添加Tomcat的开关：" class="headerlink" title="添加Tomcat的开关："></a>添加Tomcat的开关：</h2><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401172159186.png" alt="image-20210401172159186"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401172335345.png" alt="image-20210401172335345"></p>
+<ul>
+<li>Remote：远程开关</li>
+<li>Local：本机开关</li>
+<li>选择local对于Tomcat进行配置就好了。</li>
+</ul>
+<h2 id="开关使用："><a href="#开关使用：" class="headerlink" title="开关使用："></a>开关使用：</h2><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401172637527.png" alt="image-20210401172637527"></p>
+<ul>
+<li>三角形代表网站不能被修改</li>
+<li>Debug可以实时发生修改。</li>
+</ul>
+<h1 id="IDEA建立网站："><a href="#IDEA建立网站：" class="headerlink" title="IDEA建立网站："></a>IDEA建立网站：</h1><p>![image-20210401191301071](C:/Users/Alexander Liu/AppData/Roaming/Typora/typora-user-images/image-20210401191301071.png)</p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401191332613.png" alt="image-20210401191332613"></p>
+<p>接下来就可以建立网站：</p>
+<ul>
+<li>网站名字可以为中文</li>
+<li>交给Tomcat管理的时候再起个英文名就行</li>
+</ul>
+<h2 id="Java工程和Module的区别："><a href="#Java工程和Module的区别：" class="headerlink" title="Java工程和Module的区别："></a>Java工程和Module的区别：</h2><ul>
+<li>Java工程下只有一个src</li>
+<li>网站下则有两个文件夹，这才对：<ul>
+<li>一个放静态资源文件</li>
+<li>一个放动态资源文件</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401191904644.png" alt="image-20210401191904644"></p>
+<ul>
+<li>lib没有的话自己建嘛，jar包要在工程结构里面找到对应的Modules然后导入对应的Jar包</li>
 </ul>
 
             </div>
@@ -780,30 +929,29 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/03/29/web-fu-wu-qi-zhi-http-xie-yi-yu-tomcat-fu-wu-qi/">
+                <a href="/2021/03/30/wu-ge-yi-gong-cheng-zuo-ye-shi-lu/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="Web服务器之HTTP协议与Tomcat服务器">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="五个一工程作业实录">
                         
-                        <span class="card-title">Web服务器之HTTP协议与Tomcat服务器</span>
+                        <span class="card-title">五个一工程作业实录</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Tomcat学习，刚刚好和计网课程学的东西对应上了，学而致用哈哈哈哈刚刚好！！！
+                            这篇markdown用于记录五个一工程作业，有兴趣的同学可以看看其中的过程哦
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-29
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-30
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -812,12 +960,11 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E5%90%8E%E7%AB%AF/">
-                        <span class="chip bg-color">后端</span>
+                    <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/">
+                        <span class="chip bg-color">云服务器与项目部署</span>
                     </a>
                     
                 </div>
@@ -1070,7 +1217,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">158.8k</span>&nbsp;字
+                class="white-color">161.1k</span>&nbsp;字
             
             
             
