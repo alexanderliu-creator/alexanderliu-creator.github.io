@@ -464,21 +464,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-04-03
+                    2021-04-05
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    255
+                    2.5k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    9 分
                 </div>
                 
 
@@ -512,10 +512,11 @@
 <li>Http服务器能够调用的动态资源文件必须是一个Servlet接口实现类</li>
 </ol>
 <h2 id="Servlet接口实现类开发步骤："><a href="#Servlet接口实现类开发步骤：" class="headerlink" title="Servlet接口实现类开发步骤："></a>Servlet接口实现类开发步骤：</h2><ol>
-<li><p>创建Java类继承与HttpServlet父类，使之成为一个HttpServlet接口实现类。</p>
-</li>
-<li><p>HttpServlet实现了Servlet里面我们不需要写的一些方法，简化了开发难度</p>
-</li>
+<li>创建Java类继承与HttpServlet父类，使之成为一个HttpServlet接口实现类。</li>
+<li>HttpServlet实现了Servlet里面我们不需要写的一些方法，简化了开发难度</li>
+<li>将Servlet接口实现类注册到Tomcat服务器</li>
+</ol>
+<h2 id="一些注意对象"><a href="#一些注意对象" class="headerlink" title="一些注意对象"></a>一些注意对象</h2><ol>
 <li><p>接口：</p>
 <ul>
 <li>init</li>
@@ -537,7 +538,202 @@
 <li>Tomcat根据实例对象调用service方法处理当前请求。</li>
 </ul>
 </li>
+<li><p>开发步骤：</p>
+<ul>
+<li>创建一个Java类继承HttpSevlet方法</li>
+<li>重写HttpServlet父类的两个方法：doGet和doPost<ul>
+<li>浏览器以get就会调用doGet，post就会调用doPost</li>
+</ul>
+</li>
+<li>将Servlet接口实现类注册到Tomcat服务器</li>
+</ul>
+</li>
+<li><p>Tomcat如何调用service方法：</p>
+<ul>
+<li>HttpServlet这个类已经实现了service类，本质上是通过分析请求头中的字段来调用对应的处理方法。</li>
+<li>已经帮你处理好了，后面都不用动了呀</li>
+<li>这是一种设计模式，这种设计模式被称为模板设计模式。</li>
+</ul>
+</li>
 </ol>
+<h2 id="Tomcat注册"><a href="#Tomcat注册" class="headerlink" title="Tomcat注册"></a>Tomcat注册</h2><ul>
+<li>网站   -&gt;   web   -&gt;   web-inf   —&gt;   web.xml</li>
+<li>将Servlet实现类类路径交给Tomcat</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--第一步，动态资源文件告诉Tomcat--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>tuzi<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span><span class="comment">&lt;!--声明变量存储类路径--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.liututu.controller.OneServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--第二步，为了降低Servlet接口实现类难度，设置短别名--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>tuzi<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/one<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span><span class="comment">&lt;!--设置简短请求别名--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>上面这些是通知Tomcat哪些是动态的Java文件</li>
+<li>Tomcat会在内存中<code>Tomcat String tuzi = &quot;com.liututu.controller.OneServlet&quot;  </code></li>
+<li>别名以/为开头</li>
+<li>如果浏览器向Tomcat索要OneServlet,就是直接端口后后面加上网站名再加上<code>/name</code>就可以。</li>
+<li>给注册的servlet-name对象设置一个简短的请求别名</li>
+</ul>
+<h2 id="Servlet生命周期"><a href="#Servlet生命周期" class="headerlink" title="Servlet生命周期"></a>Servlet生命周期</h2><ol>
+<li><p>所有Servlet接口实现类只能由Http服务器负责创建。开发人员不能手动创建Servlet接口实现类的实例对象。</p>
+</li>
+<li><p>默认情况下，Http服务器接收第一次请求时，自动创建这个Servlet接口实现类的实例对象。</p>
+</li>
+<li><p>手动配置情况下可以要求服务器启动时就自动创建某个servlet接口实现类的实例对象。</p>
+<p>在<servlet></servlet>中加入<load-on-start></load-on-start>标签就好啦！在里面填一个大于0的整数就成，比如说30.</p>
+</li>
+<li><p>在Http服务器运行期间，一个Servlet接口只能被创建出一个实例对象。</p>
+</li>
+<li><p>在Http服务器关闭的时候，所有server的对象都会被Servlet对象进行销毁。</p>
+</li>
+</ol>
+<h2 id="快速生成Servlet"><a href="#快速生成Servlet" class="headerlink" title="快速生成Servlet"></a>快速生成Servlet</h2><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210403173303891.png" alt="image-20210403173303891"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210403173208462.png" alt="image-20210403173208462"></p>
+<ul>
+<li>这样就能快速创建Servlet</li>
+</ul>
+<h1 id="HttpServletResponse接口"><a href="#HttpServletResponse接口" class="headerlink" title="HttpServletResponse接口"></a>HttpServletResponse接口</h1><h2 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h2><ul>
+<li><p>doGet和doPost方法都有两个部分：</p>
+<ul>
+<li>Request</li>
+<li>Response</li>
+</ul>
+</li>
+<li><p>介绍：</p>
+<ul>
+<li><p>接口来自于Servlet规范中，在Tomcat中存在。</p>
+</li>
+<li><p>实现类由Http服务器提供。</p>
+</li>
+<li><p>Http接口将方法结果写入到响应体交给浏览器。</p>
+</li>
+<li><p>开发人员习惯称为相应对象。</p>
+<h2 id="主要功能："><a href="#主要功能：" class="headerlink" title="主要功能："></a>主要功能：</h2></li>
+<li><p>将执行结果以二进制写入到响应体中。</p>
+</li>
+<li><p>设置响应头中的content-type属性，控制浏览器使用对应编译器来编译。</p>
+</li>
+<li><p>设置响应头中的location属性，将一个请求地址赋值给location，从而控制浏览器向指定服务器发送请求。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="响应对象将结果写入到响应体"><a href="#响应对象将结果写入到响应体" class="headerlink" title="响应对象将结果写入到响应体"></a>响应对象将结果写入到响应体</h2><ol>
+<li><code>PrintWriter out = response.getWriter()</code></li>
+<li><code>out.write(result)</code></li>
+<li>不用释放这个out，这个out是你从Tomcat里面借的，不是你创建的，所以不用你释放嗷！！！</li>
+</ol>
+<h2 id="出现的问题和相应的知识点"><a href="#出现的问题和相应的知识点" class="headerlink" title="出现的问题和相应的知识点"></a>出现的问题和相应的知识点</h2><ol>
+<li></li>
+</ol>
+<ul>
+<li>out.writer是可以写入数字啊，字符串之类的</li>
+<li>但是要注意写入的应该是<code>ACSII</code>码，这个时候直接输入数字就会出现问题，Tomcat自动将这个数字当<code>ACSII</code>码转换了。</li>
+<li>这个时候改方法，用out.print()方法。将真实数据写入响应体，注意，真实开发过程中也是这种用到多嗷。</li>
+</ul>
+<ol start="2">
+<li></li>
+</ol>
+<ul>
+<li>你甚至可以输入字符串，里面写html代码？？？浏览器会自动解释代码实现html的功能，例如换行吗？不会，你发现浏览器并不会将其转换为html代码。</li>
+<li>调整content-type来设置编译处理的方式，默认是<code>content-type=&quot;text&quot;</code>，这怎么解决呢？</li>
+<li>一定在得到输出流之前，通过对象响应头中的content-type属性进行一次重新赋值指定浏览器使用正确的编译器。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">String result = <span class="string">&quot;java&lt;br/&gt;Mysql&quot;</span>;</span><br><span class="line"><span class="comment">//要先进行设置嗷！！！</span></span><br><span class="line">response.serContentType(<span class="string">&quot;text/html&quot;</span>);</span><br><span class="line"><span class="comment">//这个时候向Tomcat索要输出流</span></span><br><span class="line">PrintWriter out = response.getWriter();</span><br><span class="line">out.print(result);</span><br></pre></td></tr></table></figure>
+<p>3.</p>
+<ul>
+<li>每次调整完重启Tomcat很麻烦怎么办呀</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210403202803338.png" alt="image-20210403202803338"></p>
+<p>用debug启动，可以实时更新相关内容到Tomcat。</p>
+<ol start="4">
+<li></li>
+</ol>
+<ul>
+<li>中文在网页中显示不出来怎么办呀</li>
+<li>设置对应的编码格式，可以通过浏览器查看编码方式在哪儿，然后修改一下。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">String result = <span class="string">&quot;java&lt;br/&gt;Mysql&quot;</span>;</span><br><span class="line"><span class="comment">//要先进行设置嗷！！！</span></span><br><span class="line">response.serContentType(<span class="string">&quot;text/html;charset=utf-8&quot;</span>);</span><br><span class="line"><span class="comment">//这个时候向Tomcat索要输出流</span></span><br><span class="line">PrintWriter out = response.getWriter();</span><br><span class="line">out.print(result);</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>设置location</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String result = <span class="string">&quot;https://www.baidu.com&quot;</span>;</span><br><span class="line">response.sendRedirect(result);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>浏览器收到相应包之后，如果存在location，自动通过地址栏对于指定网站发送请求</li>
+<li><code>sendRedirect</code>可以远程控制浏览器请求行为，请求地址，方式，参数等</li>
+</ul>
+<p>带参数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String result = <span class="string">&quot;https://www.baidu.com?username=Mike&quot;</span>;</span><br><span class="line">response.sendRedirect(result);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>这个工作前后端都可以做嗷</li>
+</ul>
+<h1 id="HttpServletRequest接口"><a href="#HttpServletRequest接口" class="headerlink" title="HttpServletRequest接口"></a>HttpServletRequest接口</h1><h2 id="介绍：-1"><a href="#介绍：-1" class="headerlink" title="介绍："></a>介绍：</h2><ol>
+<li>来自于Servlet规范中，在Tomcat中存在。</li>
+<li>实现类由Http服务器提供。</li>
+<li>HttpServletRequest负责在doGet/doPost方法运行时读取Http请求协议包中的信息。</li>
+<li>开发人员习惯于称为请求对象</li>
+</ol>
+<h2 id="主要功能：-1"><a href="#主要功能：-1" class="headerlink" title="主要功能："></a>主要功能：</h2><ol>
+<li>读取Http请求行中的信息</li>
+<li>保存Http请求头或者请求体中的参数信息</li>
+<li>可以代替浏览器向Http服务器申请资源调用</li>
+</ol>
+<h2 id="读取请求行中的url信息"><a href="#读取请求行中的url信息" class="headerlink" title="读取请求行中的url信息"></a>读取请求行中的url信息</h2><ul>
+<li><code>String url = request.getRequestURL().toString()</code></li>
+<li><code>String method = request.getMethod()</code></li>
+</ul>
+<h3 id="URI和URL的区别："><a href="#URI和URL的区别：" class="headerlink" title="URI和URL的区别："></a>URI和URL的区别：</h3><ul>
+<li>URI：资源文件精准定位，请求行中并没有，实际上是从URL中截取的一部分字符串。这个字符串格式为”/网站名/资源文件名”，用于让Http服务器对于访问的资源文件进行定位。</li>
+</ul>
+<h3 id="读取URI"><a href="#读取URI" class="headerlink" title="读取URI:"></a>读取URI:</h3><p><code>String uri = request.getRequestURI()</code></p>
+<h3 id="读取请求参数名称："><a href="#读取请求参数名称：" class="headerlink" title="读取请求参数名称："></a>读取请求参数名称：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Enumeration paramNames = request.getParameterNames();</span><br><span class="line"><span class="keyword">while</span>(paramNames.hasMoreElements())&#123;</span><br><span class="line">    String paramName = (String)paraNames.nextElement();</span><br><span class="line">    <span class="comment">//处理</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="读取指定请求名："><a href="#读取指定请求名：" class="headerlink" title="读取指定请求名："></a>读取指定请求名：</h3><p><code>request.getParameter(paramName);</code> - 这里的Name和前端就对应上了嗷。表单中传回的数据的name就是这个玩意儿。</p>
+<h3 id="读取请求体中参数信息："><a href="#读取请求体中参数信息：" class="headerlink" title="读取请求体中参数信息："></a>读取请求体中参数信息：</h3><p><code>request.getParameter(paraName)</code></p>
+<h3 id="一些问题："><a href="#一些问题：" class="headerlink" title="一些问题："></a>一些问题：</h3><ul>
+<li>以get方式发送中文的参数内容得到正常结果，以post方式发送中文的参数内容的时候，就有问题。</li>
+<li>原因：<ul>
+<li>get发送，信息保存在请求头中</li>
+<li>post发送，信息保存在请求体中</li>
+<li>请求头中的数据由Tomcat解码，而Tomcat使用的utf-8变法解码，问题不大</li>
+<li>请求体中的数据由request解码，request不使用utf-8，而使用<code>ISO-8859-1</code>字符集解码，导致中文无法正常解释。</li>
+</ul>
+</li>
+<li>解决：Post方式下，在读取请求头内容之前，通知使用utf-8进行解码。<code>request.setCharaceterEncoding(&quot;utf-8&quot;);</code></li>
+</ul>
+<h1 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h1><ul>
+<li><p>Http服务器接收到浏览器发送的Http请求协议包之后，服务器就会自动生成一个request和一个response对象。</p>
+</li>
+<li><p>Tomcat调用这些方法的时候，就自动将这两个对象作为实参传递到方法中。</p>
+</li>
+<li><p>Tomcat准备推送相应协议包之前就会把request和response进行销毁处理。</p>
+</li>
+<li><p>生命周期贯穿一次请求的处理过程中。</p>
+</li>
+<li><p>实际上相当于用于在服务端的代言人和负责人。</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210405144357420.png" alt="image-20210405144357420"></p>
+<h1 id="静态资源文件"><a href="#静态资源文件" class="headerlink" title="静态资源文件"></a>静态资源文件</h1><ul>
+<li>放在对应的文件夹中</li>
+<li>请求资源文件的时候要写全的，例如<code>/one.html</code>，servlet就会自动返回前端的资源。</li>
+</ul>
+<h1 id="在线考试管理系统的例子"><a href="#在线考试管理系统的例子" class="headerlink" title="在线考试管理系统的例子"></a>在线考试管理系统的例子</h1><h1 id="特别恶心的在Maven中添加Servlet"><a href="#特别恶心的在Maven中添加Servlet" class="headerlink" title="特别恶心的在Maven中添加Servlet"></a>特别恶心的在Maven中添加Servlet</h1><h2 id="添加Servlet依赖："><a href="#添加Servlet依赖：" class="headerlink" title="添加Servlet依赖："></a>添加Servlet依赖：</h2><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210405202210090.png" alt="image-20210405202210090"></p>
+<ul>
+<li>如果添加完之后显示红色且没有反应的话</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210405202323380.png" alt="image-20210405202323380"></p>
+<h2 id="关于具体的文件夹添加过程："><a href="#关于具体的文件夹添加过程：" class="headerlink" title="关于具体的文件夹添加过程："></a>关于具体的文件夹添加过程：</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qwer123459/article/details/90373343">Maven添加简单的Servlet依赖</a></p>
+<p>mention:</p>
+<ol>
+<li>Java那个文件包的名字是可以改的，只要是source目录就行</li>
+<li>Java这个包原来没有，需要你自己去建立，最好就是建立Java和Resource</li>
+<li>一开始创建项目成功的标志是：自动生成的webapp文件夹上面有个蓝点！！！一开始是没有Java这个包的</li>
+<li>创建完Java和Resources为了保证完整性最好把test之类也创建好。</li>
+<li>为什么我要做这个？因为教程中自己导包是在负载，尤其是和之后的Mysql结合使用，晕死了，Maven才是神仙。</li>
+<li>这里的Java实际上和正常Java-web项目中的src资源目录文件包是等价的。</li>
+<li>只有在依赖成功导入的情况下，main文件夹下才能方便创建Servlet项目，不用自己创建Java类，直接在main下创建对应的Servlet就好。</li>
+<li><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210405203135809.png" alt="image-20210405203135809">不要忘了不要忘了不要忘了，忘了好惨的orz</li>
+<li><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210405203101898.png" alt="image-20210405203101898"></li>
+</ol>
+<p>注意这里导入包的时候选择的是这个带exploded的，这个才是你写的Servlet好吧</p>
+<ol start="10">
+<li><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210405203223825.png" alt="image-20210405203223825"></li>
+</ol>
+<p>下面这个记得填上嗷，完整的访问应该是<code>本机:8080/webTest/one</code>这种形式，搞定！！！</p>
 
             </div>
             <hr/>
@@ -770,48 +966,46 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/04/02/servlet-xue-xi/">
+                <a href="/2021/04/05/leetcode-shua-suan-fa/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="Servlet学习">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="Leetcode刷算法">
                         
-                        <span class="card-title">Servlet学习</span>
+                        <span class="card-title">Leetcode刷算法</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Servlet学习
+                            这是蓝桥杯前临阵磨枪的刷Leetcode
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-02
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-05
+                        </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/" class="post-category">
-                                    动力结点后端课程
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Alex家的兔子
                             
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E5%90%8E%E7%AB%AF/">
-                        <span class="chip bg-color">后端</span>
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/Python/">
+                        <span class="chip bg-color">Python</span>
                     </a>
                     
                 </div>
@@ -854,6 +1048,10 @@
                 </div>
                 
                 <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+                        <span class="chip bg-color">计算机网络</span>
+                    </a>
                     
                     <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/">
                         <span class="chip bg-color">云服务器与项目部署</span>
@@ -1064,7 +1262,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">161.6k</span>&nbsp;字
+                class="white-color">165.3k</span>&nbsp;字
             
             
             
