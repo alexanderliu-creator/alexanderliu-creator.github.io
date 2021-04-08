@@ -459,21 +459,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-04-05
+                    2021-04-07
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    12 分
                 </div>
                 
 
@@ -542,9 +542,12 @@
 
 
 
-<h2 id="应试小技巧："><a href="#应试小技巧：" class="headerlink" title="应试小技巧："></a>应试小技巧：</h2><ul>
-<li><code>[int(xs) for xs in input().split(&quot; &quot;)]</code></li>
-</ul>
+
+
+
+
+
+
 <h2 id="DP-动态规划-："><a href="#DP-动态规划-：" class="headerlink" title="DP(动态规划)："></a>DP(动态规划)：</h2><ul>
 <li><p>要解一个给定问题，我们需要解其不同部分（即子问题），再根据子问题的解以得出原问题的解。</p>
 </li>
@@ -584,8 +587,66 @@
 <p>作者：力扣 (LeetCode)<br>链接：<a target="_blank" rel="noopener" href="https://leetcode-cn.com/leetbook/read/dynamic-programming-1-plus/xcos8s/">https://leetcode-cn.com/leetbook/read/dynamic-programming-1-plus/xcos8s/</a><br>来源：力扣（LeetCode）<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
 <p><code>重点：状态转移方程</code></p>
 <ol>
-<li></li>
+<li>给定一个整数数组 <code>nums</code> ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</li>
 </ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给定一个整数数组</span></span><br><span class="line"><span class="comment"># nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxSubArray</span>(<span class="params">self, nums</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type nums: List[int]</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># 比较显然用动态规划</span></span><br><span class="line">        <span class="comment"># 贪心算法：如果子序列小于0，那么这个子序列就被抛弃了，他对于后面的元素只有负的影响</span></span><br><span class="line">        <span class="comment"># dp：思路类似，只要结果前面序列的结果不为负数，对于后面一个元素的结果是正的，就有意义。需要额外的一个值记录“前面不为0的序列的和”，当它为0，即无法对与后面的元素造成好的影响时，舍弃掉这个值，让它等于下一个元素的值。如果为正的话，证明确实可以起到好的作用，这个时候就加上后面那个值并且存回原来的位置。反复进行上述过程。</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 我的思考盲区：左边有意义，右边怎么办呢？实际上，从左往右，是以此推导的，从左边开始到右边每个元素（往左的最大加和的结果）。</span></span><br><span class="line">        <span class="comment"># 也就是说，这样覆盖到了每一个元素，思路：从一边下手</span></span><br><span class="line">        store = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> index <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">            print(index)</span><br><span class="line">            <span class="keyword">if</span> store &lt; <span class="number">0</span>:</span><br><span class="line">                store = nums[index]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                store += nums[index]</span><br><span class="line">                nums[index] = store</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">max</span>(nums)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="DFS"><a href="#DFS" class="headerlink" title="DFS:"></a>DFS:</h2><ul>
+<li>树的相关概念，python中用数组生成树，树的遍历都很重要嗷</li>
+</ul>
+<p>用数组创建树：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">createTree</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">treeCreate</span>(<span class="params">self,listTree: <span class="built_in">list</span>,start: <span class="built_in">int</span></span>):</span></span><br><span class="line">        <span class="keyword">if</span> listTree[start] == <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        root = TreeNode(listTree[start])</span><br><span class="line">        lnode = <span class="number">2</span> * start + <span class="number">1</span></span><br><span class="line">        rnode = <span class="number">2</span> * start + <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(lnode&gt; <span class="built_in">len</span>(listTree) - <span class="number">1</span>):</span><br><span class="line">            root.left = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            root.left = self.treeCreate(listTree,lnode)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (rnode &gt; <span class="built_in">len</span>(listTree) - <span class="number">1</span>):</span><br><span class="line">            root.right = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            root.right = self.treeCreate(listTree,rnode)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> root</span><br></pre></td></tr></table></figure>
+
+
+<p>树的遍历：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">treeMethod</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">viewTreeFirst</span>(<span class="params">self,root</span>):</span></span><br><span class="line">        <span class="comment"># 先序遍历</span></span><br><span class="line">        <span class="keyword">if</span> root:</span><br><span class="line">            print(root.val)</span><br><span class="line">            self.viewTreeFirst(root.left)</span><br><span class="line">            self.viewTreeFirst(root.right)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">viewTreeMiddle</span>(<span class="params">self,root</span>):</span></span><br><span class="line">        <span class="comment"># 中序遍历</span></span><br><span class="line">        <span class="keyword">if</span> root:</span><br><span class="line">            self.viewTreeMiddle(root.left)</span><br><span class="line">            print(root.val)</span><br><span class="line">            self.viewTreeMiddle(root.right)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">viewTreeLast</span>(<span class="params">self,root</span>):</span></span><br><span class="line">        <span class="comment"># 后序遍历</span></span><br><span class="line">        <span class="keyword">if</span> root:</span><br><span class="line">            self.viewTreeLast(root.left)</span><br><span class="line">            self.viewTreeLast(root.right)</span><br><span class="line">            print(root.val)</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li>检查一颗树的平衡性</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">Depth</span>(<span class="params">self,root</span>):</span></span><br><span class="line">        <span class="keyword">if</span> root:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>+<span class="built_in">max</span>(self.Depth(root.left), self.Depth(root.right))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isBalanced</span>(<span class="params">self, root</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type root: TreeNode</span></span><br><span class="line"><span class="string">        :rtype: bool</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">abs</span>(self.Depth(root.left)-self.Depth(root.right)) &gt; <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="comment"># 递归对于左右子树进行判断，如果有一个不是平衡二叉树，那么整棵树都不是平衡二叉树</span></span><br><span class="line">        <span class="keyword">return</span> self.isBalanced(root.left) <span class="keyword">and</span> self.isBalanced(root.right)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>题目必须要求我们引入概念：树的深度，树的深度 = 左右子树深度的最大值+1（找到递归条件）</li>
+<li>若一棵树为平衡二叉树，则其所有的子树都是平衡二叉树（递归条件）</li>
+</ul>
+<h2 id="贪心算法："><a href="#贪心算法：" class="headerlink" title="贪心算法："></a>贪心算法：</h2><ul>
+<li>贪心算法步骤：<ul>
+<li>步骤1：从某个初始解出发；</li>
+<li>步骤2：采用迭代的过程，当可以向目标前进一步时，就根据局部最优策略，得到一部分解，缩小问题规模；</li>
+<li>步骤3：将所有解综合起来。</li>
+</ul>
+</li>
+<li>其实思维很好理解，在目标前提下，每一步都选择符合最能达成目标的策略即可。</li>
+</ul>
+<ol>
+<li>种最多的花的问题：</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设有一个很长的花坛，一部分地块种植了花，另一部分却没有。可是，花不能种植在相邻的地块上，它们会争夺水源，两者都会死去。</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 给你一个整数数组flowerbed 表示花坛，由若干 0 和 1 组成，其中 0 表示没种植花，1 表示种植了花。</span></span><br><span class="line"><span class="comment"># 另有一个数 ，能否在不打破种植规则的情况下种n朵花？能则返回 true ，不能则返回 false。</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canPlaceFlowers</span>(<span class="params">self, flowerbed, n</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type flowerbed: List[int]</span></span><br><span class="line"><span class="string">        :type n: int</span></span><br><span class="line"><span class="string">        :rtype: bool</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        record = []</span><br><span class="line">        <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 找到为1的两个位置，确定中间能中的花的量</span></span><br><span class="line">        <span class="keyword">for</span> index,num <span class="keyword">in</span> <span class="built_in">enumerate</span>(flowerbed):</span><br><span class="line">            <span class="keyword">if</span> num == <span class="number">1</span>:</span><br><span class="line">                record.append(index)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># print(record)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(record) == <span class="number">0</span>:</span><br><span class="line">            <span class="built_in">sum</span> += <span class="built_in">len</span>(flowerbed)//<span class="number">2</span> + <span class="built_in">len</span>(flowerbed)%<span class="number">2</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(record)-<span class="number">1</span>):</span><br><span class="line">                pre = record[i]</span><br><span class="line">                aft = record[i+<span class="number">1</span>]</span><br><span class="line">                <span class="comment"># print(pre,aft)</span></span><br><span class="line">                <span class="built_in">sum</span> += (aft-pre)//<span class="number">2</span> - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            print(record[<span class="number">0</span>])</span><br><span class="line">            print(<span class="built_in">sum</span>)</span><br><span class="line"></span><br><span class="line">            <span class="built_in">sum</span> += record[<span class="number">0</span>]//<span class="number">2</span> + (<span class="built_in">len</span>(flowerbed)-<span class="number">1</span>-record[-<span class="number">1</span>])//<span class="number">2</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">sum</span> &gt;= n:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>我们这儿把每种情况分的很细，所谓的贪心，就是要每种情况下尽可能多种花，而不管别的情况。</li>
+<li>还有一种解法是设置两个指针，一个默认为-1，另外一个在列表中遍历，如果找到一个元素为1，就计算两者之间的种的花花的数量.然后移动指针，pre后移，然后另外一个指针搜索下一个1所在的位置。</li>
+</ul>
+<ol start="2">
+<li><h4 id="非递增顺序的最小子序列"><a href="#非递增顺序的最小子序列" class="headerlink" title="非递增顺序的最小子序列"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/minimum-subsequence-in-non-increasing-order/">非递增顺序的最小子序列</a></h4></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给你一个数组 nums，请你从中抽取一个子序列，满足该子序列的元素之和 严格 大于未包含在该子序列中的各元素之和。</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 如果存在多个解决方案，只需返回 长度最小 的子序列。如果仍然有多个解决方案，则返回 元素之和最大 的子序列。</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 与子数组不同的地方在于，「数组的子序列」不强调元素在原数组中的连续性，也就是说，它可以通过从数组中分离一些（也可能不分离）元素得到。</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 注意，题目数据保证满足所有约束条件的解决方案是 唯一 的。同时，返回的答案应当按 非递增顺序 排列。</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minSubsequence</span>(<span class="params">self, nums</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :type nums: List[int]</span></span><br><span class="line"><span class="string">        :rtype: List[int]</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        result = []</span><br><span class="line"></span><br><span class="line">        result.append(<span class="built_in">max</span>(nums))</span><br><span class="line">        nums.remove(<span class="built_in">max</span>(nums))</span><br><span class="line">        <span class="keyword">while</span> <span class="built_in">sum</span>(result) &lt;= <span class="built_in">sum</span>(nums):</span><br><span class="line">            result.append(<span class="built_in">max</span>(nums))</span><br><span class="line">            nums.remove(<span class="built_in">max</span>(nums))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+<ul>
+<li>这个思路比较简单，每次贪心挑出最容易满足条件的最大值即可，循环，直到某次成功就可</li>
+</ul>
+<h2 id="应试小技巧："><a href="#应试小技巧：" class="headerlink" title="应试小技巧："></a>应试小技巧：</h2><ul>
+<li><code>[int(xs) for xs in input().split(&quot; &quot;)]</code>，注意一下这个split中间是有个空格的嗷！！！</li>
+<li>经常会用到指针，python中有一种常用的用法：<ul>
+<li>指针一般用于指向下标。</li>
+<li>一般头指针pre为0或者-1。</li>
+<li>通过指针移动能实现很多功能，例如替换原列表的元素来减少使用的空间啊之类的。</li>
+</ul>
+</li>
+</ul>
 
             </div>
             <hr/>
@@ -1114,7 +1175,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">165.3k</span>&nbsp;字
+                class="white-color">167k</span>&nbsp;字
             
             
             
