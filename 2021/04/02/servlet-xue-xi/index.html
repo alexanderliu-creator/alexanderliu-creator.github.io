@@ -464,21 +464,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-04-08
+                    2021-04-12
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.7k
+                    5.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    9 分
+                    20 分
                 </div>
                 
 
@@ -738,6 +738,364 @@
 <li>对象类，封装前端返回的post或者get构成的对象，将每一个字段封装为类中的一个属性</li>
 <li>DAO类，封装数据库的增删改查操作（或者是util类）。接受上面所说的User对象，将对象中的各个字段用于与数据库进行操作。接受参数常为第一个对象类的实例对象，返回结果为数据库操作后类似于修改的行数等数据。</li>
 </ol>
+<h2 id="关于资源文件访问："><a href="#关于资源文件访问：" class="headerlink" title="关于资源文件访问："></a>关于资源文件访问：</h2><ul>
+<li><p>对于动态资源文件，我们配置过Servlet了，在访问<code>myWeb/one</code>这种情况下，例子中后端接收了请求然后拿了一个out的句柄，然后写到页面里面去了。</p>
+</li>
+<li><p>对于静态页面来说，访问<code>myWeb/one.html</code>才会访问这个网站，如果和后端发送了交互，会像上面一样在action被get的时候，跳转到一个动态资源文件的url上。交互后的内容和上面一样，这样又回到了上面。</p>
+</li>
+<li><p><code>response.sendRedirect(url)</code>可以重定位网页。</p>
+</li>
+<li><p>登陆验证失败了其实可以返回一个新的页面和登陆页面一样的，只是上面多了一行提示请重新登陆。</p>
+</li>
+</ul>
+<h2 id="默认欢迎资源文件："><a href="#默认欢迎资源文件：" class="headerlink" title="默认欢迎资源文件："></a>默认欢迎资源文件：</h2><ul>
+<li><p>在Vue里面就是一个路由的配置将其导航到导航页面而已</p>
+</li>
+<li><p>由Http服务器自动从当前网站返回的资源文件</p>
+</li>
+<li><p>Http自动定位返回的文件就是默认欢迎资源文件</p>
+</li>
+<li><p>Tomcat对于默认欢迎资源文件的定位规则：</p>
+<ol>
+<li><p>Tomcat安装位置/conf/web.xml中配置有写的：</p>
+<ul>
+<li><p>welcome-file-list中有写默认文件</p>
+</li>
+<li><p>好像是index.html , index.htm , index.jsp就是默认的文件，你当然可以自己配置鸭！！！</p>
+</li>
+<li><p>如果配置中的默认的这三个都没找到就会返回404页面</p>
+</li>
+</ul>
+</li>
+<li><p>思考：</p>
+<ul>
+<li>这个东西好像在服务器上装一个nginx前端就跑起来了，不用后端操心这个烂事儿。</li>
+</ul>
+</li>
+<li><p>设置当前默认欢迎资源文件：</p>
+<ul>
+<li><p>规则位置：网站/web/WEB-INF/web.xml</p>
+</li>
+<li><p>规则命令：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">welcome-file-list</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">welcome-file</span>&gt;</span>login.html<span class="tag">&lt;/<span class="name">welcome-file</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">welcome-file-list</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>自定义会使得默认的规则失效嗷。</p>
+</li>
+</ul>
+</li>
+<li><p>这里其实也可以配置动态资源文件的，在上面那个位置其实可以使用配置中动态资源文件的别名来指定动态资源文件。</p>
+</li>
+<li><p>在配置动态资源文件的时候，和静态资源文件一样样的，前面第一个横线要删掉！！！不用前面第一个位置上的横线的。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="Http状态码："><a href="#Http状态码：" class="headerlink" title="Http状态码："></a>Http状态码：</h1><ul>
+<li>三位数字组成的一个符号。</li>
+<li>Http服务器推送相应包之前，根据本次请求处理情况，将Http状态码写入到相应包中的【状态行】上。</li>
+<li>通过Http状态码通知浏览器如何处理这个结果，解释提供服务的状态和原因。</li>
+</ul>
+<h2 id="分类："><a href="#分类：" class="headerlink" title="分类："></a>分类：</h2><ul>
+<li>从100–599</li>
+</ul>
+<h3 id="1xx"><a href="#1xx" class="headerlink" title="1xx:"></a>1xx:</h3><ul>
+<li>最有特点的是100<ul>
+<li>本次返回的资源文件不是独立的资源文件，需要浏览器继续向服务端发送请求，获取后续的资源。(例如浏览器中的页面中嵌套的图片)。</li>
+<li>这个状态码是由Tomcat服务器处理后发送给服务器的。</li>
+<li>服务器得到100后，根据html中的内容，再去向服务器请求资源文件即可。</li>
+<li>这一次的交互后，Tomcat就会返回200</li>
+</ul>
+</li>
+</ul>
+<h3 id="2xx："><a href="#2xx：" class="headerlink" title="2xx："></a>2xx：</h3><ul>
+<li>最有代表性的是200，标识的是返回的资源文件是一个完整的资源文件。</li>
+</ul>
+<h3 id="3xx："><a href="#3xx：" class="headerlink" title="3xx："></a>3xx：</h3><ul>
+<li>最有代表性的是302：<ul>
+<li>通知返回的不是一个资源文件内容而是一个资源文件地址。浏览器收到302就会向这个地址自动发起请求来索要这个资源文件</li>
+<li><code>response.sendRedirect(&quot;资源文件地址&quot;)</code>，这个会自动写入响应头中的location，这个实际上服务器就会将302写入到状态行。</li>
+<li>浏览器收到了302就不会去读取这个响应的响应体，而是根据响应头中的location的地址发起第二次请求。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4xx："><a href="#4xx：" class="headerlink" title="4xx："></a>4xx：</h3><ul>
+<li>最具代表的是404：<ul>
+<li>没有定位到被访问的资源文件。</li>
+</ul>
+</li>
+<li>还有405：<ul>
+<li>服务端定位到了被访问的资源文件</li>
+<li>访问文件必须要是Servlet</li>
+<li>Servlet对于浏览器采用的请求方式不能够处理，例如只写了doGet，但是浏览器是用Post请求，这个时候Tomcat就会返回405。</li>
+</ul>
+</li>
+<li>404和405一般都在开发调式过程中被灭掉了。</li>
+</ul>
+<h3 id="5xx："><a href="#5xx：" class="headerlink" title="5xx："></a>5xx：</h3><ul>
+<li>典型例子：500<ul>
+<li>通知浏览器，Servlet在处理过程中，Java处理过程中却出现问题了，处理不好？？？你小子演我呢？？？</li>
+</ul>
+</li>
+</ul>
+<h1 id="多个Servlet之间的调用规则"><a href="#多个Servlet之间的调用规则" class="headerlink" title="多个Servlet之间的调用规则"></a>多个Servlet之间的调用规则</h1><h2 id="相互调用："><a href="#相互调用：" class="headerlink" title="相互调用："></a>相互调用：</h2><ul>
+<li>Servlet文件之间相互调用嗷！！！！</li>
+</ul>
+<h3 id="前提条件："><a href="#前提条件：" class="headerlink" title="前提条件："></a>前提条件：</h3><ul>
+<li>请求需要多个Servlet协同处理，但是浏览器一次只能够访问一个Servlet，如果用户来依次访问执行用户人都傻了orz。</li>
+</ul>
+<h3 id="满足用户感受规则："><a href="#满足用户感受规则：" class="headerlink" title="满足用户感受规则："></a>满足用户感受规则：</h3><ul>
+<li>用户访问一次，浏览器后端无论多少个Servlet交互，你后端都要解决</li>
+</ul>
+<h3 id="调用规则："><a href="#调用规则：" class="headerlink" title="调用规则："></a>调用规则：</h3><ul>
+<li>重定向解决方案</li>
+<li>请求转发解决方案</li>
+</ul>
+<h3 id="重定向解决方案："><a href="#重定向解决方案：" class="headerlink" title="重定向解决方案："></a>重定向解决方案：</h3><ul>
+<li>OneServlet工作完毕后，将TwoServlet地址写入到响应头location交给浏览器。</li>
+<li>浏览器拿到这个后（对应的状态码是302），浏览器就会自动去发起第二次请求。（说白了是浏览器自动干的，就不用用户去操作了）。</li>
+<li>原理图：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210411200208279.png" alt="image-20210411200208279"></p>
+<ul>
+<li>实现命令：<ul>
+<li><code>response.sendRedirect(&quot;请求地址&quot;)</code></li>
+</ul>
+</li>
+<li>实际例子：<ul>
+<li><code>response.sendRedirect(&quot;/myWeb/two&quot;)</code></li>
+<li>格式：<code>/网站名/资源名</code></li>
+</ul>
+</li>
+<li>降低了用户获取资源的难度</li>
+<li>特征：<ol>
+<li>请求地址：<ul>
+<li>既可以把内部资源内部文件地址给浏览器</li>
+<li>也可以把其他网站资源文件地址给服务器</li>
+</ul>
+</li>
+<li>请求次数：<ul>
+<li>发送请求次数至少为2次</li>
+<li>只有第一次是用户手动发送的</li>
+</ul>
+</li>
+<li>请求方式：<ul>
+<li>后续浏览器的请求方式，实际上都是以get方式来操作的。</li>
+<li>用浏览器地址栏来发送请求的都是get方法嗷！！！</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>浪费时间：发多次请求，来回非常浪费时间。</li>
+<li>增加用户等待时间。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="请求转发解决方案："><a href="#请求转发解决方案：" class="headerlink" title="请求转发解决方案："></a>请求转发解决方案：</h3><ul>
+<li><p>原理：</p>
+<ul>
+<li>服务端直接通过当前请求对象代替浏览器向Http服务器继续申请调用。</li>
+<li>Tomcat接收这个请求后自动调用Servlet来完成剩余任务</li>
+</ul>
+</li>
+<li><p>原理图：</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210411201613353.png" alt="image-20210411201613353"></p>
+<p>例子是网课的，这破例子不是我举的，我是无辜的呜呜呜。</p>
+<ul>
+<li><p>实现命令：</p>
+<ol>
+<li></li>
+</ol>
+<ul>
+<li><code>RequestDispatcher report = request.getRequestDispatcher(&quot;/资源文件名&quot;)</code></li>
+<li>一定要以/来开头！！!</li>
+</ul>
+<ol start="2">
+<li></li>
+</ol>
+<ul>
+<li><code>report.forward(当前请求对象，当前响应对象)</code></li>
+<li>这里的就是：request , response</li>
+<li>上面这两条是卸载请求发送方的。</li>
+</ul>
+</li>
+<li><p>优点：</p>
+<ul>
+<li>无论本次请i去涉及到多少个Servlet，用户手动发送一次。</li>
+<li>Servlet调用发生在服务端，节省了往返次数。</li>
+</ul>
+</li>
+<li><p>特征：</p>
+<ol>
+<li>请求次数：<ul>
+<li>请求转发过程中，浏览器只发送一次请求</li>
+</ul>
+</li>
+<li>请求地址：<ul>
+<li>只能向Tomcat服务器申请调用当前网站下的资源文件地址</li>
+<li>请求地址直接斜杠+资源文件名，不要去写网站名</li>
+</ul>
+</li>
+<li>请求方式：<ul>
+<li>Tomcat中相互调用的时候用的也是刚刚开始的时候，浏览器发送的那个请求协议包。</li>
+<li>如果浏览器第一次申请用的是GET，后面的就都是GET，如果是POST，后面的就都是POST。</li>
+<li><strong>多个Servlet的响应请求的方式和浏览器发送的请求协议包都是保持一致的。</strong></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h1 id="多个Servlet之间的数据共享"><a href="#多个Servlet之间的数据共享" class="headerlink" title="多个Servlet之间的数据共享"></a>多个Servlet之间的数据共享</h1><h2 id="数据共享："><a href="#数据共享：" class="headerlink" title="数据共享："></a>数据共享：</h2><ul>
+<li>OneServlet工作完毕之后，数据交给TwoServlet来使用</li>
+</ul>
+<h3 id="Servlet规范中四种方案："><a href="#Servlet规范中四种方案：" class="headerlink" title="Servlet规范中四种方案："></a>Servlet规范中四种方案：</h3><ol>
+<li>ServletContext接口</li>
+<li>Cookie类</li>
+<li>HttpSession接口</li>
+<li>HttpServletRequest接口</li>
+</ol>
+<h3 id="ServletContext接口："><a href="#ServletContext接口：" class="headerlink" title="ServletContext接口："></a>ServletContext接口：</h3><ul>
+<li>介绍：<ul>
+<li>Servlet规范中的一个接口，Tomcat中存在servlet-api.jar，Tomcat中负责提供这个接口实现类</li>
+<li>如果两个Servlet来自于同一个网站，彼此通过ServletContext实例对象实现数据共享</li>
+<li>习惯于称为<strong>全局作用域对象</strong></li>
+</ul>
+</li>
+<li>工作原理：<ul>
+<li>每个网站都存在一个全局作用域对象。</li>
+<li>当前网站中其他Servlet都可以从这个对象中取到对应的数据进行使用。</li>
+<li>相当于一个Map。</li>
+</ul>
+</li>
+<li>概念图：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210411211645099.png" alt="image-20210411211645099"></p>
+<ul>
+<li><p>全局作用域对象生命周期：</p>
+<ul>
+<li>Http服务器启动过程中，自动对于当前网站在内存中创建一个全局作用域对象。</li>
+<li>Http服务器运行期间，一个网站只有一个全局作用域对象。</li>
+<li>Http服务器运行期间，一直存活</li>
+<li>Http服务器准备关闭的时候，当前网站中的全局作用域对象进行销毁处理。</li>
+<li>全局作用域对象生命周期贯穿网站整个运行期间</li>
+</ul>
+</li>
+<li><p>命令实现：</p>
+<ol>
+<li></li>
+</ol>
+<ul>
+<li>同一个网站中，OneServlet将数据共享给TwoServlet</li>
+<li>通过请求对象，向Tomcat索要全局作用对象：<code>ServletContext application = request.getServletContext()</code></li>
+<li>application默认用法</li>
+</ul>
+<ol start="2">
+<li></li>
+</ol>
+<ul>
+<li><code>application.setAttribute(&quot;key1&quot;,任意类型数据)</code></li>
+<li>这是用于设置对象</li>
+</ul>
+<ol start="3">
+<li></li>
+</ol>
+<ul>
+<li>得到指定的数据</li>
+<li><code>Object data = application.getAttribute(&quot;key1&quot;)</code></li>
+<li>这里的Object是可以换成<code>String</code>,<code>Integer</code>之类的类型</li>
+<li>这里可以用于预防空指针异常。</li>
+</ul>
+</li>
+<li><p>占用的是服务端的一块儿内存，很珍贵，存的应该是关键数据嗷呜！！！</p>
+</li>
+</ul>
+<h3 id="Cookie："><a href="#Cookie：" class="headerlink" title="Cookie："></a>Cookie：</h3><ul>
+<li>介绍：<ul>
+<li>是一个工具类</li>
+<li>存在于servlet-api.jar中</li>
+<li>如果两个Servlet来自于同一个网站，并且为同一个浏览器提供服务，此时借助cookie实现数据共享。</li>
+<li>cookie存放的是当前用户的私人信息，用于共享数据的过程中提高服务质量</li>
+<li>显示场景：Cookie相当于客户端得到的一个<code>会员卡</code></li>
+</ul>
+</li>
+<li>原理图：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210412091227710.png" alt="原理图"></p>
+<p>这例子真不是我举的，这也是老师举的，我是无辜的。</p>
+<ul>
+<li><p>原理：</p>
+<ul>
+<li>第一次向MyWeb网站发送请求申请OneServlet</li>
+<li>运行过程中，生成一个cookie放在响应头中交还给浏览器</li>
+<li>浏览器收到之后，缓存cookie在浏览器缓存</li>
+<li>用于通过同一个浏览器再次访问此网站时，浏览器无条件携带之前的cookie，将其写入请求头中发送过去。</li>
+<li>cookie也是以key-value的形式存在的嗷！！！</li>
+<li>cookie是存在于请求头，响应头中！！！</li>
+</ul>
+</li>
+<li><p>一个Cookie对象就只有一个key-value如果要多个的话要去构建多个对象，然后全部都要addCookie嗷！！！</p>
+</li>
+<li><p>实现命令：</p>
+<ul>
+<li><p>OneServlet:</p>
+<ul>
+<li><p>创建cookie对象：</p>
+<p><code>Cookie card = new Cookie(&quot;key1&quot;,&quot;abc&quot;);</code></p>
+<p><code>Cookie card1 = new Cookie(&quot;key2&quot;,&quot;efg&quot;);</code></p>
+</li>
+<li><p>这个键值对的key和value都必须要是String</p>
+</li>
+<li><p><strong>string是不同编程语言中的通用对象，Java中的String会自动转换为浏览器的string</strong></p>
+</li>
+<li><p>key不能够是中文</p>
+</li>
+<li><p>把cookie给用户：</p>
+<p><code>response.addCookie(card);</code></p>
+<p><code>response.addCookie(card1);</code></p>
+</li>
+<li><p>多个cookie就多add几次嘛！！！</p>
+</li>
+</ul>
+</li>
+<li><p>TwoServlet:</p>
+<ul>
+<li><p>这时候请求头有：</p>
+<ul>
+<li>请求参数</li>
+<li>Cookie: key1=abc;key2=efg</li>
+</ul>
+</li>
+<li><p>读取Cookie数组：</p>
+<p><code>Cookie cookieArray[] = request.getCookies();</code></p>
+</li>
+<li><p>循环遍历数据得到每一个cookie的key和value：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(Cookie card:cookieArray)&#123;</span><br><span class="line">    String key = card.getName();</span><br><span class="line">    String value = card.getValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="网上订餐会员卡例子："><a href="#网上订餐会员卡例子：" class="headerlink" title="网上订餐会员卡例子："></a>网上订餐会员卡例子：</h4></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>原理图：</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210412094427597.png" alt="image-20210412094427597"></p>
+<ul>
+<li>Cookie感觉适用于重定向嗷，只有重定向才需要浏览器来发送多次请求，才需要利用cookie来通信。</li>
+</ul>
+<h1 id="一些小的花里胡哨的知识点"><a href="#一些小的花里胡哨的知识点" class="headerlink" title="一些小的花里胡哨的知识点"></a>一些小的花里胡哨的知识点</h1><h2 id="为啥创建Servlet的时候不要点那个小勾勾？"><a href="#为啥创建Servlet的时候不要点那个小勾勾？" class="headerlink" title="为啥创建Servlet的时候不要点那个小勾勾？"></a>为啥创建Servlet的时候不要点那个小勾勾？</h2><ul>
+<li>如果不去掉的话，idea不会帮你在配置文件中写入对应的<servlet></servlet>项嗷！！！我们就要自己写嗷！！！</li>
+<li>去掉了IDEA自动帮我们加上这些配置它不香咩？？？</li>
+</ul>
+<h2 id="关于类型的问题"><a href="#关于类型的问题" class="headerlink" title="关于类型的问题"></a>关于类型的问题</h2><ul>
+<li><code>int a = null</code>这个是出了问题的</li>
+<li><code>Integer a = null</code>这个没问题！！！因此，<code>Integer num = (Integer)map.get(&quot;key1&quot;)</code>，不用操心程序出错嗷！！！</li>
+<li>所有高级引用类型都可以赋值给null，基本类型不可以嗷！！！</li>
+</ul>
+<h2 id="请求不同类型的文件"><a href="#请求不同类型的文件" class="headerlink" title="请求不同类型的文件"></a>请求不同类型的文件</h2><ul>
+<li>静态文件：源文件名</li>
+<li>动态资源文件：请求别名</li>
+</ul>
 
             </div>
             <hr/>
@@ -1004,12 +1362,12 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E7%AE%97%E6%B3%95/">
-                        <span class="chip bg-color">算法</span>
-                    </a>
-                    
                     <a href="/tags/Python/">
                         <span class="chip bg-color">Python</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
                     </a>
                     
                 </div>
@@ -1266,7 +1624,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">167.1k</span>&nbsp;字
+                class="white-color">173.2k</span>&nbsp;字
             
             
             
