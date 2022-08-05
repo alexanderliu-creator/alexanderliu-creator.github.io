@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>sklearn相关算法学习 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="这一部分是机器学习初识，里面挺多的内容如缺失值处理，PCA处理之类的技巧，对于美赛很有帮助，有兴趣的小伙伴儿可以看看，相应的教程为bilibili中菜菜的sklearn课堂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sklearn相关算法学习">
+<meta property="og:url" content="http://example.com/2021/02/20/sklearn%E8%87%AA%E5%AD%A6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="这一部分是机器学习初识，里面挺多的内容如缺失值处理，PCA处理之类的技巧，对于美赛很有帮助，有兴趣的小伙伴儿可以看看，相应的教程为bilibili中菜菜的sklearn课堂">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210122195952.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210123193847.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210123201201.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210124100232.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210125153013.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210125163201.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210125211821.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210126153943.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210127094350.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210127103346.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210127110750.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210127215015.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210130220858.png">
+<meta property="article:published_time" content="2021-02-20T08:05:21.000Z">
+<meta property="article:modified_time" content="2021-04-03T02:07:15.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="美赛">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210122195952.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-sklearn自学" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/02/20/sklearn%E8%87%AA%E5%AD%A6/" class="article-date">
+  <time class="dt-published" datetime="2021-02-20T08:05:21.000Z" itemprop="datePublished">2021-02-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/">2021年美赛</a>►<a class="article-category-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      sklearn相关算法学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="这一部分是机器学习初识，里面挺多的内容如缺失值处理，PCA处理之类的技巧，对于美赛很有帮助，有兴趣的小伙伴儿可以看看，相应的教程为bilibili中菜菜的sklearn课堂"><a href="#这一部分是机器学习初识，里面挺多的内容如缺失值处理，PCA处理之类的技巧，对于美赛很有帮助，有兴趣的小伙伴儿可以看看，相应的教程为bilibili中菜菜的sklearn课堂" class="headerlink" title="这一部分是机器学习初识，里面挺多的内容如缺失值处理，PCA处理之类的技巧，对于美赛很有帮助，有兴趣的小伙伴儿可以看看，相应的教程为bilibili中菜菜的sklearn课堂"></a>这一部分是机器学习初识，里面挺多的内容如缺失值处理，PCA处理之类的技巧，对于美赛很有帮助，有兴趣的小伙伴儿可以看看，相应的教程为bilibili中菜菜的sklearn课堂</h1><hr>
+<span id="more"></span>
+
+
+
+
+
+<h1 id="机器学习sklearn包"><a href="#机器学习sklearn包" class="headerlink" title="机器学习sklearn包"></a>机器学习sklearn包</h1><h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><ol>
+<li>如何找出最佳结点和最佳分支</li>
+<li>如何使得决策树停止生长，防止过拟合</li>
+</ol>
+<h3 id="分类："><a href="#分类：" class="headerlink" title="分类："></a>分类：</h3><ul>
+<li>分类树</li>
+<li>回归树</li>
+<li>画圈专用</li>
+<li>高随机版本的分类树</li>
+<li>高随机版本的回归树</li>
+</ul>
+<h3 id="使用流程："><a href="#使用流程：" class="headerlink" title="使用流程："></a>使用流程：</h3><ol>
+<li>实例化，建立评估模型对象</li>
+<li>通过模型接口训练模型</li>
+<li>通过模型接口提取所需要的信息</li>
+</ol>
+<h3 id="DecisionTreeClassifier"><a href="#DecisionTreeClassifier" class="headerlink" title="DecisionTreeClassifier:"></a><code>DecisionTreeClassifier</code>:</h3><ol>
+<li>不纯度：选出最佳结点和最佳分枝的方法，叫做不纯度，通常来说，不纯度越低，对于训练集的拟合效果越好，算法就是集中在某个与不纯度相关指标的最优化上。叶子结点的不纯度一定是最低的。</li>
+<li><code>Criterion</code>这个参数就是用来觉得不纯度的计算方法，提供了两种方法，<code>Entropy</code>是信息熵，<code>gini</code>是基尼系数。<code>Criterion</code>对于不纯度更加敏感，对于不纯度惩罚最强，但是使用基本和gini是相同的，信息熵会算的更慢一点。总共就着两种可选嗷。</li>
+<li>决策树的流程：<ol>
+<li>计算全部特征的不纯度指标</li>
+<li>选取不纯度最优的特征来分支</li>
+<li>在第一个特征下，再去机选全部特征的不纯度</li>
+<li>循环…</li>
+<li>没有特征可用或者不纯度指标最优，就会停止生长。</li>
+</ol>
+</li>
+<li>重要参数：<ol>
+<li>criterion</li>
+<li>random_state - 本质为设置随机种子，调参常用</li>
+<li>splitter - 选取特征方式不一样，只有best和random两种，详情看代码嗷！！！</li>
+</ol>
+</li>
+</ol>
+<h3 id="剪枝："><a href="#剪枝：" class="headerlink" title="剪枝："></a>剪枝：</h3><ul>
+<li><p>过拟合，训练集表现很好，测试集上表现糟糕</p>
+</li>
+<li><p>如果两者都好，就说明模型以及很棒了。</p>
+</li>
+<li><p>剪枝对于决策树的影响巨大，正确的剪枝策略是优化决策树算法的核心，sklearn为我们提供了不同的剪枝策略：</p>
+<ul>
+<li>max_depth   超过设定深度的数值全部剪掉，决策树多一层，对于样本的要求就会多一倍，限制树的深度可以有效限制过拟合，在集成算法使用。实际应用建议从3开始，看看效果如何。这个最最最常用嗷！！！</li>
+<li>min_samples_leaf和min_samples_split，</li>
+</ul>
+<p>min_samples_leaf保证，每个结点包含的样本个数都最少为min_samples_leaf，一般从五开始使用</p>
+<p>min_samples_split保证，每个结点必须包含至少min_samples_split个样本，这个样本才允许被分支</p>
+<ul>
+<li>max_features和min_impurity_decrease</li>
+</ul>
+<p>max_features限制分枝时考虑的特征个数，限制过拟合</p>
+<p>min_impurity_decrease限制信息增益大小。本质为父节点的信息熵减去子节点的信息熵，越大表示越有效。</p>
+<ul>
+<li>一般使用：最大深度加上后两个中的其中一个。</li>
+</ul>
+</li>
+<li><p>确定最优的剪枝参数：</p>
+<ul>
+<li>超参数的曲线：本质一超参数的取值为横坐标，模型的度量指标为纵坐标的曲线，是用来衡量不同超参数取值下的模型的表现的线。画图永远的神！！！通过score接口来对于学习率和参数的关系，借助于for循环搞出来然后画图嗷！！！</li>
+</ul>
+</li>
+<li><p>目标权重参数（自己去看）</p>
+</li>
+<li><p>重要的属性和接口：</p>
+<ul>
+<li>apply返回每个测试样本所在叶子结点的索引</li>
+<li>predict返回每个测试样本的回归结果</li>
+</ul>
+</li>
+</ul>
+<h2 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h2><h3 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h3><p>集成学习，不是单独的机器学习算法，是通过在数据上构建多个模型，集成所有模型的结果。</p>
+<h3 id="目标"><a href="#目标" class="headerlink" title="目标:"></a>目标:</h3><p>考虑多个评估器的建模结果，汇总之后得到了一个综合的结果，以此来获得比单个模型更好的回归或者分类表现。</p>
+<ul>
+<li>多个模型集成成为的模型叫做集成评估器，有三类集成算法：袋装法(bagging)，提升法(boosting)和stacking。随机森林是bagging</li>
+</ul>
+<h3 id="思想："><a href="#思想：" class="headerlink" title="思想："></a>思想：</h3><p>构建多个相互独立的评估器。取样，建模，取样，建模反复进行。然后对于预测进行平均或者多数表决原则来决定集成评估器的结果，装袋法的基本模型就是随机森林。随机森林的基分类器就是决策树。</p>
+<p>boosting中，则是基选择器是相互关联的，通过不同选择器之间的联系来构建模型。通过结合弱评估器的力量一次次对于难以评估的样本进行云测，从而构成强评估器。代表算法为<code>Adaboost</code>和<code>梯度提升树</code>。</p>
+<ul>
+<li>sklearn中集成算法模块: ensemble ， 里面有好多好多好多集成算法。很多都是以决策树为核心的集成模型。</li>
+<li>分类树的不纯度用基尼系数或者信息熵来衡量，回归树的不纯度用MSE均方差来衡量。</li>
+<li>score是用来衡量accuracy的接口，几乎每个模型都会用上。</li>
+</ul>
+<h3 id="基本建模流程："><a href="#基本建模流程：" class="headerlink" title="基本建模流程："></a>基本建模流程：</h3><p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210122195952.png" alt="image-20210122195945252"></p>
+<h3 id="随机森林参数："><a href="#随机森林参数：" class="headerlink" title="随机森林参数："></a>随机森林参数：</h3><p>和决策树相同的参数都是一样的嗷，只是作用域是随机森林中的所有树。</p>
+<ul>
+<li>max_features：限制分枝时考虑的特征个数，超过个数的特征都会被抛弃，默认值为个数开平方取整。</li>
+<li>单个决策树的准确率越高，随机森林的准确率就越高</li>
+<li>n_estimators：决策树的数量，即基评估器的数量。它越大效果往往越好！！！这个是调参重点，需要找到一个平衡。</li>
+</ul>
+<h3 id="重要属性及接口："><a href="#重要属性及接口：" class="headerlink" title="重要属性及接口："></a>重要属性及接口：</h3><ul>
+<li>.feature_importances_返回各个特征重要性</li>
+<li>.estimators_返回森林的列表</li>
+<li>.oob_score_袋外得分（有放回随机抽样），会有数据从来没有被抽到，oob为(out of bag)，这些数据也可以不被浪费哦，单独拿来被使用嗷！这个属性可以用袋外数据来测试模型，测试的结果由这个来导出，也能导出模型的精确度。</li>
+<li>predict_proba，可以返回每个样本对应的分到每一类标签的概率。</li>
+<li>Random Forest中使用平均每个样本对应的predict_proba返回的概率，求得一个平均的概率，从而决定测试样本的分类</li>
+</ul>
+<h2 id="调参"><a href="#调参" class="headerlink" title="调参"></a>调参</h2><h3 id="基本思想："><a href="#基本思想：" class="headerlink" title="基本思想："></a>基本思想：</h3><ol>
+<li><p>找目标：</p>
+<p>提升模型的某个评估指标（例如准确率）</p>
+<p>衡量模型在未知数据上的准确率的指标，叫做泛化误差(Genelization error)。当数据在未知数据上表现很糟糕的时候，我们就说模型的泛化程度不够。本质就是测试集表现很烂，和模型的结构有关。</p>
+<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210123193847.png" alt="image-20210123193839922"></p>
+<p>目标就是找到最佳模型复杂度。</p>
+<p>对于树来说，最大深度就和复杂度有关呀，树层数越多，就越位于右边。树模型是天生位于图的右上方的模型，天生很容易过拟合。</p>
+<p>参数应该在于减少模型的复杂度</p>
+<p>调参不是一定的，我们应该先判断，模型位于最佳复杂度的哪一边。原理很复杂<code>方差 vs 偏差</code></p>
+<p>总结四个大点：</p>
+<ol>
+<li>太复杂，太简单，都会使得泛化误差高，我们追求中间的平衡点</li>
+<li>太复杂过拟合，太简单欠拟合</li>
+<li>对于树模型或者树的集成模型，深度越深，枝叶越多，模型越复杂</li>
+<li>对于树或者树的集成模型的目标，很大程度上都是减少模型的复杂度，把模型往图像的左边移动。</li>
+</ol>
+<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210123201201.png" alt="image-20210123201201362"></p>
+</li>
+</ol>
+<ul>
+<li>如果模型处于左边如何往右调？只有一个参数也就是max_features可以使得模型往右推</li>
+<li>同理也有：如果尝试模型往左推或者往右推都下降，说明模型已经到最低点了。</li>
+</ul>
+<h3 id="网格搜索和参数书写："><a href="#网格搜索和参数书写：" class="headerlink" title="网格搜索和参数书写："></a>网格搜索和参数书写：</h3><ul>
+<li><p>有一些参数没有参照，很难说清范围，这个时候我们使用学习曲线，逐渐缩小区间再跑曲线</p>
+<p>![image-20210124100007901](C:\Users\Alexander Liu\AppData\Roaming\Typora\typora-user-images\image-20210124100007901.png)</p>
+</li>
+<li><p>有一些参数知道取值，或者随着取值变化，整体准确率会如何变化，这个时候可以直接跑网格索搜（本质就是一个一个试嘛哈哈哈哈，只是这个东西有一些约束条件已知。）</p>
+<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210124100232.png" alt="image-20210124100232077"></p>
+</li>
+</ul>
+<h3 id="一些技巧："><a href="#一些技巧：" class="headerlink" title="一些技巧："></a>一些技巧：</h3><ul>
+<li>调参的时候都是从影响最大的开始，往影响最小的开始调。</li>
+<li><ol>
+<li>n_estimators，无论如何先走这一步</li>
+<li>max_depth，通过max_depth判断位于模型的哪一边</li>
+<li>然后再对于其他参数进行调整</li>
+</ol>
+</li>
+</ul>
+<h2 id="数据预处理和特征工程"><a href="#数据预处理和特征工程" class="headerlink" title="数据预处理和特征工程"></a>数据预处理和特征工程</h2><p><strong>以下的操作全都是再处理数据，别晕了，处理完之后，再挑出来标签类，然后进行类似的处理。</strong></p>
+<h3 id="五大流程："><a href="#五大流程：" class="headerlink" title="五大流程："></a>五大流程：</h3><ol>
+<li>获取数据</li>
+<li>数据预处理</li>
+<li>特征工程</li>
+<li>建模</li>
+<li>上线</li>
+</ol>
+<h3 id="常用的库："><a href="#常用的库：" class="headerlink" title="常用的库："></a>常用的库：</h3><ul>
+<li>preprocessing: 几乎包含所有预处理的内容</li>
+<li>impute: 填补缺失值专用</li>
+<li>feature_selection: 包含特征选择的各种方法的实践</li>
+<li>decompositon: 降维算法</li>
+</ul>
+<h3 id="数据预处理："><a href="#数据预处理：" class="headerlink" title="数据预处理："></a>数据预处理：</h3><ul>
+<li>数据归一化:</li>
+</ul>
+<p>$$<br>X^* &#x3D; \frac{X - X_{min}}{X_{max}-X_{min}}<br>$$</p>
+<p>​	归一化是normalization ， 不是正则化，归一化是预处理，正则化不是。</p>
+<ul>
+<li>数据标准化： 就是离散中学习的，将数据变成标准正态分布</li>
+<li>两者使用范围：<ul>
+<li>大多选择标准化，因为归一化对于异常值异常敏感。</li>
+<li>MinMaxScaler在不涉及距离度量，梯度和协方差计算以及数据要被压缩到特定区间时，使用广泛。</li>
+<li>建议先试试标准化，不好用换归一化</li>
+</ul>
+</li>
+<li>无量纲化的过程还有好多对应的类，菜菜的pdf中由详细解释嗷。</li>
+</ul>
+<h3 id="缺失值处理："><a href="#缺失值处理：" class="headerlink" title="缺失值处理："></a>缺失值处理：</h3><ul>
+<li><p>主要用pandas</p>
+</li>
+<li><p>pd.readcsv()</p>
+</li>
+<li><p>里面有个index_col，如果数据里有索引的话，要记得用这个哦，否则会把索引当作数据读出来。</p>
+</li>
+<li><p>缺失值的填充：</p>
+<ul>
+<li>impute.SimpleImputer()</li>
+<li>missing_value: 默认为np.nan</li>
+<li>strategy: <code>mean , median , most-frequent , constant</code></li>
+<li>fill_value , 当strategy为constant时使用</li>
+<li>copy: 默认为True，会创建特征矩阵的副本</li>
+</ul>
+</li>
+<li><p><code>data.info()</code>查看数据基本情况</p>
+</li>
+<li><p>&#96;&#96;&#96;python</p>
+<h1 id="填补年龄"><a href="#填补年龄" class="headerlink" title="填补年龄"></a>填补年龄</h1><p>Age &#x3D; data.loc[:,”Age”].values.reshape(-1,1)</p>
+<h1 id="特征矩阵必须二维，通过reshape转换为二维"><a href="#特征矩阵必须二维，通过reshape转换为二维" class="headerlink" title="特征矩阵必须二维，通过reshape转换为二维"></a>特征矩阵必须二维，通过reshape转换为二维</h1><p>Age[:20] #查看前20行</p>
+<p>from sklearn.impute import SimpleImputer<br>imp_mean &#x3D; SimpleInputer()<br>imp_median &#x3D; SimpleInputer(stategy&#x3D;”median”)<br>imp_0 &#x3D; SimpleInputer(strategy&#x3D;”constant”,fill_value&#x3D;0)</p>
+<p>imp_mean &#x3D; imp_mean.fit_transform(Age)<br>imp_median &#x3D; imp_median.fit_transform(Age)<br>imp_0 &#x3D; imp_0.fit_transform(Age)</p>
+<p>data.loc[:,”Age”] &#x3D; imp_median</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 非常重要的，pandas导出的数据有.loc方法，可以用来提取和锁定特定的数据</span><br><span class="line"></span><br><span class="line">- 编码和哑向量：</span><br><span class="line"></span><br><span class="line">  - 因为不能为文字，机器学习处理的只能为数字，以此要对于文字信息进行编码处理，将文字类型转换为数值型</span><br><span class="line"></span><br><span class="line">  - ```python</span><br><span class="line">    from sklearn.preprocessing import LabelEncoder</span><br><span class="line">    </span><br><span class="line">    y = data.iloc[:,-1] #特殊矩阵必须二维，而标签允许一维</span><br><span class="line">    </span><br><span class="line">    le = LabelEncoder()</span><br><span class="line">    le = le.fit(y)</span><br><span class="line">    label = le.transform(y)</span><br><span class="line">    # 这里将label成功转换为了0,1,2数值型</span><br><span class="line">    le.classes_ #这个属性只有在fit之后才能看到哦</span><br><span class="line">    </span><br><span class="line">    # 可以一步完成，但是这样是看不到属性的</span><br><span class="line">    label = le.fit_transform(y)</span><br><span class="line">    </span><br><span class="line">    le.inverse_transform(label)#使用inverse_transform也可以逆转</span><br><span class="line">    </span><br><span class="line">    data.iloc[:,-1] = label #让标签等于我们处理后的结果</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    极简写法：</span><br><span class="line">    data.iloc[:,-1] = LabelEncoder().fit_transform(data.iloc[:,-1])</span><br></pre></td></tr></table></figure>
+
+<p>  上面是标签专用型</p>
+<ul>
+<li>下面是特征专用型</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OrdinaryEncoder</span><br><span class="line"></span><br><span class="line">data_ = data.copy()</span><br><span class="line"></span><br><span class="line">OrdinalEncoder().fit(data_.iloc[:,<span class="number">1</span>:-<span class="number">1</span>]).categories_</span><br><span class="line"></span><br><span class="line">data_.iloc[:,<span class="number">1</span>:-<span class="number">1</span>] = OrdinalEncoder().fit_transform(data_.iloc[:,<span class="number">1</span>:-<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">data_.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>sklearn只接受数值型！！！</li>
+</ul>
+</li>
+</ul>
+<h3 id="独热编码，创建哑向量："><a href="#独热编码，创建哑向量：" class="headerlink" title="独热编码，创建哑向量："></a>独热编码，创建哑向量：</h3><ul>
+<li><p>将特征转换为向量的时候，忽略了特征之间的属性。必须告诉算法，这两者完全不同，无法计算，这时用到了哑变量</p>
+</li>
+<li><pre><code class="python">from sklearn.preprocessing import OneHotEncoder
+
+X = data.iloc[:,1:-1]
+enc = OneHotEncoder(categories=&#39;auto&#39;).fit(X)
+result = enc.transform(X).toaaray()
+
+极致奢华
+OneHotEncoder(categories=&#39;auto&#39;).fit_transform(X).toarray()
+
+enc.inverse_transform(result)#这个也可以还原嗷
+enc.get_feature_names()#这个很重要嗷！！！特别是变量非常多的时候
+
+# 为了添加哑变量
+newdata = pd.concat([data,pd.DataFrame(result)],axis=1)#将两个表连起来
+
+newdata.drop([&quot;Sex&quot;,&quot;Embarked&quot;],axis=1,inplace=True)
+
+newdata.columns = [&quot;Age&quot;,&quot;Survived&quot;,&quot;Female&quot;,&quot;Male&quot;,&quot;Embarked_C&quot;,&quot;Embarked_Q&quot;,&quot;Embarked_S&quot;]
+#更改列索引
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- pandas.head()方法默认size=5，返回五行的数据</span><br><span class="line"></span><br><span class="line">### 处理连续型特征，二值化分段：</span><br><span class="line"></span><br><span class="line">```python</span><br><span class="line">data_2 = data.copy()</span><br><span class="line"></span><br><span class="line">from sklearn.preprocessing import Binarizer</span><br><span class="line">X = data_2.iloc[:0].values.reshape(-1,1) #特征最少为二维，因此无论如何处理时转换为二维</span><br><span class="line"></span><br><span class="line">transformer = Binarizer(threshold=30).fit_transform(X)</span><br><span class="line">data_2.iloc[:0].values = transformer</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>将连续型变量划分为分类变量的类: <code>KBinsDiscretizer</code></p>
+</li>
+<li><p>重要参数：</p>
+<ul>
+<li>n_bins ， 分箱的个数，默认为5。以此会被运用到导入的所有特征。如果有不同的分箱需求，需要多次导入。</li>
+<li>encode , 编码方式，默认为”onehot”</li>
+</ul>
+<p>共有”onehot” , “ordinal” , “onehot-dense”三种</p>
+<p>onehot: 返回一个稀疏矩阵，每一列是一个特征中一个类别。</p>
+<p>ordinal: 每个特征的每个箱子都被编码为一个整数，一列是一个特征</p>
+<p>onehot-dense: 哑变量，返回一个密集数组</p>
+<ul>
+<li>strategy</li>
+</ul>
+</li>
+<li><p>&#96;&#96;&#96;python<br>from sklearn.preprocessing import KBinsDiscretizer</p>
+<p>X&#x3D;data.iloc[:,0].values.reshape(-1,1)</p>
+<p>est &#x3D; KBinsDiscretizer(n_bins&#x3D;3,encode&#x3D;”ordinal”,strategy&#x3D;”uniform”)<br>est.fit_transform(X)</p>
+<p>set(est.fit_transform(X).ravel())<br>est &#x3D; KBinsDiscretizer(n_bins&#x3D;3,encode&#x3D;”onehot”,strategy&#x3D;”uniform”)<br>est.fit_transform(X).toarray()</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  按照排序和你要的方式，来把数据分箱</span><br><span class="line"></span><br><span class="line">## 逻辑回归</span><br><span class="line"></span><br><span class="line">### Sigmoid函数：</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>回归本质也是线性分类器，本质时线性方法<br>Sigmoid函数本质为所有S型函数 </p>
+<p>&#96;&#96;&#96;</p>
+<p>$ \frac{1}{1+e^{-z}} $这个东西很有意思，将任意连续型函数压缩到[0,1]之间，Sigmoid函数只是无限趋近于0，1。<br>$$<br>g(z) &#x3D; f(x) &#x3D; \frac{1}{1+e^{-\theta^{T}x}}<br>$$<br>z就是逻辑回归的时候，那一组向量，线性回归的结果。</p>
+<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210125153013.png" alt="image-20210125153006311"></p>
+<ul>
+<li>形似几率$\frac{y(x)}{1-y(x)}$, 对于形似几率取对数，就可以看出结果就是回归方程。</li>
+<li><code>logistic regression</code>为对数几率回归。</li>
+<li>逻辑回归的优点：<ul>
+<li>线性拟合关系拟合效果好到发狂。</li>
+<li>逻辑回归计算快</li>
+<li>返回结果不是0，1。可以以小数形式呈现的类概率的数字。</li>
+<li>抗噪音能力强！</li>
+</ul>
+</li>
+<li>本质为返回对数几率的，在线性数据上表现优异的分类器</li>
+<li>数学目的：求最优化参数$\theta$的值，并且基于$\theta$和特征矩阵计算出逻辑回归的结果</li>
+<li>损失函数是用于评估模型训练的参数在训练集上的拟合结果，损失小，说明拟合程度高，说明参数优秀。只有求解参数目的的函数才有损失函数。这个玩意儿，天生欠拟合，就类似于树天生过拟合一样。</li>
+<li>对于逻辑回归中过拟合的控制，通过正则化来实现。</li>
+<li>正则化有两种：<ul>
+<li><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210125163201.png" alt="image-20210125163154665"></li>
+<li>C为超参数，n为方程中特征的总数，也为方程中总的参数。$\theta_{0}$为截距，通常不参与正则化。</li>
+<li><code>penalty 和 C</code></li>
+<li><code>L1:   solver=&quot;liblinear&quot;，L2可以用别的，默认为L2哦</code></li>
+<li><code>C越小的话，1/C越大，对于模型的惩罚也就越重</code></li>
+<li>L1 与 L2的区别：<ul>
+<li>L1会将参数压缩为0，本质是特征选择，掌握了参数矩阵的稀疏性。数据量大，维度高。</li>
+<li>L2只会让参数尽量小</li>
+<li>两个换着来看</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="回归本质："><a href="#回归本质：" class="headerlink" title="回归本质："></a>回归本质：</h3><p>通过模型选择的方式和方法，去使得损失函数最小。</p>
+<h2 id="K-Means聚类算法"><a href="#K-Means聚类算法" class="headerlink" title="K-Means聚类算法"></a>K-Means聚类算法</h2><h3 id="无监督学习概念："><a href="#无监督学习概念：" class="headerlink" title="无监督学习概念："></a>无监督学习概念：</h3><p>只需要特征矩阵，不需要标签y，聚类就是典型代表</p>
+<p>可以大幅度的压缩数据量</p>
+<h3 id="聚类和分类的区别："><a href="#聚类和分类的区别：" class="headerlink" title="聚类和分类的区别："></a>聚类和分类的区别：</h3><p>分类人为给了类，根据给定的数据和标签进行学习</p>
+<p>分类本质是由数据分出不同的组，机器自己探索各组数据是否有联系。</p>
+<ul>
+<li><p>算法输出不一样：</p>
+<p>分类结果是确定的，分类的优劣是客观的，不是根据业务或算法要求决定。</p>
+<p>聚类出来的结果是没有固定结果的，聚类结果不确定，不一定能反应真实分类，更具不同的业务需求，结果可能好，可能坏，没有客观的评价。</p>
+</li>
+<li><p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210125211821.png" alt="image-20210125211814566"></p>
+</li>
+</ul>
+<h3 id="K-Means"><a href="#K-Means" class="headerlink" title="K-Means:"></a>K-Means:</h3><ul>
+<li>K-Means算法将一组N个样本的特征矩阵X划分为k个无交集的簇，直观上簇是一组一组聚集在一起的数据，一个簇中就认为是同一类，簇就是结果表示。</li>
+<li></li>
+</ul>
+<p>![image-20210126105126519](C:\Users\Alexander Liu\AppData\Roaming\Typora\typora-user-images\image-20210126105126519.png)</p>
+<ul>
+<li>K这个参数是我们用来决定簇的数量</li>
+<li>损失函数只有在求解参数的时候才会有的，本质是用来衡量模型的拟合效果的，通过使得损失函数的值最小，求解参数。</li>
+<li><code>accuracy</code>用于衡量分类效果的指标准确度，不能最小化accuracy来求解某个模型中需要的信息。因此决策树啊，knn啊，是没有损失函数的</li>
+<li>![image-20210126112402394](C:\Users\Alexander Liu\AppData\Roaming\Typora\typora-user-images\image-20210126112402394.png)</li>
+</ul>
+<h3 id="评价指标："><a href="#评价指标：" class="headerlink" title="评价指标："></a>评价指标：</h3><ul>
+<li><p>想法：</p>
+<p>聚类的目标是确保：簇内差异小，簇外差异大。</p>
+</li>
+<li><p><code>inertia</code>不适合作为指标，第一，没有大小的明确标准，第二，当数据量比较大的时候，要花很长的时间来进行计算。第三，有交互，圆环之类的效果都很差，只有独立一簇一簇的比较好用。</p>
+</li>
+<li><p>轮廓系数才是我们用于衡量的指标。</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210126153943.png" alt="image-20210126153943426"></p>
+<ul>
+<li>同时比较簇内元素的相似度，和簇之间元素的差异度这两件事儿。范围为(-1,1)</li>
+<li>卡林斯基-哈拉巴斯指数，标签未知时的评估指数</li>
+</ul>
+<h2 id="SVM支持向量机"><a href="#SVM支持向量机" class="headerlink" title="SVM支持向量机"></a>SVM支持向量机</h2><ul>
+<li><p>找出超平面（比所在空间小一维的空间）</p>
+</li>
+<li><p>拥有更大的边际的决策变量，泛化误差更小。</p>
+</li>
+</ul>
+<h3 id="损失函数："><a href="#损失函数：" class="headerlink" title="损失函数："></a>损失函数：</h3><ul>
+<li>w的方向垂直于我们的决策边界</li>
+<li>SVM第一层理解，本质就是损失函数是如何得到的</li>
+</ul>
+<h3 id="决策可视化："><a href="#决策可视化：" class="headerlink" title="决策可视化："></a>决策可视化：</h3><p>见代码</p>
+<h3 id="核函数："><a href="#核函数：" class="headerlink" title="核函数："></a>核函数：</h3><p>用于寻找能把数据完美分割的超平面</p>
+<p><code>kernel = &quot;linear&quot;</code>这个就是线性核函数，适用于线性分割的情况</p>
+<p>不同的情况换不同的核</p>
+<ul>
+<li>总共有四类：<ul>
+<li>linear , 线性核( 线性 )</li>
+<li>poly ， 多项式核( 偏线性 )</li>
+<li>sigmoid , 双曲正切核(  非线性 )</li>
+<li>rbf , 高斯径向基( 偏非线性 )</li>
+</ul>
+</li>
+</ul>
+<h3 id="小技巧："><a href="#小技巧：" class="headerlink" title="小技巧："></a>小技巧：</h3><p>升高维度，可以提供一种思想来把数据用超平面来分割开嗷！</p>
+<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210127094350.png" alt="image-20210127094342680"></p>
+<ul>
+<li><p>这个表还是蛮重要的，一些参数的调整</p>
+</li>
+<li><p>比如对于<code>rbf</code>的调整，可以通过反复带入不同的参数来进行调整</p>
+</li>
+<li><p>支持向量机的网格搜索比较友好，好用嗷！！！</p>
+</li>
+<li><p>这个东西叫软边界，参数C为惩罚项，针对少部分错的数据的调节。</p>
+<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210127103346.png" alt="image-20210127103345932"></p>
+</li>
+</ul>
+<h2 id="多元线性回归"><a href="#多元线性回归" class="headerlink" title="多元线性回归"></a>多元线性回归</h2><h3 id="参数含义："><a href="#参数含义：" class="headerlink" title="参数含义："></a>参数含义：</h3><p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210127110750.png" alt="image-20210127110749899"></p>
+<ul>
+<li>线性回归几乎无法调优，内部的计算都已经完成，如果想要调优请参考别的模型，这个不就是概率论里面学的那个鬼东西嘛orz</li>
+</ul>
+<h3 id="模型评估指标："><a href="#模型评估指标：" class="headerlink" title="模型评估指标："></a>模型评估指标：</h3><ul>
+<li><ol>
+<li>是否预测了正确的数值，例如 ( RSS，但是这个参数有缺陷，没有明显的衡量指标，就是数据本身的MSE究竟是多少才算拟合效果好呢？其实是没有明确的指标的。）</li>
+</ol>
+<p>我们这儿模型中还有一个比较好的指标叫做均方误差, MSE，这个玩意儿在RSS的基础上除掉了样本数量。</p>
+<ol start="2">
+<li>是否拟合到了足够的信息</li>
+</ol>
+</li>
+<li><p>调用详情见代码</p>
+</li>
+</ul>
+<h3 id="几个大坑："><a href="#几个大坑：" class="headerlink" title="几个大坑："></a>几个大坑：</h3><ol>
+<li>均方误差为负？？？是损失的衡量，凡是带有损失含义的指标，都是负数。真正的均方误差应该为它去掉负号。</li>
+<li>相同的评估指标，不同的结果。分类和回归的算法不同所带来的坑。这里就是输入的，建议查看下模型中的各个参数填的究竟是什么，同一个方法再不同的模型底下参数顺序可能不一样的嗷。</li>
+<li><code>R的平方</code>可以是负的，自己去看原理和逻辑。</li>
+</ol>
+<h2 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h2><h3 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h3><p>本质都只是类概率，或者是置信度，不是真正的概率。</p>
+<p>置信度和真正的概率有挺大的区别的。朴素贝叶斯是为了用上真正的概率的。</p>
+<p>朴素贝叶斯是根正苗红的概率论与数理统计的内容。</p>
+<p>贝叶斯是一个不建模的算法（有监督但是不建模）</p>
+<h3 id="小技巧与贝叶斯的小特点："><a href="#小技巧与贝叶斯的小特点：" class="headerlink" title="小技巧与贝叶斯的小特点："></a>小技巧与贝叶斯的小特点：</h3><p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210127215015.png" alt="image-20210127215007977"></p>
+<ul>
+<li><p>这里取巧了，因为分母的计算量非常大。我们比较分子的大小，哪个大我们就认为最终出现的结果是啥。(MAP)</p>
+</li>
+<li><p>本质上假设各个特征之间是相互独立的，简化计算过程，就非常的朴素orz，因此叫朴素贝叶斯。也因此，朴素贝叶斯挺不准的orz。</p>
+</li>
+<li><p>数据数量一般要求比特征数量要多嗷！！！</p>
+</li>
+<li><p>贝叶斯不好调优</p>
+</li>
+<li><p>贝叶斯分类</p>
+<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210130220858.png" alt="image-20210130220857876"></p>
+</li>
+<li></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/02/20/sklearn%E8%87%AA%E5%AD%A6/" data-id="cl6gepmgb0057e0jqc8bs7rl1" data-title="sklearn相关算法学习" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BE%8E%E8%B5%9B/" rel="tag">美赛</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/02/20/python%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E8%87%AA%E5%AD%A6)/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Python多线程
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/02/20/%E7%88%AC%E8%99%AB%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3(%E8%87%AA%E5%AD%A6)/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">xpath中小爬爬的运用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/">2021年美赛</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/Python/">Python</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF/">动力结点后端</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%87%AA%E5%AD%A6%E5%86%85%E5%AE%B9%E6%88%96%E8%AF%BE%E7%A8%8B%E4%BD%9C%E4%B8%9A/">自学内容或课程作业</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skills/" rel="tag">Skills</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/introduction/" rel="tag">introduction</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" rel="tag">云服务器与项目部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" rel="tag">大一学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" rel="tag">大三自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" rel="tag">大二自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E8%B5%9B/" rel="tag">美赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" rel="tag">论文精读</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" rel="tag">读书分享</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" rel="tag">资源福利！！！</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Database/" style="font-size: 12.22px;">Database</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Skills/" style="font-size: 10px;">Skills</a> <a href="/tags/introduction/" style="font-size: 11.11px;">introduction</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" style="font-size: 12.22px;">云服务器与项目部署</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 15.56px;">前端</a> <a href="/tags/%E5%90%8E%E7%AB%AF/" style="font-size: 18.89px;">后端</a> <a href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" style="font-size: 14.44px;">大一学习</a> <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" style="font-size: 17.78px;">大三自学</a> <a href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" style="font-size: 15.56px;">大二自学</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 11.11px;">机器学习</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BE%8E%E8%B5%9B/" style="font-size: 20px;">美赛</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 13.33px;">计算机网络</a> <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" style="font-size: 10px;">论文精读</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" style="font-size: 10px;">读书分享</a> <a href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" style="font-size: 10px;">资源福利！！！</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/16/ML%E5%85%A5%E9%97%A8/">ML入门</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/28/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A03/">大数据分析与智能计算期末复习3</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/">大数据分析与智能计算期末复习2</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">大数据分析与智能计算期末复习</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AF%BE%E7%A8%8B%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">系统架构课程期末复习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

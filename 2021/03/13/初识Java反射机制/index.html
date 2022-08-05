@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>初识Java反射机制 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初识Java反射机制">
+<meta property="og:url" content="http://example.com/2021/03/13/%E5%88%9D%E8%AF%86Java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/03/13/9FweQxUuaSnrdXl.png">
+<meta property="article:published_time" content="2021-03-13T11:10:26.000Z">
+<meta property="article:modified_time" content="2021-04-03T01:54:48.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/03/13/9FweQxUuaSnrdXl.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-初识Java反射机制" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/03/13/%E5%88%9D%E8%AF%86Java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/" class="article-date">
+  <time class="dt-published" datetime="2021-03-13T11:10:26.000Z" itemprop="datePublished">2021-03-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      初识Java反射机制
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！"><a href="#由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！" class="headerlink" title="由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！"></a>由于JDBC的学习过程中，用到了反射，就去粗浅看了看反射的原理，笔记如下！！！</h1><span id="more"></span>
+
+
+
+
+
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1C4411373T">网课bilibili资源</a></p>
+<h1 id="反射基本概念"><a href="#反射基本概念" class="headerlink" title="反射基本概念"></a>反射基本概念</h1><h2 id="反射三阶段"><a href="#反射三阶段" class="headerlink" title="反射三阶段"></a>反射三阶段</h2><p><img src="https://i.loli.net/2021/03/13/9FweQxUuaSnrdXl.png" alt="image-20210311185113030"></p>
+<ul>
+<li>第一部分在硬盘上，先进行了编译的过程。（保存代码Idea就自动编译好了）</li>
+<li>然后通过类加载器<code>ClassLoader</code>，将编译好的<code>Person.class</code>，读取到内存中，此时为第二个阶段，Class类对象阶段。里面将原来代码中的成员变量，构造方法和成员方法分别表示出来。</li>
+<li>当调用构造方法的时候，从内存中构造出相关的Person对象，这是才到了第三个部分，Runtime运行时阶段。</li>
+</ul>
+<h2 id="反射好处："><a href="#反射好处：" class="headerlink" title="反射好处："></a>反射好处：</h2><ul>
+<li>可以在程序的运行过程中，操作这些对象</li>
+<li>可以解耦合，提高可拓展性。</li>
+</ul>
+<h1 id="API操作"><a href="#API操作" class="headerlink" title="API操作"></a>API操作</h1><ul>
+<li><p>获取class类的对象：</p>
+<ul>
+<li><code>Class.forName(&quot;全类名&quot;)</code>，这种方式是将字节码文件加载进入内存，返回Class对象，这是在第一阶段。<ul>
+<li>这种方法多用于<strong>配置文件</strong>，将类名定义在配置文件中。读取文件，加载类。</li>
+</ul>
+</li>
+<li><code>类名.class</code>，通过类名的属性来获取，这是在第二阶段。<ul>
+<li>多用于<strong>参数传递</strong></li>
+</ul>
+</li>
+<li><code>对象.getClass()</code>在，所有对象都有这种方法！！！<ul>
+<li>多用于<strong>对象</strong>的获取字节码的方式</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>这里注意一下，Idea中保存运行中，java文件会自动编译，所有一开始是有字节码的。</p>
+</li>
+<li><p>结论：同一个字节码文件，它在一次程序的运行中，只会被加载一次。只是在运行的不同过程被</p>
+</li>
+<li><p>使用Class对象：</p>
+<ul>
+<li>大部分是获取功能！！！</li>
+<li>详细获取功能：<ul>
+<li>过去成员变量们（Field）<ul>
+<li><code>Field[] getFields()</code>   #获取所有public修饰的成员变量</li>
+<li><code>Field getField(String name)</code></li>
+<li><code>Field[] getDeclaredFields()</code>   #获取所有的成员变量</li>
+<li><code>Field getDeclaredField(String name)</code></li>
+</ul>
+</li>
+<li>获取构造方法们（Constructor）<ul>
+<li><code>Constructor&lt;?&gt;[] getConstructors()</code></li>
+<li><code>Constructor&lt;T&gt; getConstructor(类&lt;?&gt;... parameterTypes)</code></li>
+<li>还有类似于上面的</li>
+</ul>
+</li>
+<li>获取成员变量们（Method)<ul>
+<li><code>Method[] getMethods()</code></li>
+<li>类似于上面的</li>
+</ul>
+</li>
+<li>获取类名（）<ul>
+<li><code>String getName()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Field成员变量</p>
+<ul>
+<li><p>操作：</p>
+<ul>
+<li>设置值<ul>
+<li>set</li>
+</ul>
+</li>
+<li>获取值<ul>
+<li>get</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>一些操作例子(Field)</p>
+<ul>
+<li><pre><code class="java">Class personClass = Person.class;
+Field a = personClass.getField(&quot;a&quot;);
+Person p = new Person;
+Object value = a.get(p);
+//下面这个是设置！！！
+//1.首先获得了Class对象
+//2.由Class对象获取Field对象
+//3.通过Field对象，对于特定的构造出来的对象进行设置或者读取操作。
+a.set(p,&quot;张三&quot;)
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- ```java</span><br><span class="line">  Field d = personClass.getDeclaredField(&quot;d&quot;);</span><br><span class="line">  Object values = d.get(p);</span><br><span class="line">  //私有的利用反射也不访问的嗷QAQ！！！</span><br><span class="line">  //但是可以“暴力反射”。忽略安全检查！！！</span><br><span class="line">  d.setAccessible(true);</span><br><span class="line">  Object values = d.get(p);</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>这里其实可以先康康有哪些Field，然后再去获取Field进行类的操作！！！</p>
+</li>
+</ul>
+</li>
+<li><p>一些操作例子(构造器)</p>
+<ul>
+<li><p>&#96;&#96;&#96;java<br>Class personClass &#x3D; Person.class;</p>
+<p>&#x2F;&#x2F;由于不同构造器传入值不同，所以这里要给定参数，在第二部分的位置，所有东西都是以class存在的，因此要得到相应的构造器，就需要传入对应的.class。<br>Constructor constructor &#x3D; personClass.getConstructor(String.class,int.class)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- ```java</span><br><span class="line">  //可以用于创建对象</span><br><span class="line">  Object person = constructor.newInstance(&quot;兔兔&quot;,20);</span><br><span class="line">  //这样就能够获取到构造器</span><br><span class="line">  //同时获取空参的构造器，我们可以简化操作</span><br><span class="line">  Object person2 = personClass.newInstance();</span><br><span class="line">  //和上面一样的，若调用私有的构造器，也需要</span><br><span class="line">  constructor.setAccessible(true);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>一些操作例子(操作方法)</p>
+<ul>
+<li><pre><code class="java">Class personClass = Person.class;
+personClass.getMethod();
+//方法三要素：方法名，返回值列表，参数列表
+//确定方法：方法名，参数列表
+//方法名一样，参数列表不一样能构成重载关系
+Method eat_method = personClass.getMethod(&quot;eat&quot;);
+Person p = new Person();
+eat_method.invoke(p); //执行eat方法
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- ```java</span><br><span class="line">  Method eat_method2 = personClass.getMethod(&quot;eat&quot;,String.class);</span><br><span class="line">  Person p = new Person();</span><br><span class="line">  </span><br><span class="line">  eat_method2.invoke(p,&quot;饭&quot;);</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>&#96;&#96;&#96;java<br>Method[] methods &#x3D; personClass.getMethods();<br>for (Method method : methods){<br>System.out.println(method);<br>String name &#x3D; method.getName();&#x2F;&#x2F;获取方法的名称<br>System.out.println(name);<br>}&#x2F;&#x2F;这个能获取所有的public方法，object的方法也在其中嗷！！！</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- ```java</span><br><span class="line">  //获取全类名</span><br><span class="line">  String className = personClass.getName();</span><br><span class="line">  //这里获得的的是全类名！！！</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>不管什么私有啊，还是什么修饰符修饰方法，在反射面前都是可以被执行的嗷！！！在反射面前没有什么是隐私！！！</p>
+</li>
+</ul>
+<h1 id="案例：写一个框架可以帮我们取创建任意类的对象，并且执行其中的任意方法"><a href="#案例：写一个框架可以帮我们取创建任意类的对象，并且执行其中的任意方法" class="headerlink" title="案例：写一个框架可以帮我们取创建任意类的对象，并且执行其中的任意方法"></a>案例：写一个框架可以帮我们取创建任意类的对象，并且执行其中的任意方法</h1><ul>
+<li><pre><code class="properties">//这儿如果新建一个对象，再调用方法，意义就不大了，所以要用到反射
+//1.配置文件   2.反射
+//1.将需要创建的对象的全类名和执行的方法的定义配置在文件中
+//2.程序读取配置文件
+//3.反射技术加载文件到内存
+//4.创建对象
+//5.执行方法
+
+className = //包名字
+methodName = //方法名
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- ```java</span><br><span class="line">  Properties pro = new Properties();</span><br><span class="line">  </span><br><span class="line">  ClassLoader classLoader = ReflectTest.class.getClassLoader();//获取了类加载器，类加载器把类加载到内存，它就会知道类的位置啊，所以就可以在那个目录下找到properties</span><br><span class="line">  </span><br><span class="line">  InputStream is = classLoader.getResourceAsStream(&quot;pro.properties&quot;);</span><br><span class="line">  //加载配置文件，转换为一个集合</span><br><span class="line">  pro.load(is);</span><br><span class="line">  </span><br><span class="line">  //获取配置文件中的数据</span><br><span class="line">  String className = pro.getProperty(&quot;className&quot;);</span><br><span class="line">  String methodName = pro.getPropety(&quot;methodName&quot;);</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  Class cls = Class.forName(className);  //把对应的class加载进入内存</span><br><span class="line">  Method method = cls.getMethod(methodName);</span><br><span class="line">  //执行方法</span><br><span class="line">  Object obj = cls.newInstance();</span><br><span class="line">  Method method = cls.getMethod(methodName);</span><br><span class="line">  method.invoke(obj);</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>这个框架就很有意思嗷！！！一个是改代码，一个是改配置文件，反射实现了这种方式，使得程序更加简洁。</p>
+</li>
+<li><p>以后看到了要知道使用了反射嗷！！！</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/03/13/%E5%88%9D%E8%AF%86Java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/" data-id="cl6gepmgi0069e0jq3lwq8w4z" data-title="初识Java反射机制" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/03/16/JDBC%E5%AD%A6%E4%B9%A0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JDBC学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/03/09/MySQL%E5%AD%A6%E4%B9%A0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MySQL学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/">2021年美赛</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/Python/">Python</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF/">动力结点后端</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%87%AA%E5%AD%A6%E5%86%85%E5%AE%B9%E6%88%96%E8%AF%BE%E7%A8%8B%E4%BD%9C%E4%B8%9A/">自学内容或课程作业</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skills/" rel="tag">Skills</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/introduction/" rel="tag">introduction</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" rel="tag">云服务器与项目部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" rel="tag">大一学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" rel="tag">大三自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" rel="tag">大二自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E8%B5%9B/" rel="tag">美赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" rel="tag">论文精读</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" rel="tag">读书分享</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" rel="tag">资源福利！！！</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Database/" style="font-size: 12.22px;">Database</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Skills/" style="font-size: 10px;">Skills</a> <a href="/tags/introduction/" style="font-size: 11.11px;">introduction</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" style="font-size: 12.22px;">云服务器与项目部署</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 15.56px;">前端</a> <a href="/tags/%E5%90%8E%E7%AB%AF/" style="font-size: 18.89px;">后端</a> <a href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" style="font-size: 14.44px;">大一学习</a> <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" style="font-size: 17.78px;">大三自学</a> <a href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" style="font-size: 15.56px;">大二自学</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 11.11px;">机器学习</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BE%8E%E8%B5%9B/" style="font-size: 20px;">美赛</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 13.33px;">计算机网络</a> <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" style="font-size: 10px;">论文精读</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" style="font-size: 10px;">读书分享</a> <a href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" style="font-size: 10px;">资源福利！！！</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/16/ML%E5%85%A5%E9%97%A8/">ML入门</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/28/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A03/">大数据分析与智能计算期末复习3</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/">大数据分析与智能计算期末复习2</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">大数据分析与智能计算期末复习</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AF%BE%E7%A8%8B%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">系统架构课程期末复习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

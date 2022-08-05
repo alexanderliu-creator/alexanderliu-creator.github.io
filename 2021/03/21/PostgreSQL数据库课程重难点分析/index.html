@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>PostgreSQL数据库课程重难点分析 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="由于已经有mysql的基础，PostgreSQL的中心会放在于Mysql不同的DBMS语法上，重点记录图形化界面PgAdmin的使用和一下不同的语法特点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL数据库课程重难点分析">
+<meta property="og:url" content="http://example.com/2021/03/21/PostgreSQL%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BE%E7%A8%8B%E9%87%8D%E9%9A%BE%E7%82%B9%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="由于已经有mysql的基础，PostgreSQL的中心会放在于Mysql不同的DBMS语法上，重点记录图形化界面PgAdmin的使用和一下不同的语法特点。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/3BxypZlVuFjQefi.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/BEZSLq7gPleh4Hi.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/yM1Fo3QjbWXxght.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/ztZaG6cBhLElWXv.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/AZJE2Y1keOiVByF.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/GLYpsnCEgufH4ti.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/OmYG18DrHiU7owc.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/96f12xPz5YlyHXK.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/z6Tkp7wG1ifgUKC.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/6j4r5eJoNXiHqQb.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/LoIUCjw4QZVFMhf.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/phnt27TbmXwWNYx.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/jiaf15qzV6nL3SQ.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/T2j1GHR53zY4raX.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/E2aWrhoRnPCtHeA.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/J3qNFfl6omvSicB.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/RaiSLdDQt5WcoIk.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/sFEQMaJxZkPK8XC.png">
+<meta property="og:image" content="https://i.loli.net/2021/03/20/QuYRzKAdCSn8wLx.png">
+<meta property="article:published_time" content="2021-03-21T02:52:19.000Z">
+<meta property="article:modified_time" content="2021-03-21T02:58:09.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Database">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/03/20/3BxypZlVuFjQefi.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-PostgreSQL数据库课程重难点分析" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/03/21/PostgreSQL%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BE%E7%A8%8B%E9%87%8D%E9%9A%BE%E7%82%B9%E5%88%86%E6%9E%90/" class="article-date">
+  <time class="dt-published" datetime="2021-03-21T02:52:19.000Z" itemprop="datePublished">2021-03-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      PostgreSQL数据库课程重难点分析
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="由于已经有mysql的基础，PostgreSQL的中心会放在于Mysql不同的DBMS语法上，重点记录图形化界面PgAdmin的使用和一下不同的语法特点。"><a href="#由于已经有mysql的基础，PostgreSQL的中心会放在于Mysql不同的DBMS语法上，重点记录图形化界面PgAdmin的使用和一下不同的语法特点。" class="headerlink" title="由于已经有mysql的基础，PostgreSQL的中心会放在于Mysql不同的DBMS语法上，重点记录图形化界面PgAdmin的使用和一下不同的语法特点。"></a>由于已经有mysql的基础，PostgreSQL的中心会放在于Mysql不同的DBMS语法上，重点记录图形化界面PgAdmin的使用和一下不同的语法特点。</h1><span id="more"></span>
+
+
+
+
+
+<h1 id="PgAdmin图形界面"><a href="#PgAdmin图形界面" class="headerlink" title="PgAdmin图形界面"></a>PgAdmin图形界面</h1><h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><ul>
+<li>数据库的创建：</li>
+</ul>
+<p><img src="https://i.loli.net/2021/03/20/3BxypZlVuFjQefi.png" alt="image-20210320204610659"></p>
+<ul>
+<li>表，约束的相关查看方式：</li>
+</ul>
+<p><img src="https://i.loli.net/2021/03/20/BEZSLq7gPleh4Hi.png" alt="image-20210320204737520"></p>
+<p>表的索引，约束等相关信息在这里都可以看的。</p>
+<ul>
+<li>创建表和修改表的时候，在图形化界面中大多都是采用属性相关的内容添加：</li>
+</ul>
+<p><img src="https://i.loli.net/2021/03/20/yM1Fo3QjbWXxght.png" alt="image-20210320204930655"></p>
+<ul>
+<li>SQL语句的执行：</li>
+</ul>
+<p><img src="https://i.loli.net/2021/03/20/ztZaG6cBhLElWXv.png" alt="image-20210320205252944"></p>
+<h2 id="表的创建"><a href="#表的创建" class="headerlink" title="表的创建"></a>表的创建</h2><ul>
+<li>注意数据类型</li>
+</ul>
+<p><img src="https://i.loli.net/2021/03/20/AZJE2Y1keOiVByF.png" alt="image-20210320205957125"></p>
+<p>MySQL中的<code>varchar</code>和<code>char</code>对应的就是这些</p>
+<ul>
+<li>约束</li>
+</ul>
+<p><img src="https://i.loli.net/2021/03/20/GLYpsnCEgufH4ti.png" alt="image-20210320210144204"></p>
+<p>所有的约束在这个里面定义嗷，可以加名字呀，编辑呀，删除呀。特点是，可以给SQL中的约束取名字，在创建和删除约束的时候会比较方便嗷！</p>
+<ul>
+<li>约束后期添加也是可以的嗷</li>
+</ul>
+<p><img src="https://i.loli.net/2021/03/20/OmYG18DrHiU7owc.png" alt="image-20210320210550818"></p>
+<p>这个里面实际上就直接选择关联列就可以了</p>
+<p>行动处：</p>
+<p><img src="https://i.loli.net/2021/03/20/96f12xPz5YlyHXK.png" alt="image-20210320210657209"></p>
+<p>可以定理级联更新和级联删除</p>
+<p><img src="https://i.loli.net/2021/03/20/z6Tkp7wG1ifgUKC.png" alt="image-20210320210731645"></p>
+<p>定义完成后点击加号才有作用，完成后点击保存更改成功。</p>
+<ul>
+<li>操作完成之后，刷新一下才有效果嗷！</li>
+</ul>
+<p><img src="https://i.loli.net/2021/03/20/6j4r5eJoNXiHqQb.png" alt="image-20210320211329675"></p>
+<h1 id="PostgreSQL语法"><a href="#PostgreSQL语法" class="headerlink" title="PostgreSQL语法"></a>PostgreSQL语法</h1><ul>
+<li>在MySQL中应该也是一样的，我还没有测试，<code>create table STUDENT</code>和<code>create table &quot;STUDENT&quot;</code>，前者忽略大小写，后者则不忽略，我猜想的结论是：只要没有括号，语句也好，名字也好，全部都是按小写处理执行的，但是打了双引号的我们则遵循字符串的本身的样式。</li>
+</ul>
+<h2 id="相同的语法："><a href="#相同的语法：" class="headerlink" title="相同的语法："></a>相同的语法：</h2><ul>
+<li><p><code>create database name;</code></p>
+</li>
+<li><pre><code class="sql">create table tableName(
+    columnName	dataType	primary key,
+);
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- `select * from tableName;`</span><br><span class="line"></span><br><span class="line">- `drop table tableName`</span><br><span class="line"></span><br><span class="line">- `insert into Student(name) values(&#x27;刘兔兔&#x27;)`</span><br><span class="line"></span><br><span class="line">- `delete from tableName where xxx`，如果不加where整张表删除</span><br><span class="line"></span><br><span class="line">- `update student set email=&#x27;xxx&#x27; where studentid =yyy;`</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 不同的语法：</span><br><span class="line"></span><br><span class="line">### Alter语法：</span><br><span class="line"></span><br><span class="line">- 这种语法在PostgreSQL中常用，对于表和表级约束操作往往是alter table , 对于列级约束操作alter table alter column...</span><br><span class="line"></span><br><span class="line">- 对于数据库的操作，例如`alter database originalName rename to newName; `发现又一个问题改不了？？？</span><br><span class="line"></span><br><span class="line">  ![image-20210320212939965](https://i.loli.net/2021/03/20/ImkrsCt9Z7HJ6Pp.png)</span><br><span class="line"></span><br><span class="line">- `select pid from pg_stat_activity where DATNAME = &#x27;test2&#x27;;`命令行中用这个可以查询到链接test2的进程，有这个进程链接肯定是改不了的，先断开才能改嗷！</span><br><span class="line"></span><br><span class="line">- 放弃了，那个是后台线程关不掉，算了不改了orz。</span><br><span class="line"></span><br><span class="line">### 添加约束：</span><br><span class="line"></span><br><span class="line">- check约束，这个是mysql中没有的：</span><br><span class="line"></span><br><span class="line">```sql</span><br><span class="line">CourseType varchar(10) null check(CourseType in(&#x27;基础课&#x27;,&quot;专业课&quot;,&quot;选修&quot;)),</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>添加<strong>表级约束</strong>：</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Register</span><br><span class="line">(</span><br><span class="line">	courseregid serial <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    courserplanid <span class="type">int</span> <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    studentid <span class="type">char</span>(<span class="number">13</span>),</span><br><span class="line">    note <span class="type">varchar</span>(<span class="number">30</span>),</span><br><span class="line">    <span class="keyword">constraint</span> courseregid_pk <span class="keyword">primary</span> key(courseregid),</span><br><span class="line">    <span class="keyword">constraint</span> courseplanid_fk <span class="keyword">foreign</span> key(courseplanid)</span><br><span class="line">    <span class="keyword">references</span> plan(courseplanid)</span><br><span class="line">    <span class="keyword">on</span> <span class="keyword">delete</span> cascade,</span><br><span class="line">    <span class="keyword">constraint</span> studentid_fk <span class="keyword">foreign</span> key(studentid)</span><br><span class="line">    <span class="keyword">references</span> student(studentid)</span><br><span class="line">    <span class="keyword">on</span> <span class="keyword">delete</span> cascade</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>以constraint为开头的关键字嗷！！！！后面接着是表级约束的名字！！！再后面根据约束的不同来指定不同的行（例如主键，外键等），若是外键，再向外指定连接的表和设定级联关系即可！！！</p>
+<p><strong>看的很清楚主键是表级约束，就算primary key没有写成表级约束而是跟在列的后面，它依然是表级约束嗷！！！</strong></p>
+<h3 id="数据库表修改SQL语句："><a href="#数据库表修改SQL语句：" class="headerlink" title="数据库表修改SQL语句："></a><strong>数据库表修改SQL语句</strong>：</h3><ul>
+<li>要注意哈，在pgadmin右键点开database输入语句时，实际上已经选中了数据库了，后面才是对于表的操作。不管你在哪个表打开query的，本质上你还是在这个数据库这一级。</li>
+</ul>
+<h4 id="删除列："><a href="#删除列：" class="headerlink" title="删除列："></a>删除列：</h4><p><img src="https://i.loli.net/2021/03/20/LoIUCjw4QZVFMhf.png" alt="image-20210320215357963"></p>
+<h4 id="添加列："><a href="#添加列：" class="headerlink" title="添加列："></a>添加列：</h4><p><img src="https://i.loli.net/2021/03/20/phnt27TbmXwWNYx.png" alt="image-20210320215544537"></p>
+<p>注意哈，这个添加列，没有<code>column</code>！！！后面加上约束也不用<code>constraint</code>，直接<code>列名   类型   约束</code>按照顺序写就行了QAQ</p>
+<h4 id="删除表级约束："><a href="#删除表级约束：" class="headerlink" title="删除表级约束："></a>删除表级约束：</h4><p><img src="https://i.loli.net/2021/03/20/jiaf15qzV6nL3SQ.png" alt="image-20210320215809283"></p>
+<h4 id="添加表级约束："><a href="#添加表级约束：" class="headerlink" title="添加表级约束："></a>添加表级约束：</h4><p><img src="https://i.loli.net/2021/03/20/T2j1GHR53zY4raX.png" alt="image-20210320221834803"></p>
+<p><img src="https://i.loli.net/2021/03/20/E2aWrhoRnPCtHeA.png" alt="image-20210320224433350"></p>
+<h4 id="更改表名："><a href="#更改表名：" class="headerlink" title="更改表名："></a>更改表名：</h4><p><img src="https://i.loli.net/2021/03/20/J3qNFfl6omvSicB.png" alt="image-20210320215922748"></p>
+<h4 id="更改列名："><a href="#更改列名：" class="headerlink" title="更改列名："></a>更改列名：</h4><p><img src="https://i.loli.net/2021/03/20/RaiSLdDQt5WcoIk.png" alt="image-20210320220117719"></p>
+<p>注意一下，rename原列名to新列名，没有column！！！好像只有在丢掉列的时候才有列名？？？</p>
+<ul>
+<li>和上面对比，一个是<code>rename to...</code>，另外一个是<code>rename 列名 to ...</code></li>
+</ul>
+<h4 id="创建索引："><a href="#创建索引：" class="headerlink" title="创建索引："></a>创建索引：</h4><p><code>create index indexName on tableName columnName;</code></p>
+<h4 id="删除索引："><a href="#删除索引：" class="headerlink" title="删除索引："></a>删除索引：</h4><p><code>drop index indexName;</code></p>
+<h4 id="修改索引名字："><a href="#修改索引名字：" class="headerlink" title="修改索引名字："></a>修改索引名字：</h4><p><code>alter index indexName rename to newName</code></p>
+<h4 id="查询语句新结构："><a href="#查询语句新结构：" class="headerlink" title="查询语句新结构："></a>查询语句新结构：</h4><p><code>select xxx,yyy,zzz into &lt;newTableName&gt; where ggg</code>;</p>
+<p>可以把查询结果保存到一张新的表内！</p>
+<h4 id="删除列级约束："><a href="#删除列级约束：" class="headerlink" title="删除列级约束："></a>删除列级约束：</h4><p><img src="https://i.loli.net/2021/03/20/sFEQMaJxZkPK8XC.png" alt="image-20210320221753310"></p>
+<h4 id="添加列级约束："><a href="#添加列级约束：" class="headerlink" title="添加列级约束："></a>添加列级约束：</h4><p><img src="https://i.loli.net/2021/03/20/QuYRzKAdCSn8wLx.png" alt="image-20210320224052877"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/03/21/PostgreSQL%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BE%E7%A8%8B%E9%87%8D%E9%9A%BE%E7%82%B9%E5%88%86%E6%9E%90/" data-id="cl6gepmfu002je0jq4m63bwsm" data-title="PostgreSQL数据库课程重难点分析" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Database/" rel="tag">Database</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/03/22/XShell%E5%92%8CXftp7%E4%BD%BF%E7%94%A8ssh%E6%9C%8D%E5%8A%A1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          XShell和Xftp7使用ssh服务
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/03/21/%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BD%91%E9%A1%B5%E5%9F%BA%E7%A1%80%E6%8E%A2%E7%B4%A2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">阿里云服务器网页基础探索</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/">2021年美赛</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/Python/">Python</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF/">动力结点后端</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%87%AA%E5%AD%A6%E5%86%85%E5%AE%B9%E6%88%96%E8%AF%BE%E7%A8%8B%E4%BD%9C%E4%B8%9A/">自学内容或课程作业</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skills/" rel="tag">Skills</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/introduction/" rel="tag">introduction</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" rel="tag">云服务器与项目部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" rel="tag">大一学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" rel="tag">大三自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" rel="tag">大二自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E8%B5%9B/" rel="tag">美赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" rel="tag">论文精读</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" rel="tag">读书分享</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" rel="tag">资源福利！！！</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Database/" style="font-size: 12.22px;">Database</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Skills/" style="font-size: 10px;">Skills</a> <a href="/tags/introduction/" style="font-size: 11.11px;">introduction</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" style="font-size: 12.22px;">云服务器与项目部署</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 15.56px;">前端</a> <a href="/tags/%E5%90%8E%E7%AB%AF/" style="font-size: 18.89px;">后端</a> <a href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" style="font-size: 14.44px;">大一学习</a> <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" style="font-size: 17.78px;">大三自学</a> <a href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" style="font-size: 15.56px;">大二自学</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 11.11px;">机器学习</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BE%8E%E8%B5%9B/" style="font-size: 20px;">美赛</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 13.33px;">计算机网络</a> <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" style="font-size: 10px;">论文精读</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" style="font-size: 10px;">读书分享</a> <a href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" style="font-size: 10px;">资源福利！！！</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/16/ML%E5%85%A5%E9%97%A8/">ML入门</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/28/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A03/">大数据分析与智能计算期末复习3</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/">大数据分析与智能计算期末复习2</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">大数据分析与智能计算期末复习</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AF%BE%E7%A8%8B%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">系统架构课程期末复习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

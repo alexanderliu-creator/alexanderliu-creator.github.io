@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Web服务器之HTTP协议与Tomcat服务器 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Tomcat学习，刚刚好和计网课程学的东西对应上了，学而致用哈哈哈哈刚刚好！！！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web服务器之HTTP协议与Tomcat服务器">
+<meta property="og:url" content="http://example.com/2021/03/29/Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BHTTP%E5%8D%8F%E8%AE%AE%E4%B8%8ETomcat%E6%9C%8D%E5%8A%A1%E5%99%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Tomcat学习，刚刚好和计网课程学的东西对应上了，学而致用哈哈哈哈刚刚好！！！">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210329172014609.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210329172819845.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210331220512107.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210331220617507.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401172159186.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401172335345.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401172637527.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401191332613.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401191904644.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210402084108642.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210402091308338.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210402091401928.png">
+<meta property="article:published_time" content="2021-03-29T08:55:53.000Z">
+<meta property="article:modified_time" content="2021-04-03T01:54:34.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210329172014609.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Web服务器之HTTP协议与Tomcat服务器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/03/29/Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BHTTP%E5%8D%8F%E8%AE%AE%E4%B8%8ETomcat%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="article-date">
+  <time class="dt-published" datetime="2021-03-29T08:55:53.000Z" itemprop="datePublished">2021-03-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Web服务器之HTTP协议与Tomcat服务器
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Tomcat学习，刚刚好和计网课程学的东西对应上了，学而致用哈哈哈哈刚刚好！！！"><a href="#Tomcat学习，刚刚好和计网课程学的东西对应上了，学而致用哈哈哈哈刚刚好！！！" class="headerlink" title="Tomcat学习，刚刚好和计网课程学的东西对应上了，学而致用哈哈哈哈刚刚好！！！"></a>Tomcat学习，刚刚好和计网课程学的东西对应上了，学而致用哈哈哈哈刚刚好！！！</h1><span id="more"></span>
+
+
+
+<h1 id="Http网络协议包"><a href="#Http网络协议包" class="headerlink" title="Http网络协议包"></a>Http网络协议包</h1><ol>
+<li>二进制得到对应的数据，HTTP服务器很难从二进制数据得到相关的信息</li>
+<li>网络协议包有一组有规律的二进制数据，这组数据存在固定空间，存放特定信息。接收方就可以从对应的空间中得到对应的信息。（就是我们讲的HTTP协议嘛，很快的。）</li>
+<li>HTTP网路协议包：<ol>
+<li>基于B&#x2F;S结构下互联网通信过程中，传递的信息都是保存在HTTP网络协议包中</li>
+<li>HTTP协议包分类：<ul>
+<li>request</li>
+<li>response</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="HTTP请求协议包内部空间"><a href="#HTTP请求协议包内部空间" class="headerlink" title="HTTP请求协议包内部空间"></a>HTTP请求协议包内部空间</h2><ul>
+<li>按照自上而下区分：<ul>
+<li>请求行：<ul>
+<li>url（请求地址）</li>
+<li>method（请求方式）</li>
+</ul>
+</li>
+<li>请求头（头部）：<ul>
+<li>请求参数信息（如果是get，参数将会保存在这里）</li>
+</ul>
+</li>
+<li>空白行（没有任何内容，起到隔离作用）</li>
+<li>请求体：<ul>
+<li>请求参数信息（如果是post，参数将会保存在这里）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210329172014609.png" alt="image-20210329172014609"></p>
+<ul>
+<li>请求参数可以在输入栏以<code>?</code>的方式来添加</li>
+</ul>
+<h2 id="HTTP响应协议包内部结构"><a href="#HTTP响应协议包内部结构" class="headerlink" title="HTTP响应协议包内部结构"></a>HTTP响应协议包内部结构</h2><ul>
+<li>按照自上而下区分：<ul>
+<li>状态行：<ul>
+<li>HTTP状态码</li>
+</ul>
+</li>
+<li>相应头（头部）:<ul>
+<li>content-type（告诉浏览器以何种方式来处理二进制的文件，类似于html页面啊，png照片啊之类的）</li>
+</ul>
+</li>
+<li>空白行（没有内容，起到隔离作用）</li>
+<li>响应体：<ul>
+<li>访问的静态文件的内容</li>
+<li>访问的静态文件的命令</li>
+<li>访问的动态资源文件运行结果</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210329172819845.png" alt="image-20210329172819845"></p>
+<h1 id="Tomcat服务器"><a href="#Tomcat服务器" class="headerlink" title="Tomcat服务器"></a>Tomcat服务器</h1><ul>
+<li>安装在服务端的软件，响应客户端的请求</li>
+<li>服务器分类：<ul>
+<li><code>JBOSS</code>服务器</li>
+<li><code>Glassfish</code>服务器</li>
+<li><code>Jetty</code>服务器</li>
+<li><code>Webphere</code>服务器</li>
+<li><code>Tomcat</code>服务器（可以用于模拟互联网通信）</li>
+</ul>
+</li>
+</ul>
+<h2 id="服务器的下载："><a href="#服务器的下载：" class="headerlink" title="服务器的下载："></a>服务器的下载：</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://tomcat.apache.org/">官网</a></li>
+<li>解压之后就算安装成功了。</li>
+<li>只要<code>java_home</code>配置好就好了，其他不用配置的嗷。</li>
+</ul>
+<h2 id="服务器启动与关闭："><a href="#服务器启动与关闭：" class="headerlink" title="服务器启动与关闭："></a>服务器启动与关闭：</h2><ul>
+<li>startup，进入tomcat的bin目录下输入cmd进入控制台输入startup.bat即可启动。</li>
+<li>关闭弹出来的小窗口，在cmd下输入shutdown.bat即可关闭，出现异常就对了？？？就是酱的。</li>
+</ul>
+<h1 id="一些基本概念："><a href="#一些基本概念：" class="headerlink" title="一些基本概念："></a>一些基本概念：</h1><h2 id="重载与重写"><a href="#重载与重写" class="headerlink" title="重载与重写:"></a>重载与重写:</h2><ul>
+<li><p>重载的目的是让方法在接收不同参数实现不同的功能。</p>
+</li>
+<li><p>重写：</p>
+<ul>
+<li>发生在继承的过程中</li>
+<li>子类对于父类实现细节进行重新定义</li>
+<li>规则：<ul>
+<li>重写方法时，子类不能降低方法的访问权限</li>
+<li>可以扩大访问权限</li>
+<li>由private和final修饰的方法是不能够被重写的</li>
+</ul>
+</li>
+<li>重写方法时，抛出的异常可以是父类抛出异常的全集，子集，空集。不能抛出父类方法里，没有声明的异常。（因为父类实例可以指向子类对象，抛出来父类不认识处理不了就会显得父类很呆）。</li>
+<li>重写方法返回值，返回值可以是返回类型的子类型。（父类可以返回子类，子类不可以返回父类）</li>
+</ul>
+</li>
+</ul>
+<h2 id="throw与throws"><a href="#throw与throws" class="headerlink" title="throw与throws:"></a>throw与throws:</h2><ul>
+<li>throws在方法名之后，通知开发人员可能抛出异常</li>
+<li>一个throws后面可以携带多个异常。</li>
+<li>throw执行时抛出一个指定异常对象</li>
+<li>一个throw一次只能携带一个异常对象</li>
+<li>throws必须处理，但是throw不一定要处理嗷！！！</li>
+</ul>
+<h2 id="接口与抽象类："><a href="#接口与抽象类：" class="headerlink" title="接口与抽象类："></a>接口与抽象类：</h2><ul>
+<li>接口是一种特殊文件</li>
+<li>作用：<ul>
+<li>指定规则</li>
+<li>降低耦合度</li>
+</ul>
+</li>
+<li>使用规则：<ul>
+<li>接口中属性默认都是静态常量属性</li>
+<li>接口中方法都是抽象的</li>
+<li>方法访问权限不能是private</li>
+<li>接口见可以多继承，但是不能相互实现</li>
+</ul>
+</li>
+<li>抽象类：<ul>
+<li>作用：<ul>
+<li>降低接口实现类与接口之间实现难度</li>
+</ul>
+</li>
+<li>抽象类的作用是降低了接口实现类和接口之间的实现难度（抽象类就是一个过渡！！！）</li>
+<li>抽象类可以声明抽象方法，也可以生成具体方法，抽象类的抽象方法必须由子类重写</li>
+<li>抽象类有构造方法，但是不能使用</li>
+</ul>
+</li>
+</ul>
+<h1 id="Tomcat内部结构："><a href="#Tomcat内部结构：" class="headerlink" title="Tomcat内部结构："></a>Tomcat内部结构：</h1><ul>
+<li>bin文件夹：<ul>
+<li>关闭</li>
+<li>开启</li>
+</ul>
+</li>
+<li>conf文件夹：<ul>
+<li>核心配置文件</li>
+<li>server.xml是核心文件，里面包括对于端口啊，高并发啊之类的属性的调整。</li>
+</ul>
+</li>
+<li>lib文件夹：<ul>
+<li>中存放了tomcat需要用的jar包依赖</li>
+</ul>
+</li>
+<li>logs文件夹：<ul>
+<li>记录了相关的日志信息</li>
+</ul>
+</li>
+<li>temp文件夹：<ul>
+<li>存放一些临时文件</li>
+<li>tomcat会自动销毁其中的文件</li>
+</ul>
+</li>
+<li>webapps文件夹：<ul>
+<li>找到相关的文件返回给客户端</li>
+<li>如果没有的话就告诉客户端没有</li>
+</ul>
+</li>
+<li>work文件夹：<ul>
+<li>工作空间</li>
+</ul>
+</li>
+</ul>
+<h1 id="模拟一次互联网通信"><a href="#模拟一次互联网通信" class="headerlink" title="模拟一次互联网通信"></a>模拟一次互联网通信</h1><ul>
+<li>在Tomcat的&#x2F;webapps文件夹创建一个网站（myWeb)</li>
+<li>网站不过是一个文件夹罢了。</li>
+<li><code>localhost:8080/myWeb/资源名</code>这样即可向服务器请求对应的文件。</li>
+<li>URL格式：<code>网络协议包：//服务端计算机IP地址:Http端口号/网站名/资源名字</code></li>
+<li>点击回车之后浏览器会发送请求，服务器收到请求之后会找到相应资源发送回浏览器。</li>
+</ul>
+<h1 id="IDEA管理Tomcat"><a href="#IDEA管理Tomcat" class="headerlink" title="IDEA管理Tomcat"></a>IDEA管理Tomcat</h1><h2 id="添加Tomcat服务器："><a href="#添加Tomcat服务器：" class="headerlink" title="添加Tomcat服务器："></a>添加Tomcat服务器：</h2><ul>
+<li>步骤：<ul>
+<li>告诉idea，去管理哪个服务器</li>
+<li>建立一个开关：可以用开关来开启或者关闭Tomcat</li>
+</ul>
+</li>
+<li>IDEA配置Tomcat步骤：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210331220512107.png" alt="image-20210331220512107"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210331220617507.png" alt="image-20210331220617507"></p>
+<h2 id="添加Tomcat的开关："><a href="#添加Tomcat的开关：" class="headerlink" title="添加Tomcat的开关："></a>添加Tomcat的开关：</h2><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401172159186.png" alt="image-20210401172159186"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401172335345.png" alt="image-20210401172335345"></p>
+<ul>
+<li>Remote：远程开关</li>
+<li>Local：本机开关</li>
+<li>选择local对于Tomcat进行配置就好了。</li>
+</ul>
+<h2 id="开关使用："><a href="#开关使用：" class="headerlink" title="开关使用："></a>开关使用：</h2><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401172637527.png" alt="image-20210401172637527"></p>
+<ul>
+<li>三角形代表网站不能被修改</li>
+<li>Debug可以实时发生修改。</li>
+</ul>
+<h1 id="IDEA建立网站："><a href="#IDEA建立网站：" class="headerlink" title="IDEA建立网站："></a>IDEA建立网站：</h1><p>![image-20210401191301071](C:&#x2F;Users&#x2F;Alexander Liu&#x2F;AppData&#x2F;Roaming&#x2F;Typora&#x2F;typora-user-images&#x2F;image-20210401191301071.png)</p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401191332613.png" alt="image-20210401191332613"></p>
+<p>接下来就可以建立网站：</p>
+<ul>
+<li>网站名字可以为中文</li>
+<li>交给Tomcat管理的时候再起个英文名就行</li>
+</ul>
+<h2 id="Java工程和Module的区别："><a href="#Java工程和Module的区别：" class="headerlink" title="Java工程和Module的区别："></a>Java工程和Module的区别：</h2><ul>
+<li>Java工程下只有一个src</li>
+<li>网站下则有两个文件夹，这才对：<ul>
+<li>一个放静态资源文件</li>
+<li>一个放动态资源文件</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210401191904644.png" alt="image-20210401191904644"></p>
+<ul>
+<li>lib没有的话自己建嘛，jar包要在工程结构里面找到对应的Modules然后导入对应的Jar包</li>
+</ul>
+<h2 id="注意！新的IDEA中发生了很大的变动"><a href="#注意！新的IDEA中发生了很大的变动" class="headerlink" title="注意！新的IDEA中发生了很大的变动"></a>注意！新的IDEA中发生了很大的变动</h2><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/344062503">IDEA改动后如何创建Web项目</a></p>
+<ul>
+<li>要向上面的lib包中添加依赖。</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210402084108642.png" alt="image-20210402084108642"></p>
+<ul>
+<li><p>这里用了Tomcat，如果不用Maven要手动导入这些依赖库的</p>
+</li>
+<li><p>类似于你需要mysql驱动也可以在这里添加的</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210402091308338.png" alt="image-20210402091308338"></p>
+<ul>
+<li>静态文件放在web下面</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210402091401928.png" alt="image-20210402091401928"></p>
+<ul>
+<li>在刚刚的按钮界面，找到deployment，点击添加把刚刚写好的网站文件导入，注意下面有个<code>Application context</code>，这个是部署的目录的名字，自己取一个英文的就好了，然后点击按钮打开即可看到部署的页面。</li>
+<li>注意一下，这里导入的Tomcat和之前手动打开不一样嗷，貌似只有这里部署的你写的Web才能在这里跑起来，在上面讲的<code>Tomcat</code>中的<code>webapps</code>底下写的web页面貌似消失了？？？</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/03/29/Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BHTTP%E5%8D%8F%E8%AE%AE%E4%B8%8ETomcat%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-id="cl6gepmg2003pe0jq0oqiagyn" data-title="Web服务器之HTTP协议与Tomcat服务器" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/03/30/%E4%BA%94%E4%B8%AA%E4%B8%80%E5%B7%A5%E7%A8%8B%E4%BD%9C%E4%B8%9A%E5%AE%9E%E5%BD%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          五个一工程作业实录
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/03/27/Vue%E8%B7%AF%E7%94%B1%E5%AD%A6%E4%B9%A0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Vue路由学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/">2021年美赛</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/Python/">Python</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF/">动力结点后端</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%87%AA%E5%AD%A6%E5%86%85%E5%AE%B9%E6%88%96%E8%AF%BE%E7%A8%8B%E4%BD%9C%E4%B8%9A/">自学内容或课程作业</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skills/" rel="tag">Skills</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/introduction/" rel="tag">introduction</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" rel="tag">云服务器与项目部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" rel="tag">大一学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" rel="tag">大三自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" rel="tag">大二自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E8%B5%9B/" rel="tag">美赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" rel="tag">论文精读</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" rel="tag">读书分享</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" rel="tag">资源福利！！！</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Database/" style="font-size: 12.22px;">Database</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Skills/" style="font-size: 10px;">Skills</a> <a href="/tags/introduction/" style="font-size: 11.11px;">introduction</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" style="font-size: 12.22px;">云服务器与项目部署</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 15.56px;">前端</a> <a href="/tags/%E5%90%8E%E7%AB%AF/" style="font-size: 18.89px;">后端</a> <a href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" style="font-size: 14.44px;">大一学习</a> <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" style="font-size: 17.78px;">大三自学</a> <a href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" style="font-size: 15.56px;">大二自学</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 11.11px;">机器学习</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BE%8E%E8%B5%9B/" style="font-size: 20px;">美赛</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 13.33px;">计算机网络</a> <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" style="font-size: 10px;">论文精读</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" style="font-size: 10px;">读书分享</a> <a href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" style="font-size: 10px;">资源福利！！！</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/16/ML%E5%85%A5%E9%97%A8/">ML入门</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/28/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A03/">大数据分析与智能计算期末复习3</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/">大数据分析与智能计算期末复习2</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">大数据分析与智能计算期末复习</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AF%BE%E7%A8%8B%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">系统架构课程期末复习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

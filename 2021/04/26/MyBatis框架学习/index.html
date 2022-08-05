@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>MyBatis框架学习 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="终于走到了SSM框架，先上MyBatis嗷，把这个看完了再去上Spring。。。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MyBatis框架学习">
+<meta property="og:url" content="http://example.com/2021/04/26/MyBatis%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="终于走到了SSM框架，先上MyBatis嗷，把这个看完了再去上Spring。。。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427164919108.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427171828369.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427172750340.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427173815212.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427173922946.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427182327785.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427182426346.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427183122020.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427183715467.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427184407995.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427184603851.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427184748424.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427191658238.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210428192023934.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210428171014278.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210428200835601.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210428201711453.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210428202225135.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210428202320504.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429090504885.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429090811057.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429091627190.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429092049496.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429094840854.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429101058674.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429102140137.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429210006514.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429210059074.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430103629569.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430105252452.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430110157706.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430110444351.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430111403195.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430202139430.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430205152995.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430210220686.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430210655009.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430215334659.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430220019973.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430220232248.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501101334981.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501101636758.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501104503707.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501110612835.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501110745159.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501112120397.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430111015421.png">
+<meta property="article:published_time" content="2021-04-26T13:54:49.000Z">
+<meta property="article:modified_time" content="2021-05-01T03:33:17.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427164919108.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-MyBatis框架学习" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/04/26/MyBatis%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" class="article-date">
+  <time class="dt-published" datetime="2021-04-26T13:54:49.000Z" itemprop="datePublished">2021-04-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      MyBatis框架学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="终于走到了SSM框架，先上MyBatis嗷，把这个看完了再去上Spring。。。"><a href="#终于走到了SSM框架，先上MyBatis嗷，把这个看完了再去上Spring。。。" class="headerlink" title="终于走到了SSM框架，先上MyBatis嗷，把这个看完了再去上Spring。。。"></a>终于走到了SSM框架，先上MyBatis嗷，把这个看完了再去上Spring。。。</h1><span id="more"></span>
+
+
+
+<h2 id="三层架构："><a href="#三层架构：" class="headerlink" title="三层架构："></a>三层架构：</h2><h3 id="三层架构概念："><a href="#三层架构概念：" class="headerlink" title="三层架构概念："></a>三层架构概念：</h3><ul>
+<li>界面层（视图层）- 接收用户的数据，显示请求的处理结果给用户。(JSP和Servlet和html都是)</li>
+<li>业务逻辑层（Service）-接收界面层数据和计算逻辑，检查数据，业务逻辑，调用数据访问层数据</li>
+<li>数据访问层（持久层） -与数据库打交道的，执行对于数据的查询，修改和删除等等</li>
+</ul>
+<h3 id="三层对应的包："><a href="#三层对应的包：" class="headerlink" title="三层对应的包："></a>三层对应的包：</h3><ul>
+<li>controller（servlet）</li>
+<li>service（XXXService类）</li>
+<li>dao （XXXDao类）</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427164919108.png" alt="image-20210427164919108"></p>
+<h3 id="三层对应框架："><a href="#三层对应框架：" class="headerlink" title="三层对应框架："></a>三层对应框架：</h3><ul>
+<li>界面：springmvc</li>
+<li>业务逻辑：spring</li>
+<li>数据访问：mybatis</li>
+</ul>
+<h2 id="JDBC缺陷："><a href="#JDBC缺陷：" class="headerlink" title="JDBC缺陷："></a>JDBC缺陷：</h2><ul>
+<li><p>代码重复，开发效率低</p>
+</li>
+<li><p>对象查询麻烦，释放资源，自己封装成List</p>
+</li>
+<li><p>业务代码和数据操作会混杂在一起</p>
+</li>
+<li><p><code>DButil</code>我们写过，就是为了解决这些弊端</p>
+</li>
+</ul>
+<h2 id="MyBatis框架概述"><a href="#MyBatis框架概述" class="headerlink" title="MyBatis框架概述"></a>MyBatis框架概述</h2><ul>
+<li>定义：框架</li>
+<li>下载：代码在github上<a target="_blank" rel="noopener" href="https://github.com/mybatis/mybatis-3">MyBatis下载</a></li>
+<li>重要概念：<ul>
+<li>sql mapper: sql映射，把一行的数据映射为一个Java对象，操作这个对象就相当于操作表中的数据。</li>
+<li>Data Access Objects(DAOs)：数据访问，增删改查</li>
+</ul>
+</li>
+<li>功能：<ul>
+<li>提供了创建Connection，Statement , ResultSet的能力。不同我们创建。</li>
+<li>执行sql语句的能力，不用你执行sql。</li>
+<li>循环sql，把sql结果转为java对象，List集合的能力。</li>
+<li>关闭资源的能力</li>
+</ul>
+</li>
+<li>开发人员做的是，提供sql语句，MyBatis执行，返回List集合或者Java对象就结束了。</li>
+<li>总结：<ul>
+<li>mybatis是一个sql的映射框架，提供了数据库的操作能力，增强的JDBC，使用MyBatis让开发人员集中精神写sql就可以了，不用关心其他的东西。</li>
+</ul>
+</li>
+</ul>
+<h2 id="如何配置和使用MyBatis"><a href="#如何配置和使用MyBatis" class="headerlink" title="如何配置和使用MyBatis"></a>如何配置和使用MyBatis</h2><ul>
+<li>下载后解压的内容：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427171828369.png" alt="image-20210427171828369"></p>
+<p>文档和核心的jar包，这个其实吧，用途不大，主要是文档orz。mybatis的添加其实直接加依赖就好了，文档中有添加对应依赖的语句，或者在之前那个仓库找也可以。其实不用下这个的，<a target="_blank" rel="noopener" href="https://mybatis.org/mybatis-3/zh/index.html">MyBatis官方中文文档</a>。</p>
+<h3 id="查询数据库例子："><a href="#查询数据库例子：" class="headerlink" title="查询数据库例子："></a>查询数据库例子：</h3><ul>
+<li>配置添加：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427172750340.png" alt="image-20210427172750340"></p>
+<ul>
+<li><p>需要的配置：mysql和mybatis的依赖</p>
+</li>
+<li><p>XML文件的书写：</p>
+<ul>
+<li>与dao接口处于同一个文件夹下</li>
+<li>文件名称和接口保持一致</li>
+</ul>
+</li>
+<li><p>具体写法：</p>
+<ul>
+<li><p>找文档！！！文档写的很详细的。</p>
+</li>
+<li><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427173815212.png" alt="image-20210427173815212"></p>
+</li>
+<li><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427173922946.png" alt="image-20210427173922946"></p>
+</li>
+<li><p>mapper是当前文件根标签，必须的</p>
+</li>
+<li><p>namespace:</p>
+<ul>
+<li>命名空间，唯一的值，可以是自定义的字符串。</li>
+<li>要求你使用dao接口的全限定名称。</li>
+<li>这个要改成当前的目录下的包名+类名（可以用相对路径选择）</li>
+<li>全限定名称获取：<img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427182327785.png" alt="image-20210427182327785"></li>
+</ul>
+</li>
+<li><p>可以使用特定标签标识特定操作：</p>
+<ul>
+<li>select表示执行查询</li>
+<li>update表示更新</li>
+<li>insert表示插入</li>
+<li>delete表示删除</li>
+</ul>
+</li>
+<li><p>语句实例：<img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427182426346.png" alt="image-20210427182426346"></p>
+</li>
+<li><p>mybatis会找到这些数据并且将数据赋予对应的对象</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="连接数据库配置："><a href="#连接数据库配置：" class="headerlink" title="连接数据库配置："></a>连接数据库配置：</h4><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427183122020.png" alt="image-20210427183122020"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span> ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">configuration</span></span></span><br><span class="line"><span class="meta">  <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">  <span class="string">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;development&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;development&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span>=<span class="string">&quot;POOLED&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;driver&#125;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;url&#125;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;username&#125;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;password&#125;&quot;</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">environment</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">environments</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">mappers</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">&quot;org/mybatis/example/BlogMapper.xml&quot;</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>这个文件，名字可以自己取，放在resources根目录之下，内容不用去背，这个是MyBatis住配置文件，sql映射文件的位置</p>
+</li>
+<li><p>内容解读：</p>
+<ul>
+<li><p>最上面是约束文件，约束格式的。</p>
+</li>
+<li><p>configuration是根标签，配置总标签。</p>
+</li>
+<li><p>environment是环境的配置文件，表示环境的名称的:</p>
+<ul>
+<li>transactionManager: mybatis事务类型，type: JDBC表示使用JDBC中的Connection对象的commit和rollback做事务处理。</li>
+<li>下面的用的少，可以不怎么看了。</li>
+</ul>
+</li>
+<li><p>dataSource表示数据源，连接数据库的：</p>
+<ul>
+<li>下面的这些是数据库的连接配置文件</li>
+<li>name中的driver , user , username , password是固定值，不可以改的</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427183715467.png" alt="image-20210427183715467"></p>
+</li>
+</ul>
+</li>
+<li><p>environments中有个default，必须和某个environment的id值一样嗷，告诉mybatis使用哪个数据库的连接信息，也就是使用哪个数据库。就是你底下可以为了方便配置多个数据库的登录信息，但是当你真的去使用数据库时，你需要通过default告诉数据库去具体使用哪个配置。</p>
+</li>
+<li><p>把你在代码中写的移动到了配置文件中而已</p>
+</li>
+<li><p>底下还有个mappers，一个mapper指定一个文件的位置。从类路径开始的位置指定路径信息。<code>target/classes(类路径)</code></p>
+</li>
+<li><p>为了编译过程中把其他文件也加入进去：</p>
+<ul>
+<li><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427184407995.png" alt="image-20210427184407995"></p>
+</li>
+<li><p>可以多安装一个插件就可以了。（其实我的IDEA默认有的，加一个build的配置就行）</p>
+</li>
+<li><p>并且需要：</p>
+<ul>
+<li><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427184603851.png" alt="image-20210427184603851"></li>
+</ul>
+</li>
+<li><p>需要指定你需要的文件的位置嗷：</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427184748424.png" alt="image-20210427184748424"></p>
+<p>位置是你编译的位置就可以了。</p>
+</li>
+</ul>
+<h3 id="执行查询程序："><a href="#执行查询程序：" class="headerlink" title="执行查询程序："></a>执行查询程序：</h3><ul>
+<li>步骤：<ul>
+<li>定义mybatis主配置文件的名称，从类路径根开始</li>
+<li>读取config表示的文件</li>
+<li>创建sqlSessioinFactoryBuilder对象</li>
+<li>创建sqlSessionFactory对象</li>
+<li><strong>获取sqlSession对象，获取SqlSession</strong></li>
+<li><strong>指定要执行的sql语句的表示，sql映射文件中的namespace+’.’+标签的id值</strong></li>
+<li>执行sql语句</li>
+<li>输出结果</li>
+<li>关闭sqlSession对象</li>
+</ul>
+</li>
+<li>例子：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210427191658238.png" alt="image-20210427191658238"></p>
+<p>默认目录在target的classes文件夹下开始的，编译后的文件才是开始执行的文件</p>
+<ul>
+<li>过程好复杂orz</li>
+</ul>
+<h2 id="三种解决xml文件没有在target中的方式："><a href="#三种解决xml文件没有在target中的方式：" class="headerlink" title="三种解决xml文件没有在target中的方式："></a>三种解决xml文件没有在target中的方式：</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV185411s7Ry?p=11">b站相应教程</a></p>
+<ul>
+<li>总结：<ul>
+<li>clean之后再compile</li>
+<li>build中的rebuild</li>
+<li>file中restart IDLE</li>
+<li>实在不行手动把文件拷到对应的位置就可以了。</li>
+</ul>
+</li>
+</ul>
+<h2 id="插入操作："><a href="#插入操作：" class="headerlink" title="插入操作："></a>插入操作：</h2><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210428192023934.png" alt="image-20210428192023934"></p>
+<ul>
+<li>MyBatis默认是不自动提交事务的，要手动提交</li>
+<li><code>sqlSession.commit();</code></li>
+<li>过程：<ul>
+<li>原有过程中添加修改：<ul>
+<li>增加抽象的Dao中的方法定义</li>
+<li>xml指定新的sql语句</li>
+<li>执行的java文件中更改执行的id</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="日志开启"><a href="#日志开启" class="headerlink" title="日志开启"></a>日志开启</h2><p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210428171014278.png" alt="image-20210428171014278"></p>
+<ul>
+<li>可以看到语句和语句执行的情况。</li>
+</ul>
+<h1 id="主要类的介绍："><a href="#主要类的介绍：" class="headerlink" title="主要类的介绍："></a>主要类的介绍：</h1><h2 id="Resources类："><a href="#Resources类：" class="headerlink" title="Resources类："></a>Resources类：</h2><ul>
+<li>mybatis中的一个类，负责读取主配置文件</li>
+<li><code>InputStream in = Resources.getResourceAsStream(&quot;mybatis.xml&quot;);</code></li>
+</ul>
+<h2 id="SqlSessionFactoryBuilder："><a href="#SqlSessionFactoryBuilder：" class="headerlink" title="SqlSessionFactoryBuilder："></a>SqlSessionFactoryBuilder：</h2><ul>
+<li>创建SqlSessionFactory对象</li>
+<li><code>SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();</code></li>
+</ul>
+<h2 id="SqlSessionFactory："><a href="#SqlSessionFactory：" class="headerlink" title="SqlSessionFactory："></a>SqlSessionFactory：</h2><ul>
+<li><p>重量级对象，创建时间长，使用资源多，项目中有一个就够用。</p>
+</li>
+<li><p><code>SqlSessionFactory factory = builder.build(in);</code></p>
+</li>
+<li><p>接口，实现类<code>DefaultSqlSessionFactory</code></p>
+</li>
+<li><p>作用：</p>
+<ul>
+<li>获取SqlSession对象</li>
+<li><code>SqlSession sqlSession = factory.openSession()</code></li>
+</ul>
+</li>
+<li><p>方法说明：</p>
+<ul>
+<li>openSession()：无参数的，获取是非自动提交事务的SqlSession对象</li>
+<li>openSession(boolean)：openSession(true)就是自动提交的</li>
+</ul>
+</li>
+</ul>
+<h2 id="SqlSession"><a href="#SqlSession" class="headerlink" title="SqlSession:"></a>SqlSession:</h2><ul>
+<li>也是个接口，定义了操作数据库的方法，例如：selectOne() , selectList() ….</li>
+<li>实现类：DefaultSqlSession</li>
+<li>使用要求：<ul>
+<li>不是线程安全的，需要在方法内部使用，在sql语句执行之前，使用openSession()获取SqlSession。执行完sql语句之后关闭它，<code>SqlSession.close()</code>，这样能保证它的使用是线程安全的。</li>
+</ul>
+</li>
+</ul>
+<h1 id="其他内容"><a href="#其他内容" class="headerlink" title="其他内容"></a>其他内容</h1><h2 id="工具类编写："><a href="#工具类编写：" class="headerlink" title="工具类编写："></a>工具类编写：</h2><ul>
+<li><p>static是为了使得定义静态的共有资源，方便资源共享与方法的使用而不需要实例化对象。<a target="_blank" rel="noopener" href="https://blog.csdn.net/MyySophia/article/details/88593596">一些讲解</a></p>
+</li>
+<li><p>工具类代码</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tuzi.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.io.Resources;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSession;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactoryBuilder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyBatisUtils</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">SqlSessionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">config</span> <span class="operator">=</span> <span class="string">&quot;mybatis.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">InputStream</span> <span class="variable">in</span>  <span class="operator">=</span> Resources.getResourceAsStream(config);</span><br><span class="line">            <span class="comment">//创建SqlSessionFactory对象，使用SqlSessionFactoryBuild</span></span><br><span class="line">            factory = <span class="keyword">new</span> <span class="title class_">SqlSessionFactoryBuilder</span>().build(in);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取SqlSession方法</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> SqlSession <span class="title function_">getSqlSession</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">SqlSession</span> <span class="variable">sqlSession</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (factory!=<span class="literal">null</span>)&#123;</span><br><span class="line">            sqlSession = factory.openSession(); <span class="comment">//非自动提交事务</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> sqlSession;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="传统Dao："><a href="#传统Dao：" class="headerlink" title="传统Dao："></a>传统Dao：</h2><h3 id="代码模板的使用："><a href="#代码模板的使用：" class="headerlink" title="代码模板的使用："></a>代码模板的使用：</h3><ul>
+<li>File -&gt; Setteings -&gt; Editor -&gt; File and Code Templates -&gt; Files -&gt; + -&gt;写一个名字，extension换成对应的文件格式后缀</li>
+<li>把内容定下来，并且起一个名字就ok</li>
+<li>比如mybatis.xml文件啊之类的配置文件就可以配成模板</li>
+<li>创建文件的时候，会自动显示出来可以选模板的嗷！！！</li>
+<li><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210428200835601.png" alt="image-20210428200835601"></li>
+<li>完成实现类来实现Dao，通过实现类来完成这些功能，而不是在xml中指定返回类型。</li>
+</ul>
+<h1 id="后一章重点内容"><a href="#后一章重点内容" class="headerlink" title="后一章重点内容"></a>后一章重点内容</h1><h2 id="动态代理："><a href="#动态代理：" class="headerlink" title="动态代理："></a>动态代理：</h2><p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210428201711453.png"></p>
+<ul>
+<li>Mybatis动态代理：<ul>
+<li>更具Dao的方法调用，获取执行sql语句的信息</li>
+<li>mybatis根据你的dao接口，创建出实现类，并创建这个对象，完成SqlSession调用方法，访问数据库。</li>
+<li>Mybatis帮你干，所以不用你去写实现类了。</li>
+</ul>
+</li>
+</ul>
+<h3 id="动态代理使用："><a href="#动态代理使用：" class="headerlink" title="动态代理使用："></a>动态代理使用：</h3><p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210428202225135.png" alt="image-20210428202225135"></p>
+<ul>
+<li>Mybatis就帮你创建了实现类（相当于你上面干的事儿）</li>
+<li>然后就可以直接使用“实现类”的方法来解决这个问题</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210428202320504.png" alt="image-20210428202320504"></p>
+<ul>
+<li>和上面相比，相当于把<code>sqlId</code>的selectList(sqlId)这种方式转换成通过class信息，mybatis直接帮你创建好对应的方法实现类来获得可以执行功能的数据库对象。</li>
+<li>核心代码：<code>StudentDao dao = sqlSession.getMapper(StudentDao.class);</code></li>
+<li>然后就可以使用<code>dao</code>中的方法来执行sql语句并返回结果。</li>
+</ul>
+<h2 id="传入参数："><a href="#传入参数：" class="headerlink" title="传入参数："></a>传入参数：</h2><h3 id="parameterType："><a href="#parameterType：" class="headerlink" title="parameterType："></a>parameterType：</h3><ul>
+<li><p>从java代码中把数据传入mapper文件的sql语句中.</p>
+</li>
+<li><p>parameterType: 写在mapper文件中的一个属性，表示dao接口中方法的参数的数据类型。</p>
+</li>
+<li><p>使用例子：</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429090504885.png" alt="image-20210429090504885"></p>
+<ul>
+<li><p>去掉好像也没有问题嗷！！！</p>
+</li>
+<li><p>原因：</p>
+<ul>
+<li>parameterType: dao接种中方法参数的数据类型。</li>
+<li>值是java中数据类型的全限定名称或者是mybatis定义的别名。例如上面写成int也行（这个别名是mybatis文档中告诉你它自己定义的嗷！！！）</li>
+</ul>
+</li>
+<li><p>别名：</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429090811057.png" alt="image-20210429090811057"></p>
+<p>具体在你下载的mybatis文档的第15页左右。</p>
+<ul>
+<li>parameterType不是强制的，一般我们不写，myBatis可以通过反射来知道传入参数的类型的，问题不大。</li>
+</ul>
+<h3 id="一个简单参数："><a href="#一个简单参数：" class="headerlink" title="一个简单参数："></a>一个简单参数：</h3><ul>
+<li><p>mybatis把java的基本数据类型和String都叫做基本类型</p>
+</li>
+<li><p>在mapper文件中获得简单类型 一个值，使用<code>#&#123;任意字符&#125;</code>。</p>
+</li>
+<li><p>本质：</p>
+<ul>
+<li><p>写了#{}之后，mybatis执行sql是使用的jdbc中的PreparedStatement对象</p>
+</li>
+<li><p>由mybatis执行了下面的内容：</p>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429091627190.png" alt="image-20210429091627190"></p>
+</li>
+</ul>
+</li>
+<li><p>因此你一开始定义的对象里面一定要有无参构造方法和set和get的值，都要有，不然mybatis通过反射拿不到属性名和对应的方法的嗷。</p>
+</li>
+</ul>
+<h3 id="多个参数："><a href="#多个参数：" class="headerlink" title="多个参数："></a>多个参数：</h3><h4 id="Param命名参数（推荐使用）："><a href="#Param命名参数（推荐使用）：" class="headerlink" title="@Param命名参数（推荐使用）："></a>@Param命名参数（推荐使用）：</h4><ul>
+<li><p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429092049496.png" alt="image-20210429092049496"></p>
+</li>
+<li><p>在参数前面使用，<code>@Param(&quot;自定义参数名称&quot;)</code></p>
+</li>
+<li><p>然后在mapper文件中去使用这个命名。</p>
+</li>
+</ul>
+<h4 id="使用对象传参（推荐使用）："><a href="#使用对象传参（推荐使用）：" class="headerlink" title="使用对象传参（推荐使用）："></a>使用对象传参（推荐使用）：</h4><ul>
+<li>新构造一个Java类，含有get和set的那种，在dao中的抽象方法中，加入一个传入对象的抽象方法。</li>
+<li>用对象的属性的值来代表内容。</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429094840854.png" alt="image-20210429094840854"></p>
+<h4 id="使用位置传参（不推荐）："><a href="#使用位置传参（不推荐）：" class="headerlink" title="使用位置传参（不推荐）："></a>使用位置传参（不推荐）：</h4><ul>
+<li>按照0的位置开始</li>
+<li><code>#&#123;arg0&#125; #&#123;arg1&#125;</code>这种形式能够获得多个参数的值</li>
+<li>位置有可能出错嗷，不是特别清楚嗷！！！</li>
+</ul>
+<h4 id="使用Map传参（不推荐）："><a href="#使用Map传参（不推荐）：" class="headerlink" title="使用Map传参（不推荐）："></a>使用Map传参（不推荐）：</h4><ul>
+<li>使用Map存放多个值</li>
+<li>用key去取参数</li>
+<li>一个实例：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429101058674.png" alt="image-20210429101058674"></p>
+<ul>
+<li>可读性差，不用Map。阿里巴巴开发文档说明了不要使用Map开发。</li>
+</ul>
+<h3 id="和-的区别："><a href="#和-的区别：" class="headerlink" title="#和$的区别："></a>#和$的区别：</h3><ul>
+<li>#{…}代替sql语句的?更加安全</li>
+<li>#占位符：<ul>
+<li>放在列名后面，在值前面。</li>
+<li>主要用于插值</li>
+</ul>
+</li>
+<li>$字符串替换：<ul>
+<li>主要用于替换表名，列名和不同列排序等操作</li>
+<li>使用$包含的“字符串”替换所在位置</li>
+</ul>
+</li>
+<li><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429102140137.png" alt="image-20210429102140137"></li>
+<li>相当于对应的就是Statement和PreparedStatement</li>
+<li>使用$的一个小栗子：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429210006514.png" alt="image-20210429210006514"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210429210059074.png" alt="image-20210429210059074"></p>
+<ul>
+<li>$可以替换表名或者列名，你能确定数据是安全的。</li>
+</ul>
+<h4 id="使用占位符替换列名"><a href="#使用占位符替换列名" class="headerlink" title="使用占位符替换列名"></a>使用占位符替换列名</h4><ul>
+<li><p>本质上就是字符串的拼接（注意括号的情况）</p>
+</li>
+<li><p># 使用 ? 在sql语句中做站位的，使用PreparedStatement执行sql，效率最高。</p>
+</li>
+<li><p>#能够避免sql注入，更加安全。</p>
+</li>
+<li><p>$ 不适用占位符，是字符串的连接。使用Statement执行sql，效率更低，缺乏安全性。</p>
+</li>
+<li><p>$ 可以替换表名或者列名<code>select * from emp where ename=&#39;liututu&#39; order by $&#123;strategy&#125;</code>，这个strategy就是通过sql注入实现了排序的方式的多样性。</p>
+</li>
+</ul>
+<h2 id="内容复习："><a href="#内容复习：" class="headerlink" title="内容复习："></a>内容复习：</h2><ul>
+<li>动态代理：<ul>
+<li>mybatis帮你创建dao实现类，调用实现类中的方法来执行sql语句。</li>
+<li>使用过程：<ul>
+<li><code>sqlSession.getMapper(接口.class)</code></li>
+<li>使用dao接口的方法，调用方法就执行了mapper文件中的sql语句。</li>
+</ul>
+</li>
+<li>要求：<ul>
+<li>dao和mapper在同一个目录。</li>
+<li>dao接口和mapper文件名称一致。</li>
+<li>mapper文件中的namespace的值是dao接口的全限定名称，</li>
+<li>mapper文件中的select , insert , update , delete等的id是接口中的方法名称。</li>
+<li>dao接口中不要使用重载方法，写唯一的，不然反射可能出问题！！！</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>传参方式：<ul>
+<li>一个简单类型的参数：#{任意字符}</li>
+<li>多个简单类型的参数，@Param(“自定义名称”)</li>
+<li>使用一个Java对象，这个对象必须要有一个无参构造以及每个参数对应的get方法，不然反射玩不起来、对象作为mapper文件找到参数</li>
+<li>使用参数的位置：语法为<code>#&#123;arg0&#125;,#&#123;arg1&#125;</code></li>
+<li>使用map作为参数，#{map的key}</li>
+</ul>
+</li>
+<li>#和$的区别：<ul>
+<li>都是占位符</li>
+<li>#是用来表示列值的，放在等号右侧</li>
+<li>$表示字符串的连接，把sql语句连接成一个字符串</li>
+<li>#使用的jdbc指定PreparedStatement对象执行SQL语句，效率高没有sql注入的风险</li>
+<li>$使用的是Statement，效率低一点，有注入的风险。</li>
+</ul>
+</li>
+</ul>
+<h2 id="封装输出结果resultType："><a href="#封装输出结果resultType：" class="headerlink" title="封装输出结果resultType："></a>封装输出结果resultType：</h2><ul>
+<li><p>mybatis执行了sql语句得到了java对象</p>
+</li>
+<li><p>resultType结果类型，sql执行完毕后，数据转为Java对象。</p>
+</li>
+<li><p>查询语句必须有resultType</p>
+</li>
+<li><p>处理方式：</p>
+<ul>
+<li><p>mybatis执行sql语句，调用无参构造创建对象。</p>
+</li>
+<li><p>mybatis把ResultSet指定列值赋给同名的属性。</p>
+</li>
+<li><p>对等的jdbc:</p>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430103629569.png" alt="image-20210430103629569"></p>
+</li>
+</ul>
+</li>
+<li><p>不管返回值是单个对象还是List，写的都应该是你创建的那个对象嗷！！！</p>
+</li>
+<li><p>resultType中的数据类型是任意的，只要能够将sql结果转为这个类就ok。</p>
+</li>
+<li><p>很灵活，这个对象可以很灵活的改变嗷，根据需要不一样就可以定义不一定的对象。</p>
+</li>
+</ul>
+<h3 id="定义别名："><a href="#定义别名：" class="headerlink" title="定义别名："></a>定义别名：</h3><ul>
+<li>例子：<code>select count(*) from student;</code></li>
+<li>要么用别名，要么用接口全限定名称</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430105252452.png" alt="image-20210430105252452"></p>
+<ul>
+<li><p>类型和它的值：</p>
+<ul>
+<li>类型的全限定名称</li>
+<li>类型的别名</li>
+<li>建议使用全限定名称</li>
+</ul>
+</li>
+<li><p>思考：<img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430110157706.png" alt="image-20210430110157706"></p>
+</li>
+<li><p>定义自定义类型的别名：</p>
+<ul>
+<li>mybatis主配置文件中定义，使用&lt;typeAlias&gt;定义别名。</li>
+<li>可以resultType中使用自定义别名。</li>
+</ul>
+</li>
+</ul>
+<h4 id="方式一："><a href="#方式一：" class="headerlink" title="方式一："></a>方式一：</h4><ul>
+<li>具体形式：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430110444351.png" alt="image-20210430110444351"></p>
+<ul>
+<li><p>多的都可以在这里配置嗷！！！</p>
+</li>
+<li><p>一次给一个对象定义别名嗷。</p>
+</li>
+</ul>
+<h4 id="方式二："><a href="#方式二：" class="headerlink" title="方式二："></a>方式二：</h4><ul>
+<li>package中，name是包名，这个包中的所有类，类名就是别名，类名不区分大小写。</li>
+<li>具体形式：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430111403195.png" alt="image-20210430111403195"></p>
+<ul>
+<li>感觉很好用哇！！！</li>
+</ul>
+<h4 id="summary："><a href="#summary：" class="headerlink" title="summary："></a>summary：</h4><ul>
+<li>第二种用到多，但是有可能发生冲突的情况。</li>
+<li>第一种灵活，但自定义名称也有可能冲突。</li>
+<li>综上所述，推荐使用全限定名称。</li>
+</ul>
+<h3 id="Map："><a href="#Map：" class="headerlink" title="Map："></a>Map：</h3><ul>
+<li>定义一个方法返回Map，推荐<code>Map&lt;Object,Object&gt;</code>，返回的值实际上是查询的列名为key，查出来的值为value。</li>
+<li>返回值为Map的时候，只能最多返回一行记录，多余一行是错误的。使用的少嗷。返回对象是最方便的。</li>
+</ul>
+<h2 id="resultMap："><a href="#resultMap：" class="headerlink" title="resultMap："></a>resultMap：</h2><ul>
+<li><p>结果映射，指定列名和java对象的属性对应关系。</p>
+</li>
+<li><p>使用场景：</p>
+<ul>
+<li>自定义列值赋予哪个属性</li>
+<li>当你的列名和属性名不一样的时候，一定使用resultMap，默认是相同的属性名和相同的列名是对应的。</li>
+</ul>
+</li>
+<li><p>使用方法：</p>
+<ul>
+<li>定义resultMap。</li>
+<li>在select标签中，使用resultMap来应用定义的。</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430202139430.png" alt="image-20210430202139430"></p>
+<ul>
+<li>可以自己定义，定义的resultMap是可以复用的。</li>
+<li>没有指定上的属性自动补上NULL嗷！！！</li>
+<li>指定列和属性的赋值关系。</li>
+</ul>
+</li>
+<li><p>resultMap的id必须要是唯一的嗷！！！</p>
+</li>
+<li><p>resultMap和resultType不要一起使用，只能使用一个嗷！！！</p>
+</li>
+</ul>
+<h2 id="列别名："><a href="#列别名：" class="headerlink" title="列别名："></a>列别名：</h2><ul>
+<li>resultType的原则是：<ul>
+<li>同名的列赋值给同名的属性</li>
+<li>因此可以使用列别名来解决这个问题，列别名（as…），要是属性名</li>
+</ul>
+</li>
+</ul>
+<p>上面两个都可以，但是推荐用第一种嗷！！！</p>
+<h2 id="模糊查询："><a href="#模糊查询：" class="headerlink" title="模糊查询："></a>模糊查询：</h2><h3 id="第一种："><a href="#第一种：" class="headerlink" title="第一种："></a>第一种：</h3><ul>
+<li>Java代码中指定like的内容</li>
+<li>使用占位符号: #{name}</li>
+<li>推荐使用这个，直接传入这个参数就好啦</li>
+</ul>
+<h3 id="第二种："><a href="#第二种：" class="headerlink" title="第二种："></a>第二种：</h3><ul>
+<li>拼接字符串来获得</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430205152995.png" alt="image-20210430205152995"></p>
+<ul>
+<li>以上两种推荐第一种。</li>
+</ul>
+<h1 id="后一章重点内容："><a href="#后一章重点内容：" class="headerlink" title="后一章重点内容："></a>后一章重点内容：</h1><h2 id="动态sql"><a href="#动态sql" class="headerlink" title="动态sql:"></a>动态sql:</h2><ul>
+<li>通过条件获得不同的sql语句。</li>
+<li>主要是where部分发生变化。</li>
+<li>使用的是mybatis提供的不同的标签来实现。</li>
+<li>动态sql使用java对象作为参数。</li>
+</ul>
+<h3 id="if标签："><a href="#if标签：" class="headerlink" title="if标签："></a>if标签：</h3><p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430210220686.png" alt="image-20210430210220686"></p>
+<ul>
+<li><p>相当于对于某些条件进行判断，以构造合法有意义的sql语句。</p>
+</li>
+<li><p>当上面的有问题，下面的没问题的时候，出问题了，语句多了一个and，这个地方有一个小技巧：</p>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430210655009.png" alt="image-20210430210655009"></p>
+<p>注意，可能下面的语句也要改哦。</p>
+</li>
+</ul>
+<h3 id="where标签："><a href="#where标签：" class="headerlink" title="where标签："></a>where标签：</h3><ul>
+<li>包含多个if的，当多个if有一个成立的话，where标签会自动增加一个where关键字，并去掉if中多余的and和or等</li>
+<li>哇塞，神奇嗷呜！！！</li>
+</ul>
+<h3 id="foreach标签："><a href="#foreach标签：" class="headerlink" title="foreach标签："></a>foreach标签：</h3><ul>
+<li>循环Java中数组，list集合的，主要用在sql的in语句中。</li>
+<li>适用于<code>in (a,b,c)</code>这种方式</li>
+</ul>
+<p>用法：</p>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430215334659.png" alt="image-20210430215334659"></p>
+<ul>
+<li>语法规则：<ul>
+<li>collection：接口中的方法参数的类型，数组是array，list使用list。</li>
+<li>item：自定义的，表示数组和集合成员的变量。</li>
+<li>open：循环开始时候的字符</li>
+<li>close：循环结束时候的字符</li>
+<li>separator：成员之间的分隔符</li>
+</ul>
+</li>
+<li>具体例子：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430220019973.png" alt="image-20210430220019973"></p>
+<ul>
+<li>也可以这么写：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430220232248.png" alt="image-20210430220232248"></p>
+<h3 id="动态SQL之代码片段"><a href="#动态SQL之代码片段" class="headerlink" title="动态SQL之代码片段"></a>动态SQL之代码片段</h3><ul>
+<li>复用常用的sql语句封装成代码片段</li>
+<li>步骤：<ul>
+<li>先定义&lt;sql id&#x3D;”自定义名称唯一”&gt; sql语句 ， 表名 ， 字段等&lt;&#x2F;sql&gt;（是在mapper中的xml定义的嗷）</li>
+<li>再使用，&lt;include refid&#x3D;”id的值”&gt;</li>
+</ul>
+</li>
+<li>上面直接对应的替换就ok了。</li>
+</ul>
+<h2 id="Mybatis主配置内容："><a href="#Mybatis主配置内容：" class="headerlink" title="Mybatis主配置内容："></a>Mybatis主配置内容：</h2><ul>
+<li><p>settings：</p>
+<ul>
+<li>配置项的内容有好多，文档中有，可以取康康嗷，默认的其实一般就够用了。</li>
+</ul>
+</li>
+<li><p>transactionManager：</p>
+<ul>
+<li>提交事务回滚事务的方式，type是事务处理的类型。</li>
+<li>type的类型：<ul>
+<li>JDBC：表示mybatis底层是调用JDBC中的Connection对象的，commit和rollback</li>
+<li>MANAGED：把mybatis的食物处理委托给其他容器。（一个服务器软件或者给Spring去赶）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>datasource：</p>
+<ul>
+<li>数据源，java体系中，实现了javax.sql.DataSource的都是数据源。</li>
+<li>所以为了获取这个连接，必须给出驱动啊，用户名和密码啊等信息嗷。</li>
+<li>这里的type指定数据源的类型：<ul>
+<li>POOLED：使用连接池，会创建PooledDataSource类</li>
+<li>UNPOOLED：不使用连接池，每次执行sql，先创建连接，执行sql，再关闭连接。Mybatis会创建一个UnPooledDataSource管理Connection对象的使用。一般情况下不用的嗷。</li>
+<li>JNDI：Java命名和目录服务（windows注册表）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="后一章重要内容："><a href="#后一章重要内容：" class="headerlink" title="后一章重要内容："></a>后一章重要内容：</h1><h2 id="属性配置文件："><a href="#属性配置文件：" class="headerlink" title="属性配置文件："></a>属性配置文件：</h2><ul>
+<li><p>把数据库信息放在一个单独的文件中，和mybatis主配置文件分开。目的是便于修改，保存和管理多个数据库的信息。</p>
+</li>
+<li><p>步骤：</p>
+<ul>
+<li><p>resources目录中定义一个属性配置文件，例如：jdbc.properties。在属性配置文件中，定义数据，格式是：key-value。一般使用 . 做多级目录的。这样代码结构比较清晰。</p>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501101334981.png" alt="image-20210501101334981"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501101636758.png" alt="image-20210501101636758"></p>
+<p>整体结构很清晰，通过 . 的方式可以很直白的表示这是jdbc的相应数据。</p>
+</li>
+<li><p>然后在主配置文件中，引入相应的配置文件。</p>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501104503707.png" alt="image-20210501104503707"></p>
+</li>
+<li><p>这样就完成了相应的配置，可以成功执行sql！！！</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Mybatis主配置内容（续）"><a href="#Mybatis主配置内容（续）" class="headerlink" title="Mybatis主配置内容（续）:"></a>Mybatis主配置内容（续）:</h2><ul>
+<li>mapper标签一次指定一个文件，如果需要多个dao文件的话，需要多个mapper来指定多个mapper文件。</li>
+<li>使用报名来指定mapper文件，name是xml文件（mapper文件）所在的包名。这个包中所有的xml文件，都能被一次加载进来，一些要求：<ul>
+<li>mapper文件名称需要和接口名称一样，区分大小写，都要一样。</li>
+<li>mapper文件名和dao接口需要在同一目录中。</li>
+</ul>
+</li>
+</ul>
+<h2 id="PageHelper："><a href="#PageHelper：" class="headerlink" title="PageHelper："></a>PageHelper：</h2><ul>
+<li>做数据分页的，在mysql中是limit语句</li>
+<li>Maven添加相应的依赖：</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.pagehelper<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>pagehelper<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>添加完相应的依赖后，重新load才可以，然后要在mybatis的主配置文件的environments之前加入plugin。</p>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501110612835.png" alt="image-20210501110612835"></p>
+</li>
+<li><p>相当于过滤器的作用。</p>
+</li>
+<li><p>使用：</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501110745159.png" alt="image-20210501110745159"></p>
+<ul>
+<li><p>使用：</p>
+<ul>
+<li><p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210501112120397.png" alt="image-20210501112120397"></p>
+</li>
+<li><p>不是mybatis框架的，是一个小组件，便于分页处理。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="一些重要的补充知识点"><a href="#一些重要的补充知识点" class="headerlink" title="一些重要的补充知识点"></a>一些重要的补充知识点</h1><ul>
+<li>select语句中查询的属性和你对象属性的映射关系：</li>
+</ul>
+<p><img src="https://gitee.com/alexs-rabbit//picture2/raw/master/image-20210430111015421.png" alt="image-20210430111015421"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/04/26/MyBatis%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" data-id="cl6gepmfp001xe0jq57j32z44" data-title="MyBatis框架学习" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/05/01/Spring%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Spring框架学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/04/21/JSP%E5%AD%A6%E4%B9%A0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JSP学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/">2021年美赛</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/Python/">Python</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF/">动力结点后端</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%87%AA%E5%AD%A6%E5%86%85%E5%AE%B9%E6%88%96%E8%AF%BE%E7%A8%8B%E4%BD%9C%E4%B8%9A/">自学内容或课程作业</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skills/" rel="tag">Skills</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/introduction/" rel="tag">introduction</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" rel="tag">云服务器与项目部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" rel="tag">大一学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" rel="tag">大三自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" rel="tag">大二自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E8%B5%9B/" rel="tag">美赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" rel="tag">论文精读</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" rel="tag">读书分享</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" rel="tag">资源福利！！！</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Database/" style="font-size: 12.22px;">Database</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Skills/" style="font-size: 10px;">Skills</a> <a href="/tags/introduction/" style="font-size: 11.11px;">introduction</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" style="font-size: 12.22px;">云服务器与项目部署</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 15.56px;">前端</a> <a href="/tags/%E5%90%8E%E7%AB%AF/" style="font-size: 18.89px;">后端</a> <a href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" style="font-size: 14.44px;">大一学习</a> <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" style="font-size: 17.78px;">大三自学</a> <a href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" style="font-size: 15.56px;">大二自学</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 11.11px;">机器学习</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BE%8E%E8%B5%9B/" style="font-size: 20px;">美赛</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 13.33px;">计算机网络</a> <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" style="font-size: 10px;">论文精读</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" style="font-size: 10px;">读书分享</a> <a href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" style="font-size: 10px;">资源福利！！！</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/16/ML%E5%85%A5%E9%97%A8/">ML入门</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/28/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A03/">大数据分析与智能计算期末复习3</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/">大数据分析与智能计算期末复习2</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">大数据分析与智能计算期末复习</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AF%BE%E7%A8%8B%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">系统架构课程期末复习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Nginx学习 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Cloud中Nginx知识补充 Nginx基本概念：    是啥，干啥 反向代理 负载均衡 动静分离    Nginx学习大纲：   Linux安装 Nginx常用命令 配置文件    Nginx配置实例：     反向代理 Nginx负载均衡 动静分离 配置高可用集群    Nginx原理  Nginx简介： Nginx为高性能反向代理服务器，为了性能而开发了，十分注重效率，非常好用嗷！！！ 可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx学习">
+<meta property="og:url" content="http://example.com/2021/08/12/Nginx%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Cloud中Nginx知识补充 Nginx基本概念：    是啥，干啥 反向代理 负载均衡 动静分离    Nginx学习大纲：   Linux安装 Nginx常用命令 配置文件    Nginx配置实例：     反向代理 Nginx负载均衡 动静分离 配置高可用集群    Nginx原理  Nginx简介： Nginx为高性能反向代理服务器，为了性能而开发了，十分注重效率，非常好用嗷！！！ 可">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210812215139.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210812215606.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210813083546.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210813083927.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815191129.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815202512.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815191629.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815201129.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815202629.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815212916.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815213048.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815213317.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815214427.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815214524.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815215012.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815215148.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815215440.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816092307.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816092422.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816092450.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816092624.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816092916.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816100105.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816101914.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816104144.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816104220.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816104419.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816104431.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816105849.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816110224.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816110757.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816114105.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816114207.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816114335.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816115456.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816163314.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816163619.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816173426.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816173654.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816173853.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816174048.png">
+<meta property="og:image" content="c:/Users/Alexander/AppData/Roaming/Typora/typora-user-images/image-20210816190551708.png">
+<meta property="article:published_time" content="2021-08-12T13:02:20.000Z">
+<meta property="article:modified_time" content="2021-08-16T12:20:05.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210812215139.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Nginx学习" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/08/12/Nginx%E5%AD%A6%E4%B9%A0/" class="article-date">
+  <time class="dt-published" datetime="2021-08-12T13:02:20.000Z" itemprop="datePublished">2021-08-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Nginx学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Cloud中Nginx知识补充"><a href="#Cloud中Nginx知识补充" class="headerlink" title="Cloud中Nginx知识补充"></a>Cloud中Nginx知识补充</h1><ul>
+<li>Nginx基本概念：</li>
+</ul>
+<blockquote>
+<ol>
+<li>是啥，干啥</li>
+<li>反向代理</li>
+<li>负载均衡</li>
+<li>动静分离</li>
+</ol>
+</blockquote>
+<ul>
+<li><p>Nginx学习大纲：</p>
+<blockquote>
+<ol>
+<li>Linux安装</li>
+<li>Nginx常用命令</li>
+<li>配置文件</li>
+</ol>
+</blockquote>
+</li>
+<li><p>Nginx配置实例：</p>
+</li>
+</ul>
+<blockquote>
+<ol>
+<li>反向代理</li>
+<li>Nginx负载均衡</li>
+<li>动静分离</li>
+<li>配置高可用集群</li>
+</ol>
+</blockquote>
+<ul>
+<li>Nginx原理</li>
+</ul>
+<h1 id="Nginx简介："><a href="#Nginx简介：" class="headerlink" title="Nginx简介："></a>Nginx简介：</h1><ul>
+<li>Nginx为高性能反向代理服务器，为了性能而开发了，十分注重效率，非常好用嗷！！！</li>
+<li>可以热更新嗷！！！很快乐！！！高可用嗷！！！</li>
+</ul>
+<h2 id="正向代理："><a href="#正向代理：" class="headerlink" title="正向代理："></a>正向代理：</h2><ul>
+<li>客户端用的代理服务器来访问Internet的过程就叫做正向代理哦！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210812215139.png" alt="image-20210812215138818"></p>
+<ul>
+<li>客户端自己配置代理服务器，通过代理服务器进行资源访问。</li>
+</ul>
+<h2 id="反向代理："><a href="#反向代理：" class="headerlink" title="反向代理："></a>反向代理：</h2><ul>
+<li>客户端不需要经过任何的配置就能够访问，我们只需要将请求发送到反向代理服务器，反向代理服务器帮助我们获取数据之后返回给客户端。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210812215606.png" alt="image-20210812215605850"></p>
+<ul>
+<li><p>对于用户来说，它甚至不知道反向代理服务器的存在，它把右边当作整体，对外暴露的是9001端口，由反向代理服务器再去拿到资源返回给用户。</p>
+</li>
+<li><p>整体作为一整个服务器，但是实际上暴露的是代理服务器的地址，而隐藏了正式服务器的IP地址。</p>
+</li>
+<li><p>说白了正向代理是客户端的代理，反向代理是服务端的代理呗！！！</p>
+</li>
+</ul>
+<h2 id="负载均衡："><a href="#负载均衡：" class="headerlink" title="负载均衡："></a>负载均衡：</h2><ul>
+<li>增加服务器的数量，将请求分发到各个服务器上，将负载分发到不同的服务器上嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210813083546.png" alt="image-20210813083546390"></p>
+<h2 id="动静分离："><a href="#动静分离：" class="headerlink" title="动静分离："></a>动静分离：</h2><ul>
+<li>加快网站解析速度，将动态页面和静态资源分开来，加快解析速度。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210813083927.png" alt="image-20210813083927268"></p>
+<h1 id="Nginx在Linux中的安装："><a href="#Nginx在Linux中的安装：" class="headerlink" title="Nginx在Linux中的安装："></a>Nginx在Linux中的安装：</h1><ol>
+<li><p>XShell连接Nginx</p>
+</li>
+<li><p>安装方式选择：</p>
+<ol>
+<li>Windows下载对应的tar.gz包就好，Xshell中cd到对应的文件夹下，将下载的包拖进去嗷！！！</li>
+<li>使用docker进行下载安装嗷！！！</li>
+<li>使用Linux中默认的命令进行下载配置。</li>
+</ol>
+<p>第一种和第三种其实还需要好多其他的依赖的嗷！！！所以需要我们进一步进行配置等。</p>
+</li>
+</ol>
+<ul>
+<li><p>初探配置（这里采用Docker下的Nginx）：</p>
+<ul>
+<li><pre><code class="shell">[root@VM-12-10-centos usr]# docker exec -it nginx01 &quot;bin/bash&quot;
+root@bf9a21cb4ccd:/# ls
+bin   docker-entrypoint.d   home   media  proc	sbin  tmp
+boot  docker-entrypoint.sh  lib    mnt	  root	srv   usr
+dev   etc		    lib64  opt	  run	sys   var
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 然后进入了交互页面之后，在etc文件夹下的nginx目录，就有对应的内容嗷！！！</span><br><span class="line"></span><br><span class="line">- ```shell</span><br><span class="line">  root@bf9a21cb4ccd:/etc/nginx/conf.d# ls</span><br><span class="line">  default.conf</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>在如上目录中，即有default.conf，这个是Docker的默认配置文件嗷！！！</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Nginx操作的常用命令："><a href="#Nginx操作的常用命令：" class="headerlink" title="Nginx操作的常用命令："></a>Nginx操作的常用命令：</h1><ul>
+<li>前提条件：进入到Nginx目录中才能够输入nginx的命令。正常情况下应该是nginx文件夹中的sbin目录中，但是docker是阉割版的，没有这个文件夹？？？</li>
+<li>这里我们进入Nginx中都能够使用nginx的命令嗷！！！</li>
+</ul>
+<h2 id="nginx-v"><a href="#nginx-v" class="headerlink" title="nginx -v"></a>nginx -v</h2><ul>
+<li>可以查看版本号</li>
+<li>正常的nginx是 .&#x2F;nginx -v</li>
+</ul>
+<h2 id="nginx-s-stop"><a href="#nginx-s-stop" class="headerlink" title="nginx -s stop"></a>nginx -s stop</h2><ul>
+<li>关闭Nginx</li>
+<li>在docker中就是直接停止这个Nginx容器的运行嗷！</li>
+<li>正常的nginx是 .&#x2F;nginx -s stop</li>
+</ul>
+<h2 id="x2F-nginx-docker-run-x2F-docker-restart-："><a href="#x2F-nginx-docker-run-x2F-docker-restart-：" class="headerlink" title=".&#x2F;nginx(docker  run &#x2F; docker restart)："></a>.&#x2F;nginx(docker  run &#x2F; docker restart)：</h2><ul>
+<li><p>启动nginx服务（正常的nginx）</p>
+</li>
+<li><p>由于在正常的nginx中的sbin文件夹下是有nginx.exe这个东西的，上面这些命令其实都要在sbin文件夹下使用&#x2F;nginx + 命令才可以使用，只是在docker中直接使用nginx就可以使用罢了。</p>
+</li>
+<li><p>docker中没有严格意义上的nginx内部重启nginx服务，要启动nginx服务，只能在docker层面上，通过开启对应的image的方式来实现嗷！</p>
+</li>
+</ul>
+<h2 id="nginx-s-reload："><a href="#nginx-s-reload：" class="headerlink" title="nginx -s reload："></a>nginx -s reload：</h2><ul>
+<li>不暂停nginx服务，重新加载配置文件，使新的nginx配置生效。</li>
+<li>正常的nginx是.&#x2F;nginx -s reload。</li>
+</ul>
+<h1 id="Nginx配置文件："><a href="#Nginx配置文件：" class="headerlink" title="Nginx配置文件："></a>Nginx配置文件：</h1><ul>
+<li>Docker中所在位置：<code>/etc/nginx</code></li>
+<li>Linux中所在位置：<code>/usr/local/nginx/conf</code></li>
+</ul>
+<h2 id="配置文件中的组成部分："><a href="#配置文件中的组成部分：" class="headerlink" title="配置文件中的组成部分："></a>配置文件中的组成部分：</h2><ol>
+<li>全局块：</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815191129.png" alt="image-20210815191122340"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815202512.png" alt="image-20210815202512279"></p>
+<ol start="2">
+<li>events块</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">events &#123;</span><br><span class="line">    worker_connections 1024;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>像这里就是表示Nginx支持的最大连接数是多少，这部分配置对于Nginx的影响较大。</p>
+<ol start="3">
+<li>http块</li>
+</ol>
+<p>配置最频繁的部分，这里有细分为：</p>
+<ul>
+<li>Http全局块：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815191629.png" alt="image-20210815191629828"></p>
+<ul>
+<li>Server块：</li>
+</ul>
+<p>与虚拟主机有密切关系，每个Http可以有多个server块，每个server可以当作一台虚拟主机。每个server块分为全局server块，同时包含多个location块。</p>
+<ol>
+<li>全局server块：</li>
+</ol>
+<p>最常见的配置是本虚拟机主机的监听配置和本虚拟主机的名称或者ip配置。</p>
+<ol start="2">
+<li>location块：</li>
+</ol>
+<p>一个server又可以有多个location块。基于收到的字符串进行匹配，对于特定的请求进行处理。很多第三方模块配置（数据缓存啊，应答控制之类的），也在这里嗷！</p>
+<h1 id="Nginx配置实例："><a href="#Nginx配置实例：" class="headerlink" title="Nginx配置实例："></a>Nginx配置实例：</h1><h2 id="反向代理：-1"><a href="#反向代理：-1" class="headerlink" title="反向代理："></a>反向代理：</h2><ol>
+<li>实现效果：</li>
+</ol>
+<ul>
+<li>打开浏览器，输入<a target="_blank" rel="noopener" href="http://www.123.com,跳转到linux系统中的tomcat主页面中/">www.123.com，跳转到linux系统中的Tomcat主页面中</a></li>
+</ul>
+<ol start="2">
+<li>准备工作：</li>
+</ol>
+<ul>
+<li>在Linux系统安装Tomcat，默认端口8080。我们这里启动一个tomcat镜像，使用本机的8080系统。</li>
+<li>对外开放访问的端口</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --add-port=8080/tcp --permanent</span><br><span class="line">firewall-cmd -reload</span><br></pre></td></tr></table></figure>
+
+<p>这里不用上面这种哈，直接用腾讯云的控制台开放对应的8080端口就好了嗷！！！</p>
+<ol start="3">
+<li>访问过程分析：</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815201129.png" alt="image-20210815201129368"></p>
+<p>网络访问原理：</p>
+<p>首先浏览器先会去到Host文件中查找我们是否做过相应的配置，如果有相应的解析配置的话就用我们自己的解析配置。如果没有相应的配置的话，才会下一步去DNS服务器解析我们输入的域名嗷！！！</p>
+<p>这里实验为了简单我就不配host中的域名和ip对应关系的配置嗷！！！本质上就是访问nginx嘛，多了一层映射而已，没啥区别。</p>
+<p>Host文件的默认位置：C:\Windows\System32\etc\drivers\etc\HOSTS</p>
+<p>前面的内容是ip地址，后面那个是域名。</p>
+<ol start="4">
+<li>实际操作</li>
+</ol>
+<h3 id="Docker容器之间反向代理"><a href="#Docker容器之间反向代理" class="headerlink" title="Docker容器之间反向代理"></a>Docker容器之间反向代理</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815202629.png" alt="image-20210815202629435"></p>
+<p>本质上只需要修改nginx的映射规则就行了，这里就是修改我们的这个server就可以啦！</p>
+<ul>
+<li>Docker中的反向代理：<ul>
+<li>首先docker中的反向代理涉及到了网关的概念。</li>
+<li>例如我们使用本机3344映射Nginx，本机8080映射Tomcat，下面是Nginx转发请求到Tomcat的过程。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815212916.png" alt="image-20210815212916324"></p>
+<ul>
+<li>首先找到Tomcat的IP地址，Docker之前相互沟通本质上是通过网关进行的嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815213048.png" alt="image-20210815213048169"></p>
+<ul>
+<li>我们查看一下Nginx的Ip地址，发现它和Tomcat使用的本质上是同一个网关嗷，它可以通过172.17.0.2感知到Tomcat的Docker进程的存在。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815213317.png" alt="image-20210815213316906"></p>
+<ul>
+<li>然后我们在Nginx容器内部相应的转发代理的位置，添加对应的地址（注意，这里是容器与容器的沟通，没有到Linux服务器层面，所以这里的端口号就是容器本身的端口号，ip地址也是Tomcat容器的IP地址）。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/dotnet261010/p/12596185.html">Nginx反向代理实例</a></p>
+<h3 id="Docker为宿主机提供反向代理"><a href="#Docker为宿主机提供反向代理" class="headerlink" title="Docker为宿主机提供反向代理"></a>Docker为宿主机提供反向代理</h3><ul>
+<li>同理，上面的所谓的gateway是由Linux宿主机提供的，要想代理宿主机的某个端口，就可以使用172.17.0.1来操作。</li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815214427.png" alt="image-20210815214426914"></li>
+<li>可以看到，我们这里反向代理的宿主机的80端口，而我早就在宿主机的80端口部署了我的博客，成功访问。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815214524.png" alt="image-20210815214523441"></p>
+<h3 id="Docker为外网提供反向代理"><a href="#Docker为外网提供反向代理" class="headerlink" title="Docker为外网提供反向代理"></a>Docker为外网提供反向代理</h3><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815215012.png" alt="image-20210815215012078"></li>
+<li>直接代理到外网网址，完全不慌嗷！！！我来试试我自己的！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815215148.png" alt="image-20210815215148595"></p>
+<p>也没有任何问题，成功访问到了我的博客首页，非常棒！！！</p>
+<h3 id="Docker使用ip地址提供反向代理"><a href="#Docker使用ip地址提供反向代理" class="headerlink" title="Docker使用ip地址提供反向代理"></a>Docker使用ip地址提供反向代理</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210815215440.png" alt="image-20210815215440789"></p>
+<ul>
+<li>这里也没有任何问题嗷！！！注意一下一个坑，这里的话，一定要加上前面的Http！！！</li>
+<li>综上，提供了代理不同情况下的端口的方法，后面学习会更加容易嗷！！！</li>
+<li>每次更新了nginx配置文件之后，都要<code>nginx -s reload</code>才能够刷新nginx，重新读取配置文件嗷！！！</li>
+</ul>
+<h2 id="反向代理2："><a href="#反向代理2：" class="headerlink" title="反向代理2："></a>反向代理2：</h2><ol>
+<li>根据访问的路径不同，转到不同的页面去嗷！！！例如<code>http://127.0.0.1:9001/edu/</code>和<code>http://127.0.0.1/vod/</code>这两个要跳转到不同的端口去。</li>
+</ol>
+<ul>
+<li>课程使用的是部署了两个Tomcat，然后改了不同的Tomcat的端口号，并且在webapps下加入了对应的文件夹和定制化页面。</li>
+<li>这里我们不那么复杂，我们就拿上次部署在8080端口的Tomcat和80端口我们的网页做一个测试就行嗷！</li>
+</ul>
+<ol start="2">
+<li>实操：</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816092307.png" alt="image-20210816092259367"></p>
+<p>本质上就是使用正则表达式多加了两个映射功能，当路径含有blog和edu的话，就访问8080端口嗷！！！注意哈，有些东西是有问题的：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816092422.png" alt="image-20210816092422414"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816092450.png" alt="image-20210816092450064"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816092624.png" alt="image-20210816092624459"></p>
+<ul>
+<li>前面表示路径，最后一个表示资源。所以上面的第一个里面，本质上是请求3344端口映射下的blog资源，那当然找不到哇。后面两个都是在访问&#x2F;blog路径下的资源，这才符合正则匹配的规则，成功引到了正确的页面。</li>
+<li>注意！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816092916.png" alt="image-20210816092915828"></p>
+<ul>
+<li>并且还有一个大坑！！！</li>
+</ul>
+<p>反向代理的原理还待深入研究！！！</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@8ff1a1258fb6:/usr/local/tomcat/webapps/edu# pwd</span><br><span class="line">/usr/local/tomcat/webapps/edu</span><br><span class="line">root@8ff1a1258fb6:/usr/local/tomcat/webapps/edu# cat a.html</span><br><span class="line">&lt;h1&gt;This is a test of the /edu/a.html path!!!&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+
+<p>我在tomcat的webapps目录下，新建了一个edu文件夹，然后新建了a.html文件。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816100105.png" alt="image-20210816100105792"></p>
+<p>在网页中我访问到了这个文件，这引发了我的思考，这个原理是什么呢？？？</p>
+<p><strong>我得出的结论，这里的反向代理转发，本质上只是把前面的liuyihao.work:3344代理成了我的服务器对应的地址。然后把&#x2F;edu&#x2F;a.html转交给了Nginx所代理的服务器，就是说，这里的转发不是直接到那个代理的服务器。而是在规则匹配了之后，将我访问的路径，转交给了代理的服务器，由代理的服务器进行进一步的处理嗷！！！</strong></p>
+<ul>
+<li>并且我发现，如果是docker层之间的反向代理，是不受防火墙的约束的，例如我新启动了一个tomcat，服务监听8081，但是我的8081端口没有对外开放。我通过docker的网关，172那个，而不是从宿主机的端口进行访问，是可以成功的嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816101914.png" alt="image-20210816101914750"></p>
+<h2 id="负载均衡：-1"><a href="#负载均衡：-1" class="headerlink" title="负载均衡："></a>负载均衡：</h2><ol>
+<li>通过浏览器地址栏输入地址，负载均衡效果，平均到8080和8081端口中。现在就是访问3344端口，实现8080&#x2F;8081，实际上就是轮询两台Tomcat服务器嗷！！！</li>
+<li>环境准备：</li>
+</ol>
+<ul>
+<li>和上面一样的，完成Nginx对于两台Tomcat的访问（通过内部网关），&#x2F;edu&#x2F;a.html都要由嗷！！！</li>
+</ul>
+<ol start="3">
+<li>实操：</li>
+</ol>
+<p>http块儿中加入upstream name {不同的server}</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816104144.png" alt="image-20210816104144668"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816104220.png" alt="image-20210816104220690"></p>
+<ul>
+<li>这个东西和我们学springcloud的时候，那个注册到nacos，然后用服务名实现负载均衡一个样样的嗷！！！</li>
+<li>注意，上面那个include嗷，本质上就是把下面这个server引入到了总文件中，没啥区别。</li>
+<li>还有就是，上面那个记得前面不用http嗷，因为下面的proxy_pass里面已经有http了嗷！！！</li>
+<li>效果：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816104419.png" alt="image-20210816104419220"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816104431.png" alt="image-20210816104431430"></p>
+<p>刷新的时候，两个交互出现嗷！！！</p>
+<p>此外，upstream那个地方，还可以配置每个server的权重哦，在后面可以加上一个weight参数来实现赋予权重嗷！！！</p>
+<ol start="4">
+<li>负载均衡策略：</li>
+</ol>
+<ul>
+<li>轮询：默认的策略，逐一分配，如果后端服务器down了，可以自动剔除嗷！！！</li>
+<li>weight：权重策略，默认为1。权重越高，被分配到的客户端越高（权重为大于等于一的整数嗷，小数没试过，不晓得，可以试试。）</li>
+<li>Ip_Hash：每个请求按照访问ip的Hash结果分配，每个访客固定访问一个后端服务器，可以解决session的问题。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816105849.png" alt="image-20210816105849268"></p>
+<p>注意哈，这里的ip_hash后面是有;的嗷！！！</p>
+<p>可以解决Session共享的问题嗷！！！</p>
+<ul>
+<li>fair（第三方）：按照后端服务器的响应时间来分配，响应时间短的有效分配。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816110224.png" alt="image-20210816110224146"></p>
+<p>fair后面是有个分号的嗷！！！</p>
+<h2 id="动静分离：-1"><a href="#动静分离：-1" class="headerlink" title="动静分离："></a>动静分离：</h2><ol>
+<li>什么是动静分离？</li>
+</ol>
+<p>Nginx把动态和静态请求分开，Nginx处理静态页面，Tomcat处理动态页面。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816110757.png" alt="image-20210816110757114"></p>
+<ul>
+<li>纯粹把静态资源单独提取出来，并且独立成单独的域名，放在独立的服务器上，是目前主流推崇的方案嗷！！！</li>
+<li>还可以动态和静态混在一起，通过Nginx来分开，不过这种比较少。</li>
+<li>expires参数设置可以设置浏览器缓存过期时间，减少与服务器之前的请求和流量。（和计算机网络学的一样，回去Last Modified，如果没有变化会返回304，如果由变化会返回200，并重新访问服务器获得新的缓存嗷！！！）</li>
+</ul>
+<ol start="2">
+<li>准备工作：</li>
+</ol>
+<ul>
+<li>&#x2F;文件夹下创建data文件夹，文件夹中创建www文件夹，并在www文件夹里面创建test.html文件。</li>
+<li>想要我们的Nginx帮助我们访问到html文件嗷！！！</li>
+</ul>
+<ol start="3">
+<li>实操：</li>
+</ol>
+<ul>
+<li>配置文件中进行相应的配置嗷！！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816114105.png" alt="image-20210816114105497"></p>
+<ul>
+<li>这里配置的意思是，如果我们访问&#x2F;www&#x2F;，就会自动帮助我们加上前面的一个root，也就是根目录下的&#x2F;data文件夹。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816114207.png" alt="image-20210816114206901"></p>
+<ul>
+<li>实际上这里就是location中的配置，实际上帮助我们获得了&#x2F;data&#x2F;www&#x2F;test.html这个静态文件嗷！！！</li>
+<li>我们访问的是liuyihao.work:3344下的www&#x2F;test.html资源，然后发现，&#x2F;www&#x2F;匹配，于是转到了Nginx中的&#x2F;data&#x2F;，加上www&#x2F;test.html，刚好构成了&#x2F;data&#x2F;www&#x2F;test.html路径，成功访问到了资源嗷！！！</li>
+<li>此外，如果想显示出文件夹那种效果：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816114335.png" alt="image-20210816114335077"></p>
+<p>autoindex on，就能够帮助我们列出文件夹目录嗷！！！</p>
+<h2 id="高可用："><a href="#高可用：" class="headerlink" title="高可用："></a>高可用：</h2><ul>
+<li>为了解决Nginx宕机的效果</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816115456.png" alt="image-20210816115456765"></p>
+<ul>
+<li>解决方案：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816163314.png" alt="image-20210816163314471"></p>
+<p>设置备份服务器嗷！！！</p>
+<p>需要额外的软件keepalived，keepalived提供虚拟ip，将其绑定到不同的Nginx服务器，主服务器挂了，就将其绑定到从服务器，通过这种方式来实现高可用嗷！！！！这是一种主从模式嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816163619.png" alt="image-20210816163619355"></p>
+<ol>
+<li>需求：</li>
+</ol>
+<ul>
+<li>两台Nginx</li>
+<li>需要keepalived</li>
+<li>需要虚拟ip</li>
+</ul>
+<ol start="2">
+<li>实际准备：</li>
+</ol>
+<ul>
+<li>两个带有Nginx的container</li>
+<li>Linux宿主机安装keepalived</li>
+<li>目前为止的端口号：<ul>
+<li>3344: Nginx01</li>
+<li>8080: Tomcat01</li>
+<li>8081: Tomcat02</li>
+<li>其中前两个是对外暴露了的嗷！！！</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>安装keepalived：</li>
+</ol>
+<ul>
+<li>yum install keepalived -y</li>
+<li>docker pull keepalived</li>
+<li>由于端口号的原因，懒得再去开放了，直接使用Linux环境安装keepalived。配置文件处理<code>/etc/keepalived/keepalived.conf</code>位置嗷！！！</li>
+</ul>
+<ol start="4">
+<li>实操：</li>
+</ol>
+<ul>
+<li>本质就是修改conf这个配置文件嗷！！！</li>
+<li>这里我不再演示，需要<strong>两台服务器</strong>，两个Nginx和两个keepalived，分别绑定各自的网卡到同一个ip地址上。然后通过设置的优先级不一样，提供服务嗷！！！</li>
+<li>这里演示的话，就要新启动两个centos容器，然后配置各自的nginx和keepalived，最后进行实验。</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jinjiangongzuoshi/p/9313438.html">高可用配置博客</a></li>
+<li>采用的技术：Docker + Nginx + Keepalived</li>
+</ul>
+<ol start="5">
+<li>配置解析：</li>
+</ol>
+<ul>
+<li>global_dfs   全局配置</li>
+<li>script   脚本配置（检测脚本配置）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816173426.png" alt="image-20210816173425888"></p>
+<p>-20表示当脚本中的条件成立，就把此台服务器对应的权重降低20</p>
+<ul>
+<li>虚拟ip的配置：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816173654.png" alt="image-20210816173654679"></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1zJ411w7SV?p=16&spm_id_from=pageDriver">Keepalived配置文件解析</a></p>
+<h1 id="Nginx原理"><a href="#Nginx原理" class="headerlink" title="Nginx原理"></a>Nginx原理</h1><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816173853.png" alt="image-20210816173852490"></p>
+<ul>
+<li><p>原理：</p>
+<ul>
+<li><p>线程分类：</p>
+<ul>
+<li>master</li>
+<li>worker</li>
+</ul>
+</li>
+<li><p>解析：</p>
+<ul>
+<li>master：</li>
+</ul>
+<ol>
+<li>一个master，多个worker</li>
+<li>Master管理，Worker实际工作。</li>
+</ol>
+<ul>
+<li>worker如何工作：</li>
+</ul>
+<ol>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210816174048.png" alt="image-20210816174048362"></li>
+<li>使用的是争抢的机制嗷！！！</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>好处？</p>
+<ol>
+<li>nginx -s reload命令？热加载&#x2F;热部署方式。</li>
+</ol>
+<p>有任务的worker不参与争抢，其他的worker重新加载嗷！！！利于Nginx进行热部署操作。</p>
+<ol start="2">
+<li>每个worker都是一个独立的进程，不需要加锁。同时，就算有worker挂了，其他的worker还可以进行正常的服务。不会造成服务的中断嗷！！！</li>
+</ol>
+</li>
+<li><p>设置多少个worker合适？</p>
+<ul>
+<li>IO多路复用（Linux中才能够将服务器的性能发挥到极致嗷！！！）</li>
+<li>让worker的数量和CPU数量相同是最合适的嗷！！！</li>
+</ul>
+</li>
+<li><p>连接数work_connection</p>
+<ul>
+<li>发送一个请求，占用了worker的几个连接数？<ul>
+<li>要么是两个，要么是四个<ul>
+<li>两个：client -&gt; nginx , nginx -&gt; client（静态资源）</li>
+<li>四个：client -&gt; nginx , nginx -&gt; tomcat , tomcat -&gt; nginx , nginx -&gt; client（动态资源）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Nginx有一个master，有四个worker，每一个worker的最大连接数是1024，支持最大的并发数是多少？</p>
+<ul>
+<li>就是最多能承受多少个请求？</li>
+<li>所有worker支持的最大连接数：4 * 1024</li>
+<li>最大并发：4 * 1024 &#x2F; 2</li>
+<li>最小并发：4 * 1024 &#x2F; 4</li>
+<li>结论：</li>
+</ul>
+<p><img src="C:\Users\Alexander\AppData\Roaming\Typora\typora-user-images\image-20210816190551708.png" alt="image-20210816190551708"></p>
+</li>
+</ul>
+<h2 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h2><ul>
+<li>对于Docker中的配置文件，可以采用挂载的形式进行修改嗷！！！</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34556414/article/details/108588203">Docker挂载实例</a></li>
+<li>注意，所谓的挂载</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/08/12/Nginx%E5%AD%A6%E4%B9%A0/" data-id="cl6gepmfs002be0jq0ept45u8" data-title="Nginx学习" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/08/16/Redis%E5%AD%A6%E4%B9%A0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Redis学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/08/05/Java%E5%A4%A7%E5%8E%82%E5%B8%B8%E9%97%AE%E9%9D%A2%E8%AF%95%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Java常问面试题总结与提高</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/">2021年美赛</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/Python/">Python</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF/">动力结点后端</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%87%AA%E5%AD%A6%E5%86%85%E5%AE%B9%E6%88%96%E8%AF%BE%E7%A8%8B%E4%BD%9C%E4%B8%9A/">自学内容或课程作业</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skills/" rel="tag">Skills</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/introduction/" rel="tag">introduction</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" rel="tag">云服务器与项目部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" rel="tag">大一学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" rel="tag">大三自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" rel="tag">大二自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E8%B5%9B/" rel="tag">美赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" rel="tag">论文精读</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" rel="tag">读书分享</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" rel="tag">资源福利！！！</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Database/" style="font-size: 12.22px;">Database</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Skills/" style="font-size: 10px;">Skills</a> <a href="/tags/introduction/" style="font-size: 11.11px;">introduction</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" style="font-size: 12.22px;">云服务器与项目部署</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 15.56px;">前端</a> <a href="/tags/%E5%90%8E%E7%AB%AF/" style="font-size: 18.89px;">后端</a> <a href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" style="font-size: 14.44px;">大一学习</a> <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" style="font-size: 17.78px;">大三自学</a> <a href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" style="font-size: 15.56px;">大二自学</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 11.11px;">机器学习</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BE%8E%E8%B5%9B/" style="font-size: 20px;">美赛</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 13.33px;">计算机网络</a> <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" style="font-size: 10px;">论文精读</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" style="font-size: 10px;">读书分享</a> <a href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" style="font-size: 10px;">资源福利！！！</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/16/ML%E5%85%A5%E9%97%A8/">ML入门</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/28/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A03/">大数据分析与智能计算期末复习3</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/">大数据分析与智能计算期末复习2</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">大数据分析与智能计算期末复习</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AF%BE%E7%A8%8B%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">系统架构课程期末复习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

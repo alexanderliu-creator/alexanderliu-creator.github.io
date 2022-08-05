@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>ElasticSearch学习 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="这是ElasticSearch技术的相关学习嗷！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ElasticSearch学习">
+<meta property="og:url" content="http://example.com/2021/08/25/ElasticSearch%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="这是ElasticSearch技术的相关学习嗷！">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825190026.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825190228.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825190346.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825191728.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825192822.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825192839.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825192859.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825193901.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194020.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194130.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194243.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194508.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194642.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194757.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194856.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825201457.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202005.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825201902.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202139.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202226.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202418.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202627.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202817.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202835.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825203501.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825203629.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825203727.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825203758.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825204055.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825204253.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825205914.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825210112.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825221030.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825221551.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825221803.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825222702.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825223612.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825223756.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825224102.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825224325.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826085602.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826085739.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826085855.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826085941.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826090557.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826090705.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826090902.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826090925.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826091011.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826104545.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826112127.png">
+<meta property="article:published_time" content="2021-08-25T10:42:55.000Z">
+<meta property="article:modified_time" content="2021-08-26T07:20:05.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825190026.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-ElasticSearch学习" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/08/25/ElasticSearch%E5%AD%A6%E4%B9%A0/" class="article-date">
+  <time class="dt-published" datetime="2021-08-25T10:42:55.000Z" itemprop="datePublished">2021-08-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      ElasticSearch学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="这是ElasticSearch技术的相关学习嗷！"><a href="#这是ElasticSearch技术的相关学习嗷！" class="headerlink" title="这是ElasticSearch技术的相关学习嗷！"></a>这是ElasticSearch技术的相关学习嗷！</h1><span id="more"></span>
+
+<h1 id="ES概述："><a href="#ES概述：" class="headerlink" title="ES概述："></a>ES概述：</h1><ul>
+<li>开源的高拓展的分布式全文搜索i引擎</li>
+</ul>
+<h2 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h2><p><a target="_blank" rel="noopener" href="https://www.elastic.co/cn/">ElasticSearch官网</a></p>
+<ul>
+<li><p>Windows版本是一个zip，解压缩就能用嗷！！！</p>
+</li>
+<li><p>bin中有一个.bat文件：<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825190026.png" alt="image-20210825190026556"></p>
+<p>和JMeter一样，解压缩就能够使用嗷！！！</p>
+</li>
+<li><p>启动结果：</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825190228.png" alt="image-20210825190228714"></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;ALEXANDER&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cluster_name&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;elasticsearch&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cluster_uuid&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;xaE-lmEEQmq9asjVK1QZow&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span> <span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;number&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;7.14.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;build_flavor&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;default&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;build_type&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;zip&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;build_hash&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;dd5a0a2acaa2045ff9624f3729fc8a6f40835aa1&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;build_date&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;2021-07-29T20:49:32.864135063Z&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;build_snapshot&quot;</span> <span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;lucene_version&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;8.9.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;minimum_wire_compatibility_version&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;6.8.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;minimum_index_compatibility_version&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;6.0.0-beta1&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tagline&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;You Know, for Search&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>可能出现的问题以及解决措施：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825190346.png" alt="image-20210825190346381"></p>
+<ul>
+<li>JSON中的集合可以使用[]，并且在其中列出每一个元素来表示嗷！！！</li>
+</ul>
+<h2 id="基本概念："><a href="#基本概念：" class="headerlink" title="基本概念："></a>基本概念：</h2><ul>
+<li>类比：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825191728.png" alt="image-20210825191728267"></p>
+<ul>
+<li>倒排索引：</li>
+</ul>
+<p>和正向索引相对应</p>
+<p>what is 正向索引？</p>
+<p>通过主键关联文章，在文章中去一个个查对应的值</p>
+<p>what is 倒排索引？</p>
+<p>将查询关键字和主键关联，从而建立和文章的关联</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825192822.png" alt="image-20210825192822070"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825192839.png" alt="image-20210825192839131"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825192859.png" alt="image-20210825192858840"></p>
+<p>这样找某个关键词就不用扫描所有的行去获得，直接根据我们记录的倒排列表，找到列表中对应的行，然后查找对应的行就行了嗷！！！</p>
+<p><strong>倒排索引创建索引的流程：</strong></p>
+<p><strong>1） 首先把所有的原始数据进行编号，形成文档列表</strong></p>
+<p><strong>2） 把文档数据进行分词，得到很多的词条，以词条为索引。保存包含这些词条的文档的编号信息。</strong></p>
+<p><strong>搜索的过程：</strong></p>
+<p><strong>当用户输入任意的词条时，首先对用户输入的数据进行分词，得到用户要搜索的所有词条，然后拿着这些词条去倒排索引列表中进行匹配。找到这些词条就能找到包含这些词条的所有文档的编号。</strong></p>
+<p><strong>然后根据这些编号去文档列表中找到文档</strong></p>
+<p>作者：喔喔牛<br>链接：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23202010/answer/254503794">https://www.zhihu.com/question/23202010/answer/254503794</a><br>来源：知乎</p>
+<h2 id="索引操作："><a href="#索引操作：" class="headerlink" title="索引操作："></a>索引操作：</h2><ul>
+<li>对比关键型数据库，创建索引等同于创建数据库嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825193901.png" alt="image-20210825193710897"></p>
+<h3 id="PUT创建索引："><a href="#PUT创建索引：" class="headerlink" title="PUT创建索引："></a>PUT创建索引：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194020.png" alt="image-20210825194020804"></p>
+<p>Put请求具有幂等性，就是反复提交都是一样的结果，没有影响嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194130.png" alt="image-20210825194130626"></p>
+<p>Post请求在这种情况下无法使用嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194243.png" alt="image-20210825194242973"></p>
+<h3 id="GET获得索引信息："><a href="#GET获得索引信息：" class="headerlink" title="GET获得索引信息："></a>GET获得索引信息：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194508.png" alt="image-20210825194508151"></p>
+<p>如果想要查看所有的索引，也是GET，但是就要使用特殊路径了嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194642.png" alt="image-20210825194641977"></p>
+<p><code>http://127.0.0.1:9200/_cat/indices?v</code></p>
+<h3 id="DELETE删除索引："><a href="#DELETE删除索引：" class="headerlink" title="DELETE删除索引："></a>DELETE删除索引：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194757.png" alt="image-20210825194757555"></p>
+<p>再去查看索引信息：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825194856.png" alt="image-20210825194856219"></p>
+<p>发现被成功删除了嗷！！！</p>
+<h2 id="文档操作："><a href="#文档操作：" class="headerlink" title="文档操作："></a>文档操作：</h2><h3 id="POST创建文档："><a href="#POST创建文档：" class="headerlink" title="POST创建文档："></a>POST创建文档：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825201457.png" alt="image-20210825201457647"></p>
+<p>下面这个id是唯一标识嗷，同样的请求发出之后，id会有不同。因此POST请求不是幂等性的嗷！！！PUT不行，因为PUT是幂等性的操作！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202005.png" alt="image-20210825202005422"></p>
+<ul>
+<li>自定义ID如何进行：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825201902.png" alt="image-20210825201902782"></p>
+<p>这样每次返回值就是一样的了嗷！！！这是啥？？？这是幂等性操作！！！我们再来试试PUT！！！成功了！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202139.png" alt="image-20210825202139316"></p>
+<ul>
+<li>并且上面这种方式，使用PUT也能够成功CREAT嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202226.png" alt="image-20210825202225989"></p>
+<h3 id="GET获得文档信息："><a href="#GET获得文档信息：" class="headerlink" title="GET获得文档信息："></a>GET获得文档信息：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202418.png" alt="image-20210825202417855"></p>
+<ul>
+<li><p>这个_id就类似于我们的主键嗷！！！</p>
+</li>
+<li><p>如果查不到的话下面那个found就会为false</p>
+</li>
+<li><p>如果想要查找所有文档数据呢？</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202627.png" alt="image-20210825202627542"></p>
+<h3 id="PUT更新文档信息："><a href="#PUT更新文档信息：" class="headerlink" title="PUT更新文档信息："></a>PUT更新文档信息：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202817.png" alt="image-20210825202817180"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825202835.png" alt="image-20210825202835549"></p>
+<ul>
+<li>上面这种称之为全量数据的更新</li>
+<li>更新局部的数据，每次更新结果是不一样的，不符合幂等性，因此用POST请求嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825203501.png" alt="image-20210825203501196"></p>
+<p>注意地址中间是update嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825203629.png" alt="image-20210825203629704"></p>
+<h3 id="DELETE删除文档："><a href="#DELETE删除文档：" class="headerlink" title="DELETE删除文档："></a>DELETE删除文档：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825203727.png" alt="image-20210825203727520"></p>
+<p>不能够重复删除嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825203758.png" alt="image-20210825203757814"></p>
+<h2 id="条件查询："><a href="#条件查询：" class="headerlink" title="条件查询："></a>条件查询：</h2><h3 id="分页查询和排序等："><a href="#分页查询和排序等：" class="headerlink" title="分页查询和排序等："></a>分页查询和排序等：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825204055.png" alt="image-20210825204055644"></p>
+<ul>
+<li>上面的请求参数不好加哈，而且容易乱码，写到请求体中</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825204253.png" alt="image-20210825204253535"></p>
+<ul>
+<li>全部查询：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825205914.png" alt="image-20210825205914388"></p>
+<ul>
+<li>分页查询方式：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825210112.png" alt="image-20210825210112680"></p>
+<p>上面这个就是分页查询，从第几页开始，查多少条记录这种嗷！！！</p>
+<p>至于这个分页的情况下，页码的计算公式如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825221030.png" alt="image-20210825221030166"></p>
+<p>这种方式就能够非常方便的计算出我们现在的那条数据在第几页嗷！！！</p>
+<ul>
+<li>过滤数据源，只显示某些字段：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825221551.png" alt="image-20210825221551853"></p>
+<p>在JSON中添加对应的字段的指定嗷！！！</p>
+<ul>
+<li>甚至可以对于特定的字段排序：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825221803.png" alt="image-20210825221803545"></p>
+<p>用什么排序，以及怎么排序嗷！！！</p>
+<h3 id="范围查询和逻辑连接等："><a href="#范围查询和逻辑连接等：" class="headerlink" title="范围查询和逻辑连接等："></a>范围查询和逻辑连接等：</h3><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825222702.png" alt="image-20210825222702250"></li>
+</ul>
+<p>上面match中的就是条件，例如”_source”中的category等，限制它们匹配等。</p>
+<p>相当于逻辑判断中的and</p>
+<ul>
+<li>那么如果想用逻辑判断中的or呢？</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825223612.png" alt="image-20210825223611903"></p>
+<ul>
+<li>范围的查询：</li>
+</ul>
+<p>再多加上一个条件嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825223756.png" alt="image-20210825223756820"></p>
+<h3 id="完全匹配和高亮显示等："><a href="#完全匹配和高亮显示等：" class="headerlink" title="完全匹配和高亮显示等："></a>完全匹配和高亮显示等：</h3><ul>
+<li>在保存文档数据的时候，ElasticSearch会自动对于文档进行分值拆解工作，将拆解后的数据保存在倒排索引当中。即使使用文字的一部分也能够成功查询到数据。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825224102.png" alt="image-20210825224101933"></p>
+<ul>
+<li>ES查询的时候也会将我们查询的内容分解，然后去索引中找到对应的值进行匹配。导致”小华“，既可以查到小米，又可以查到华为嗷！！！这个肯定是有问题的！！！</li>
+<li>那么如何进行完全匹配呢？</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825224325.png" alt="image-20210825224325304"></p>
+<ul>
+<li>高亮显示如何做到呢？</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826085602.png" alt="image-20210826085602153"></p>
+<h3 id="聚合查询："><a href="#聚合查询：" class="headerlink" title="聚合查询："></a>聚合查询：</h3><ul>
+<li>分组统计：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826085739.png" alt="image-20210826085739285"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826085855.png" alt="image-20210826085841738"></p>
+<ul>
+<li>平均值：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826085941.png" alt="image-20210826085940995"></p>
+<ul>
+<li>创建Mapping：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826090557.png" alt="image-20210826090557371"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826090705.png" alt="image-20210826090705123"></p>
+<p>查询验证：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826090902.png" alt="image-20210826090902327"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826090925.png" alt="image-20210826090924697"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826091011.png" alt="image-20210826091011282"></p>
+<h1 id="Java操作ES："><a href="#Java操作ES：" class="headerlink" title="Java操作ES："></a>Java操作ES：</h1><ol>
+<li>建立项目</li>
+<li>POM</li>
+<li>测试</li>
+</ol>
+<h2 id="索引操作：-1"><a href="#索引操作：-1" class="headerlink" title="索引操作："></a>索引操作：</h2><h3 id="连接测试："><a href="#连接测试：" class="headerlink" title="连接测试："></a>连接测试：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Client</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line">        </span><br><span class="line">        restHighLevelClient.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建索引："><a href="#创建索引：" class="headerlink" title="创建索引："></a>创建索引：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Index_Create</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建索引</span></span><br><span class="line">        <span class="type">CreateIndexRequest</span> <span class="variable">createIndexRequest</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CreateIndexRequest</span>(<span class="string">&quot;user&quot;</span>);</span><br><span class="line">        <span class="type">CreateIndexResponse</span> <span class="variable">createIndexResponse</span> <span class="operator">=</span> restHighLevelClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//相应状态</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">acknowledged</span> <span class="operator">=</span> createIndexResponse.isAcknowledged();</span><br><span class="line">        System.out.println(<span class="string">&quot;acknowledged = &quot;</span> + acknowledged);</span><br><span class="line"></span><br><span class="line">        restHighLevelClient.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询索引："><a href="#查询索引：" class="headerlink" title="查询索引："></a>查询索引：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826104545.png" alt="image-20210826104545374"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Index_Search</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//获得索引</span></span><br><span class="line">        <span class="type">GetIndexRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">GetIndexRequest</span>(<span class="string">&quot;user&quot;</span>);</span><br><span class="line">        <span class="type">GetIndexResponse</span> <span class="variable">getIndexResponse</span> <span class="operator">=</span> restHighLevelClient.indices().get(request,RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//结果响应</span></span><br><span class="line">        System.out.println(<span class="string">&quot;getIndexResponse.getAliases() = &quot;</span> + getIndexResponse.getAliases());</span><br><span class="line">        System.out.println(<span class="string">&quot;getIndexResponse.getMappings() = &quot;</span> + getIndexResponse.getMappings());</span><br><span class="line">        System.out.println(<span class="string">&quot;getIndexResponse.getSetting() = &quot;</span> + getIndexResponse.getSettings());</span><br><span class="line"></span><br><span class="line">        restHighLevelClient.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这里其实就获取到了对应的属性嗷！！！</li>
+</ul>
+<h3 id="删除索引："><a href="#删除索引：" class="headerlink" title="删除索引："></a>删除索引：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Index_Delete</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//获得索引</span></span><br><span class="line">        <span class="type">DeleteIndexRequest</span> <span class="variable">deleteRequest</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DeleteIndexRequest</span>(<span class="string">&quot;user&quot;</span>);</span><br><span class="line">        <span class="type">AcknowledgedResponse</span> <span class="variable">acknowledgedResponse</span> <span class="operator">=</span> restHighLevelClient.indices().delete(deleteRequest, RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//结果响应</span></span><br><span class="line">        System.out.println(<span class="string">&quot;acknowledgedResponse.isAcknowledged() = &quot;</span> + acknowledgedResponse.isAcknowledged());</span><br><span class="line"></span><br><span class="line">        restHighLevelClient.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>summary：<ul>
+<li>构建对应操作的Request</li>
+<li>利用client发送到ES，并获得对应的返回结果Response</li>
+<li>分析Response</li>
+</ul>
+</li>
+</ul>
+<h2 id="文档操作：-1"><a href="#文档操作：-1" class="headerlink" title="文档操作："></a>文档操作：</h2><h3 id="插入数据："><a href="#插入数据：" class="headerlink" title="插入数据："></a>插入数据：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Doc_Insert</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//插入数据</span></span><br><span class="line">        <span class="type">IndexRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IndexRequest</span>();</span><br><span class="line">        request.index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1001&quot;</span>);</span><br><span class="line">        <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">        user.setName(<span class="string">&quot;tuzi&quot;</span>);</span><br><span class="line">        user.setAge(<span class="number">20</span>);</span><br><span class="line">        user.setSex(<span class="string">&quot;男&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//插入的数据必须转换为JSON格式嗷！！！</span></span><br><span class="line">        <span class="type">ObjectMapper</span> <span class="variable">mapper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectMapper</span>();</span><br><span class="line">        <span class="type">String</span> <span class="variable">userJson</span> <span class="operator">=</span> mapper.writeValueAsString(user);</span><br><span class="line">        request.source(userJson, XContentType.JSON);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//返回结果</span></span><br><span class="line">        <span class="type">IndexResponse</span> <span class="variable">response</span> <span class="operator">=</span> restHighLevelClient.index(request,RequestOptions.DEFAULT);</span><br><span class="line">        System.out.println(response.getResult());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        restHighLevelClient.close();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="更新数据："><a href="#更新数据：" class="headerlink" title="更新数据："></a>更新数据：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Doc_Update</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//修改数据</span></span><br><span class="line">        <span class="type">UpdateRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UpdateRequest</span>();</span><br><span class="line">        request.index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1001&quot;</span>);</span><br><span class="line">        request.doc(XContentType.JSON,<span class="string">&quot;sex&quot;</span>,<span class="string">&quot;女&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//返回结果</span></span><br><span class="line">        <span class="type">UpdateResponse</span> <span class="variable">response</span> <span class="operator">=</span> restHighLevelClient.update(request, RequestOptions.DEFAULT);</span><br><span class="line">        System.out.println(<span class="string">&quot;response = &quot;</span> + response);</span><br><span class="line"></span><br><span class="line">        restHighLevelClient.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826112127.png" alt="image-20210826112126641"></p>
+<h3 id="查询数据："><a href="#查询数据：" class="headerlink" title="查询数据："></a>查询数据：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Doc_Get</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//修改数据</span></span><br><span class="line">        <span class="type">GetRequest</span> <span class="variable">getRequest</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">GetRequest</span>();</span><br><span class="line">        getRequest.index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1001&quot;</span>);</span><br><span class="line">        <span class="type">GetResponse</span> <span class="variable">getResponse</span> <span class="operator">=</span> restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//返回结果</span></span><br><span class="line">        System.out.println(<span class="string">&quot;getResponse = &quot;</span> + getResponse.getSourceAsString());</span><br><span class="line"></span><br><span class="line">        restHighLevelClient.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除数据："><a href="#删除数据：" class="headerlink" title="删除数据："></a>删除数据：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Doc_Delete</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//删除数据</span></span><br><span class="line">        <span class="type">DeleteRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DeleteRequest</span>();</span><br><span class="line">        request.index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1001&quot;</span>);</span><br><span class="line">        <span class="type">DeleteResponse</span> <span class="variable">response</span> <span class="operator">=</span> restHighLevelClient.delete(request,RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">//返回结果</span></span><br><span class="line">        System.out.println(<span class="string">&quot;response.toString() = &quot;</span> + response.toString());</span><br><span class="line"></span><br><span class="line">        restHighLevelClient.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="批量更新-amp-批量删除："><a href="#批量更新-amp-批量删除：" class="headerlink" title="批量更新&amp;批量删除："></a>批量更新&amp;批量删除：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Doc_Insert_Batch</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//批量插入数据</span></span><br><span class="line">        <span class="type">BulkRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BulkRequest</span>();</span><br><span class="line"></span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">IndexRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1001&quot;</span>).source(XContentType.JSON,<span class="string">&quot;name&quot;</span>,<span class="string">&quot;zhangsan&quot;</span>));</span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">IndexRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1002&quot;</span>).source(XContentType.JSON,<span class="string">&quot;name&quot;</span>,<span class="string">&quot;lisi&quot;</span>));</span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">IndexRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1003&quot;</span>).source(XContentType.JSON,<span class="string">&quot;name&quot;</span>,<span class="string">&quot;wangwu&quot;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="type">BulkResponse</span> <span class="variable">response</span> <span class="operator">=</span> restHighLevelClient.bulk(request, RequestOptions.DEFAULT);</span><br><span class="line">        System.out.println(<span class="string">&quot;response.getTook() = &quot;</span> + response.getTook());</span><br><span class="line">        System.out.println(<span class="string">&quot;response.getItems() = &quot;</span> + response.getItems());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Doc_Delete_Batch</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//批量插入数据</span></span><br><span class="line">        <span class="type">BulkRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BulkRequest</span>();</span><br><span class="line"></span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">DeleteRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1001&quot;</span>));</span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">DeleteRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1002&quot;</span>));</span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">DeleteRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1003&quot;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="type">BulkResponse</span> <span class="variable">response</span> <span class="operator">=</span> restHighLevelClient.bulk(request, RequestOptions.DEFAULT);</span><br><span class="line">        System.out.println(<span class="string">&quot;response.getTook() = &quot;</span> + response.getTook());</span><br><span class="line">        System.out.println(<span class="string">&quot;response.getItems() = &quot;</span> + response.getItems());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="高级查询："><a href="#高级查询：" class="headerlink" title="高级查询："></a>高级查询：</h2><h3 id="全量查询："><a href="#全量查询：" class="headerlink" title="全量查询："></a>全量查询：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Doc_Insert_Batch</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//批量插入数据</span></span><br><span class="line">        <span class="type">BulkRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BulkRequest</span>();</span><br><span class="line"></span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">IndexRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1001&quot;</span>).source(XContentType.JSON,<span class="string">&quot;name&quot;</span>,<span class="string">&quot;zhangsan&quot;</span>,<span class="string">&quot;age&quot;</span>,<span class="number">30</span>,<span class="string">&quot;sex&quot;</span>,<span class="string">&quot;男&quot;</span>));</span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">IndexRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1002&quot;</span>).source(XContentType.JSON,<span class="string">&quot;name&quot;</span>,<span class="string">&quot;lisi&quot;</span>,<span class="string">&quot;age&quot;</span>,<span class="number">30</span>,<span class="string">&quot;sex&quot;</span>,<span class="string">&quot;女&quot;</span>));</span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">IndexRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1003&quot;</span>).source(XContentType.JSON,<span class="string">&quot;name&quot;</span>,<span class="string">&quot;wangwu&quot;</span>,<span class="string">&quot;age&quot;</span>,<span class="number">40</span>,<span class="string">&quot;sex&quot;</span>,<span class="string">&quot;男&quot;</span>));</span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">IndexRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1004&quot;</span>).source(XContentType.JSON,<span class="string">&quot;name&quot;</span>,<span class="string">&quot;wangwu1&quot;</span>,<span class="string">&quot;age&quot;</span>,<span class="number">40</span>,<span class="string">&quot;sex&quot;</span>,<span class="string">&quot;女&quot;</span>));</span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">IndexRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1005&quot;</span>).source(XContentType.JSON,<span class="string">&quot;name&quot;</span>,<span class="string">&quot;wangwu2&quot;</span>,<span class="string">&quot;age&quot;</span>,<span class="number">50</span>,<span class="string">&quot;sex&quot;</span>,<span class="string">&quot;男&quot;</span>));</span><br><span class="line">        request.add(<span class="keyword">new</span> <span class="title class_">IndexRequest</span>().index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1006&quot;</span>).source(XContentType.JSON,<span class="string">&quot;name&quot;</span>,<span class="string">&quot;wangwu3&quot;</span>,<span class="string">&quot;age&quot;</span>,<span class="number">50</span>,<span class="string">&quot;sex&quot;</span>,<span class="string">&quot;男&quot;</span>));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="type">BulkResponse</span> <span class="variable">response</span> <span class="operator">=</span> restHighLevelClient.bulk(request, RequestOptions.DEFAULT);</span><br><span class="line">        System.out.println(<span class="string">&quot;response.getTook() = &quot;</span> + response.getTook());</span><br><span class="line">        System.out.println(<span class="string">&quot;response.getItems() = &quot;</span> + response.getItems());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>准备工作先插入数据嗷！！！</li>
+<li>下面就是查询代码：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ESTest_Doc_Query</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//创建客户端</span></span><br><span class="line">        <span class="type">RestHighLevelClient</span> <span class="variable">restHighLevelClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestHighLevelClient</span>(</span><br><span class="line">                RestClient.builder(<span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>,<span class="number">9200</span>,<span class="string">&quot;http&quot;</span>))</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">//查询索引中所有的数据嗷</span></span><br><span class="line">        <span class="type">SearchRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchRequest</span>();</span><br><span class="line">        request.indices(<span class="string">&quot;user&quot;</span>);</span><br><span class="line"></span><br><span class="line">        request.source(<span class="keyword">new</span> <span class="title class_">SearchSourceBuilder</span>().query(QueryBuilders.matchAllQuery()));</span><br><span class="line"></span><br><span class="line">        <span class="type">SearchResponse</span> <span class="variable">search</span> <span class="operator">=</span> restHighLevelClient.search(request, RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//返回结果</span></span><br><span class="line">        System.out.println(<span class="string">&quot;getResponse = &quot;</span> + search.getHits());</span><br><span class="line">        System.out.println(<span class="string">&quot;search.getTook() = &quot;</span> + search.getTook());</span><br><span class="line">        <span class="keyword">for</span> (SearchHit hit : search.getHits()) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;hit.getSourceAsString() = &quot;</span> + hit.getSourceAsString());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        restHighLevelClient.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="条件查询：-1"><a href="#条件查询：-1" class="headerlink" title="条件查询："></a>条件查询：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查询索引中符合条件的数据嗷</span></span><br><span class="line"><span class="type">SearchRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchRequest</span>();</span><br><span class="line">request.indices(<span class="string">&quot;user&quot;</span>);</span><br><span class="line"></span><br><span class="line">request.source(<span class="keyword">new</span> <span class="title class_">SearchSourceBuilder</span>().query(QueryBuilders.termQuery(<span class="string">&quot;age&quot;</span>,<span class="number">30</span>)));</span><br><span class="line"></span><br><span class="line"><span class="type">SearchResponse</span> <span class="variable">search</span> <span class="operator">=</span> restHighLevelClient.search(request, RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回结果</span></span><br><span class="line">System.out.println(<span class="string">&quot;getResponse = &quot;</span> + search.getHits());</span><br><span class="line">System.out.println(<span class="string">&quot;search.getTook() = &quot;</span> + search.getTook());</span><br><span class="line"><span class="keyword">for</span> (SearchHit hit : search.getHits()) &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;hit.getSourceAsString() = &quot;</span> + hit.getSourceAsString());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">restHighLevelClient.close();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>实际上就是构造的query条件不一样而已嗷！！！</li>
+</ul>
+<h3 id="分页查询："><a href="#分页查询：" class="headerlink" title="分页查询："></a>分页查询：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">SearchRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchRequest</span>();</span><br><span class="line">request.indices(<span class="string">&quot;user&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="type">SearchSourceBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchSourceBuilder</span>().query(QueryBuilders.matchAllQuery());</span><br><span class="line">builder.from(<span class="number">0</span>);</span><br><span class="line">builder.size(<span class="number">2</span>);</span><br><span class="line">request.source(builder);</span><br><span class="line"></span><br><span class="line"><span class="type">SearchResponse</span> <span class="variable">search</span> <span class="operator">=</span> restHighLevelClient.search(request, RequestOptions.DEFAULT);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回结果</span></span><br><span class="line">System.out.println(<span class="string">&quot;getResponse = &quot;</span> + search.getHits());</span><br><span class="line">System.out.println(<span class="string">&quot;search.getTook() = &quot;</span> + search.getTook());</span><br><span class="line"><span class="keyword">for</span> (SearchHit hit : search.getHits()) &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;hit.getSourceAsString() = &quot;</span> + hit.getSourceAsString());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">restHighLevelClient.close();</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询排序："><a href="#查询排序：" class="headerlink" title="查询排序："></a>查询排序：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">SearchSourceBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchSourceBuilder</span>().query(QueryBuilders.matchAllQuery());</span><br><span class="line">builder.sort(<span class="string">&quot;age&quot;</span>, SortOrder.DESC);</span><br><span class="line">request.source(builder);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>本质上就是设置builder，然后将对应设置好的builder添加到request中嗷！！！通过request去执行嗷！！！有点像定制化装配builder，然后request带去执行的感觉嗷！！！</li>
+</ul>
+<h3 id="字段过滤："><a href="#字段过滤：" class="headerlink" title="字段过滤："></a>字段过滤：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">SearchSourceBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchSourceBuilder</span>().query(QueryBuilders.matchAllQuery());</span><br><span class="line">        String[] excludes = &#123;&#125;;       <span class="comment">//查询中过滤掉的字段</span></span><br><span class="line">        String[] includes = &#123;<span class="string">&quot;name&quot;</span>&#125;; <span class="comment">//查询中包含的字段</span></span><br><span class="line">        builder.fetchSource(includes,excludes);</span><br><span class="line">        request.source(builder);</span><br></pre></td></tr></table></figure>
+
+<h3 id="组合查询："><a href="#组合查询：" class="headerlink" title="组合查询："></a>组合查询：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> 	   <span class="type">SearchSourceBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchSourceBuilder</span>();</span><br><span class="line">        <span class="type">BoolQueryBuilder</span> <span class="variable">boolQueryBuilder</span> <span class="operator">=</span> QueryBuilders.boolQuery();</span><br><span class="line"></span><br><span class="line"><span class="comment">//        boolQueryBuilder.must(QueryBuilders.matchQuery(&quot;age&quot;,30));</span></span><br><span class="line"><span class="comment">//        boolQueryBuilder.must(QueryBuilders.matchQuery(&quot;sex&quot;,&quot;男&quot;));</span></span><br><span class="line"><span class="comment">//        boolQueryBuilder.mustNot(QueryBuilders.matchQuery(&quot;sex&quot;,&quot;男&quot;));</span></span><br><span class="line">        boolQueryBuilder.should(QueryBuilders.matchQuery(<span class="string">&quot;age&quot;</span>,<span class="number">30</span>));</span><br><span class="line">        boolQueryBuilder.should(QueryBuilders.matchQuery(<span class="string">&quot;age&quot;</span>,<span class="number">40</span>));</span><br><span class="line"></span><br><span class="line">        builder.query(boolQueryBuilder);</span><br><span class="line"></span><br><span class="line">        request.source(builder);</span><br><span class="line"></span><br><span class="line">        <span class="type">SearchResponse</span> <span class="variable">search</span> <span class="operator">=</span> restHighLevelClient.search(request, RequestOptions.DEFAULT);</span><br></pre></td></tr></table></figure>
+
+<h3 id="范围查询："><a href="#范围查询：" class="headerlink" title="范围查询："></a>范围查询：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">SearchRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchRequest</span>();</span><br><span class="line">request.indices(<span class="string">&quot;user&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="type">SearchSourceBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchSourceBuilder</span>();</span><br><span class="line"><span class="type">RangeQueryBuilder</span> <span class="variable">rangeQuery</span> <span class="operator">=</span> QueryBuilders.rangeQuery(<span class="string">&quot;age&quot;</span>);</span><br><span class="line"></span><br><span class="line">rangeQuery.gte(<span class="number">30</span>);</span><br><span class="line">rangeQuery.lt(<span class="number">40</span>);</span><br><span class="line"></span><br><span class="line">builder.query(rangeQuery);</span><br><span class="line"></span><br><span class="line">request.source(builder);</span><br><span class="line"></span><br><span class="line"><span class="type">SearchResponse</span> <span class="variable">search</span> <span class="operator">=</span> restHighLevelClient.search(request, RequestOptions.DEFAULT);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最大的builder是SearchSourceBuilder</li>
+<li>下面还有类似于BoolQueryBuilder和RangeQueryBuilder等下属builder</li>
+<li>设置完对应的条件之后，再整体组装为大的builder即可实现不同的功能嗷！！！</li>
+</ul>
+<h3 id="模糊查询："><a href="#模糊查询：" class="headerlink" title="模糊查询："></a>模糊查询：</h3><ul>
+<li>讲的太乱了，后面补上，服了这个老师了。</li>
+</ul>
+<h3 id="最大值查询-amp-分组查询："><a href="#最大值查询-amp-分组查询：" class="headerlink" title="最大值查询&amp;分组查询："></a>最大值查询&amp;分组查询：</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/08/25/ElasticSearch%E5%AD%A6%E4%B9%A0/" data-id="cl6gepmfg000xe0jqf41d4l0i" data-title="ElasticSearch学习" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/08/26/%E4%BD%BF%E7%94%A8kubeadm%E6%90%AD%E5%BB%BA%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84K8s%E9%9B%86%E7%BE%A4/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用kubeadm搭建高可用的K8s集群
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/08/21/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E9%AB%98%E7%BA%A7/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MySQL数据库高级</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/">2021年美赛</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/Python/">Python</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF/">动力结点后端</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%87%AA%E5%AD%A6%E5%86%85%E5%AE%B9%E6%88%96%E8%AF%BE%E7%A8%8B%E4%BD%9C%E4%B8%9A/">自学内容或课程作业</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skills/" rel="tag">Skills</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/introduction/" rel="tag">introduction</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" rel="tag">云服务器与项目部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" rel="tag">大一学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" rel="tag">大三自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" rel="tag">大二自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E8%B5%9B/" rel="tag">美赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" rel="tag">论文精读</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" rel="tag">读书分享</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" rel="tag">资源福利！！！</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Database/" style="font-size: 12.22px;">Database</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Skills/" style="font-size: 10px;">Skills</a> <a href="/tags/introduction/" style="font-size: 11.11px;">introduction</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" style="font-size: 12.22px;">云服务器与项目部署</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 15.56px;">前端</a> <a href="/tags/%E5%90%8E%E7%AB%AF/" style="font-size: 18.89px;">后端</a> <a href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" style="font-size: 14.44px;">大一学习</a> <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" style="font-size: 17.78px;">大三自学</a> <a href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" style="font-size: 15.56px;">大二自学</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 11.11px;">机器学习</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BE%8E%E8%B5%9B/" style="font-size: 20px;">美赛</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 13.33px;">计算机网络</a> <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" style="font-size: 10px;">论文精读</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" style="font-size: 10px;">读书分享</a> <a href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" style="font-size: 10px;">资源福利！！！</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/16/ML%E5%85%A5%E9%97%A8/">ML入门</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/28/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A03/">大数据分析与智能计算期末复习3</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/">大数据分析与智能计算期末复习2</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">大数据分析与智能计算期末复习</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AF%BE%E7%A8%8B%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">系统架构课程期末复习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

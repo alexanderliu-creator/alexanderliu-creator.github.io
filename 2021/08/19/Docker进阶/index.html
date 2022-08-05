@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Docker进阶 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="B站狂神说docker教程，这是Docker进阶课程，衔接于K8S之前嗷！！！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker进阶">
+<meta property="og:url" content="http://example.com/2021/08/19/Docker%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="B站狂神说docker教程，这是Docker进阶课程，衔接于K8S之前嗷！！！">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210820211215.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821101712.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821103410.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821103459.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821105855.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821110235.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821112210.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821113031.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821155249.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821161225.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821165003.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821165349.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821165639.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821170530.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821170959.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821171036.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821171106.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821173816.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821173909.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821174731.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821174850.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821175136.png">
+<meta property="article:published_time" content="2021-08-19T12:48:48.000Z">
+<meta property="article:modified_time" content="2021-08-21T11:18:27.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210820211215.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Docker进阶" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/08/19/Docker%E8%BF%9B%E9%98%B6/" class="article-date">
+  <time class="dt-published" datetime="2021-08-19T12:48:48.000Z" itemprop="datePublished">2021-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Docker进阶
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="B站狂神说docker教程，这是Docker进阶课程，衔接于K8S之前嗷！！！"><a href="#B站狂神说docker教程，这是Docker进阶课程，衔接于K8S之前嗷！！！" class="headerlink" title="B站狂神说docker教程，这是Docker进阶课程，衔接于K8S之前嗷！！！"></a>B站狂神说docker教程，这是Docker进阶课程，衔接于K8S之前嗷！！！</h1><span id="more"></span>
+
+<ul>
+<li>前置只是补充：</li>
+</ul>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41896265/article/details/108245264">Docker集群搭建实例</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1og4y1q7M4?p=39">SpringBoot在Docker中的部署实例</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/143109114">Dockerfile编写实例</a></li>
+</ol>
+<h1 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker Compose"></a>Docker Compose</h1><h2 id="简介："><a href="#简介：" class="headerlink" title="简介："></a>简介：</h2><ul>
+<li>Dockerfile   —&gt;   build   —&gt;   run，手动操作，单个容器嗷！！！</li>
+<li>Compose轻松高效的管理容器，定义运行多个容器。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210820211215.png" alt="image-20210820211207168"></p>
+<ul>
+<li>狂神的理解：<ul>
+<li>Compose是Docker官方的开源项目，需要安装。</li>
+<li>Dockerfile让程序在任何地方运行。多个容器就要多次run来安装。现在通过配置文件，可以配置它们之间的关系。</li>
+<li>重要的概念：<ul>
+<li>服务services：容器，应用，web , redis , mysql</li>
+<li>项目project：一组关联的容器，wp等</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h2><ul>
+<li>首先官网上有相应的地址和安装方式嗷，但是从github上拉下来，太慢了orz，可以上网查（评论区有），下载对应的github嗷！！！</li>
+<li>安装和使用的示例建议遵循官网的例子嗷！！！</li>
+<li><a target="_blank" rel="noopener" href="https://docs.docker.com/compose/">Compose官网嗷！！！</a></li>
+<li>Compose帮助我们自动生成了一个网络并将容器全部纳入到了这个网络之下。同时完成了网络打通的功能，各个网络之前能够通过服务名进行访问嗷！！！</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&quot;Containers&quot;: &#123;</span><br><span class="line">            &quot;0182740eadaf4282f6356a8728a3ecafef4dfced4ae379f071b6017efb7c3e81&quot;: &#123;</span><br><span class="line">                &quot;Name&quot;: &quot;composetest_redis_1&quot;,</span><br><span class="line">                &quot;EndpointID&quot;: &quot;15e44f973a098e0dfef0ca25790a6e953fb18ac6d9b4c666c6ffe9f44d9bc661&quot;,</span><br><span class="line">                &quot;MacAddress&quot;: &quot;02:42:ac:12:00:03&quot;,</span><br><span class="line">                &quot;IPv4Address&quot;: &quot;172.18.0.3/16&quot;,</span><br><span class="line">                &quot;IPv6Address&quot;: &quot;&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;241be1776b1a1a7a1d7da384e66bc24f5d5676cb30a9175b5421d31769a34b6d&quot;: &#123;</span><br><span class="line">                &quot;Name&quot;: &quot;composetest_web_1&quot;,</span><br><span class="line">                &quot;EndpointID&quot;: &quot;cbd7e7e3ceac089f8b69c609ea7c60341f4f70e50100038f019e0620cec1b020&quot;,</span><br><span class="line">                &quot;MacAddress&quot;: &quot;02:42:ac:12:00:02&quot;,</span><br><span class="line">                &quot;IPv4Address&quot;: &quot;172.18.0.2/16&quot;,</span><br><span class="line">                &quot;IPv6Address&quot;: &quot;&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Yaml规则："><a href="#Yaml规则：" class="headerlink" title="Yaml规则："></a>Yaml规则：</h2><ul>
+<li>docker-compose.yaml的核心：</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 三层</span></span><br><span class="line"></span><br><span class="line"><span class="attr">version:</span> <span class="string">&#x27;&#x27;</span> <span class="comment">#版本</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span> <span class="comment">#服务</span></span><br><span class="line">	<span class="string">服务一:</span> <span class="string">web</span></span><br><span class="line">	<span class="comment">#服务配置</span></span><br><span class="line">	<span class="attr">images:</span></span><br><span class="line">	<span class="attr">build:</span></span><br><span class="line">	<span class="attr">network:</span></span><br><span class="line">	<span class="string">服务二:</span> <span class="string">redis</span></span><br><span class="line">	<span class="comment">#服务配置</span></span><br><span class="line">	<span class="string">...</span></span><br><span class="line">	<span class="string">服务三:</span> </span><br><span class="line">	<span class="string">...</span></span><br><span class="line">	</span><br><span class="line"><span class="comment">#其他配置，网路/卷，全局规则</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>能配置什么？怎么配置？参考文档：</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://docs.docker.com/compose/compose-file/compose-file-v3/">Yaml配置文件具体内容</a></p>
+<h2 id="开源项目（博客）："><a href="#开源项目（博客）：" class="headerlink" title="开源项目（博客）："></a>开源项目（博客）：</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://docs.docker.com/samples/wordpress/">WordPress项目官方文档</a></p>
+</li>
+<li><p>步骤：</p>
+<ol>
+<li>下载项目（docker-compose.yaml）</li>
+<li>如果需要文件，Dockerfile</li>
+<li>文件准备齐全，一键启动项目</li>
+</ol>
+</li>
+<li><p>前台启动 -&gt; 后台启动：</p>
+<ul>
+<li>docker -d</li>
+<li>docker-compose -d</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@VM-12-10-centos my_wordpress]# docker-compose up -d</span><br><span class="line">Starting my_wordpress_db_1 ... done</span><br><span class="line">Starting my_wordpress_wordpress_1 ... done</span><br><span class="line">[root@VM-12-10-centos my_wordpress]# </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>把用户密码啊，之类的，都改好之后，一键启动就可以访问到WordPress主页面了。进行注册之后就能够正常使用嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821101712.png" alt="image-20210821101712070"></p>
+<ul>
+<li>Compose相当于一个集合体，将整个项目需要的依赖和依赖之间的关系都以配置文件的方式配置好，然后一键启动就可以完成对应的整个项目的成功运行嗷！！！</li>
+</ul>
+<h2 id="自己编写的项目上线："><a href="#自己编写的项目上线：" class="headerlink" title="自己编写的项目上线："></a>自己编写的项目上线：</h2><ul>
+<li><p>本质上解答了我心中，如何在Java项目中表示项目中的某个依赖是Docker中的某个依赖的问题！！！</p>
+</li>
+<li><p>创建一个Java项目版本的计数器：</p>
+<ol>
+<li>创建项目</li>
+<li>POM.xml</li>
+<li>applicaton.yaml</li>
+<li>主启动</li>
+<li>业务类：</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821103410.png" alt="image-20210821103410286"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821103459.png" alt="image-20210821103459775"></p>
+<ul>
+<li><p>这个项目在本机是跑不起来的，因为我的本机（或者服务器上根本就没有这个host），所以不是常规的写服务器名称和端口号。这里的redis作为host，指的就是docker中提供的redis服务嗷！！！</p>
+</li>
+<li><p>Dockerfile的书写：</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821105855.png" alt="image-20210821105855778"></p>
+<ul>
+<li>docker-compose.yml：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821110235.png" alt="image-20210821110235199"></p>
+<p>这里就会发现我们定义的redis服务就叫做redis，当java -jar命令启动的时候，docker就能够根据host里面的host : redis去找到docker容器中的redis服务嗷！！！</p>
+<ul>
+<li><p>步骤：</p>
+<ul>
+<li>编写项目微服务</li>
+<li>dockerfile构建镜像</li>
+<li>docker-compose.yaml编排项目！</li>
+<li>丢到服务器启动嗷！！！</li>
+</ul>
+</li>
+<li><p>我们需要放入到Linux中的东西：</p>
+<ul>
+<li>通过Maven的package我们打的微服务的jar包</li>
+<li>Dockerfile</li>
+<li>docker-compose.yml</li>
+</ul>
+</li>
+<li><p>如果上面的三个东西齐全，直接docker-compose up 就能够启动了嗷，可以使用Ctrl + C或者docker-compose down这种形式来关闭服务嗷！！</p>
+</li>
+<li><p>小结：</p>
+<ul>
+<li>未来项目只要有docker-compose文件，按照这个规则，启动编排容器</li>
+</ul>
+</li>
+<li><p>狂神的课：</p>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1kv411q7Qc?p=7&spm_id_from=pageDriver">里面是存在一些大问题的嗷！！！Debug过程很有学习价值嗷！！！</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821112210.png" alt="image-20210821112209938"></p>
+<h1 id="Docker-Swarm："><a href="#Docker-Swarm：" class="headerlink" title="Docker Swarm："></a>Docker Swarm：</h1><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1kv411q7Qc?p=8&spm_id_from=pageDriver">购买阿里云教程嗷！！！</a></p>
+<ul>
+<li>四台机器同步安装docker：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821113031.png" alt="image-20210821113030822"></p>
+<p>以后在一个会话输入的命令，会自动同步到打开的所有会话嗷！！！</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.docker.com/develop/">配置所在网站</a>，在Run you app in production下面的Configure containers里面的Scale your app就有Swarm相关的内容嗷！！！</li>
+</ul>
+<h2 id="工作原理："><a href="#工作原理：" class="headerlink" title="工作原理："></a>工作原理：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821155249.png" alt="image-20210821155248337"></p>
+<ul>
+<li>上面用于操作的结点，至少要有3台嗷！！！</li>
+</ul>
+<h2 id="搭建集群实例："><a href="#搭建集群实例：" class="headerlink" title="搭建集群实例："></a>搭建集群实例：</h2><ul>
+<li>swarm相关命令：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@VM-12-10-centos ~]# docker swarm --help</span><br><span class="line"></span><br><span class="line">Usage:  docker swarm COMMAND</span><br><span class="line"></span><br><span class="line">Manage Swarm</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  ca          Display and rotate the root CA</span><br><span class="line">  init        Initialize a swarm</span><br><span class="line">  join        Join a swarm as a node and/or manager</span><br><span class="line">  join-token  Manage join tokens</span><br><span class="line">  leave       Leave the swarm</span><br><span class="line">  unlock      Unlock swarm</span><br><span class="line">  unlock-key  Manage the unlock key</span><br><span class="line">  update      Update the swarm</span><br><span class="line"></span><br><span class="line">Run &#x27;docker swarm COMMAND --help&#x27; for more information on a command.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>swarm init相关用法：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">[root@VM-12-10-centos ~]# docker swarm --help</span><br><span class="line"></span><br><span class="line">Usage:  docker swarm COMMAND</span><br><span class="line"></span><br><span class="line">Manage Swarm</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  ca          Display and rotate the root CA</span><br><span class="line">  init        Initialize a swarm</span><br><span class="line">  join        Join a swarm as a node and/or manager</span><br><span class="line">  join-token  Manage join tokens</span><br><span class="line">  leave       Leave the swarm</span><br><span class="line">  unlock      Unlock swarm</span><br><span class="line">  unlock-key  Manage the unlock key</span><br><span class="line">  update      Update the swarm</span><br><span class="line"></span><br><span class="line">Run &#x27;docker swarm COMMAND --help&#x27; for more information on a command.</span><br><span class="line">[root@VM-12-10-centos ~]# docker swarm init --help</span><br><span class="line"></span><br><span class="line">Usage:  docker swarm init [OPTIONS]</span><br><span class="line"></span><br><span class="line">Initialize a swarm</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">      --advertise-addr string                  Advertised address (format: &lt;ip|interface&gt;[:port])</span><br><span class="line">      --autolock                               Enable manager autolocking (requiring an unlock key to start a stopped manager)</span><br><span class="line">      --availability string                    Availability of the node (&quot;active&quot;|&quot;pause&quot;|&quot;drain&quot;) (default &quot;active&quot;)</span><br><span class="line">      --cert-expiry duration                   Validity period for node certificates (ns|us|ms|s|m|h) (default 2160h0m0s)</span><br><span class="line">      --data-path-addr string                  Address or interface to use for data path traffic (format: &lt;ip|interface&gt;)</span><br><span class="line">      --data-path-port uint32                  Port number to use for data path traffic (1024 - 49151). If no value is set or is set to 0, the default port (4789) is used.</span><br><span class="line">      --default-addr-pool ipNetSlice           default address pool in CIDR format (default [])</span><br><span class="line">      --default-addr-pool-mask-length uint32   default address pool subnet mask length (default 24)</span><br><span class="line">      --dispatcher-heartbeat duration          Dispatcher heartbeat period (ns|us|ms|s|m|h) (default 5s)</span><br><span class="line">      --external-ca external-ca                Specifications of one or more certificate signing endpoints</span><br><span class="line">      --force-new-cluster                      Force create a new cluster from current state</span><br><span class="line">      --listen-addr node-addr                  Listen address (format: &lt;ip|interface&gt;[:port]) (default 0.0.0.0:2377)</span><br><span class="line">      --max-snapshots uint                     Number of additional Raft snapshots to retain</span><br><span class="line">      --snapshot-interval uint                 Number of log entries between Raft snapshots (default 10000)</span><br><span class="line">      --task-history-limit int                 Task history retention limit (default 5)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>具体操作：</p>
+<ul>
+<li>docker swarm init 初始化结点</li>
+<li>docker swarm join加入一个结点：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821161225.png" alt="image-20210821161225306"></p>
+<ul>
+<li>获取令牌：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker swarm join-token manager</span><br><span class="line">docker swarm join-token worker</span><br></pre></td></tr></table></figure>
+
+<p>上面这两个命令是生成加入某个结点的指令的命令嗷，就是说，如果你想以Worker加入结点A，你就进入到结点A中，执行<code>docker swarm join-token worker</code>，然后复制A中的指令到B中执行，即可获得结果嗷！！！</p>
+<ul>
+<li>docker node ls：</li>
+</ul>
+<p>这个可以显示出所有的结点嗷！！！</p>
+<ul>
+<li>docker swarm leave：</li>
+</ul>
+<p>不用参数，这个就可以直接离开集群。</p>
+</li>
+</ul>
+<h2 id="Raft协议："><a href="#Raft协议：" class="headerlink" title="Raft协议："></a>Raft协议：</h2><ul>
+<li><p>协议内容：保证<strong>大多数结点存活</strong>才可以使用，只要&gt;1，集群至少要大于3台嗷！！！</p>
+</li>
+<li><p>双主双从：假设一个主节点挂了，另外一个主节点是否可以用？另外一个主节点就不可以用了嗷！！！</p>
+</li>
+</ul>
+<p>并且，不可以用的结点复活之后，虽然还是管理结点，但是已经不是最大的老大了嗷！！！</p>
+<ul>
+<li>Worker节点就是工作的，管理节点才能执行操作的命令嗷！！！</li>
+<li>worker就是工作的，管理节点操作！</li>
+<li>三个管理结点，一台worker，一个管理结点报废了，其他还是可以使用的嗷！！！</li>
+<li>十分简单：集群，可用！！！三个主节点，&gt;1台管理者存活才能使用嗷！！！Raft保证大多数结点存活才能使用哈！！！</li>
+</ul>
+<h2 id="集群创建服务（Docker-Service）："><a href="#集群创建服务（Docker-Service）：" class="headerlink" title="集群创建服务（Docker Service）："></a>集群创建服务（Docker Service）：</h2><ul>
+<li>docker-compose up！启动一个单机的项目哈！！！</li>
+<li>容器 &#x3D;&#x3D;&#x3D;&gt; 服务</li>
+<li>redis &#x3D; 3份！容器！集群：高可用，web -&gt; redis（3台，分布在不同的机器上嗷！）</li>
+<li>容器的概念逐渐变为了服务，服务主逐渐又衍生出了副本。</li>
+<li>Redis服务   —&gt;   10个服务，从dcoker-compose逐步演变为docker service嗷！！！</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@VM-12-10-centos ~]# docker service --help</span><br><span class="line"></span><br><span class="line">Usage:  docker service COMMAND</span><br><span class="line"></span><br><span class="line">Manage services</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  create      Create a new service</span><br><span class="line">  inspect     Display detailed information on one or more services</span><br><span class="line">  logs        Fetch the logs of a service or task</span><br><span class="line">  ls          List services</span><br><span class="line">  ps          List the tasks of one or more services</span><br><span class="line">  rm          Remove one or more services</span><br><span class="line">  rollback    Revert changes to a service&#x27;s configuration</span><br><span class="line">  scale       Scale one or multiple replicated services</span><br><span class="line">  update      Update a service</span><br><span class="line"></span><br><span class="line">Run &#x27;docker service COMMAND --help&#x27; for more information on a command.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>拥有创建服务，动态拓展服务，动态更新服务等功能。</li>
+<li>概念：<ul>
+<li>灰度发布</li>
+<li>金丝雀发布</li>
+</ul>
+</li>
+<li>创建一个服务：</li>
+</ul>
+<p><code>docker service create -p 8080:80 --name my-nginx nginx</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821165003.png" alt="image-20210821165002947"></p>
+<blockquote>
+<p>docker run   容器启动！不具有扩缩容功能</p>
+<p>docker service   具有扩缩容功能，滚动更新！！！</p>
+</blockquote>
+<ul>
+<li>查看服务：</li>
+</ul>
+<blockquote>
+<p>docker ps</p>
+<p>docker service ps</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821165349.png" alt="image-20210821165348665"></p>
+<ul>
+<li>动态扩容：</li>
+</ul>
+<blockquote>
+<p>docker service update –replicas 3 my-nginx</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821165639.png" alt="image-20210821165639725"></p>
+<p>启动的微服务可以在集群中的结点中分布嗷！！！</p>
+<p><strong>在集群的任何一台机子，都能够访问到这个服务，就算它上面没有跑服务。集群就是一个大的整体嗷！！！</strong></p>
+<p>集群中的任意结点都可以访问，服务中有多个副本动态扩缩容来实现我们的高可用。例如上面，我们通过第一个服务名，成功复制出了若干个微服务副本跑在不同机器上，整体提供服务嗷！！！</p>
+<ul>
+<li>动态回滚到一个微服务：</li>
+</ul>
+<blockquote>
+<p>docker service update –replicas 1 my-nginx</p>
+</blockquote>
+<ul>
+<li>弹性和扩缩容的概念！服务端高可用和服务器的高可用。服务的高可用，任何企业，云！！！k8s！服务云原生运用嗷！！！</li>
+<li>工作结点才能执行命令哈！！！</li>
+<li>另外的扩缩容命令：</li>
+</ul>
+<blockquote>
+<p>docker service scale my-nginx&#x3D;5</p>
+</blockquote>
+<p>和我们更新副本数是一模一样的嗷！！！</p>
+<ul>
+<li>移除服务：</li>
+</ul>
+<blockquote>
+<p>docker service rm my-nginx</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821170530.png" alt="image-20210821170529865"></p>
+<h2 id="概念总结："><a href="#概念总结：" class="headerlink" title="概念总结："></a>概念总结：</h2><p><strong>swarm</strong></p>
+<p>集群的管理和编号，docker可以初始化一个swarm，其他节点可以加入。（Worker和Manager）</p>
+<p><strong>Node</strong></p>
+<p>就是一个docker节点，多个节点组成了网络集群（管理，工作者）</p>
+<p><strong>Service</strong></p>
+<p>任务，可以在管理节点或工作节点来运行，核心。</p>
+<p><strong>Task</strong></p>
+<p>容器内的命令，细节任务！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821170959.png" alt="image-20210821170959132"></p>
+<ul>
+<li>Service：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821171036.png" alt="image-20210821171036165"></p>
+<ul>
+<li>内部原理：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821171106.png" alt="image-20210821171105631"></p>
+<ul>
+<li>副本跑在哪儿？</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821173816.png" alt="image-20210821173816139"></p>
+<p>如果工作结点不跑东西，可以让它在副本上跑嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821173909.png" alt="image-20210821173909342"></p>
+<p>核心就是参数而已嘛！！！</p>
+<h2 id="拓展（网络）："><a href="#拓展（网络）：" class="headerlink" title="拓展（网络）："></a>拓展（网络）：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821174731.png" alt="image-20210821174731644"></p>
+<ul>
+<li>虽然Docker在四台机器上，实际网络是同一个嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821174850.png" alt="image-20210821174850013"></p>
+<ul>
+<li>虚拟网络技术：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821175136.png" alt="image-20210821175136707"></p>
+<p>分开的变成了一个集群整体嗷！！！</p>
+<h1 id="其他技术："><a href="#其他技术：" class="headerlink" title="其他技术："></a>其他技术：</h1><h2 id="Docker-Stack"><a href="#Docker-Stack" class="headerlink" title="Docker Stack"></a>Docker Stack</h2><ul>
+<li>docker-compose用于单机部署项目</li>
+<li>Docker Stack用于集群部署</li>
+</ul>
+<blockquote>
+<p>docker-compose up -d wordpress.yml</p>
+<p>docker-stack up -d wordpress.yml</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">[root@VM-12-10-centos ~]# docker stack</span><br><span class="line"></span><br><span class="line">Usage:  docker stack [OPTIONS] COMMAND</span><br><span class="line"></span><br><span class="line">Manage Docker stacks</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">      --orchestrator string   Orchestrator to use</span><br><span class="line">                              (swarm|kubernetes|all)</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  deploy      Deploy a new stack or update an existing stack</span><br><span class="line">  ls          List stacks</span><br><span class="line">  ps          List the tasks in the stack</span><br><span class="line">  rm          Remove one or more stacks</span><br><span class="line">  services    List the services in the stack</span><br><span class="line"></span><br><span class="line">Run &#x27;docker stack COMMAND --help&#x27; for more information on a command.</span><br><span class="line">[root@VM-12-10-centos ~]# docker stack</span><br><span class="line"></span><br><span class="line">Usage:  docker stack [OPTIONS] COMMAND</span><br><span class="line"></span><br><span class="line">Manage Docker stacks</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">      --orchestrator string   Orchestrator to use (swarm|kubernetes|all)</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  deploy      Deploy a new stack or update an existing stack</span><br><span class="line">  ls          List stacks</span><br><span class="line">  ps          List the tasks in the stack</span><br><span class="line">  rm          Remove one or more stacks</span><br><span class="line">  services    List the services in the stack</span><br><span class="line"></span><br><span class="line">Run &#x27;docker stack COMMAND --help&#x27; for more information on a command.</span><br></pre></td></tr></table></figure>
+
+<h2 id="Docker-Secret"><a href="#Docker-Secret" class="headerlink" title="Docker Secret"></a>Docker Secret</h2><ul>
+<li>密码啊，证书的之类的</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@VM-12-10-centos ~]# docker secret</span><br><span class="line"></span><br><span class="line">Usage:  docker secret COMMAND</span><br><span class="line"></span><br><span class="line">Manage Docker secrets</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  create      Create a secret from a file or STDIN as content</span><br><span class="line">  inspect     Display detailed information on one or more secrets</span><br><span class="line">  ls          List secrets</span><br><span class="line">  rm          Remove one or more secrets</span><br><span class="line"></span><br><span class="line">Run &#x27;docker secret COMMAND --help&#x27; for more information on a command.</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Docker-Config"><a href="#Docker-Config" class="headerlink" title="Docker  Config"></a>Docker  Config</h2><ul>
+<li>Docker对于容器的统一的一些配置嗷！！！</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@VM-12-10-centos ~]# docker config</span><br><span class="line"></span><br><span class="line">Usage:  docker config COMMAND</span><br><span class="line"></span><br><span class="line">Manage Docker configs</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  create      Create a config from a file or STDIN</span><br><span class="line">  inspect     Display detailed information on one or more configs</span><br><span class="line">  ls          List configs</span><br><span class="line">  rm          Remove one or more configs</span><br><span class="line"></span><br><span class="line">Run &#x27;docker config COMMAND --help&#x27; for more information on a command.</span><br><span class="line">[root@VM-12-10-centos ~]# </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查什么docker config案例啊，例子啊，网上一大堆，看看示例就晓得了嗷！！！</li>
+<li>学习方式：网上找案例试试嗷！！！然后查看帮助文档–help , 官网等</li>
+</ul>
+<h1 id="拓展到K8S"><a href="#拓展到K8S" class="headerlink" title="拓展到K8S"></a>拓展到K8S</h1><h2 id="云原生时代（大趋势）"><a href="#云原生时代（大趋势）" class="headerlink" title="云原生时代（大趋势）"></a>云原生时代（大趋势）</h2><ul>
+<li><p>k8s，10台以上的集群嗷！！！</p>
+</li>
+<li><p>Go语言！必须掌握！！！</p>
+<ul>
+<li>Docker是Go开发的</li>
+<li>K8S也是Go开发的</li>
+<li>Etcd还是Go开发的</li>
+</ul>
+</li>
+<li><p>本质上这里学习的就是从单机到集群的指令的迁移嗷，集群有自己单独的一套指令嗷！！！</p>
+<ul>
+<li>Docker   —&gt;   Docker Compose</li>
+<li>Docker   —&gt;   Docker Swarm   ,   Docker Compose   —&gt;   Docker Stack等</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/08/19/Docker%E8%BF%9B%E9%98%B6/" data-id="cl6gepmfe000re0jq9ngwexeh" data-title="Docker进阶" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/08/21/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E9%AB%98%E7%BA%A7/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          MySQL数据库高级
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/08/16/Redis%E5%AD%A6%E4%B9%A0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Redis学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/">2021年美赛</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/2021%E5%B9%B4%E7%BE%8E%E8%B5%9B/Python/">Python</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF/">动力结点后端</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8A%A8%E5%8A%9B%E7%BB%93%E7%82%B9%E5%90%8E%E7%AB%AF%E8%AF%BE%E7%A8%8B/">动力结点后端课程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%87%AA%E5%AD%A6%E5%86%85%E5%AE%B9%E6%88%96%E8%AF%BE%E7%A8%8B%E4%BD%9C%E4%B8%9A/">自学内容或课程作业</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/" rel="tag">Database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skills/" rel="tag">Skills</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/introduction/" rel="tag">introduction</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" rel="tag">云服务器与项目部署</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" rel="tag">大一学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" rel="tag">大三自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" rel="tag">大二自学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E8%B5%9B/" rel="tag">美赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" rel="tag">论文精读</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" rel="tag">读书分享</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" rel="tag">资源福利！！！</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Database/" style="font-size: 12.22px;">Database</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Skills/" style="font-size: 10px;">Skills</a> <a href="/tags/introduction/" style="font-size: 11.11px;">introduction</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/" style="font-size: 12.22px;">云服务器与项目部署</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 15.56px;">前端</a> <a href="/tags/%E5%90%8E%E7%AB%AF/" style="font-size: 18.89px;">后端</a> <a href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/" style="font-size: 14.44px;">大一学习</a> <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/" style="font-size: 17.78px;">大三自学</a> <a href="/tags/%E5%A4%A7%E4%BA%8C%E8%87%AA%E5%AD%A6/" style="font-size: 15.56px;">大二自学</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 11.11px;">机器学习</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a> <a href="/tags/%E7%BE%8E%E8%B5%9B/" style="font-size: 20px;">美赛</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 13.33px;">计算机网络</a> <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" style="font-size: 10px;">论文精读</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E5%88%86%E4%BA%AB/" style="font-size: 10px;">读书分享</a> <a href="/tags/%E8%B5%84%E6%BA%90%E7%A6%8F%E5%88%A9%EF%BC%81%EF%BC%81%EF%BC%81/" style="font-size: 10px;">资源福利！！！</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/16/ML%E5%85%A5%E9%97%A8/">ML入门</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/28/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A03/">大数据分析与智能计算期末复习3</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A02/">大数据分析与智能计算期末复习2</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/20/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%99%BA%E8%83%BD%E8%AE%A1%E7%AE%97%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">大数据分析与智能计算期末复习</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AF%BE%E7%A8%8B%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">系统架构课程期末复习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
