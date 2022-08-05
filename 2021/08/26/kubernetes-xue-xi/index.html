@@ -1,0 +1,1780 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Kubernetes学习, 分布式系统,后端研发,数据协同">
+    <meta name="description" content="终于来到了K8S这个部分相应知识的讲解嗷！！！
+课程介绍：
+
+
+K8S基本概念：K8S概述和特性
+概述：
+
+容器化集群管理系统，是Google开源的一个容器编排引擎，支持自动化的部署。
+使用k8s进行容器化应用部署
+使用k8s利于应用拓展
+">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>Kubernetes学习 | Hexo</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+    <style>
+        body{
+            background-image: url(https://cdn.jsdelivr.net/gh/Tokisaki-Galaxy/res/site/medias/background.jpg);
+            background-repeat:no-repeat;
+            background-size: 100% 100%;
+            background-attachment:fixed;
+        }
+    </style>
+
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Hexo</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+  <li>
+    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
+      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Hexo</div>
+        <div class="logo-desc">
+            
+            欢迎来到兔子的小窝，这里是兔子的一些笔记分享
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">Kubernetes学习</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%90%8E%E7%AB%AF/">
+                                <span class="chip bg-color">后端</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2021-08-26
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-08-30
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    3.1k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    11 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="终于来到了K8S这个部分相应知识的讲解嗷！！！"><a href="#终于来到了K8S这个部分相应知识的讲解嗷！！！" class="headerlink" title="终于来到了K8S这个部分相应知识的讲解嗷！！！"></a>终于来到了K8S这个部分相应知识的讲解嗷！！！</h1><ul>
+<li>课程介绍：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826152922.png" alt="image-20210826152922417"></p>
+<h1 id="K8S基本概念："><a href="#K8S基本概念：" class="headerlink" title="K8S基本概念："></a>K8S基本概念：</h1><h2 id="K8S概述和特性"><a href="#K8S概述和特性" class="headerlink" title="K8S概述和特性"></a>K8S概述和特性</h2><ul>
+<li><p>概述：</p>
+<ul>
+<li>容器化集群管理系统，是Google开源的一个容器编排引擎，支持自动化的部署。</li>
+<li>使用k8s进行容器化应用部署</li>
+<li>使用k8s利于应用拓展</li>
+<li>目标：让容器化应用更加简洁和高效</li>
+</ul>
+</li>
+<li><p>特性：</p>
+<ul>
+<li>自动装箱：<ul>
+<li>基于容器对应用运行环境的资源配置要求自动部署应用容器。</li>
+</ul>
+</li>
+<li>自我修复：<ul>
+<li>容器失败会自动重启</li>
+<li>部署的结点有问题的时候，会自动重新部署和重新调度</li>
+<li>未通过监控检查的时候，会关闭此容器。直到正常运行，才会对外提供服务。</li>
+</ul>
+</li>
+<li>水平拓展：<ul>
+<li>流量来了之后动态拓展</li>
+</ul>
+</li>
+<li>服务发现：<ul>
+<li>对外提供统一入口</li>
+<li>对内负载均衡，动态分配嗷！！！</li>
+</ul>
+</li>
+<li>滚动更新：<ul>
+<li>根据应用的变化，对于应用容器运行的应用，进行一次性或者批量式的更新。</li>
+</ul>
+</li>
+<li>版本回退：<ul>
+<li>可以根据应用部署情况，对于应用容器进行的应用，进行历史版本的即时回退。</li>
+</ul>
+</li>
+<li>密钥和配置管理：<ul>
+<li>类似于热部署</li>
+</ul>
+</li>
+<li>自动编排：<ul>
+<li>自动实现存储系统的挂载以及应用，对于数据持久化非常重要。</li>
+</ul>
+</li>
+<li>批处理：<ul>
+<li>一次性任务，定时任务，满足批量数据处理和分析的场景嗷！！！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="K8S架构组件"><a href="#K8S架构组件" class="headerlink" title="K8S架构组件"></a>K8S架构组件</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826155416.png" alt="image-20210826155221671"></p>
+<ol>
+<li>Master和Worker：</li>
+</ol>
+<ul>
+<li>和Nginx里面那个类似哦，Master是主控结点，Worker是工作结点。</li>
+<li>Master组件：<ul>
+<li>API Server：集群统一入口，以restful方式，交给etcd存储</li>
+<li>Scheduler：选择Worker Node结点应用部署</li>
+<li>Controller-Manager：处理集群中常规后台任务，一个资源对应一个控制器</li>
+<li>etcd：存储系统，保存集群相关数据</li>
+</ul>
+</li>
+<li>Worker组件：<ul>
+<li>kubelet: Master派到Worker节点的代表，管理工作节点容器</li>
+<li>kube-proxy: 提供网络代理，实现负载均衡等功能。</li>
+</ul>
+</li>
+</ul>
+<h2 id="K8S核心概念"><a href="#K8S核心概念" class="headerlink" title="K8S核心概念"></a>K8S核心概念</h2><h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><ul>
+<li>最小部署单元</li>
+</ul>
+<blockquote>
+<ul>
+<li>一个Pod中可以有很多个容器，它是一组单元的集合</li>
+<li>最小单元不是一个容器，而是一个Pod嗷！</li>
+<li>一个Pod中的容器是共享网络的</li>
+<li>生命周期是短暂的</li>
+</ul>
+</blockquote>
+<h3 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h3><ul>
+<li>确保预期的pod副本的数量</li>
+</ul>
+<blockquote>
+<ul>
+<li>无状态应用部署<ul>
+<li>没有任何约定</li>
+<li>直接拿容器来使用</li>
+</ul>
+</li>
+<li>有状态应用部署<ul>
+<li>有一定的条件</li>
+<li>依赖于存储或需要特定网络IP</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>确保所有的node都运行同一个Pod，一次性任务和定时任务</li>
+</ul>
+<h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><ul>
+<li>定义一组pod的访问规则</li>
+<li>Service统一部署，Controller来创建pod，pod是最小部署单元。</li>
+</ul>
+<h1 id="搭建K8S集群："><a href="#搭建K8S集群：" class="headerlink" title="搭建K8S集群："></a>搭建K8S集群：</h1><h2 id="K8S环境平台规划"><a href="#K8S环境平台规划" class="headerlink" title="K8S环境平台规划"></a>K8S环境平台规划</h2><ul>
+<li>单Master集群：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826165740.png" alt="image-20210826165740642"></p>
+<ul>
+<li>多Master集群：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826170053.png" alt="image-20210826170053372"></p>
+<h2 id="服务器硬件配置要求"><a href="#服务器硬件配置要求" class="headerlink" title="服务器硬件配置要求"></a>服务器硬件配置要求</h2><p>master：2核 , 4G , 20G</p>
+<p>worker：4核 , 8G , 40G</p>
+<p>生产环境：要求更高嗷！！！</p>
+<h2 id="搭建K8S集群部署方式"><a href="#搭建K8S集群部署方式" class="headerlink" title="搭建K8S集群部署方式"></a>搭建K8S集群部署方式</h2><ol>
+<li>kubeadm</li>
+</ol>
+<blockquote>
+<p>K8S部署工具，提供kubeadm init和kubeadm join，用于快速部署K8S集群</p>
+<p>非常简单嗷！！！有点像Swarm嗷！！！</p>
+</blockquote>
+<ol start="2">
+<li>二进制包</li>
+</ol>
+<blockquote>
+<p>手动部署每个组件，组成K8S集群嗷！！！</p>
+<p>可以清晰看到每一步是怎么做到的嗷！！！</p>
+</blockquote>
+<h2 id="实操："><a href="#实操：" class="headerlink" title="实操："></a>实操：</h2><h3 id="Kubeadm集群搭建："><a href="#Kubeadm集群搭建：" class="headerlink" title="Kubeadm集群搭建："></a>Kubeadm集群搭建：</h3><ul>
+<li>基本要求：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173042.png" alt="image-20210826173026783"></p>
+<ol>
+<li>安装三台虚拟机，安装CentOS7。</li>
+</ol>
+<p>下面的操作可以发送到所有会话，直接在所有会话中操作嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173437.png" alt="image-20210826173437046"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173502.png" alt="image-20210826173501669"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173658.png" alt="image-20210826173657885"></p>
+<ol start="2">
+<li>所有结点安装Docker / Kubeadm / Kubelet</li>
+</ol>
+<ul>
+<li>docker：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173911.png" alt="image-20210826173911308"></p>
+<ul>
+<li>阿里云yum软件源：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174032.png" alt="image-20210826174031806"></p>
+<ul>
+<li>安装对应的东西：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174157.png" alt="image-20210826174157323"></p>
+<ul>
+<li>Master部署：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174237.png" alt="image-20210826174237619"></p>
+<ul>
+<li>加入Node：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174933.png" alt="image-20210826174933351"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826175034.png" alt="image-20210826175034332"></p>
+<ul>
+<li>上面那一段是初始化主结点！！！</li>
+<li>下面这一段是在Worker中运行，将Worker添加注册到主节点中用到的嗷！！！</li>
+<li>后面还有网络配置等一大堆的，建议看视频加课件嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827085448.png" alt="image-20210827085447881"></p>
+<h3 id="二进制集群搭建："><a href="#二进制集群搭建：" class="headerlink" title="二进制集群搭建："></a>二进制集群搭建：</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1GT4y1A756?p=10&amp;spm_id_from=pageDriver">二进制集群搭建相关知识嗷！！！</a></p>
+<ul>
+<li>基本要求：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173042.png" alt="image-20210826173026783"></p>
+<ol>
+<li>创建多台虚拟机，安装Linux操作系统</li>
+<li>操作系统初始化</li>
+<li>为etcd和apiserver自签证书</li>
+</ol>
+<ul>
+<li>自签证书：<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090246.png" alt="image-20210827090245778"></li>
+</ul>
+</li>
+</ul>
+<p>自签证书准备：</p>
+<ul>
+<li>cfssl证书生成工具</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090344.png" alt="image-20210827090344670"></p>
+<ol start="4">
+<li><p>部署etcd集群</p>
+</li>
+<li><p>部署master组件</p>
+</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090530.png" alt="image-20210827090521462"></p>
+<ol start="6">
+<li>部署Node组件</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090530.png" alt="image-20210827090522956"></p>
+<ol start="7">
+<li>部署集群网络</li>
+</ol>
+<ul>
+<li>老师讲的挺糊的，二进制这里先跳过去，后面再进行补充嗷！！！</li>
+</ul>
+<h1 id="Kubectl："><a href="#Kubectl：" class="headerlink" title="Kubectl："></a>Kubectl：</h1><ul>
+<li>集群管理的命令行工具嗷！！！</li>
+<li>语法格式：<code>kubectl [command] [type] [name] [flags]</code></li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827095917.png" alt="image-20210827095917745"></p>
+<ul>
+<li><code>kubectl + --help</code>可以查看所有的命令嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102816.png" alt="image-20210827102816349"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102844.png" alt="image-20210827102843999"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102908.png" alt="image-20210827102908370"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102922.png" alt="image-20210827102922364"></p>
+<h2 id="目前用到的命令："><a href="#目前用到的命令：" class="headerlink" title="目前用到的命令："></a>目前用到的命令：</h2><ol>
+<li><code>kubectl create deployment nginx --image=nginx</code></li>
+<li><code>kubectl expose deployment nginx --port=80 --type=NodePort</code></li>
+<li><code>kubectl get port,svc</code></li>
+</ol>
+<p>port是段都的信息，svc里面就包括了上面指定的开放端口的映射信息嗷！！！</p>
+<ol start="4">
+<li><code>kubectl get nodes</code></li>
+</ol>
+<p>获取所有结点的信息嗷！</p>
+<ol start="5">
+<li><code>kubectl get cs</code></li>
+</ol>
+<p>显示基本的状态</p>
+<ol start="6">
+<li><code>kubectl apply -f + yaml文件</code></li>
+</ol>
+<p>刚刚用于部署网络嗷！！！</p>
+<h1 id="资源编排："><a href="#资源编排：" class="headerlink" title="资源编排："></a>资源编排：</h1><ul>
+<li>实际开发的过程中，会把相应的配置记录在配置文件yaml中。叫做资源清单文件或资源编排文件。</li>
+<li>Yaml文件：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827103832.png" alt="image-20210827103832789"></p>
+<ul>
+<li>Yaml文件详解：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827104019.png" alt="image-20210827104018767"></p>
+<p>Yaml文件的组成部分：</p>
+<ul>
+<li>控制器定义</li>
+<li>被控制对象</li>
+</ul>
+<p>常用字段含义：</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827104619.png" alt="image-20210827104619431"></li>
+<li>如何快速编写yaml文件：<ol>
+<li>使用kubectl create生成yaml文件</li>
+<li>使用kubectl get命令导出yaml文件</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li>kubectl create：</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174309.png" alt="image-20210827174309484"></p>
+<p>直接输出到yaml文件中：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174351.png" alt="image-20210827174351326"></p>
+<ol start="2">
+<li>kubectl get：</li>
+</ol>
+<ul>
+<li>适用于已经部署好的项目，将配置文件导出出来嗷！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174621.png" alt="image-20210827174620867"></p>
+<p>系版本的–export已经弃用了嗷！！！</p>
+<p><code>-o yaml &gt; 1.yaml</code>就可以，–export可以不用了嗷！！！</p>
+<h1 id="Pod："><a href="#Pod：" class="headerlink" title="Pod："></a>Pod：</h1><h2 id="概述和存在意义："><a href="#概述和存在意义：" class="headerlink" title="概述和存在意义："></a>概述和存在意义：</h2><ul>
+<li>基本概念：<ul>
+<li>K8s中创建和管理的最小单元，部署的最小单元</li>
+<li>K8s不会直接处理容器，而是直接处理Pod。</li>
+<li>Pod由一个或者多个container构成嗷！！！</li>
+<li>一个Pod容器共享网络</li>
+<li>Pod是短暂存在的嗷！</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827185620.png" alt="image-20210827185620421"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827185641.png" alt="image-20210827185641059"></p>
+<ul>
+<li>存在意义：</li>
+</ul>
+<ol>
+<li>创建容器使用Docker，一个docker对应一个容器，一个容器有进程，一个容器运行一个应用程序。</li>
+<li>Pod是多进程设计，运行多个应用程序。</li>
+</ol>
+<ul>
+<li>一个pod有多个容器，一个容器里面运行一个应用程序。</li>
+</ul>
+<ol start="3">
+<li>Pod存在为了亲密性应用</li>
+</ol>
+<ul>
+<li>两个应用之间要进行交互</li>
+<li>网络之间的调用</li>
+<li>两个应用需要频繁进行调用</li>
+</ul>
+<h2 id="实现机制："><a href="#实现机制：" class="headerlink" title="实现机制："></a>实现机制：</h2><ol>
+<li>共享网络</li>
+<li>共享存储</li>
+</ol>
+<ul>
+<li>容器本身之间是相互隔离的嗷！！！通过Linux中的Namespace和group进行隔离的嗷！！！</li>
+<li>共享网络的前提条件：容器在同一个Namespace下面嗷！！！</li>
+<li>Pod实现共享网络的机制：</li>
+</ul>
+<ol>
+<li>创建一个默认的根容器（Pause容器），又被称为info容器</li>
+<li>后面创建的docker容器会逐个加入到info容器中嗷！！！</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827194459.png" alt="image-20210827194459456"></p>
+<ul>
+<li>通过Pause容器，把其他业务容器加入到Pause容器中，让所有容器业务在同一个名称空间中，可以实现网络共享。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827194830.png" alt="image-20210827194829852"></p>
+<ul>
+<li><p>共享存储：</p>
+<ul>
+<li>数据持久化：<ul>
+<li>日志数据</li>
+<li>业务数据</li>
+</ul>
+</li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827200341.png" alt="image-20210827200341170"></li>
+</ul>
+<p>Volume数据卷的概念，使用数据卷进行持久化存储。</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827202855.png" alt="image-20210827202855285"></li>
+</ul>
+</li>
+</ul>
+<h2 id="镜像拉取策略："><a href="#镜像拉取策略：" class="headerlink" title="镜像拉取策略："></a>镜像拉取策略：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827203258.png" alt="image-20210827203258176"></p>
+<h2 id="资源限制："><a href="#资源限制：" class="headerlink" title="资源限制："></a>资源限制：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204211.png" alt="image-20210827204211428"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204320.png" alt="image-20210827204320259"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204507.png" alt="image-20210827204506927"></p>
+<h2 id="Pod重启机制："><a href="#Pod重启机制：" class="headerlink" title="Pod重启机制："></a>Pod重启机制：</h2><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204648.png" alt="image-20210827204648137"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204824.png" alt="image-20210827204824567"></li>
+</ul>
+<p>批量任务就可以用Never等，有不同的用法嗷！！！</p>
+<h2 id="健康检查："><a href="#健康检查：" class="headerlink" title="健康检查："></a>健康检查：</h2><ul>
+<li>通过容器检查 —&gt; 应用层健康检查</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205152.png" alt="image-20210827205152089"></p>
+<ul>
+<li>健康检查的策略：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205301.png" alt="image-20210827205301480"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205354.png" alt="image-20210827205354611"></p>
+<h2 id="调度策略："><a href="#调度策略：" class="headerlink" title="调度策略："></a>调度策略：</h2><ul>
+<li>时序图：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827210104.png" alt="image-20210827210104034"></p>
+<ul>
+<li><p>每一步都要经过API Server，每一步的数据都写入到etcd，通过监控的方式，完成一步接一步的执行嗷！！！</p>
+</li>
+<li><p>影响调用的属性：</p>
+<ol>
+<li>Pod资源限制对于Pod调用产生影响</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211222.png" alt="image-20210827211222380"></p>
+<ol start="2">
+<li>结点选择器标签影响Pod调度</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211310.png" alt="image-20210827211310247"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211418.png" alt="image-20210827211417955"></p>
+<p>要采用上面这种措施，首先要对于结点创建标签<code>kubectl label node node1 env_role=dev</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211718.png" alt="image-20210827211718172"></p>
+<ol start="3">
+<li>结点的亲和性影响Pod调度</li>
+</ol>
+<p>nodeAffinity和之前nodeSelector基本一样的，根据节点上标签约束来决定将Pod调度到某些节点上嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827212055.png" alt="image-20210827212055187"></p>
+<p>支持的常用的操作符号：</p>
+<ul>
+<li>In NotIn Exists Gt Lt DoesNotExists</li>
+<li>反亲和性：和亲和性刚好相反嗷！！！</li>
+</ul>
+<ol start="4">
+<li>污点和污点容忍：</li>
+</ol>
+<ul>
+<li>nodeSelector和nodeAffinity：Pod调度到某些节点上，Pod属性，调度的时候实现</li>
+<li>Taint污点：节点不做普通分配调度，是节点属性嗷！</li>
+<li>应用场景：专用节点，配置特点硬件节点，基于Taint驱逐</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827214725.png" alt="image-20210827214725188"></p>
+<p>这里的Key的名字没有特殊的要求嗷，可以随便取嗷！！！</p>
+<ul>
+<li>删除污点：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829091637.png" alt="image-20210829091432792"></p>
+<ul>
+<li>污点容忍：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829091655.png" alt="image-20210829091655646"></p>
+<p>容忍污点，使得某个节点即使有污点也有可能被调度嗷！！！</p>
+</li>
+</ul>
+<h1 id="Controller："><a href="#Controller：" class="headerlink" title="Controller："></a>Controller：</h1><h2 id="什么是Controller"><a href="#什么是Controller" class="headerlink" title="什么是Controller"></a>什么是Controller</h2><ul>
+<li>实际存在的，管理和运行实际的对象。</li>
+<li>Controller是集群上管理和运行容器的对象</li>
+</ul>
+<h2 id="Pod和Controller之间的关系"><a href="#Pod和Controller之间的关系" class="headerlink" title="Pod和Controller之间的关系"></a>Pod和Controller之间的关系</h2><ul>
+<li>Pod是通过Controller来实际上实现应用的运维的，比如伸缩，滚动升级等等。</li>
+<li>Pod和Controller之间通过Label建立关系嗷！！！</li>
+<li>控制器也可被称为工作负载（WorkLoad）嗷。</li>
+<li>两者之间的运维管理：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829092242.png" alt="image-20210829092242059"></p>
+<p>Selector嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102134.png" alt="image-20210829102134436"></p>
+<h2 id="Deployment控制器应用场景"><a href="#Deployment控制器应用场景" class="headerlink" title="Deployment控制器应用场景"></a>Deployment控制器应用场景</h2><ul>
+<li>部署无状态应用嗷！！！</li>
+<li>管理Pod和RepliccaSet</li>
+<li>部署，滚动升级等功能</li>
+<li>应用场景：<ul>
+<li>Web服务</li>
+<li>微服务</li>
+</ul>
+</li>
+</ul>
+<h2 id="yaml文件字段说明"><a href="#yaml文件字段说明" class="headerlink" title="yaml文件字段说明"></a>yaml文件字段说明</h2><ul>
+<li>命令行不可复现 -&gt; 命令行变为Yaml</li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102200.png" alt="image-20210829102200400"></li>
+<li>使用yaml文件进行部署：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102240.png" alt="image-20210829102240319"></p>
+<h2 id="Deployment控制器部署应用"><a href="#Deployment控制器部署应用" class="headerlink" title="Deployment控制器部署应用"></a>Deployment控制器部署应用</h2><ul>
+<li><p>步骤：</p>
+<ol>
+<li>导出Yaml文件：</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102340.png" alt="image-20210829102340153"></p>
+<ol start="2">
+<li>使用Yaml进行部署：</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102405.png" alt="image-20210829102405236"></p>
+<ol start="3">
+<li>对外暴露端口（发布）：</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102530.png" alt="image-20210829102530630"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102611.png" alt="image-20210829102611292"></p>
+<p>本质上这里还是通过Yaml来部署的，熟悉了之后，可以直接编写Yaml中的参数，对其进行操作和部署嗷！！！执行第二个步骤，就可以实现我们的部署工作了嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102842.png" alt="image-20210829102841918"></p>
+<p>80是容器内暴露的端口，30048是所有的结点，对外暴露的端口。就是相当于Docker中的端口映射的概念嘛！！！</p>
+</li>
+</ul>
+<h2 id="升级回滚"><a href="#升级回滚" class="headerlink" title="升级回滚"></a>升级回滚</h2><ul>
+<li>指定版本的配置：</li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829103956.png" alt="image-20210829103956299"></li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829103903.png" alt="image-20210829103902899"></p>
+<ul>
+<li>如果我要升级Nginx的版本呢？</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104149.png" alt="image-20210829104149578"></p>
+<ul>
+<li>升级的原理和过程：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104332.png" alt="image-20210829104332318"></p>
+<p>1.14正常运行，同时去下载1.15，下载完成并且成功运行之后，再去把1.14给替换掉。这就是升级的整个流程嗷！！！保证升级过程中，五福不会终端嗷！！！</p>
+<ul>
+<li>查看升级是否成功：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104512.png" alt="image-20210829104511926"></p>
+<ul>
+<li>回滚版本如何操作呢？</li>
+</ul>
+<ol>
+<li>查看历史版本：</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104605.png" alt="image-20210829104605072"></p>
+<p>第一个是1.14，第二个就是1.15</p>
+<ol start="2">
+<li>还原（回滚）版本：</li>
+</ol>
+<ul>
+<li>回滚到上一个版本：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104712.png" alt="image-20210829104712466"></p>
+<ul>
+<li>回滚到指定版本：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104831.png" alt="image-20210829104830670"></p>
+<h2 id="弹性伸缩"><a href="#弹性伸缩" class="headerlink" title="弹性伸缩"></a>弹性伸缩</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104919.png" alt="image-20210829104919152"></p>
+<h1 id="Service："><a href="#Service：" class="headerlink" title="Service："></a>Service：</h1><h2 id="概述："><a href="#概述：" class="headerlink" title="概述："></a>概述：</h2><ul>
+<li>定义一组Pod的访问规则嗷！！！</li>
+</ul>
+<ol>
+<li>Service存在的意义：</li>
+</ol>
+<ul>
+<li>防止Pod失联（服务发现）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105124.png" alt="image-20210829105124253"></p>
+<p>Pod每次重启，IP都会变化的，所以Pod的生命周期是短暂的嗷！！！因此虽然通过Ip可以相互调用，由于Ip不可靠，不予以采用嗷！！！</p>
+<ul>
+<li>说白了就是Nacos！！！服务注册中心嘛！！！</li>
+</ul>
+<ol start="2">
+<li>定义一组Pod的访问策略：</li>
+</ol>
+<ul>
+<li>负载均衡！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105542.png" alt="image-20210829105541773"></p>
+<h2 id="Pod和Service的关系："><a href="#Pod和Service的关系：" class="headerlink" title="Pod和Service的关系："></a>Pod和Service的关系：</h2><ul>
+<li>如何建立关系？</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105811.png" alt="image-20210829105810639"></p>
+<h2 id="Service的三种类型："><a href="#Service的三种类型：" class="headerlink" title="Service的三种类型："></a>Service的三种类型：</h2><ul>
+<li><p>类型：</p>
+<ol>
+<li>ClusterIP：集群内部访问</li>
+<li>NodePort：对外访问应用使用</li>
+<li>LoadBalancer：对外访问应用使用，公有云也可以使用嗷！</li>
+</ol>
+</li>
+<li><p><code>kubectl get svc</code>：svc是对外暴露端口，这里就是查询每个端口的暴露情况orz。</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110142.png" alt="image-20210829110142408"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110248.png" alt="image-20210829110247676"></p>
+<ul>
+<li>跑起来之后的结果：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110333.png" alt="image-20210829110332924"></p>
+<p>注意字母的大小写哈！！！、</p>
+<ul>
+<li>Node一般内网部署应用，外网一般不能够访问到。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829111121.png" alt="image-20210829111120898"></p>
+<h1 id="Controller补充："><a href="#Controller补充：" class="headerlink" title="Controller补充："></a>Controller补充：</h1><h2 id="部署无状态应用："><a href="#部署无状态应用：" class="headerlink" title="部署无状态应用："></a>部署无状态应用：</h2><ul>
+<li>无状态特点：<ul>
+<li>其实认为Pod都是一样的，因为没有状态嘛</li>
+<li>没有顺序要求嗷！！！</li>
+<li>不用考虑我在哪个Node上运行</li>
+<li>随意进行伸缩和拓展</li>
+</ul>
+</li>
+<li>有状态：<ul>
+<li>上面因素都需要考虑到</li>
+<li>让每个Pod都是独立的，保持Pod的启动顺序和唯一性</li>
+<li>唯一的标识符进行区分，持久存储</li>
+<li>有序的，比如Mysql主从等</li>
+</ul>
+</li>
+</ul>
+<h2 id="部署有状态应用："><a href="#部署有状态应用：" class="headerlink" title="部署有状态应用："></a>部署有状态应用：</h2><ul>
+<li>无头service</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829112954.png" alt="image-20210829112954170"></p>
+<ul>
+<li>ClusterIP：None</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113123.png" alt="image-20210829113123442"></p>
+<p>下面这个Kind，里面是StatefulSet嗷，注意一下嗷！</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113025.png" alt="image-20210829113024879"></li>
+<li>查看Pod：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113539.png" alt="image-20210829113538783"></p>
+<p>每个都是唯一的名称嗷！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113627.png" alt="image-20210829113626795"></p>
+<p>None就代表这是一个无头的服务嗷！！！</p>
+<ul>
+<li>summary：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113842.png" alt="image-20210829113841918"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113858.png" alt="image-20210829113857427"></p>
+<h2 id="所有Node运行同一个Pod："><a href="#所有Node运行同一个Pod：" class="headerlink" title="所有Node运行同一个Pod："></a>所有Node运行同一个Pod：</h2><ul>
+<li>部署守护进程DaemonSet</li>
+</ul>
+<p>每个node上面运行一个pod，新加入的node也同样运行在一个pod里面嗷！！！</p>
+<p>例子：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830164410.png" alt="image-20210830164403320"></p>
+<p>Yaml文件：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830164929.png" alt="image-20210830164928922"></p>
+<h2 id="Job（一次性任务）："><a href="#Job（一次性任务）：" class="headerlink" title="Job（一次性任务）："></a>Job（一次性任务）：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165206.png" alt="image-20210830165205933"></p>
+<p>这里的Kind为Job嗷，是Job才为一次性任务。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165642.png" alt="image-20210830165641957"></p>
+<h2 id="CronJob（定时任务）："><a href="#CronJob（定时任务）：" class="headerlink" title="CronJob（定时任务）："></a>CronJob（定时任务）：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165735.png" alt="image-20210830165735467"></p>
+<ul>
+<li>每隔一分钟重启一次嗷！！！</li>
+<li>启动定时任务：<code>kubectl apply -f cronjob.yaml</code></li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170012.png" alt="image-20210830170012503"></p>
+<h1 id="配置管理："><a href="#配置管理：" class="headerlink" title="配置管理："></a>配置管理：</h1><h2 id="Secret"><a href="#Secret" class="headerlink" title="Secret"></a>Secret</h2><ul>
+<li><p>作用：加密数据加载到etcd里面，让Pod容器以挂载Volume方式进行访问。</p>
+</li>
+<li><p>场景：凭证</p>
+</li>
+<li><p>场景：</p>
+<ol>
+<li>创建secret加密数据（以Base64编码为例子）：</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170303.png" alt="image-20210830170303052"></p>
+<ol start="2">
+<li><p>挂载数据卷：</p>
+<ul>
+<li>以变量形式挂载：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170523.png" alt="image-20210830170523737"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170623.png" alt="image-20210830170623197"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170754.png" alt="image-20210830170754577"></p>
+<ul>
+<li>以Volume的形式挂载到Pod中：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830171206.png" alt="image-20210830171206721"></p>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="ConfigMap："><a href="#ConfigMap：" class="headerlink" title="ConfigMap："></a>ConfigMap：</h2><ul>
+<li><p>作用：存储不加密的数据到etcd中，让Pod以变量或者Volume的形式挂载到容器中。</p>
+</li>
+<li><p>场景：</p>
+<ul>
+<li>配置文件</li>
+</ul>
+</li>
+<li><p>步骤：</p>
+<ol>
+<li>创建配置文件：</li>
+</ol>
+</li>
+</ul>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Alexander Liu</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://example.com/2021/08/26/kubernetes-xue-xi/">http://example.com/2021/08/26/kubernetes-xue-xi/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Alexander Liu</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E5%90%8E%E7%AB%AF/">
+                                    <span class="chip bg-color">后端</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2021/08/30/springboot-gao-ji/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="SpringBoot高级">
+                        
+                        <span class="card-title">SpringBoot高级</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            雷神SpringBoot高级部分
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-08-30
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Alexander Liu
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%90%8E%E7%AB%AF/">
+                        <span class="chip bg-color">后端</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/08/26/shi-yong-kubeadm-kuai-su-bu-shu-yi-ge-k8s-ji-qun/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="使用kubeadm快速部署一个K8s集群">
+                        
+                        <span class="card-title">使用kubeadm快速部署一个K8s集群</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-26
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Alexander Liu
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%90%8E%E7%AB%AF/">
+                        <span class="chip bg-color">后端</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2022</span>
+            
+            <a href="/about" target="_blank">Alexander Liu</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">495.4k</span>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/alexanderliu-creator" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:haoeliu@foxmail.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=2632746476" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 2632746476" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

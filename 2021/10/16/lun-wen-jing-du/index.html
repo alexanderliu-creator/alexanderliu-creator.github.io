@@ -1,0 +1,1595 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="论文精读之MapReduce, 分布式系统,后端研发,数据协同">
+    <meta name="description" content="这里主要记录一些兔兔子刚刚碰到学习的论文内容，可能对于论文的理解还不够，请多多指教嗷！！！估摸着6.824和6.828的论文，都会在这里做一个小的记录哦！！！
+
+
+
+
+MapReduceAbstract
+What is MapReduce?">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>论文精读之MapReduce | Hexo</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+    <style>
+        body{
+            background-image: url(https://cdn.jsdelivr.net/gh/Tokisaki-Galaxy/res/site/medias/background.jpg);
+            background-repeat:no-repeat;
+            background-size: 100% 100%;
+            background-attachment:fixed;
+        }
+    </style>
+
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Hexo</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+  <li>
+    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
+      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Hexo</div>
+        <div class="logo-desc">
+            
+            欢迎来到兔子的小窝，这里是兔子的一些笔记分享
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">论文精读之MapReduce</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/">
+                                <span class="chip bg-color">大三自学</span>
+                            </a>
+                        
+                            <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/">
+                                <span class="chip bg-color">论文精读</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2021-10-16
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-10-30
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    8.3k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    44 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <p>这里主要记录一些兔兔子刚刚碰到学习的论文内容，可能对于论文的理解还不够，请多多指教嗷！！！估摸着6.824和6.828的论文，都会在这里做一个小的记录哦！！！</p>
+<span id="more"></span>
+
+
+
+<h1 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><ul>
+<li><p>What is MapReduce?</p>
+<ul>
+<li>A programming model that process and generate large data sets.</li>
+</ul>
+</li>
+<li><p>How to use it?</p>
+<ul>
+<li>Users specify a map function (process key/value pair) to generate intermediate key/value pairs</li>
+<li>Users specify a reduce function that merges all intermediate values associated with the same intermediate key.</li>
+</ul>
+</li>
+<li><p>What’s the meaning of MapReduce?</p>
+<ul>
+<li><p>Programs are automatically parallelized and executed on a large cluster of commodity machines.</p>
+</li>
+<li><p>Runtime system’s job:</p>
+<ol>
+<li><p>partition the input data </p>
+</li>
+<li><p>schedule the program’s execution across a set of machines</p>
+</li>
+<li><p>handle machine failures</p>
+</li>
+<li><p>manage the required inter-machine communication</p>
+</li>
+</ol>
+</li>
+<li><p>Result : Allow programmers use the distributed systems easily.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h2><ul>
+<li>The primary mechanism for fault tolerance is MapReduce is re-execution.</li>
+<li>Contributions of this work : A simple and powerful interface that enables automatic parallelization and distribution of large-scale computations.(High performance on large clusters of commodity PCs)</li>
+</ul>
+<h2 id="2-Programming-Model"><a href="#2-Programming-Model" class="headerlink" title="2. Programming Model"></a>2. Programming Model</h2><ul>
+<li>Two functions:<ul>
+<li>Map:<ul>
+<li>written by the user</li>
+<li><strong>Map</strong> function take an input pair and produce a set of intermediate key/value pairs.</li>
+<li><strong>MapReduce</strong> library groups together all intermediate values with the same intermediate key  $I$ and passes them to <strong>Reduce</strong> function</li>
+</ul>
+</li>
+<li>Reduce：<ul>
+<li>also written by the user</li>
+<li><strong>Reduce</strong> accept the an intermediate key $I$ and a set of value for that key.</li>
+<li>It merges these values to form a possibly smaller set of values. Typically just zero or one output value is produced per Reduce function invocation.</li>
+<li>Intermediate values are supplied to the reduce function via an iterator. It allows us to handle lists of values that are too large to fit in memory.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-1-Example"><a href="#2-1-Example" class="headerlink" title="2.1 Example"></a>2.1 Example</h3><ul>
+<li>Count words in a large collection of documents.</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211016214958.png" alt="image-20211016214958443"></p>
+<ul>
+<li>The MapReduce function will link user’s code together with the MapReduce library.</li>
+</ul>
+<h3 id="2-2-Types"><a href="#2-2-Types" class="headerlink" title="2.2 Types"></a>2.2 Types</h3><ul>
+<li>The conceptually functions supplied have the associated types:</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211016215418.png" alt="image-20211016215418606"></p>
+<p>Map负责将每一对key/value，生成中间态的k2和对应的v2，交由集群中的机器来进行运算。Reduce则根据中间的k2，收集到每一台机器上的运算结果所构成的list(v2)，然后Reduce函数经过对应的逻辑处理（例如求和之后），最终输出结果。</p>
+<h3 id="2-3-More-Examples"><a href="#2-3-More-Examples" class="headerlink" title="2.3 More Examples"></a>2.3 More Examples</h3><ol>
+<li><p>Distributed Grep : Map function emits a line if matches a supplied pattern. Reduce helps copy the supplied intermediate data to the output.</p>
+</li>
+<li><p>Count of URL Access Frequency : Map processes logs of web page requests and outputs &lt;URL,1&gt;. Reduce adds all the values of the same URL and emits a &lt;URL, total count&gt; pair. </p>
+</li>
+<li><p>Reverse Web-Link Graph : Map -&gt; &lt;target , source&gt; . Reduce -&gt; &lt;target , list(source)&gt;</p>
+</li>
+<li><p>Term-Vector per Host : A term vector summarizes the most important words that occur in a document or a set of documents as a list of &lt;word , frequency&gt; pairs. Map -&gt; &lt;hostname , term vector&gt; . Reduce -&gt; pass all per-document term vectors for a given host , add these term vectors together , throwing away infrequent terms , and then emits a final &lt;hostname , term vector&gt; pair.</p>
+</li>
+<li><p>Inverted Index:</p>
+<ul>
+<li>The map function parses each document , and emits a sequence of &lt;word , document ID&gt; pairs.</li>
+<li>The reduce function accepts all pairs for a given word , sorts the corresponding document IDs and emits a &lt;word , list(document ID)&gt; pair.</li>
+<li>Result : The set of all output pairs forms a simple inverted index. It is easy to augment this computation to keep track of word positions.</li>
+</ul>
+</li>
+</ol>
+<p>这里的Inverted Index就是我们常说的倒排索引，这里Map - Reduce帮助我们整理出了每个单词对应的文档，并且由出现频率排好了序，能够帮助我们加快计算来锁定某个单词出现的位置。</p>
+<ol start="6">
+<li>Distributed Sort: Map -&gt; Extracts the key from each record and emits a &lt;key , record&gt; pair. Reduce -&gt; Emits all pairs unchanged. This computation depends on the partitioning facilities.</li>
+</ol>
+<h2 id="3-Implementation"><a href="#3-Implementation" class="headerlink" title="3. Implementation"></a>3. Implementation</h2><ul>
+<li><p>This section describes an implementation targeted to the computing environment in wide use at Google : Large clusters of commodity PCs together with switched Ethernet</p>
+</li>
+<li><p>Environment:</p>
+<ol>
+<li><p>Machines   —&gt;   dual-processor x86 processors running Linux , 2-4 GB（两核四G，跑Linux）</p>
+</li>
+<li><p>Commodity networking hardware   —&gt;   100Mb/s or  1Gb/s , averaging considerably less in overall bisection bandwidth. （看起来很快，单平均要低得多）</p>
+</li>
+<li><p>A cluster -&gt; hundreds or thousands of machines , failures are common.（机器很多，故障频繁）</p>
+</li>
+<li><p>Storage -&gt; inexpensive IDE disks directly attached to individual machines. A distributed file system developed in-house is used to manage the data stored on these disks. FS uses replication to provide availability and reliability on top of unreliable hardware.（每台机器采用廉价磁盘，磁盘上装了内部研发的分布式文件系统（这里可能指的是GFS），这种系统使用赋值来提供可靠性和可用性）</p>
+</li>
+<li><p>A scheduling system -&gt; users submit jobs to a scheduling system. Each job contains a set of tasks, and is mapped by the scheduler to a set of available machines within a cluster. （调度系统，用户提交他们的作业给<strong>调度系统</strong>，用户提交的作业包含了一组任务。同时这些作业由调度器来Map映射到集群中一组可用的计算机上来执行）</p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="3-1-Execution-Overview"><a href="#3-1-Execution-Overview" class="headerlink" title="3.1 Execution Overview"></a>3.1 Execution Overview</h3><ul>
+<li>Execution overview：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211017202446.png" alt="image-20211017202446571"></p>
+<ol>
+<li>Map函数分布在不同的机器上并且自动调用，将输入数据进行分区(partition)，拆分为一系列分片(a set of M splits)。拆分后的分片可以在不同的机器上被并行执行。（Map（本身分布式分布在不同的计算机上））</li>
+<li>Reduce函数被分布式调用，调用来使用分片函数（例如：$hash(key)\  mod\  R$，被分片的参数R是被用户所指定的。（相当于把中间的结果分别收集，输出在不同的output files中，因此要指定R嗷！！！）</li>
+</ol>
+<p>The picture overall flow of MapReduce operation in our implementation. When user program calls the MapReduce function , the following sequence of actions occurs:</p>
+<ol>
+<li>MapReduce library —&gt; split input files into M pieces typically 16 megabytes to 64 megabytes(MB) per piece (This is controllable by the user via an optional parameter). It then starts up many copies of the program on a cluster of machines.</li>
+<li>The master is special , the rest are workers that are assigned work by the master. M map tasks and R reduce tasks to assign. Master picks idle workers and assigns each one a map task or a reduce task.（Master将对应的Map或者Reduce任务分配给不同的机器）</li>
+<li>Worker who is assigned a map task reads the contents of the corresponding input split. Parsing key/value pairs out of input data and passes each pair to the user-defined Map function. Intermediate key/value pairs produced by the Map function are buffer in memory（Worker会将分片的数据读入，通过分配的Map函数，将数据处理生成中间数据并缓存在buffer中）</li>
+<li>Periodically , the buffered pairs are written to local disk, partitioned into R regions by the partitioning function. Locations on the local disk are passed back to the master, who is responsible for forwarding these locations to the reduce workers.（每过一段时间，buffer中的pair对就会被分区函数分成R个部分并且存入machine’s local disk。这个存入的地址会被返回给Master，由Master交给对应的Reduce workers）</li>
+<li>When a reduce worker is notified by the master about these locations,it uses remote procedure calls to read the buffered data from the local disks of the map workers. When a reduce worker has read all intermediate data , it sorts it by the intermediate keys so that all occurrences of the same key are grouped together. The sorting is needed because typically many different keys map to the same reduce task. If the amount of the intermediate data is too large to fit in the memory , an external sort is used.（Reduce对应的Worker得到了这些地址，就会Remote call来读取这些缓存的数据。读取完所有中间数据后，会进行排序，使得相同的key聚在一起。排序是重要的因为经常来说，会有不同的keys来自于不同机器聚合在相同的reduce任务上。如果中间数据太大的话，还会用到外排序。）</li>
+<li>Reduce worker iterates over the sorted data and for each unique intermediate key encountered, it passes the key and the corresponding set of intermediate values to the user’s Reduce function. Output is appended to a final output file for this reduce partition.（Reduce worker会遍历所有排好序的数据，对于每一个独特的中间key，都会将key和它对应的a set of data交给Reduce function。对于这个reduce分片的结果，会被appended到一个最终的输出文件中）</li>
+<li>When all map tasks and reduce tasks have been completed, the master wakes up the user program. At this point, the MapReduce call in the user program returns back to the user code.（结束啦！唤醒用户程序，返回用户代码）</li>
+</ol>
+<p>Successful impletion —&gt; output of the MapReduce execution is available in R output files（With the name as specified by the user）. Typically, users do not need to combine these R output files into one file - they often pass these files as input to another MapReduce call, or use them from another distributed application that is able to deal with input that is partitioned into multiple files.（输出的R个文件往往在套娃orz！！！）</p>
+<h3 id="3-2-Master-Data-Structures"><a href="#3-2-Master-Data-Structures" class="headerlink" title="3.2 Master Data Structures"></a>3.2 Master Data Structures</h3><ul>
+<li>Master keeps several data structures. For each map task and reduce task, it stores the state(idle , in-progress or completed), and the identity of the worker machine(for non-idle tasks)（存储每个任务的消息，例如完成没有，空闲，运行完成。同时还存储非空闲的任务结点的ID）</li>
+<li>The master is the conduit through which the location of intermediate file regions is propagated from map tasks to reduce tasks.（Master是中间人（或者说管道），通过这条管道，file regions的位置被从map任务传播给了reduce任务）Therefore , for each completed map task , the master stores the locations and sizes of the R intermediate file regions produced by the map task.（注意，和上面的图一样的，Map任务在结束的时候，就已经把处理后的数据分区为R份储存了嗷！！！）Updates to this location and size information are received as map tasks are completed（任务完成后，主节点就会收到对应的更新结果。）The information is pushed incrementally to workers that have in-progress reduce tasks. （更新信息会被增量推送给正在进行的 reduce 任务的机器。）</li>
+</ul>
+<h3 id="3-3-Fault-Tolerance"><a href="#3-3-Fault-Tolerance" class="headerlink" title="3.3 Fault Tolerance"></a>3.3 Fault Tolerance</h3><ul>
+<li>MR library is designed to help process very large amount of data using hundreds or thousands of machines, the library must tolerate machine failures gracefully.</li>
+</ul>
+<h4 id="Worker-Failure"><a href="#Worker-Failure" class="headerlink" title="Worker Failure"></a>Worker Failure</h4><ul>
+<li>Para1：<ul>
+<li>M pings every W periodically. No response for a certain amount of time -&gt; M marks the W as failed.</li>
+<li>Any map tasks completed by the worker are reset back to their initial idle state. -&gt; They are eligible for scheduling on other workers.</li>
+<li>Similarly, any map task or reduce task in process on a failed worker is also reset to idle and becomes eligible for rescheduling</li>
+</ul>
+</li>
+<li>Para2：<ul>
+<li>Completed map tasks are re-executed on a failure because their output is stored on the local disk(s) of the failed machine and is therefore inaccessible.（完整的map tasks会被再次执行如果出错（比如上面说的，对应的机器down掉了），因为输出被存储在本地磁盘上，而机器挂掉了，因此是这些信息作废，不可以被获取到orz）</li>
+<li>Completed reduce tasks do not need to be re-executed on a failure since their output is stored in a global system.（完整的Reduce如果遇到机器故障则不需要完全重新执行，因为执行结果是放在全局系统中，之前处理过的数据依旧是存在并且可以访问的嗷！！！）</li>
+</ul>
+</li>
+<li>Para3：<ul>
+<li>When a map task is executed first by worker A and later executed by worker B(since A failed), all workers executing reduce tasks are notified of the re-execution. Any reduce tasks that has not already read the data from A will read the data from worker B.（注意，这种re-execution的转变，将使得全部reduce tasks都注意到。还没有读取过A的数据的reduce tasks，将从B开始读取。）</li>
+<li>MR is resilient on large-scale worker failures. e.g during one MR operation , network maintenance on a running cluster was causing groups of 80 machines at a time to become unreachable for several minutes. The MR master simply re-executed the work done by the unreachable worker machines , and continued to make forward progress, eventually completing the Map-Reduce operation.</li>
+</ul>
+</li>
+</ul>
+<h4 id="Master-Failure"><a href="#Master-Failure" class="headerlink" title="Master Failure"></a>Master Failure</h4><ul>
+<li>It is easy to make the master write periodic checkpoints of the master data structures described above. If the master task dies, a new copy can be started from the last checkpointed state. However, given that there is only a single master, its failure is unlikely; therefore our current implementation aborts the MR computation if the master dies. Clients can check for this condition and retry the MR operation if they desire.（一台主机，如果挂了的话，gg，直接放弃运行MR，可以重试嗷！！！）</li>
+</ul>
+<h4 id="Semantics-in-the-Presence-of-Failures"><a href="#Semantics-in-the-Presence-of-Failures" class="headerlink" title="Semantics in the Presence of Failures"></a>Semantics in the Presence of Failures</h4><ul>
+<li><p>Para1</p>
+<ul>
+<li>分布式执行结果和顺序执行的结果应该是一样的</li>
+</ul>
+</li>
+<li><p>Para2</p>
+<ul>
+<li>采用原子提交来保证这个属性，Each task writes its output to private temporary files. A Reduce task produces one such file, and a map task produces R such files(one per reduce task). </li>
+<li>Map结束，给master发的消息会包括这R个零时文件的名字。如果收到了一个已经完成的map发送的消息，master会将其忽略。Otherwise, master records the names of R files in a master data structure.</li>
+</ul>
+</li>
+<li><p>Para3</p>
+<ul>
+<li>Reduce结束，会将临时文件的名字自动地重命名为最终输出文件的名字。如果同样的reduce task被执行在多态机器上，多次rename的调用将会被作用到同一个输出最终输出文件上。</li>
+<li>我们依赖于这种底层文件系统（例如HDFS）所提供的原子性命名机制来保证，最终的文件系统的状态是只包含一次reduce task的执行所产生的数据。</li>
+</ul>
+</li>
+<li><p>Para4</p>
+<ul>
+<li>Vast amount of our map and reduce operations are deterministic, and the fact that our semantic are equivalent to a sequential execution in this case makes it very easy for programmers to reason about their program’s behaviors.（说白了就是大多数的MR，用户都是可以推断程序执行的结果的嗷！！！）</li>
+<li>When M and/or R are non-deterministic, we provide weaker but still reasonable semantics. To non-deterministic operators, output of a particular reduce task R is equivalent to the output for R produced by a sequential execution of the non-deterministic program.（如果我们提供的函数不是决定性的函数，那结果和顺序执行的结果就会变弱，和非决定性的函数执行的结果是一致的）</li>
+<li>However , output for a different reduce task R2 may be the same as R2 produced by a different sequential execution of the non-deterministic program.</li>
+</ul>
+</li>
+<li><p>Para5</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211023192834.png" alt="image-20211023192834350"></li>
+<li>上面是一个小例子：<ul>
+<li>M -&gt; R1 / M -&gt; R2</li>
+<li>R1可能读到自己或者别的M产生的结果，R2也是嗷！！！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-4-Locality"><a href="#3-4-Locality" class="headerlink" title="3.4 Locality"></a>3.4 Locality</h3><ul>
+<li>Network bandwidth是稀缺资源，我们通过利用被存储在机器的本地磁盘上的输入数据（由GFS管理）构成我们的集群来保存网络带宽。</li>
+<li>GFS将每个文件分成64MB的块，并且对于每一块存储在多台不同机器上存储多个备份（通常为3个备份）。MR master takes the location information of the input files into account and attempts to schedule a map task on a machine that contains a replica of the corresponding input data.</li>
+<li>Failing that, it attempts to schedule a map task near a replica of the task’s input data.( On a worker machine containing the data). When running large MR operations on a significant fraction of the workers in a cluster, most input data is read locally and consumes no network bandwidth.（用户输入的数据在哪台机器上，就最好用它来跑。这样可以节约很多带宽出来嗷！！！）</li>
+</ul>
+<h3 id="3-5-Task-Granularity"><a href="#3-5-Task-Granularity" class="headerlink" title="3.5  Task Granularity"></a>3.5  Task Granularity</h3><ul>
+<li>Para1:<ul>
+<li>subdivide the map phase into M pieces , reduce phase into R pieces. M , R should be much larger than the number of machines.</li>
+<li>Having each worker perform many different tasks improves dynamic load balancing , and also speeds up recovery when a worker fails（当很多台worker执行很多任务时，第一：有利于负载均衡，第二：加快故障恢复）: the many map tasks it has completed can be spread out across all the other worker machines.</li>
+</ul>
+</li>
+<li>Para2:<ul>
+<li>Practical bounds limit M and R can be in our implementation.</li>
+<li>Master must make $O(M+R)$ scheduling decisions and keeps $O(M*R)$ state in memory.</li>
+<li>(The constant factors for memory usage are small however: the O(M∗R) piece of the state consists of approximately one byte of<br>data per map task/reduce task pair.)</li>
+</ul>
+</li>
+<li>Para3:<ul>
+<li>这一部分是关于实践相关的内容。</li>
+<li>R is often constrained by users because the output of each reduce task ends up in a separate out-<br>put file</li>
+<li>In practice, we tend to choose M so that each individual task is roughly 16 MB to 64 MB of input data (so that the locality optimization described above is most effective), and we make R a small multiple of the number of worker machines we expect to use. We often perform MapReduce computations with M = 200, 000 and R =5, 000, using 2,000 worker machines.</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-6-Backup-Tasks"><a href="#3-6-Backup-Tasks" class="headerlink" title="3.6 Backup Tasks"></a>3.6 Backup Tasks</h3><ul>
+<li>One of the common causes that lengthens the total time taken for a MapReduce operation is a “straggler”: a machine that takes an unusually long time to complete one of the last few map or reduce tasks in the computation.（有机器掉队了嗷！！！）</li>
+<li>Many reasons：<ul>
+<li>bad disk -&gt; experience many correctable errors slow down its read performance from 30 MB/s to 1 MB/s.</li>
+<li>many jobs -&gt; Cluster scheduling system may have scheduled other tasks on the machine, causing it to execute the MapReduce code more slowly due to competition for CPU, memory, local disk, or net-<br>work bandwidth.</li>
+<li>caches disabled -&gt; A recent problem we experienced was a bug in machine initialization code that caused processor caches to be disabled: computations on affected machines slowed down by over a factor of one hundred</li>
+</ul>
+</li>
+<li>How to solve it?<ul>
+<li>We have a general mechanism to alleviate the problem of stragglers (English !!!)</li>
+<li>When a MapReduce operation is close to completion, the master schedules backup executions of the remaining in-progress tasks. The task is marked as completed whenever either the primary or the backup execution completes（master会备份执行剩余的任务，任务不管是主执行还是备份执行，最后都会被标记为completed）</li>
+<li>We have tuned this mechanism so that it typically increases the computational resources used by the operation by no more than a few percent（我们调整了此机制，使其通常将操作使用的计算资源增加不超过百分之几）</li>
+<li>result: We have found that this significantly reduces the time to complete large MapReduce operations. As an example, the sort program described in Section 5.3 takes 44% longer to complete when the backup task mechanism is disabled.（这种方式可以提高很多效率嗷！！！）</li>
+<li>总的来说，就是我们采取了一种机制，当任务即将结束，那么最后跑的那些程序，就是最有可能机器有问题的程序。我们就启动另外的一些资源来跑这些任务，这些能够更快得到结果嗷！！！</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-Refinements"><a href="#4-Refinements" class="headerlink" title="4. Refinements"></a>4. Refinements</h2><ul>
+<li>Although the basic functionality provided by simply writing Map and Reduce functions is sufficient for most needs, we have found a few extensions useful. There are described in this section.</li>
+<li>这里是在前面的基础上，对于MR模型的改进和改良嗷！！！</li>
+</ul>
+<h3 id="4-1-Partitioning-Function"><a href="#4-1-Partitioning-Function" class="headerlink" title="4.1 Partitioning Function"></a>4.1 Partitioning Function</h3><ul>
+<li>User specify files that they desire(R). Default function is $hash(key)\ mod\ R$ . This tends to result in fairly well-balanced partitions.</li>
+<li>In some cases, it’s more useful to partition data by some other functions of the key.</li>
+<li>e.g. Sometimes the output keys are URLs, and we want all entries for a single host to end up in the same output. To support this decision, user of MR library can provide special partitioning function. e.g. using $hash(Hostname(urlkey))\ mode\ R$ as the partitioning function causes all URLs from the same host to end up in the same output file.</li>
+</ul>
+<h3 id="4-2-Ordering-Guarentees"><a href="#4-2-Ordering-Guarentees" class="headerlink" title="4.2 Ordering Guarentees"></a>4.2 Ordering Guarentees</h3><ul>
+<li>Guarantee within a given partition, the intermediate key/value pairs are processed in increasing key order.</li>
+<li>This ordering guarantee makes it easy to generate a sorted output file per partition, which is useful when the output file format needs to support efficient random access lookups by key, or users of the output find it convenient to have the data sorted.</li>
+</ul>
+<h3 id="4-3-Combiner-Function"><a href="#4-3-Combiner-Function" class="headerlink" title="4.3 Combiner Function"></a>4.3 Combiner Function</h3><ul>
+<li>Para1<ul>
+<li>In some cases, there is significant repetition in the intermediate keys produced by each map task, and the user-specified Reduce function is commutative and associative</li>
+<li>e.g. Word Count   -&gt;   each map producing hundreds or thousands of records of the form &lt;the, 1&gt;. All these counts will be sent over the network to a single reduce task and then added together by the R function to produce one number. </li>
+<li>How to solve it !!! We allow the user to specify an optional Combiner function that does partial merging of<br>this data before it is sent over the network.</li>
+</ul>
+</li>
+<li>Para2<ul>
+<li>The combiner function is executed on each machine that performs a map task.</li>
+<li>Typically -&gt; same code on combiner and reduce function.</li>
+<li>Difference on combiner and R function -&gt; how MR library handles the output of the function. (Output of a reduce function is written to the final output file . Output of a combiner function is written to an intermediate file that will be sent to a reduce task.)（说白了就是帮Reduce在Map之后就干一点活再存入中间文件中嗷！！！）</li>
+<li>Partial combining significantly speeds up certain classes of MapReduce operations</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-4-Input-and-Output-Types"><a href="#4-4-Input-and-Output-Types" class="headerlink" title="4.4 Input and Output Types"></a>4.4 Input and Output Types</h3><ul>
+<li>Para1<ul>
+<li>MR library supports for reading input data in several different format. e.g. “text” mode -&gt; treat each line as a key/value pair: key -&gt; offset in the line, value -&gt; contents of the line.</li>
+<li>Another common supported format stores a sequence of key/value pairs sorted by key.</li>
+<li>Each input type implementation knows how to split itself into meaningful ranges for processing as separate map tasks (e.g. text mode’s range splitting ensures that range splits occur only at line boundaries)</li>
+<li>Users can add support for a new input type by providing an implementation of a simple reader interface, though most users just use one of a small number of predefined input types.</li>
+</ul>
+</li>
+<li>Para2<ul>
+<li>A reader doesn’t necessarily need to provide data read from a file. e.g. It’s easy to define a reader that reads records from a database, or from data structures mapped in memory.</li>
+</ul>
+</li>
+<li>Para3<ul>
+<li>In a similar fashion, we support a set of output types for producing data in different formats and it is easy for user code to add support for new output types.</li>
+</ul>
+</li>
+<li>summary：<ul>
+<li>输入输出的Type对应的Reader可以由我们来定义（用于Map函数以我们定义的方式来切割数据），Map和Reduce都可以由我们自己定义，而且系统定义好的有很多供我们使用嗷！！！</li>
+<li>不一定是要从文件中，从数据库中读，从内存的数据结构中读都可以嗷！！！</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-5-Side-effects"><a href="#4-5-Side-effects" class="headerlink" title="4.5 Side-effects"></a>4.5 Side-effects</h3><ul>
+<li>In some cases, users of MapReduce have found it convenient to produce auxiliary files as additional outputs from their map and/or reduce operators. We rely on the application writer to make such side-effects atomic and idempotent. Typically the application writes to a temporary file and atomically renames this file once it has been fully generated.</li>
+<li>We do not provide support for atomic two-phase commits of multiple output files produced by a single task. Therefore, tasks that produce multiple output files with cross-file consistency requirements should be deterministic. This restriction has never been an issue in practice。</li>
+<li>副作用就是中间文件嗷！！！但是通过中间文件，不适用两阶段提交协议一样能够保证原子性嗷！！！</li>
+</ul>
+<h3 id="4-6-Skipping-Bad-Records"><a href="#4-6-Skipping-Bad-Records" class="headerlink" title="4.6 Skipping Bad Records"></a>4.6 Skipping Bad Records</h3><ul>
+<li>Para1<ul>
+<li>Sometimes there are bugs in user code that cause the Map or Reduce functions to crash deterministically on certain records. Such bugs prevent a MapReduce operation from<br>completing.</li>
+<li>The usual course of action is to fix the bug, but sometimes this is not feasible; perhaps the bug is in a third-party library for which source code is unavailable.</li>
+<li>Sometimes it is acceptable to ignore a few records, for example when doing statistical analysis on a large data set. We provide an optional mode of execution where the MapReduce library detects which records cause deterministic crashes and skips these records in order to make forward progress</li>
+<li>总结来说，代码出错会导致崩溃，但是有些代码又来自于lib，改不了，可以选择适当放弃一些会导致代码出错的records嗷！！！</li>
+</ul>
+</li>
+<li>Para2<ul>
+<li>Each worker process installs a signal handler that catches segmentation violations and bus errors. Before invoking a user Map or Reduce operation, the MapReduce library stores the sequence number of the argument in a global variable.</li>
+<li>If the user code generates a signal, the signal handler sends a “last gasp” UDP packet that contains the sequence number to the MapReduce master. When the master has seen more than one failure on a particular record, it indicates that the record should be skipped when it issues the next re-execution of the corresponding Map or Reduce task.</li>
+<li>说白了，就是在多个Worker遇见同一个处理不了的记录的时候，都会向master发送 “last gasp” 的UDP包，包中装了对应的序列号。当master发现在某个特定的记录上，错误多次发生的时候，就会指示这个记录应该被跳过。（当出了问题之后，当前的task就停止执行了，master会指定它再另外一台机器上执行，如果多次收到worker汇报说：执行到某一个位置（和上一台挂掉的位置相同），我挂了orz。这个时候当master下一次指定另外一台机器执行这个任务的时候，就会告诉它跳过这个record）</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-7-Local-Execution"><a href="#4-7-Local-Execution" class="headerlink" title="4.7 Local Execution"></a>4.7 Local Execution</h3><ul>
+<li>Debugging problems in Map or Reduce functions can be tricky, since the actual computation happens in a distributed system, often on several thousand machines, with work assignment decisions made dynamically by the master. (由于分布式，debug很困难)</li>
+<li>To help facilitate debugging, profiling, and small-scale testing, we have developed an alternative implementation of the MapReduce library that sequentially executes all of the work for a MapReduce operation on the local machine. （调试”功能中的问题可能比较棘手，因为实际计算发生在分布式系统中，通常在几千台机器上，工作分配决策由主动态做出。为了帮助促进调试、分析和小规模测试，我们开发了 MapReduce 库的替代实现，该库将按顺序执行本地机器上的 MapReduce 操作的所有工作。）</li>
+<li>Controls are provided to the user so that the computation can be limited to particular map tasks. Users invoke their program with a special flag and can then easily use any debugging or testing tools they find useful (e.g. gdb).（说白了，这个就是调试和测试工具的使用嗷！！！特定的map tasks，可以使用任何debug和test的工具嗷！！！）</li>
+</ul>
+<h3 id="4-8-Status-Information"><a href="#4-8-Status-Information" class="headerlink" title="4.8 Status Information"></a>4.8 Status Information</h3><ul>
+<li>The master runs an internal HTTP server and exports a set of status pages for human consumption. The status pages show the progress of the computation, such as how many tasks have been completed, how many are in progress, bytes of input, bytes of intermediate data, bytes of output, processing rates, etc. The pages also contain links to the standard error and standard output files generated by each task. （master提供了一个内部的Http服务器并且输出一组状态页面供我们使用，显示很多信息啊，错误啊，结果啊，速率啊之类的。）</li>
+<li>The user can use this data to predict how long the computation will take, and whether or not more resources should be added to the computation. These pages can also be used to figure out when the computation is much slower than expected.（可以用来预测啊，动态调整啊之类的，也可以用于发现问题。）</li>
+<li>In addition, the top-level status page shows which workers have failed, and which map and reduce tasks they were processing when they failed. This information is useful when attempting to diagnose bugs in the user code.（顶级的状态页面展示了哪些worker挂了，哪些Map和Reduce当Worker挂了的时候在运行。这对于我们尝试去诊断错误是非常有用的嗷！！！）</li>
+</ul>
+<h3 id="4-9-Counters"><a href="#4-9-Counters" class="headerlink" title="4.9 Counters"></a>4.9 Counters</h3><ul>
+<li>Para1：<ul>
+<li>MR library provides a counter facility to count occurrences of various events. e.g. user code may want to count total number of words processed or the number of German documents indexed, etc.</li>
+<li>提供计数器嗷！</li>
+</ul>
+</li>
+<li>Para2：<ul>
+<li>To use this facility, user code creates a named counter object and the increments the counter appropriately in the map and/or reduce function.</li>
+</ul>
+</li>
+</ul>
+<p>Example：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211026192131.png" alt="image-20211026192122772"></p>
+<ul>
+<li>Para3：<ul>
+<li>The counter values from individual worker machines are periodically propagated to the master (piggybacked on the ping response). The master aggregates the counter values from successful map and reduce tasks and returns them to the user code when the MapReduce operation is completed.（每次Ping中返回master对应的counter的数据）</li>
+<li>The current counter values are also displayed on the master status page so that a human can watch the progress of the live computation. When aggregating counter values, the master eliminates the effects of duplicate executions of the same map or reduce task to avoid double counting.（Status will show the live computation of the counter. When aggregating, master will avoid double counting.）</li>
+<li>Duplicate executions can arise from our use of backup tasks and from re-execution of<br>tasks due to failures.</li>
+</ul>
+</li>
+<li>Para4：<ul>
+<li>Some counter values are automatically maintained by the MapReduce library, such as the number of input key/value pairs processed and the number of output key/value pairs produced.（MR会自动保存一些counter的值）</li>
+</ul>
+</li>
+<li>Para5：<ul>
+<li>Users have found the counter facility useful for sanity checking the behavior of MapReduce operations. </li>
+<li>For example, in some MapReduce operations, the user code may want to ensure that the number of output pairs produced exactly equals the number of input pairs processed, or that the fraction of German documents processed is within some tolerable fraction of the total number of documents processed.（例如：输出和输出的pair数量是一样的，或者执行German的文档所占的比例在总数的可忍受比例内）</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-Performance"><a href="#5-Performance" class="headerlink" title="5. Performance"></a>5. Performance</h2><ul>
+<li>Measure the performance of MR on two computations on a large cluster of machines.<ul>
+<li>One -&gt; search through one terabyte of data looking for a particular pattern.</li>
+<li>Two -&gt; Sort approximately one terabyte of data</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-1-Cluster-Configuration"><a href="#5-1-Cluster-Configuration" class="headerlink" title="5.1 Cluster Configuration"></a>5.1 Cluster Configuration</h3><ul>
+<li>A cluster consisted of approximately 1800 machines.</li>
+<li>Each machine -&gt; <ul>
+<li>2GHz Intel Xeon processors with Hyper-Threading enabled</li>
+<li>4GB memory</li>
+<li>two 160GB IDEdisks</li>
+<li>a gigabit Ethernet link</li>
+</ul>
+</li>
+<li>Machines are arranged in a two-level tree-shaped switched network with 100-200 Gbps of aggregate bandwidth available at the root.</li>
+<li>All of the machines were in the same hosting facility and therefore the round-trip time any pair of machines was less than a millisecond.</li>
+<li>Out of the 4GB of memory, approximately 1-1.5GB was reserved by other tasks running on the cluster. The programs were executed on a weekend afternoon, when the CPUs, disks, and network were mostly idle.</li>
+</ul>
+<h3 id="5-2-Grep"><a href="#5-2-Grep" class="headerlink" title="5.2 Grep"></a>5.2 Grep</h3><ul>
+<li>The grep program scans through 1010 100-byte records, searching for a relatively rare three-character pattern (the pattern occurs in 92,337 records). The input is split into approximately 64MB pieces (M = 15000), and the entire output is placed in one file (R =1). （grep 程序扫描 1010 100 字形记录，搜索相对罕见的三字符模式（该模式发生在 92，337 条记录中）。输入被分割成大约 64MB 块（M = 15000），整个输出被放置在一个文件中。）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211027205025.png" alt="image-20211027205017665"></p>
+<ul>
+<li>Figure 2 shows the progress of the computation over time. The Y-axis shows the rate at which the input data is scanned. The rate gradually picks up as more machines are assigned to this MapReduce computation, and peaks at over 30 GB/s when 1764 workers have been assigned. As the map tasks finish, the rate starts dropping and hits zero about 80 seconds into the computation. The entire computation takes approximately 150 seconds from start to finish. </li>
+<li>This includes about a minute of startup overhead. The overhead is due to the propagation of the program to all worker machines, and delays interacting with GFS to open the set of 1000 input files and to get the information needed for the locality optimization.</li>
+</ul>
+<h3 id="5-3-Sort"><a href="#5-3-Sort" class="headerlink" title="5.3 Sort"></a>5.3 Sort</h3><ul>
+<li><p>The sort program sorts 1010 100-byte records (approximately 1 terabyte of data). This program is modeled after the TeraSort benchmark.</p>
+</li>
+<li><p>Para1</p>
+<ul>
+<li>The sorting program consists of less than 50 lines of user code. A three-line Map function extracts a 10-byte sorting key from a text line and emits the key and the original text line as the intermediate key/value pair. </li>
+<li>We used a built-in Identity function as the Reduce operator. This functions passes the intermediate key/value pair unchanged as the output key/value pair. The final sorted output is written to a set of 2-way replicated GFS files (i.e. 2 terabytes are written as the output of the program).</li>
+</ul>
+</li>
+<li><p>Para2</p>
+<ul>
+<li>As before, the input data is split into 64MB pieces (M = 15000). We partition the sorted output into 4000 files (R = 4000). The partitioning function uses the initial bytes of the key to segregate it into one of R pieces.</li>
+</ul>
+</li>
+<li><p>Para3</p>
+<ul>
+<li>Our partitioning function for this benchmark has builtin knowledge of the distribution of keys. In a general sorting program, we would add a pre-pass MapReduce operation that would collect a sample of the keys and use the distribution of the sampled keys to compute split points for the final sorting pass.（我们对于这个基准的分区函数，是建立在keys分发的知识上的。在一个普通的排序程序中，我们会调价一个预处理的MR操作来手机一些keys的样本，并且用这个样本中的keys进行分发来计算最终排序算法的“分割点”）</li>
+</ul>
+</li>
+<li><p>Analysis of the picture：</p>
+<ul>
+<li>Figure 3 (a) shows the progress of a normal execution of the sort program. The top-left graph shows the rate at which input is read. The rate peaks at about 13 GB/s and dies off fairly quickly since all map tasks finish before 200 seconds have elapsed. Note that the input rate is less than for grep. This is because the sort map tasks spend about half their time and I/O bandwidth writing intermediate output to their local disks. The corresponding intermediate output for grep had negligible size.</li>
+<li>The middle-left graph shows the rate at which data is sent over the network from the map tasks to the reduce tasks. This shuffling starts as soon as the first map task completes. The first hump in the graph is for the first batch of approximately 1700 reduce tasks (the entire MapReduce was assigned about 1700 machines, and each machine executes at most one reduce task at a time). Roughly 300 seconds into the computation, some of these first batch of reduce tasks finish and we start shuffling data for the remaining reduce tasks. All of the shuffling is done about 600 seconds into the computation.（第一个Map完成任务之后，shuffle就开始了。第一个高峰是第一批大概1700个reduce任务。大概300s花在计算上，第一批的一部分reduce任务结束并且我们开始对于剩余的reduce任务进行shuffle。）</li>
+<li>The bottom-left graph shows the rate at which sorted data is written to the final output files by the reduce tasks. There is a delay between the end of the first shuffling period and the start of the writing period because the machines are busy sorting the intermediate data. The writes continue at a rate of about 2-4 GB/s for a while. All of the writes finish about 850 seconds into the computation. Including startup overhead, the entire computation takes 891 seconds. This is similar to the current best reported result of 1057 seconds for the TeraSort benchmark [18].（有一段空的是因为机器忙着shuffle嗷！！！）</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211029162337.png" alt="image-20211029162337096"></p>
+<ul>
+<li>Last Para：<ul>
+<li>A few things to note: the input rate is higher than the shuffle rate and the output rate because of our locality optimization – most data is read from a local disk and bypasses our relatively bandwidth constrained network. The shuffle rate is higher than the output rate because the output phase writes two copies of the sorted data (we make two replicas of the output for reliability and availability reasons). </li>
+<li>We write two replicas because that is the mechanism for reliability and availability provided by our underlying file system. Network bandwidth requirements for writing data would be reduced if the underlying file system used erasure coding [14] rather than replication.</li>
+</ul>
+</li>
+</ul>
+<p>​	</p>
+<h3 id="5-4-Effect-of-Backup-Tasks"><a href="#5-4-Effect-of-Backup-Tasks" class="headerlink" title="5.4 Effect of Backup Tasks"></a>5.4 Effect of Backup Tasks</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211029183430.png" alt="image-20211029183430283"></p>
+<ul>
+<li>In Figure 3 (b), we show an execution of the sort program with backup tasks disabled. The execution flow is similar to that shown in Figure 3 (a), except that there is a very long tail where hardly any write activity occurs. After 960 seconds, all except 5 of the reduce tasks are completed. However these last few stragglers don’t finish until 300 seconds later. The entire computation takes 1283 seconds, an increase of 44% in elapsed time.(曲线和A类似，但是明显可以看到，b中的结束时间更加晚，因为存在stragglers)</li>
+</ul>
+<h3 id="5-5-Machine-Failures"><a href="#5-5-Machine-Failures" class="headerlink" title="5.5 Machine Failures"></a>5.5 Machine Failures</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211029183430.png" alt="image-20211029183430283"></p>
+<ul>
+<li>In Figure 3 (c), we show an execution of the sort program where we intentionally killed 200 out of 1746 worker processes several minutes into the computation. The underlying cluster scheduler immediately restarted new worker processes on these machines (since only the processes were killed, the machines were still functioning properly).</li>
+<li>The worker deaths show up as a negative input rate since some previously completed map work disappears (since the corresponding map workers were killed) and needs to be redone. The re-execution of this map work happens relatively quickly. The entire computation finishes in 933 seconds including startup overhead (just an increase of 5% over the normal execution time).</li>
+</ul>
+<h2 id="6-Experience"><a href="#6-Experience" class="headerlink" title="6. Experience"></a>6. Experience</h2><ul>
+<li><p>Para1：</p>
+<ul>
+<li>We wrote the first version of the MapReduce library in February of 2003, and made significant enhancements to it in August of 2003, including the locality optimization, dynamic load balancing of task execution across worker machines, etc. Since that time, we have been pleasantly surprised at how broadly applicable the MapReduce library has been for the kinds of problems we work on. It has been used across a wide range of domains within Google, including:<ul>
+<li>large-scale machine learning problems,</li>
+<li>clustering problems for the Google News and Froogle products,</li>
+<li>extraction of data used to produce reports of popular queries (e.g. Google Zeitgeist),</li>
+<li>extraction of properties of web pages for new experiments and products (e.g. extraction of geographical locations from a large corpus of web pages for localized search), and</li>
+<li>large-scale graph computations.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Para2：</p>
+<ul>
+<li>Figure 4 shows the significant growth in the number of separate MapReduce programs checked into our primary source code management system over time, from 0 in early 2003 to almost 900 separate instances as of late September 2004. MapReduce has been so successful because it makes it possible to write a simple program and run it efficiently on a thousand machines in the course of half an hour, greatly speeding up the development and prototyping cycle. Furthermore, it allows programmers who have no experience with distributed and/or parallel systems to exploit large amounts of resources easily.</li>
+<li>At the end of each job, the MapReduce library logs statistics about the computational resources used by the job. In Table 1, we show some statistics for a subset of MapReduce jobs run at Google in August 2004.</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211030164829.png" alt="image-20211030164829380"></p>
+<h3 id="6-1-Large-Scale-Indexing"><a href="#6-1-Large-Scale-Indexing" class="headerlink" title="6.1 Large-Scale Indexing"></a>6.1 Large-Scale Indexing</h3><ul>
+<li>One of our most significant uses of MR to date has been a complete rewrite of the production indexing system that produces the data structures used for the Google web search service. The indexing system takes as input a large set of documents that have been retrieved by our crawling system, stored as a set of GFS files. The raw contents for these documents are more than 20 terabytes of data. </li>
+<li>The indexing process runs as a sequence of five to ten MapReduce operations. Using MapReduce (instead of the ad-hoc distributed passes in the prior version of the indexing system) has provided several benefits:<ol>
+<li>The indexing code is simpler, smaller, and easier to understand, because the code that deals with fault tolerance, distribution and parallelization is hidden within the MapReduce library. For example, the size of one phase of the computation dropped from approximately 3800 lines of C++ code to approximately 700 lines when expressed using MapReduce.</li>
+<li>The performance of the MapReduce library is good enough that we can keep conceptually unrelated computations separate, instead of mixing them together to avoid extra passes over the data. This makes it easy to change the indexing process. For example, one change that took a few months to make in our old indexing system took only a few days to implement in the new system.</li>
+<li>The indexing process has become much easier to operate, because most of the problems caused by machine failures, slow machines, and networking hiccups are dealt with automatically by the MapReduce library without operator intervention. Furthermore, it is easy to improve the performance of the indexing process by adding new machines to the indexing cluster.</li>
+</ol>
+</li>
+</ul>
+<h2 id="7-Related-Work"><a href="#7-Related-Work" class="headerlink" title="7. Related Work"></a>7. Related Work</h2><ul>
+<li>Many systems have provided restricted programming models and used the restrictions to parallelize the computation automatically. For example, an associative function can be computed over all prefixes of an N element array in logN time on N processors using parallel prefix computations [6, 9, 13]. MapReduce can be considered a simplification and distillation of some of these models based on our experience with large real-world computations. More significantly, we provide a fault-tolerant implementation that scales to thousands of processors. In contrast, most of the parallel processing systems have only been implemented on smaller scales and leave the details of handling machine failures to the programmer.（一句话：MR牛逼！）</li>
+</ul>
+<h2 id="Appendencies："><a href="#Appendencies：" class="headerlink" title="Appendencies："></a>Appendencies：</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1664651176268309669&amp;wfr=spider&amp;for=pc">What’s the meaning of Shuffle?</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014374284/article/details/49205885">How shuffle function works?</a></li>
+</ol>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Alexander Liu</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://example.com/2021/10/16/lun-wen-jing-du/">http://example.com/2021/10/16/lun-wen-jing-du/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Alexander Liu</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/">
+                                    <span class="chip bg-color">大三自学</span>
+                                </a>
+                            
+                                <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/">
+                                    <span class="chip bg-color">论文精读</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2021/11/24/wo-de-yi-xie-xiao-si-kao/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="我的一些小思考">
+                        
+                        <span class="card-title">我的一些小思考</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-11-24
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Alexander Liu
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/">
+                        <span class="chip bg-color">大三自学</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/10/16/mit-cao-zuo-xi-tong/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="MIT操作系统">
+                        
+                        <span class="card-title">MIT操作系统</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            这里是MIT6.824操作系统，有点老了，后面还会记录相关实验。先对于6.S081进行学习嗷，别骂了，CSAPP在路上了orz
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-16
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Alexander Liu
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/">
+                        <span class="chip bg-color">大三自学</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2022</span>
+            
+            <a href="/about" target="_blank">Alexander Liu</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">495.4k</span>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/alexanderliu-creator" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:haoeliu@foxmail.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=2632746476" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 2632746476" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
