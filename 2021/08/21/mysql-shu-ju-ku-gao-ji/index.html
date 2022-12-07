@@ -1,151 +1,460 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>MySQL数据库高级 | 兔の博客</title><meta name="author" content="Alexander Liu"><meta name="copyright" content="Alexander Liu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！">
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL数据库高级">
 <meta property="og:url" content="http://example.com/2021/08/21/mysql-shu-ju-ku-gao-ji/index.html">
 <meta property="og:site_name" content="兔の博客">
 <meta property="og:description" content="Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821192227.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822091000.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822100359.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822100254.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102227.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102411.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102440.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102516.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102533.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822103824.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822104037.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822105653.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822105756.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822105949.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822110104.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822110412.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822110754.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822111229.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822111318.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822111445.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823110116.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823110815.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823111811.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823115912.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823115947.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823125743.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823161003.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823161520.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823161903.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823162308.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823164022.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823194936.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823201308.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823202818.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823203849.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823204252.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823204807.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823205435.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823205510.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824091623.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824094615.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824094753.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824100341.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824101141.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824101503.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824101546.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824103329.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824103456.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824103525.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824104231.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824111622.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824111840.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824112035.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824113019.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824114539.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824114855.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824115056.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824120040.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824125554.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824125735.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824125923.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824130206.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824163054.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824165845.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824170401.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824170747.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824171037.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824171621.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824174311.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824174902.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175216.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175558.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175723.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175905.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190347.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190530.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190722.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824180248.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190948.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824191515.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824191717.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824192440.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824192536.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824192931.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824193349.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824194534.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824195353.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824195818.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824200118.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824201512.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202057.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202306.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202447.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202630.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202827.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203119.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203200.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203315.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203511.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203522.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203909.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824204024.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824212802.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824212918.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213153.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213304.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213347.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213605.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213752.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213917.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824214005.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825085040.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825085146.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825091933.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825101546.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825101511.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825101528.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825113650.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825113812.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825113842.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115036.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115757.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115817.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115917.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825120725.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825120952.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825125607.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825152426.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825152924.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825153001.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825153228.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825161243.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825161339.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825161856.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164218.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164304.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164520.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164805.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164924.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825165210.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825165323.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825165610.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825170028.png">
 <meta property="article:published_time" content="2021-08-21T11:16:05.000Z">
 <meta property="article:modified_time" content="2021-08-25T09:00:31.000Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="后端">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821192227.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/08/21/mysql-shu-ju-ku-gao-ji/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
-  root: '/',
-  algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
-  noticeOutdate: undefined,
-  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
-  copy: {
-    success: '复制成功',
-    error: '复制错误',
-    noSupport: '浏览器不支持'
-  },
-  relativeDate: {
-    homepage: false,
-    post: false
-  },
-  runtime: '',
-  date_suffix: {
-    just: '刚刚',
-    min: '分钟前',
-    hour: '小时前',
-    day: '天前',
-    month: '个月前'
-  },
-  copyright: undefined,
-  lightbox: 'fancybox',
-  Snackbar: undefined,
-  source: {
-    justifiedGallery: {
-      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
-      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
-    }
-  },
-  isPhotoFigcaption: false,
-  islazyload: false,
-  isAnchor: false
-}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: 'MySQL数据库高级',
-  isPost: true,
-  isHome: false,
-  isHighlightShrink: false,
-  isToc: true,
-  postUpdate: '2021-08-25 17:00:31'
-}</script><noscript><style type="text/css">
-  #nav {
-    opacity: 1
-  }
-  .justified-gallery img {
-    opacity: 1
-  }
-
-  #recent-posts time,
-  #post-meta time {
-    display: inline !important
-  }
-</style></noscript><script>(win=>{
-    win.saveToLocal = {
-      set: function setWithExpiry(key, value, ttl) {
-        if (ttl === 0) return
-        const now = new Date()
-        const expiryDay = ttl * 86400000
-        const item = {
-          value: value,
-          expiry: now.getTime() + expiryDay,
-        }
-        localStorage.setItem(key, JSON.stringify(item))
-      },
-
-      get: function getWithExpiry(key) {
-        const itemStr = localStorage.getItem(key)
-
-        if (!itemStr) {
-          return undefined
-        }
-        const item = JSON.parse(itemStr)
-        const now = new Date()
-
-        if (now.getTime() > item.expiry) {
-          localStorage.removeItem(key)
-          return undefined
-        }
-        return item.value
-      }
-    }
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822091000.png">
   
-    win.getScript = url => new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      script.onerror = reject
-      script.onload = script.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        script.onload = script.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(script)
-    })
   
-      win.activateDarkMode = function () {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = function () {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
-        
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-    const detectApple = () => {
-      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-        document.documentElement.classList.add('apple')
-      }
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>MySQL数据库高级 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
     }
-    detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.2.0">
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
-</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821192227.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">兔の博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">MySQL数据库高级</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-21T11:16:05.000Z" title="发表于 2021-08-21 19:16:05">2021-08-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-08-25T09:00:31.000Z" title="更新于 2021-08-25 17:00:31">2021-08-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="MySQL数据库高级"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！"><a href="#Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！" class="headerlink" title="Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！"></a>Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！</h1><span id="more"></span>
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MySQL数据库高级"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-21 19:16" pubdate>
+          2021年8月21日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          18k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          152 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MySQL数据库高级</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2021年8月25日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！"><a href="#Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！" class="headerlink" title="Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！"></a>Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！</h1><span id="more"></span>
 
 <h2 id="Mysql的Linux版的安装："><a href="#Mysql的Linux版的安装：" class="headerlink" title="Mysql的Linux版的安装："></a>Mysql的Linux版的安装：</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1KW411u7vy?p=3&amp;spm_id_from=pageDriver">Mysql安装具体视频嗷！！！</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/165312150">知乎安装教程以及资源</a></p>
@@ -154,30 +463,8 @@
 <li>还有什么开机自动启动啊，字符集啊，安装位置验证啊等一系列的验证和配置工作嗷！！！</li>
 <li>Mysql相应目录详解：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822091000.png" alt="image-20210822090959714"></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@alexander-virtual-machine:/usr/bin<span class="token comment"># ls | grep mysql</span>
-mysql
-mysqladmin
-mysqlanalyze
-mysqlbinlog
-mysqlcheck
-mysql_config_editor
-mysqld_multi
-mysqld_safe
-mysqldump
-mysqldumpslow
-mysqlimport
-mysql_migrate_keyring
-mysqloptimize
-mysqlpump
-mysqlrepair
-mysqlreport
-mysql_secure_installation
-mysqlshow
-mysqlslap
-mysql_ssl_rsa_setup
-mysql_tzinfo_to_sql
-mysql_upgrade<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822091000.png" srcset="/img/loading.gif" lazyload alt="image-20210822090959714"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs shell">root@alexander-virtual-machine:/usr/bin# ls | grep mysql<br>mysql<br>mysqladmin<br>mysqlanalyze<br>mysqlbinlog<br>mysqlcheck<br>mysql_config_editor<br>mysqld_multi<br>mysqld_safe<br>mysqldump<br>mysqldumpslow<br>mysqlimport<br>mysql_migrate_keyring<br>mysqloptimize<br>mysqlpump<br>mysqlrepair<br>mysqlreport<br>mysql_secure_installation<br>mysqlshow<br>mysqlslap<br>mysql_ssl_rsa_setup<br>mysql_tzinfo_to_sql<br>mysql_upgrade<br></code></pre></td></tr></tbody></table></figure>
 
 
 
@@ -188,52 +475,17 @@ mysql_upgrade<span aria-hidden="true" class="line-numbers-rows"><span></span><sp
 </ul>
 </li>
 </ul>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@alexander-virtual-machine:/usr/bin<span class="token comment"># cd /usr/share/mysql</span>
-root@alexander-virtual-machine:/usr/share/mysql<span class="token comment"># ls</span>
-bulgarian                    japanese
-charsets                     korean
-czech                        mysqld_multi.server
-danish                       mysql-log-rotate
-debian_create_root_user.sql  mysql-systemd-start
-dictionary.txt               norwegian
-docs                         norwegian-ny
-dutch                        polish
-echo_stderr                  portuguese
-english                      romanian
-estonian                     russian
-french                       serbian
-german                       slovak
-greek                        spanish
-hungarian                    swedish
-innodb_memcached_config.sql  ukrainian
-install_rewriter.sql         uninstall_rewriter.sql
-italian
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs shell">root@alexander-virtual-machine:/usr/bin# cd /usr/share/mysql<br>root@alexander-virtual-machine:/usr/share/mysql# ls<br>bulgarian                    japanese<br>charsets                     korean<br>czech                        mysqld_multi.server<br>danish                       mysql-log-rotate<br>debian_create_root_user.sql  mysql-systemd-start<br>dictionary.txt               norwegian<br>docs                         norwegian-ny<br>dutch                        polish<br>echo_stderr                  portuguese<br>english                      romanian<br>estonian                     russian<br>french                       serbian<br>german                       slovak<br>greek                        spanish<br>hungarian                    swedish<br>innodb_memcached_config.sql  ukrainian<br>install_rewriter.sql         uninstall_rewriter.sql<br>italian<br><br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>配置文件处于：</li>
 </ul>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@alexander-virtual-machine:/etc<span class="token comment"># cd mysql/</span>
-root@alexander-virtual-machine:/etc/mysql<span class="token comment"># ls</span>
-conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf.d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">root@alexander-virtual-machine:/etc# cd mysql/<br>root@alexander-virtual-machine:/etc/mysql# ls<br>conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf.d<br></code></pre></td></tr></tbody></table></figure>
 
 <p>中的my.cnf嗷！！！</p>
 <p>修改Mysql的默认编码哈！！！</p>
 <p>查看编码：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mysql<span class="token operator">&gt;</span> show variables like <span class="token string">'%char%'</span><span class="token punctuation">;</span>
-+--------------------------+----------------------------+
-<span class="token operator">|</span> Variable_name            <span class="token operator">|</span> Value                      <span class="token operator">|</span>
-+--------------------------+----------------------------+
-<span class="token operator">|</span> character_set_client     <span class="token operator">|</span> utf8mb4                    <span class="token operator">|</span>
-<span class="token operator">|</span> character_set_connection <span class="token operator">|</span> utf8mb4                    <span class="token operator">|</span>
-<span class="token operator">|</span> character_set_database   <span class="token operator">|</span> utf8mb4                    <span class="token operator">|</span>
-<span class="token operator">|</span> character_set_filesystem <span class="token operator">|</span> binary                     <span class="token operator">|</span>
-<span class="token operator">|</span> character_set_results    <span class="token operator">|</span> utf8mb4                    <span class="token operator">|</span>
-<span class="token operator">|</span> character_set_server     <span class="token operator">|</span> utf8mb4                    <span class="token operator">|</span>
-<span class="token operator">|</span> character_set_system     <span class="token operator">|</span> utf8mb3                    <span class="token operator">|</span>
-<span class="token operator">|</span> character_sets_dir       <span class="token operator">|</span> /usr/share/mysql/charsets/ <span class="token operator">|</span>
-+--------------------------+----------------------------+
-<span class="token number">8</span> rows <span class="token keyword">in</span> <span class="token builtin class-name">set</span> <span class="token punctuation">(</span><span class="token number">0.02</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">mysql&gt; </span><span class="language-bash">show variables like <span class="hljs-string">'%char%'</span>;</span><br>+--------------------------+----------------------------+<br>| Variable_name            | Value                      |<br>+--------------------------+----------------------------+<br>| character_set_client     | utf8mb4                    |<br>| character_set_connection | utf8mb4                    |<br>| character_set_database   | utf8mb4                    |<br>| character_set_filesystem | binary                     |<br>| character_set_results    | utf8mb4                    |<br>| character_set_server     | utf8mb4                    |<br>| character_set_system     | utf8mb3                    |<br>| character_sets_dir       | /usr/share/mysql/charsets/ |<br>+--------------------------+----------------------------+<br>8 rows in set (0.02 sec)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看出，上面的默认都是utf-8嗷！！！</p>
 <ul>
@@ -241,11 +493,11 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 </li>
 <li><p>主要配置文件：</p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822100359.png" alt="image-20210822100359027"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822100359.png" srcset="/img/loading.gif" lazyload alt="image-20210822100359027"></li>
 </ul>
 <p>上面这个就是一系列的主要配置文件嗷！！！</p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822100254.png" alt="image-20210822100253836"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822100254.png" srcset="/img/loading.gif" lazyload alt="image-20210822100253836"></li>
 <li>frm是图书馆，myd就是书，myi就是书的编号嗷！！！</li>
 </ul>
 </li>
@@ -253,7 +505,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <h2 id="初识Mysql架构："><a href="#初识Mysql架构：" class="headerlink" title="初识Mysql架构："></a>初识Mysql架构：</h2><ul>
 <li><p>Mysql架构可以在不同的场景中应用并发挥良好的功能，主要体现在存储引擎的架构上。<strong>插件式的存储引擎将查询处理和其他的系统任务以及数据的存储提取相分离</strong>。</p>
 </li>
-<li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102227.png" alt="image-20210822102226253"></p>
+<li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102227.png" srcset="/img/loading.gif" lazyload alt="image-20210822102226253"></p>
 </li>
 <li><p>出问题的时候，根据不同的层去做不同的优化行为和优化措施嗷！！！</p>
 </li>
@@ -261,54 +513,31 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <ol>
 <li>连接层：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102411.png" alt="image-20210822102411285"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102411.png" srcset="/img/loading.gif" lazyload alt="image-20210822102411285"></p>
 <ol start="2">
 <li>服务层：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102440.png" alt="image-20210822102439995"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102440.png" srcset="/img/loading.gif" lazyload alt="image-20210822102439995"></p>
 <ol start="3">
 <li>引擎层：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102516.png" alt="image-20210822102516665"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102516.png" srcset="/img/loading.gif" lazyload alt="image-20210822102516665"></p>
 <p>最常用就是：InnoDB和MyISAM</p>
 <ol start="4">
 <li>存储层：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102533.png" alt="image-20210822102533218"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822102533.png" srcset="/img/loading.gif" lazyload alt="image-20210822102533218"></p>
 </li>
 <li><p>查看搜索引擎：</p>
 </li>
 </ul>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mysql<span class="token operator">&gt;</span> show engines<span class="token punctuation">;</span>
-+--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
-<span class="token operator">|</span> Engine             <span class="token operator">|</span> Support <span class="token operator">|</span> Comment                                                        <span class="token operator">|</span> Transactions <span class="token operator">|</span> XA   <span class="token operator">|</span> Savepoints <span class="token operator">|</span>
-+--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
-<span class="token operator">|</span> ARCHIVE            <span class="token operator">|</span> YES     <span class="token operator">|</span> Archive storage engine                                         <span class="token operator">|</span> NO           <span class="token operator">|</span> NO   <span class="token operator">|</span> NO         <span class="token operator">|</span>
-<span class="token operator">|</span> BLACKHOLE          <span class="token operator">|</span> YES     <span class="token operator">|</span> /dev/null storage engine <span class="token punctuation">(</span>anything you <span class="token function">write</span> to it disappears<span class="token punctuation">)</span> <span class="token operator">|</span> NO           <span class="token operator">|</span> NO   <span class="token operator">|</span> NO         <span class="token operator">|</span>
-<span class="token operator">|</span> MRG_MYISAM         <span class="token operator">|</span> YES     <span class="token operator">|</span> Collection of identical MyISAM tables                          <span class="token operator">|</span> NO           <span class="token operator">|</span> NO   <span class="token operator">|</span> NO         <span class="token operator">|</span>
-<span class="token operator">|</span> FEDERATED          <span class="token operator">|</span> NO      <span class="token operator">|</span> Federated MySQL storage engine                                 <span class="token operator">|</span> NULL         <span class="token operator">|</span> NULL <span class="token operator">|</span> NULL       <span class="token operator">|</span>
-<span class="token operator">|</span> MyISAM             <span class="token operator">|</span> YES     <span class="token operator">|</span> MyISAM storage engine                                          <span class="token operator">|</span> NO           <span class="token operator">|</span> NO   <span class="token operator">|</span> NO         <span class="token operator">|</span>
-<span class="token operator">|</span> PERFORMANCE_SCHEMA <span class="token operator">|</span> YES     <span class="token operator">|</span> Performance Schema                                             <span class="token operator">|</span> NO           <span class="token operator">|</span> NO   <span class="token operator">|</span> NO         <span class="token operator">|</span>
-<span class="token operator">|</span> InnoDB             <span class="token operator">|</span> DEFAULT <span class="token operator">|</span> Supports transactions, row-level locking, and foreign keys     <span class="token operator">|</span> YES          <span class="token operator">|</span> YES  <span class="token operator">|</span> YES        <span class="token operator">|</span>
-<span class="token operator">|</span> MEMORY             <span class="token operator">|</span> YES     <span class="token operator">|</span> Hash based, stored <span class="token keyword">in</span> memory, useful <span class="token keyword">for</span> temporary tables      <span class="token operator">|</span> NO           <span class="token operator">|</span> NO   <span class="token operator">|</span> NO         <span class="token operator">|</span>
-<span class="token operator">|</span> CSV                <span class="token operator">|</span> YES     <span class="token operator">|</span> CSV storage engine                                             <span class="token operator">|</span> NO           <span class="token operator">|</span> NO   <span class="token operator">|</span> NO         <span class="token operator">|</span>
-+--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
-<span class="token number">9</span> rows <span class="token keyword">in</span> <span class="token builtin class-name">set</span> <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">mysql&gt; </span><span class="language-bash">show engines;</span><br>+--------------------+---------+----------------------------------------------------------------+--------------+------+------------+<br>| Engine             | Support | Comment                                                        | Transactions | XA   | Savepoints |<br>+--------------------+---------+----------------------------------------------------------------+--------------+------+------------+<br>| ARCHIVE            | YES     | Archive storage engine                                         | NO           | NO   | NO         |<br>| BLACKHOLE          | YES     | /dev/null storage engine (anything you write to it disappears) | NO           | NO   | NO         |<br>| MRG_MYISAM         | YES     | Collection of identical MyISAM tables                          | NO           | NO   | NO         |<br>| FEDERATED          | NO      | Federated MySQL storage engine                                 | NULL         | NULL | NULL       |<br>| MyISAM             | YES     | MyISAM storage engine                                          | NO           | NO   | NO         |<br>| PERFORMANCE_SCHEMA | YES     | Performance Schema                                             | NO           | NO   | NO         |<br>| InnoDB             | DEFAULT | Supports transactions, row-level locking, and foreign keys     | YES          | YES  | YES        |<br>| MEMORY             | YES     | Hash based, stored in memory, useful for temporary tables      | NO           | NO   | NO         |<br>| CSV                | YES     | CSV storage engine                                             | NO           | NO   | NO         |<br>+--------------------+---------+----------------------------------------------------------------+--------------+------+------------+<br>9 rows in set (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822103824.png" alt="image-20210822103824461"></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mysql<span class="token operator">&gt;</span> show variables like <span class="token string">'%storage_engine%'</span><span class="token punctuation">;</span>
-+---------------------------------+-----------+
-<span class="token operator">|</span> Variable_name                   <span class="token operator">|</span> Value     <span class="token operator">|</span>
-+---------------------------------+-----------+
-<span class="token operator">|</span> default_storage_engine          <span class="token operator">|</span> InnoDB    <span class="token operator">|</span>
-<span class="token operator">|</span> default_tmp_storage_engine      <span class="token operator">|</span> InnoDB    <span class="token operator">|</span>
-<span class="token operator">|</span> disabled_storage_engines        <span class="token operator">|</span>           <span class="token operator">|</span>
-<span class="token operator">|</span> internal_tmp_mem_storage_engine <span class="token operator">|</span> TempTable <span class="token operator">|</span>
-+---------------------------------+-----------+
-<span class="token number">4</span> rows <span class="token keyword">in</span> <span class="token builtin class-name">set</span> <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822103824.png" srcset="/img/loading.gif" lazyload alt="image-20210822103824461"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">mysql&gt; </span><span class="language-bash">show variables like <span class="hljs-string">'%storage_engine%'</span>;</span><br>+---------------------------------+-----------+<br>| Variable_name                   | Value     |<br>+---------------------------------+-----------+<br>| default_storage_engine          | InnoDB    |<br>| default_tmp_storage_engine      | InnoDB    |<br>| disabled_storage_engines        |           |<br>| internal_tmp_mem_storage_engine | TempTable |<br>+---------------------------------+-----------+<br>4 rows in set (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>上面可以查看默认搜索引擎嗷！！！</p>
-<h3 id="MyISAM和InnoDB的区别："><a href="#MyISAM和InnoDB的区别：" class="headerlink" title="MyISAM和InnoDB的区别："></a>MyISAM和InnoDB的区别：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822104037.png" alt="image-20210822104036712"></p>
+<h3 id="MyISAM和InnoDB的区别："><a href="#MyISAM和InnoDB的区别：" class="headerlink" title="MyISAM和InnoDB的区别："></a>MyISAM和InnoDB的区别：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822104037.png" srcset="/img/loading.gif" lazyload alt="image-20210822104036712"></p>
 <ul>
 <li>阿里巴巴大部分Mysql数据库其实使用的percona的原型加以修改。（把InnoDB给改了orz）</li>
 <li>AliSql和AliRedis很猛嗷！！！</li>
@@ -333,52 +562,40 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <li>手写和机读是不一样的嗷！！！</li>
 <li>Mysql是先从FROM开始执行SQL的嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822105653.png" alt="image-20210822105653647"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822105756.png" alt="image-20210822105756292"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822105653.png" srcset="/img/loading.gif" lazyload alt="image-20210822105653647"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822105756.png" srcset="/img/loading.gif" lazyload alt="image-20210822105756292"></p>
 <h3 id="所有的七种Join关系："><a href="#所有的七种Join关系：" class="headerlink" title="所有的七种Join关系："></a>所有的七种Join关系：</h3><ol>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822105949.png" alt="image-20210822105949195"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822105949.png" srcset="/img/loading.gif" lazyload alt="image-20210822105949195"></li>
 </ol>
 <p><code>select * from table A inner join table B on A.Key = B.Key</code></p>
 <ol start="2">
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822110104.png" alt="image-20210822110104066"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822110104.png" srcset="/img/loading.gif" lazyload alt="image-20210822110104066"></li>
 </ol>
 <p><code>select * from table A left join table B on A.Key = B.Key</code></p>
 <ol start="3">
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822110412.png" alt="image-20210822110411946"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822110412.png" srcset="/img/loading.gif" lazyload alt="image-20210822110411946"></li>
 </ol>
 <p><code>select * from table A right join table B on A.Key = B.Key</code></p>
 <ol start="4">
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822110754.png" alt="image-20210822110754207"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822110754.png" srcset="/img/loading.gif" lazyload alt="image-20210822110754207"></li>
 </ol>
 <p><code>select * from table A left join table B on A.Key = B.Key where B.Key is NULL</code></p>
 <ol start="5">
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822111229.png" alt="image-20210822111229659"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822111229.png" srcset="/img/loading.gif" lazyload alt="image-20210822111229659"></li>
 </ol>
 <p><code>select * from table A right join table B on  A.Key = B.Key where A.Key is NULL</code></p>
 <ol start="6">
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822111318.png" alt="image-20210822111318303"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822111318.png" srcset="/img/loading.gif" lazyload alt="image-20210822111318303"></li>
 </ol>
 <p><code>select * from table A full outer join table B on A.Key = B.Key</code></p>
 <ol start="7">
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822111445.png" alt="image-20210822111444731"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210822111445.png" srcset="/img/loading.gif" lazyload alt="image-20210822111444731"></li>
 </ol>
 <p><code>select * from table full outer join table B on A.Key = B.Key where A.Key is NULL or B.Key is NULL</code></p>
 <h3 id="七种Join关系的编写："><a href="#七种Join关系的编写：" class="headerlink" title="七种Join关系的编写："></a>七种Join关系的编写：</h3><ol>
 <li>Inner join：</li>
 </ol>
-<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">mysql&gt; select * from tbl_emp a inner join tbl_dept b on a.deptId = b.id;
-+----+------+--------+----+----------+--------+
-| id | name | deptId | id | deptName | locAdd |
-+----+------+--------+----+----------+--------+
-|  1 | z3   |      1 |  1 | RD       | 1      |
-|  2 | z4   |      1 |  1 | RD       | 1      |
-|  3 | z5   |      1 |  1 | RD       | 1      |
-|  4 | w5   |      2 |  2 | HR       | 12     |
-|  5 | w6   |      2 |  2 | HR       | 12     |
-|  6 | s7   |      3 |  3 | MK       | 13     |
-|  7 | s8   |      4 |  4 | MIS      | 14     |
-+----+------+--------+----+----------+--------+
-7 rows in set (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql&gt; select * from tbl_emp a inner join tbl_dept b on a.deptId = b.id;<br>+----+------+--------+----+----------+--------+<br>| id | name | deptId | id | deptName | locAdd |<br>+----+------+--------+----+----------+--------+<br>|  1 | z3   |      1 |  1 | RD       | 1      |<br>|  2 | z4   |      1 |  1 | RD       | 1      |<br>|  3 | z5   |      1 |  1 | RD       | 1      |<br>|  4 | w5   |      2 |  2 | HR       | 12     |<br>|  5 | w6   |      2 |  2 | HR       | 12     |<br>|  6 | s7   |      3 |  3 | MK       | 13     |<br>|  7 | s8   |      4 |  4 | MIS      | 14     |<br>+----+------+--------+----+----------+--------+<br>7 rows in set (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>中间只有id相等的才同时出现嗷！！！我们获得是两者相等的公有部分嗷！！！</li>
@@ -386,20 +603,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <ol start="2">
 <li>left join：</li>
 </ol>
-<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">mysql&gt; select * from tbl_emp a left join tbl_dept b on a.deptId = b.id;
-+----+------+--------+------+----------+--------+
-| id | name | deptId | id   | deptName | locAdd |
-+----+------+--------+------+----------+--------+
-|  1 | z3   |      1 |    1 | RD       | 1      |
-|  2 | z4   |      1 |    1 | RD       | 1      |
-|  3 | z5   |      1 |    1 | RD       | 1      |
-|  4 | w5   |      2 |    2 | HR       | 12     |
-|  5 | w6   |      2 |    2 | HR       | 12     |
-|  6 | s7   |      3 |    3 | MK       | 13     |
-|  7 | s8   |      4 |    4 | MIS      | 14     |
-|  8 | s9   |     51 | NULL | NULL     | NULL   |
-+----+------+--------+------+----------+--------+
-8 rows in set (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql&gt; select * from tbl_emp a left join tbl_dept b on a.deptId = b.id;<br>+----+------+--------+------+----------+--------+<br>| id | name | deptId | id   | deptName | locAdd |<br>+----+------+--------+------+----------+--------+<br>|  1 | z3   |      1 |    1 | RD       | 1      |<br>|  2 | z4   |      1 |    1 | RD       | 1      |<br>|  3 | z5   |      1 |    1 | RD       | 1      |<br>|  4 | w5   |      2 |    2 | HR       | 12     |<br>|  5 | w6   |      2 |    2 | HR       | 12     |<br>|  6 | s7   |      3 |    3 | MK       | 13     |<br>|  7 | s8   |      4 |    4 | MIS      | 14     |<br>|  8 | s9   |     51 | NULL | NULL     | NULL   |<br>+----+------+--------+------+----------+--------+<br>8 rows in set (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>左表全都有，右表没有的补上NULL</li>
@@ -407,20 +611,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <ol start="3">
 <li>right join：</li>
 </ol>
-<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">mysql&gt; select * from tbl_emp a right join tbl_dept b on a.deptId = b.id;
-+------+------+--------+----+----------+--------+
-| id   | name | deptId | id | deptName | locAdd |
-+------+------+--------+----+----------+--------+
-|    1 | z3   |      1 |  1 | RD       | 1      |
-|    2 | z4   |      1 |  1 | RD       | 1      |
-|    3 | z5   |      1 |  1 | RD       | 1      |
-|    4 | w5   |      2 |  2 | HR       | 12     |
-|    5 | w6   |      2 |  2 | HR       | 12     |
-|    6 | s7   |      3 |  3 | MK       | 13     |
-|    7 | s8   |      4 |  4 | MIS      | 14     |
-| NULL | NULL |   NULL |  5 | FD       | 15     |
-+------+------+--------+----+----------+--------+
-8 rows in set (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql&gt; select * from tbl_emp a right join tbl_dept b on a.deptId = b.id;<br>+------+------+--------+----+----------+--------+<br>| id   | name | deptId | id | deptName | locAdd |<br>+------+------+--------+----+----------+--------+<br>|    1 | z3   |      1 |  1 | RD       | 1      |<br>|    2 | z4   |      1 |  1 | RD       | 1      |<br>|    3 | z5   |      1 |  1 | RD       | 1      |<br>|    4 | w5   |      2 |  2 | HR       | 12     |<br>|    5 | w6   |      2 |  2 | HR       | 12     |<br>|    6 | s7   |      3 |  3 | MK       | 13     |<br>|    7 | s8   |      4 |  4 | MIS      | 14     |<br>| NULL | NULL |   NULL |  5 | FD       | 15     |<br>+------+------+--------+----+----------+--------+<br>8 rows in set (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>右表全都有，左表没有的补上NULL。左右表如果有多个匹配上的要全排列嗷！！！</li>
@@ -429,24 +620,12 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <ol start="4">
 <li>left join + null：</li>
 </ol>
-<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">mysql&gt; select * from tbl_emp a left join tbl_dept b on a.deptId = b.id where b.id is null;
-+----+------+--------+------+----------+--------+
-| id | name | deptId | id   | deptName | locAdd |
-+----+------+--------+------+----------+--------+
-|  8 | s9   |     51 | NULL | NULL     | NULL   |
-+----+------+--------+------+----------+--------+
-1 row in set (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql&gt; select * from tbl_emp a left join tbl_dept b on a.deptId = b.id where b.id is null;<br>+----+------+--------+------+----------+--------+<br>| id | name | deptId | id   | deptName | locAdd |<br>+----+------+--------+------+----------+--------+<br>|  8 | s9   |     51 | NULL | NULL     | NULL   |<br>+----+------+--------+------+----------+--------+<br>1 row in set (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
 <ol start="5">
 <li>right join + null：</li>
 </ol>
-<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">mysql&gt; select * from tbl_emp a right join tbl_dept b on a.deptId = b.id where a.deptId is null;
-+------+------+--------+----+----------+--------+
-| id   | name | deptId | id | deptName | locAdd |
-+------+------+--------+----+----------+--------+
-| NULL | NULL |   NULL |  5 | FD       | 15     |
-+------+------+--------+----+----------+--------+
-1 row in set (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql&gt; select * from tbl_emp a right join tbl_dept b on a.deptId = b.id where a.deptId is null;<br>+------+------+--------+----+----------+--------+<br>| id   | name | deptId | id | deptName | locAdd |<br>+------+------+--------+----+----------+--------+<br>| NULL | NULL |   NULL |  5 | FD       | 15     |<br>+------+------+--------+----+----------+--------+<br>1 row in set (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
 
 
@@ -457,23 +636,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <li>吐了兄弟，上面这种语法Oracle支持，Mysql不支持嗷！！！</li>
 <li>拼一拼呗~</li>
 </ul>
-<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">mysql&gt; select * from tbl_emp a left outer join tbl_dept b on a.deptId = b.id
-    -&gt; union
-    -&gt; select * from tbl_emp a right outer join tbl_dept b on a.deptId = b.id;
-+------+------+--------+------+----------+--------+
-| id   | name | deptId | id   | deptName | locAdd |
-+------+------+--------+------+----------+--------+
-|    1 | z3   |      1 |    1 | RD       | 1      |
-|    2 | z4   |      1 |    1 | RD       | 1      |
-|    3 | z5   |      1 |    1 | RD       | 1      |
-|    4 | w5   |      2 |    2 | HR       | 12     |
-|    5 | w6   |      2 |    2 | HR       | 12     |
-|    6 | s7   |      3 |    3 | MK       | 13     |
-|    7 | s8   |      4 |    4 | MIS      | 14     |
-|    8 | s9   |     51 | NULL | NULL     | NULL   |
-| NULL | NULL |   NULL |    5 | FD       | 15     |
-+------+------+--------+------+----------+--------+
-9 rows in set (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql&gt; select * from tbl_emp a left outer join tbl_dept b on a.deptId = b.id<br>    -&gt; union<br>    -&gt; select * from tbl_emp a right outer join tbl_dept b on a.deptId = b.id;<br>+------+------+--------+------+----------+--------+<br>| id   | name | deptId | id   | deptName | locAdd |<br>+------+------+--------+------+----------+--------+<br>|    1 | z3   |      1 |    1 | RD       | 1      |<br>|    2 | z4   |      1 |    1 | RD       | 1      |<br>|    3 | z5   |      1 |    1 | RD       | 1      |<br>|    4 | w5   |      2 |    2 | HR       | 12     |<br>|    5 | w6   |      2 |    2 | HR       | 12     |<br>|    6 | s7   |      3 |    3 | MK       | 13     |<br>|    7 | s8   |      4 |    4 | MIS      | 14     |<br>|    8 | s9   |     51 | NULL | NULL     | NULL   |<br>| NULL | NULL |   NULL |    5 | FD       | 15     |<br>+------+------+--------+------+----------+--------+<br>9 rows in set (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>相当于左边一整个圆加上右边一整个圆，然后把中间公共部分给去重而已嗷！！！Union就有这个功效嗷，天生自带拼接去重嗷！！！！！</li>
@@ -484,16 +647,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <ul>
 <li>这个和上面这个十分类似嗷！！！用Union进行拼接而已嘛！！！</li>
 </ul>
-<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">mysql&gt; select * from tbl_emp a left outer join tbl_dept b on a.deptId = b.id where b.id is null
-    -&gt; union
-    -&gt; select * from tbl_emp a right outer join tbl_dept b on a.deptId = b.id where a.deptId is null;
-+------+------+--------+------+----------+--------+
-| id   | name | deptId | id   | deptName | locAdd |
-+------+------+--------+------+----------+--------+
-|    8 | s9   |     51 | NULL | NULL     | NULL   |
-| NULL | NULL |   NULL |    5 | FD       | 15     |
-+------+------+--------+------+----------+--------+
-2 rows in set (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql&gt; select * from tbl_emp a left outer join tbl_dept b on a.deptId = b.id where b.id is null<br>    -&gt; union<br>    -&gt; select * from tbl_emp a right outer join tbl_dept b on a.deptId = b.id where a.deptId is null;<br>+------+------+--------+------+----------+--------+<br>| id   | name | deptId | id   | deptName | locAdd |<br>+------+------+--------+------+----------+--------+<br>|    8 | s9   |     51 | NULL | NULL     | NULL   |<br>| NULL | NULL |   NULL |    5 | FD       | 15     |<br>+------+------+--------+------+----------+--------+<br>2 rows in set (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>和拼积木一样嗷，第一条就是左半边，第三条就是右半边，第二条和胶水一样拼接起来嗷！！！</li>
@@ -513,11 +667,11 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 </li>
 <li>二叉查找树：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823110116.png" alt="image-20210823110116008"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823110116.png" srcset="/img/loading.gif" lazyload alt="image-20210823110116008"></p>
 <ul>
 <li>B树：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823110815.png" alt="image-20210823110814670"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823110815.png" srcset="/img/loading.gif" lazyload alt="image-20210823110814670"></p>
 </li>
 <li><p>优势：</p>
 <ul>
@@ -551,7 +705,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <li><p>基本语法：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823111811.png" alt="image-20210823111811202"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823111811.png" srcset="/img/loading.gif" lazyload alt="image-20210823111811202"></p>
 <h3 id="Mysql索引结构："><a href="#Mysql索引结构：" class="headerlink" title="Mysql索引结构："></a>Mysql索引结构：</h3><ul>
 <li>结构分类：<ul>
 <li><strong>BTree索引</strong></li>
@@ -562,8 +716,8 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 </li>
 <li>磁盘索引原理：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823115912.png" alt="image-20210823115911931"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823115947.png" alt="image-20210823115946944"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823115912.png" srcset="/img/loading.gif" lazyload alt="image-20210823115911931"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823115947.png" srcset="/img/loading.gif" lazyload alt="image-20210823115946944"></p>
 <p>就是操作系统里面介绍的，非叶子结点相当于存了参考值和指针。叶子结点存的才是数据嗷！！！</p>
 <h2 id="建索引："><a href="#建索引：" class="headerlink" title="建索引："></a>建索引：</h2><ol>
 <li>主键自动建立唯一索引</li>
@@ -580,7 +734,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <li>表经常需要增删改查！</li>
 <li>数据重复并且平均的表字段，注意，如果某个数据列包含许多重复的内容，为它建立索引就没有太大的实际效果嗷！！！（数据的差异率不高就没有必要建立嗷！！！）</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823125743.png" alt="image-20210823125742855"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823125743.png" srcset="/img/loading.gif" lazyload alt="image-20210823125742855"></p>
 <h1 id="性能分析："><a href="#性能分析：" class="headerlink" title="性能分析："></a>性能分析：</h1><ul>
 <li>MySQL Query Optimizer</li>
 <li>MySQL常见瓶颈：<ul>
@@ -594,14 +748,8 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <li>用法：<code>explain + SQL语句</code></li>
 <li>能干吗？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823161003.png" alt="image-20210823161003394"></p>
-<h3 id="字段解释："><a href="#字段解释：" class="headerlink" title="字段解释："></a>字段解释：</h3><pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">mysql&gt; explain select * from tbl_dept;
-+----+-------------+----------+------------+------+---------------+-----
-| id | select_type | table    | partitions | type | possible_keys | key 
-+----+-------------+----------+------------+------+---------------+-----
-|  1 | SIMPLE      | tbl_dept | NULL       | ALL  | NULL          | NULL
-+----+-------------+----------+------------+------+---------------+-----
-1 row in set, 1 warning (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823161003.png" srcset="/img/loading.gif" lazyload alt="image-20210823161003394"></p>
+<h3 id="字段解释："><a href="#字段解释：" class="headerlink" title="字段解释："></a>字段解释：</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql&gt; explain select * from tbl_dept;<br>+----+-------------+----------+------------+------+---------------+-----<br>| id | select_type | table    | partitions | type | possible_keys | key <br>+----+-------------+----------+------------+------+---------------+-----<br>|  1 | SIMPLE      | tbl_dept | NULL       | ALL  | NULL          | NULL<br>+----+-------------+----------+------------+------+---------------+-----<br>1 row in set, 1 warning (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
 
 
@@ -614,15 +762,15 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <ol>
 <li>ID相同，执行顺序是从上到下嗷！！！</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823161520.png" alt="image-20210823161520148"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823161520.png" srcset="/img/loading.gif" lazyload alt="image-20210823161520148"></p>
 <ol start="2">
 <li>ID越大，越先被执行嗷！</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823161903.png" alt="image-20210823161903021"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823161903.png" srcset="/img/loading.gif" lazyload alt="image-20210823161903021"></p>
 <ol start="3">
 <li>ID相同不同，同时存在：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823162308.png" alt="image-20210823162308690"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823162308.png" srcset="/img/loading.gif" lazyload alt="image-20210823162308690"></p>
 <p>遵循上面的规则，数字大的先走，数字相同的从上往下执行。</p>
 </li>
 </ul>
@@ -647,7 +795,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <p>system &gt; const &gt; eq_ref &gt; ref &gt; range &gt; index &gt; ALL</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823164022.png" alt="image-20210823164022064"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823164022.png" srcset="/img/loading.gif" lazyload alt="image-20210823164022064"></p>
 <p>上面的比较常用嗷，下面这个看看就得了嗷！！！</p>
 <ul>
 <li><p>一般来说至少达到range级别，最好达到ref</p>
@@ -661,7 +809,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <li>range：只检索给定范围的行，key列显示使用了哪个索引，一般就是你的where语句中出现了between , &lt; , &gt; , in等的查询。这种范围扫描这种范围扫描索引会比全表扫描要好，因为它只需要开始于索引的某一点，而结束语另外一点，不用扫描全部索引嗷！！！</li>
 <li>index：Index与ALL区别为index只遍历索引树，通常比ALL快。ALL和Index都是读整张表，Index是从索引中读取的，而All是从硬盘中读取的嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823194936.png" alt="image-20210823194936577"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823194936.png" srcset="/img/loading.gif" lazyload alt="image-20210823194936577"></p>
 <p>这里要求select的东西是建立了索引的，不然就会默认从磁盘里去读取嗷！！！</p>
 <ul>
 <li>full：Full Table Scan，将遍历全表以找到匹配的行。</li>
@@ -678,7 +826,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <li>select查询的字段和我们建立的复合索引的个数和字段一一致。刚好Match上了嗷！！！刚好吻合的时候，就可以从索引上取嗷！！！</li>
 <li>说白了possible_keys没有单独的col1和col2，复合主键col1和col2都不是单独的posstible_keys，所以possible_keys为NULL。但是！！！你符合我们复合索引的要求，因此通过复合索引来取得对应字段的值嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823201308.png" alt="image-20210823201308178"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823201308.png" srcset="/img/loading.gif" lazyload alt="image-20210823201308178"></p>
 </li>
 <li><p>key_len：</p>
 <ul>
@@ -690,7 +838,7 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <ul>
 <li>显示哪一列被使用了。如果可能的话，是一个常数。哪些列或者常量被用于索引列上的值。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823202818.png" alt="image-20210823202817524"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823202818.png" srcset="/img/loading.gif" lazyload alt="image-20210823202817524"></p>
 </li>
 <li><p>rows：</p>
 <ul>
@@ -706,27 +854,27 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <ul>
 <li>Using filesort：用不上索引，只好自己内部排序。很危险，九死一生。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823203849.png" alt="image-20210823203849507"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823203849.png" srcset="/img/loading.gif" lazyload alt="image-20210823203849507"></p>
 <ul>
 <li><p>Using temporary：十死无生。使用临时表处理数据，常见于group by 和 order by</p>
 <ul>
 <li>一般来说哈，group by非常常用也非常容易拖慢性能，尽量按照我们索引建立的顺序来使用group by 嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823204252.png" alt="image-20210823204252382"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823204252.png" srcset="/img/loading.gif" lazyload alt="image-20210823204252382"></p>
 </li>
 <li><p>Using where：使用了<strong>覆盖索引</strong>，避免访问了表的数据行，效率不错。如果没有同时出现using where，表明索引用来读取数据而非执行查找动作嗷！！！</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823204807.png" alt="image-20210823204807306"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823204807.png" srcset="/img/loading.gif" lazyload alt="image-20210823204807306"></p>
 <ul>
 <li>Using join buffer：使用了连续缓存</li>
 <li>impossible where：出问题咯</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823205435.png" alt="image-20210823205434789"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823205435.png" srcset="/img/loading.gif" lazyload alt="image-20210823205434789"></p>
 <ul>
 <li>Select tables optimized away：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823205510.png" alt="image-20210823205510739"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210823205510.png" srcset="/img/loading.gif" lazyload alt="image-20210823205510739"></p>
 <ul>
 <li>distinct：</li>
 </ul>
@@ -738,22 +886,15 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 </ul>
 </li>
 </ul>
-<h2 id="索引优化：-1"><a href="#索引优化：-1" class="headerlink" title="索引优化："></a>索引优化：</h2><h3 id="索引分析："><a href="#索引分析：" class="headerlink" title="索引分析："></a>索引分析：</h3><h4 id="单表："><a href="#单表：" class="headerlink" title="单表："></a>单表：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824091623.png" alt="image-20210824091622697"></p>
-<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">mysql&gt; explain select id,author_id from article where category_id=1 and comments &gt; 1 order by views desc limit 1;
-+----+-------------+---------+------------+------+---------------+------+---------+------+------+----------+-----------------------------+
-| id | select_type | table   | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra                       |
-+----+-------------+---------+------------+------+---------------+------+---------+------+------+----------+-----------------------------+
-|  1 | SIMPLE      | article | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    3 |    33.33 | Using where; Using filesort |
-+----+-------------+---------+------------+------+---------------+------+---------+------+------+----------+-----------------------------+
-1 row in set, 1 warning (0.00 sec)
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="索引优化：-1"><a href="#索引优化：-1" class="headerlink" title="索引优化："></a>索引优化：</h2><h3 id="索引分析："><a href="#索引分析：" class="headerlink" title="索引分析："></a>索引分析：</h3><h4 id="单表："><a href="#单表：" class="headerlink" title="单表："></a>单表：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824091623.png" srcset="/img/loading.gif" lazyload alt="image-20210824091622697"></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql&gt; explain select id,author_id from article where category_id=1 and comments &gt; 1 order by views desc limit 1;<br>+----+-------------+---------+------------+------+---------------+------+---------+------+------+----------+-----------------------------+<br>| id | select_type | table   | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra                       |<br>+----+-------------+---------+------------+------+---------------+------+---------+------+------+----------+-----------------------------+<br>|  1 | SIMPLE      | article | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    3 |    33.33 | Using where; Using filesort |<br>+----+-------------+---------+------------+------+---------------+------+---------+------+------+----------+-----------------------------+<br>1 row in set, 1 warning (0.00 sec)<br><br></code></pre></td></tr></tbody></table></figure>
 
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824094615.png" alt="image-20210824094605814"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824094615.png" srcset="/img/loading.gif" lazyload alt="image-20210824094605814"></p>
 <p>明显看出，全表扫描和order by导致的using filesort都出现了，功能实现了但是性能上有欠缺嗷！！！</p>
 <ul>
 <li>索引：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824094753.png" alt="image-20210824094753302"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824094753.png" srcset="/img/loading.gif" lazyload alt="image-20210824094753302"></p>
 <p>只有primary key自带的索引</p>
 <ul>
 <li><p>建立索引：</p>
@@ -763,40 +904,10 @@ conf.d  debian.cnf  debian-start  my.cnf  my.cnf.fallback  mysql.cnf  mysql.conf
 <li><pre><code class="mysql">mysql&gt; create index idx_article_ccv on article(category_id,comments,viewws);
 Query OK, 0 rows affected (0.03 sec)
 Records: 0  Duplicates: 0  Warnings: 0
-<pre class="line-numbers language-none"><code class="language-none">
-  ![image-20210824095219934](https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824095220.png)
-
-
-
-- 建立后的结果:
-
-![image-20210824095640597](https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824095641.png)
-
-索引建立完成之后，范围可能会导致索引失效嗷！！！
-
-但是上面是我们的业务，虽然解决了全表扫描问题，但是仍然性能不佳，不符合我们的选择嗷，我们删掉它。
-
-![image-20210824100110352](https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824100110.png)
-
-- 大胆假设：
-
-  - 既然中间的那个范围会让索引失效，那我们干脆绕开它康康？？？
-
-  - ```mysql
-    mysql&gt; create index idx_article_cv on article(category_id,views);
-    Query OK, 0 rows affected (0.02 sec)
-    Records: 0  Duplicates: 0  Warnings: 0
-    
-    mysql&gt; explain select id,author_id from article where category_id=1 and comments &gt; 1 order by views desc limit 1;
-    +----+-------------+---------+------------+------+----------------+----------------+---------+-------+------+----------+----------------------------------+
-    | id | select_type | table   | partitions | type | possible_keys  | key            | key_len | ref   | rows | filtered | Extra                            |
-    +----+-------------+---------+------------+------+----------------+----------------+---------+-------+------+----------+----------------------------------+
-    |  1 | SIMPLE      | article | NULL       | ref  | idx_article_cv | idx_article_cv | 4       | const |    1 |    33.33 | Using where; Backward index scan |
-    +----+-------------+---------+------------+------+----------------+----------------+---------+-------+------+----------+----------------------------------+
-    1 row in set, 1 warning (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight jboss-cli"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><br>  ![image-20210824095219934]<span class="hljs-params">(https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824095220.png)</span><br><br><br><br>- 建立后的结果:<br><br>![image-20210824095640597]<span class="hljs-params">(https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824095641.png)</span><br><br>索引建立完成之后，范围可能会导致索引失效嗷！！！<br><br>但是上面是我们的业务，虽然解决了全表扫描问题，但是仍然性能不佳，不符合我们的选择嗷，我们删掉它。<br><br>![image-20210824100110352]<span class="hljs-params">(https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824100110.png)</span><br><br>- 大胆假设：<br><br>  - 既然中间的那个范围会让索引失效，那我们干脆绕开它康康？？？<br><br>  - ```mysql<br>    mysql&gt; create index idx_article_cv on article<span class="hljs-params">(category_id,views)</span>;<br>    Query OK, 0 rows affected <span class="hljs-params">(0.02 sec)</span><br>    Records: 0  Duplicates: 0  Warnings: 0<br>    <br>    mysql&gt; explain select id,author_id from article where category_id=1 and comments &gt; 1 order by views desc limit 1;<br>    +<span class="hljs-params">----</span>+<span class="hljs-params">-------------</span>+<span class="hljs-params">---------</span>+<span class="hljs-params">------------</span>+<span class="hljs-params">------</span>+<span class="hljs-params">----------------</span>+<span class="hljs-params">----------------</span>+<span class="hljs-params">---------</span>+<span class="hljs-params">-------</span>+<span class="hljs-params">------</span>+<span class="hljs-params">----------</span>+<span class="hljs-params">----------------------------------</span>+<br>    | id | select_type | table   | partitions | type | possible_keys  | key            | key_len | ref   | rows | filtered | Extra                            |<br>    +<span class="hljs-params">----</span>+<span class="hljs-params">-------------</span>+<span class="hljs-params">---------</span>+<span class="hljs-params">------------</span>+<span class="hljs-params">------</span>+<span class="hljs-params">----------------</span>+<span class="hljs-params">----------------</span>+<span class="hljs-params">---------</span>+<span class="hljs-params">-------</span>+<span class="hljs-params">------</span>+<span class="hljs-params">----------</span>+<span class="hljs-params">----------------------------------</span>+<br>    |  1 | SIMPLE      | article | NULL       | ref  | idx_article_cv | idx_article_cv | 4       | const |    1 |    33.33 | Using where; Backward index scan |<br>    +<span class="hljs-params">----</span>+<span class="hljs-params">-------------</span>+<span class="hljs-params">---------</span>+<span class="hljs-params">------------</span>+<span class="hljs-params">------</span>+<span class="hljs-params">----------------</span>+<span class="hljs-params">----------------</span>+<span class="hljs-params">---------</span>+<span class="hljs-params">-------</span>+<span class="hljs-params">------</span>+<span class="hljs-params">----------</span>+<span class="hljs-params">----------------------------------</span>+<br>    1 row in <span class="hljs-keyword">set</span>, 1 warning <span class="hljs-params">(0.00 sec)</span><br></code></pre></td></tr></tbody></table></figure>
 </code></pre>
 </li>
-<li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824100341.png" alt="image-20210824100341492"></p>
+<li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824100341.png" srcset="/img/loading.gif" lazyload alt="image-20210824100341492"></p>
 </li>
 <li><p>芜湖，没有using filesort了嗷！！！</p>
 </li>
@@ -806,25 +917,18 @@ Records: 0  Duplicates: 0  Warnings: 0
 <h4 id="双表："><a href="#双表：" class="headerlink" title="双表："></a>双表：</h4><ul>
 <li>左外连接和右外连接，</li>
 </ul>
-<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">mysql&gt; explain select * from class left join book on class.card = book.card;
-+----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+--------------------------------------------+
-| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra                                      |
-+----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+--------------------------------------------+
-|  1 | SIMPLE      | class | NULL       | ALL  | NULL          | NULL | NULL    | NULL |   20 |   100.00 | NULL                                       |
-|  1 | SIMPLE      | book  | NULL       | ALL  | NULL          | NULL | NULL    | NULL |   20 |   100.00 | Using where; Using join buffer (hash join) |
-+----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+--------------------------------------------+
-2 rows in set, 1 warning (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs mysql">mysql&gt; explain select * from class left join book on class.card = book.card;<br>+----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+--------------------------------------------+<br>| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra                                      |<br>+----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+--------------------------------------------+<br>|  1 | SIMPLE      | class | NULL       | ALL  | NULL          | NULL | NULL    | NULL |   20 |   100.00 | NULL                                       |<br>|  1 | SIMPLE      | book  | NULL       | ALL  | NULL          | NULL | NULL    | NULL |   20 |   100.00 | Using where; Using join buffer (hash join) |<br>+----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+--------------------------------------------+<br>2 rows in set, 1 warning (0.00 sec)<br></code></pre></td></tr></tbody></table></figure>
 
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824101141.png" alt="image-20210824101141155"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824101141.png" srcset="/img/loading.gif" lazyload alt="image-20210824101141155"></p>
 <p>重点在于全表扫描嗷！！！那么索引建在哪个表上呢？？？</p>
 <ul>
 <li>建在右表的card上：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824101503.png" alt="image-20210824101502885"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824101503.png" srcset="/img/loading.gif" lazyload alt="image-20210824101502885"></p>
 <ul>
 <li>建在左表的card上：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824101546.png" alt="image-20210824101546342"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824101546.png" srcset="/img/loading.gif" lazyload alt="image-20210824101546342"></p>
 <ul>
 <li>结论：</li>
 </ul>
@@ -835,26 +939,26 @@ Records: 0  Duplicates: 0  Warnings: 0
 <h4 id="三表："><a href="#三表：" class="headerlink" title="三表："></a>三表：</h4><ul>
 <li>三表SQL建在哪个字段上？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824103329.png" alt="image-20210824103329241"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824103329.png" srcset="/img/loading.gif" lazyload alt="image-20210824103329241"></p>
 <ul>
 <li>和双表一样的嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824103456.png" alt="image-20210824103455795"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824103456.png" srcset="/img/loading.gif" lazyload alt="image-20210824103455795"></p>
 <ul>
 <li>结论：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824103525.png" alt="image-20210824103524830"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824103525.png" srcset="/img/loading.gif" lazyload alt="image-20210824103524830"></p>
 <p>类似于用书籍类别来驱动书籍。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824104231.png" alt="image-20210824104231155"></p>
-<h3 id="索引优化重点："><a href="#索引优化重点：" class="headerlink" title="索引优化重点："></a>索引优化重点：</h3><h4 id="避免索引失效："><a href="#避免索引失效：" class="headerlink" title="避免索引失效："></a>避免索引失效：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824111622.png" alt="image-20210824111621720"></p>
-<h5 id="1-全值匹配我最爱："><a href="#1-全值匹配我最爱：" class="headerlink" title="1. 全值匹配我最爱："></a>1. 全值匹配我最爱：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824111840.png" alt="image-20210824111840042"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824112035.png" alt="image-20210824112035171"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824104231.png" srcset="/img/loading.gif" lazyload alt="image-20210824104231155"></p>
+<h3 id="索引优化重点："><a href="#索引优化重点：" class="headerlink" title="索引优化重点："></a>索引优化重点：</h3><h4 id="避免索引失效："><a href="#避免索引失效：" class="headerlink" title="避免索引失效："></a>避免索引失效：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824111622.png" srcset="/img/loading.gif" lazyload alt="image-20210824111621720"></p>
+<h5 id="1-全值匹配我最爱："><a href="#1-全值匹配我最爱：" class="headerlink" title="1. 全值匹配我最爱："></a>1. 全值匹配我最爱：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824111840.png" srcset="/img/loading.gif" lazyload alt="image-20210824111840042"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824112035.png" srcset="/img/loading.gif" lazyload alt="image-20210824112035171"></p>
 <ul>
 <li>复合索引是阶梯式的，Name -&gt; Age -&gt; Pos</li>
 <li>只有Name都可以使用到一部分的复合索引，但是如果没有Name，直接上Pos或者Age。索引根本就用不上，索引失效了嗷！！！</li>
 <li>由此引申出了下面的内容。</li>
 </ul>
-<h5 id="2-最佳左前缀法则："><a href="#2-最佳左前缀法则：" class="headerlink" title="2. 最佳左前缀法则："></a>2. 最佳左前缀法则：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824113019.png" alt="image-20210824113019273"></p>
+<h5 id="2-最佳左前缀法则："><a href="#2-最佳左前缀法则：" class="headerlink" title="2. 最佳左前缀法则："></a>2. 最佳左前缀法则：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824113019.png" srcset="/img/loading.gif" lazyload alt="image-20210824113019273"></p>
 <p>上面这个只用到了Name的所有，Pos用不到索引嗷！！！</p>
 <ul>
 <li><p>索引多列的时候，最佳做前缀法则，查询从索引的最左前列开始，并且不跳过中间的索引。</p>
@@ -875,26 +979,26 @@ Records: 0  Duplicates: 0  Warnings: 0
 </li>
 <li>上面这些情况会导致索引失效而转向全表扫描。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824114539.png" alt="image-20210824114538896"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824114855.png" alt="image-20210824114855211"></p>
-<h5 id="4-存储引擎不能使用索引中范围条件右边的列："><a href="#4-存储引擎不能使用索引中范围条件右边的列：" class="headerlink" title="4. 存储引擎不能使用索引中范围条件右边的列："></a>4. 存储引擎不能使用索引中范围条件右边的列：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824115056.png" alt="image-20210824115055764"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824114539.png" srcset="/img/loading.gif" lazyload alt="image-20210824114538896"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824114855.png" srcset="/img/loading.gif" lazyload alt="image-20210824114855211"></p>
+<h5 id="4-存储引擎不能使用索引中范围条件右边的列："><a href="#4-存储引擎不能使用索引中范围条件右边的列：" class="headerlink" title="4. 存储引擎不能使用索引中范围条件右边的列："></a>4. 存储引擎不能使用索引中范围条件右边的列：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824115056.png" srcset="/img/loading.gif" lazyload alt="image-20210824115055764"></p>
 <ul>
 <li>下面那个使用顺序很关键，<strong>Name用于检索查询</strong>，<strong>age被用于排序</strong>，之后的pos根本没被用上嗷！！！</li>
 <li>范围之后，全失效！！！</li>
 </ul>
-<h5 id="5-尽量覆盖索引，减少select-："><a href="#5-尽量覆盖索引，减少select-：" class="headerlink" title="5. 尽量覆盖索引，减少select *："></a>5. 尽量覆盖索引，减少select *：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824120040.png" alt="image-20210824120039724"></p>
+<h5 id="5-尽量覆盖索引，减少select-："><a href="#5-尽量覆盖索引，减少select-：" class="headerlink" title="5. 尽量覆盖索引，减少select *："></a>5. 尽量覆盖索引，减少select *：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824120040.png" srcset="/img/loading.gif" lazyload alt="image-20210824120039724"></p>
 <p>你查的东西最好和索引设置的一样，尽可能多去覆盖嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824125554.png" alt="image-20210824125553371"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824125735.png" alt="image-20210824125735158"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824125554.png" srcset="/img/loading.gif" lazyload alt="image-20210824125553371"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824125735.png" srcset="/img/loading.gif" lazyload alt="image-20210824125735158"></p>
 <h5 id="6-使用不等于的时候无法使用索引："><a href="#6-使用不等于的时候无法使用索引：" class="headerlink" title="6. 使用不等于的时候无法使用索引："></a>6. 使用不等于的时候无法使用索引：</h5><ul>
 <li>会导致全表扫描嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824125923.png" alt="image-20210824125922827"></p>
-<h5 id="7-IS-NOT-NULL也无法使用索引："><a href="#7-IS-NOT-NULL也无法使用索引：" class="headerlink" title="7. IS [NOT] NULL也无法使用索引："></a>7. IS [NOT] NULL也无法使用索引：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824130206.png" alt="image-20210824130205952"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824125923.png" srcset="/img/loading.gif" lazyload alt="image-20210824125922827"></p>
+<h5 id="7-IS-NOT-NULL也无法使用索引："><a href="#7-IS-NOT-NULL也无法使用索引：" class="headerlink" title="7. IS [NOT] NULL也无法使用索引："></a>7. IS [NOT] NULL也无法使用索引：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824130206.png" srcset="/img/loading.gif" lazyload alt="image-20210824130205952"></p>
 <ul>
 <li>其实给了我们业务一个提示，就算某个值为空，也最好给一个默认的default值，为NULL的话会影响到查询和检索的效率嗷！！！</li>
 </ul>
-<h5 id="8-模糊查询："><a href="#8-模糊查询：" class="headerlink" title="8. 模糊查询："></a>8. 模糊查询：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824163054.png" alt="image-20210824163053620"></p>
+<h5 id="8-模糊查询："><a href="#8-模糊查询：" class="headerlink" title="8. 模糊查询："></a>8. 模糊查询：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824163054.png" srcset="/img/loading.gif" lazyload alt="image-20210824163053620"></p>
 <ul>
 <li><p>百分like放右边！！！</p>
 </li>
@@ -914,9 +1018,9 @@ Records: 0  Duplicates: 0  Warnings: 0
 <h5 id="9-字符串不加单引号导致索引失效："><a href="#9-字符串不加单引号导致索引失效：" class="headerlink" title="9. 字符串不加单引号导致索引失效："></a>9. 字符串不加单引号导致索引失效：</h5><ul>
 <li>重罪，Varchar类型不能时区单引号嗷！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824165845.png" alt="image-20210824165844856"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824165845.png" srcset="/img/loading.gif" lazyload alt="image-20210824165844856"></p>
 <p>本质上，mysql底层自动帮助我们做了转型，这违反了上面的第3条。要避免出现内部对于数据类型发生的隐式的操作嗷！！！开发的时候，这是重罪！！！</p>
-<h5 id="10-少用or来连接，会导致索引失效："><a href="#10-少用or来连接，会导致索引失效：" class="headerlink" title="10. 少用or来连接，会导致索引失效："></a>10. 少用or来连接，会导致索引失效：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824170401.png" alt="image-20210824170400707"></p>
+<h5 id="10-少用or来连接，会导致索引失效："><a href="#10-少用or来连接，会导致索引失效：" class="headerlink" title="10. 少用or来连接，会导致索引失效："></a>10. 少用or来连接，会导致索引失效：</h5><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824170401.png" srcset="/img/loading.gif" lazyload alt="image-20210824170400707"></p>
 <h5 id="11-小总结："><a href="#11-小总结：" class="headerlink" title="11. 小总结："></a>11. 小总结：</h5><ol>
 <li>带头大哥不能死</li>
 <li>中间兄弟不能断</li>
@@ -928,67 +1032,67 @@ Records: 0  Duplicates: 0  Warnings: 0
 <ul>
 <li>小练习：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824170747.png" alt="image-20210824170747161"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824171037.png" alt="image-20210824171037196"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824170747.png" srcset="/img/loading.gif" lazyload alt="image-20210824170747161"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824171037.png" srcset="/img/loading.gif" lazyload alt="image-20210824171037196"></p>
 <ul>
 <li>题目练习：</li>
 </ul>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1KW411u7vy?p=44">上述规则题目应用联系视频嗷！！！</a></p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824171621.png" alt="image-20210824171620943"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824171621.png" srcset="/img/loading.gif" lazyload alt="image-20210824171620943"></li>
 </ul>
 <p>最好是第一种嗷！！！上面这些都可以使得索引生效时因为，Mysql的优化器在底层做了调整嗷！！！我们可以按照规矩来写，尽量减少调整所花费的时间嗷！！！</p>
 <p>优化器yyds，优化器会在底层自动帮助我们进行调优，调整顺序，尽可能去符合我们的索引嗷！！！</p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824174311.png" alt="image-20210824174311579"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824174311.png" srcset="/img/loading.gif" lazyload alt="image-20210824174311579"></li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824174902.png" alt="image-20210824174902089"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824174902.png" srcset="/img/loading.gif" lazyload alt="image-20210824174902089"></p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175216.png" alt="image-20210824175215926"></li>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175558.png" alt="image-20210824175557783"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175216.png" srcset="/img/loading.gif" lazyload alt="image-20210824175215926"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175558.png" srcset="/img/loading.gif" lazyload alt="image-20210824175557783"></li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175723.png" alt="image-20210824175722593"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175723.png" srcset="/img/loading.gif" lazyload alt="image-20210824175722593"></p>
 <p>梯子没接上？就是这种感觉嗷！！！</p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175905.png" alt="image-20210824175905293"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824175905.png" srcset="/img/loading.gif" lazyload alt="image-20210824175905293"></li>
 </ul>
 <p>上面这个东西哈，group by的法则和order by 非常类似，分组排序嘛！！！</p>
 <p>group by基本上都需要进行排序，会有临时表的产生嗷！！！</p>
 <ul>
 <li>范围还是有不一样的嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190347.png" alt="image-20210824190347285"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190530.png" alt="image-20210824190529625"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190347.png" srcset="/img/loading.gif" lazyload alt="image-20210824190347285"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190530.png" srcset="/img/loading.gif" lazyload alt="image-20210824190529625"></p>
 <ul>
 <li>口诀：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190722.png" alt="image-20210824190721793"></p>
-<h4 id="一般性建议："><a href="#一般性建议：" class="headerlink" title="一般性建议："></a>一般性建议：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824180248.png" alt="image-20210824180247654"></p>
-<h1 id="查询截取分析："><a href="#查询截取分析：" class="headerlink" title="查询截取分析："></a>查询截取分析：</h1><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190948.png" alt="image-20210824190948164"></p>
-<h2 id="查询优化："><a href="#查询优化：" class="headerlink" title="查询优化："></a>查询优化：</h2><h3 id="小表驱动大表："><a href="#小表驱动大表：" class="headerlink" title="小表驱动大表："></a>小表驱动大表：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824191515.png" alt="image-20210824191515050"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190722.png" srcset="/img/loading.gif" lazyload alt="image-20210824190721793"></p>
+<h4 id="一般性建议："><a href="#一般性建议：" class="headerlink" title="一般性建议："></a>一般性建议：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824180248.png" srcset="/img/loading.gif" lazyload alt="image-20210824180247654"></p>
+<h1 id="查询截取分析："><a href="#查询截取分析：" class="headerlink" title="查询截取分析："></a>查询截取分析：</h1><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824190948.png" srcset="/img/loading.gif" lazyload alt="image-20210824190948164"></p>
+<h2 id="查询优化："><a href="#查询优化：" class="headerlink" title="查询优化："></a>查询优化：</h2><h3 id="小表驱动大表："><a href="#小表驱动大表：" class="headerlink" title="小表驱动大表："></a>小表驱动大表：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824191515.png" srcset="/img/loading.gif" lazyload alt="image-20210824191515050"></p>
 <ul>
 <li>in 和 exist 的使用都是根据情况来小表驱动大表。 查询结果都是一样样的嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824191717.png" alt="image-20210824191717133"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824191717.png" srcset="/img/loading.gif" lazyload alt="image-20210824191717133"></p>
 <h3 id="Order-By排序优化："><a href="#Order-By排序优化：" class="headerlink" title="Order By排序优化："></a>Order By排序优化：</h3><ul>
 <li>Order by尽量使用Index方式排序，避免使用FileSort方式排序。</li>
 <li>现在的中心放在，在Order by后面使用什么，会不会出现FileSort嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824192440.png" alt="image-20210824192439557"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824192536.png" alt="image-20210824192535940"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824192931.png" alt="image-20210824192931595"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824193349.png" alt="image-20210824193348988"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824192440.png" srcset="/img/loading.gif" lazyload alt="image-20210824192439557"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824192536.png" srcset="/img/loading.gif" lazyload alt="image-20210824192535940"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824192931.png" srcset="/img/loading.gif" lazyload alt="image-20210824192931595"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824193349.png" srcset="/img/loading.gif" lazyload alt="image-20210824193348988"></p>
 <ul>
 <li><p>高高低低，梯子不平，走不顺，FileSort嗷！！！</p>
 </li>
 <li><p>FileSort和Index两种：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824194534.png" alt="image-20210824194533894"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824194534.png" srcset="/img/loading.gif" lazyload alt="image-20210824194533894"></p>
 <ul>
 <li>提高Order By的速度：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824195353.png" alt="image-20210824195353318"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824195353.png" srcset="/img/loading.gif" lazyload alt="image-20210824195353318"></p>
 <ul>
 <li><p>Mysql的两种排序方式：</p>
 <ul>
@@ -1001,11 +1105,11 @@ Records: 0  Duplicates: 0  Warnings: 0
 <li><p>能够使用索引的情况：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824195818.png" alt="image-20210824195818310"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824195818.png" srcset="/img/loading.gif" lazyload alt="image-20210824195818310"></p>
 <ul>
 <li>不能使用索引的情况：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824200118.png" alt="image-20210824200117885"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824200118.png" srcset="/img/loading.gif" lazyload alt="image-20210824200117885"></p>
 <ul>
 <li>summary：</li>
 </ul>
@@ -1014,83 +1118,83 @@ Records: 0  Duplicates: 0  Warnings: 0
 <h3 id="Group-By排序优化："><a href="#Group-By排序优化：" class="headerlink" title="Group By排序优化："></a>Group By排序优化：</h3><ul>
 <li>和上面的几乎没啥区别，就多了一个东西嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824201512.png" alt="image-20210824201512295"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824201512.png" srcset="/img/loading.gif" lazyload alt="image-20210824201512295"></p>
 <h3 id="慢查询日志："><a href="#慢查询日志：" class="headerlink" title="慢查询日志："></a>慢查询日志：</h3><ul>
 <li>记录运行时间超过long_query_time的sql，被记录到慢查询日志中去。</li>
 <li>默认意思是运行查过10s以上的语句嗷！！！</li>
 <li>可以查看哪些SQL超过了我们的最大忍耐时间，再结合explain，对于特定的SQL进行全面分析即可嗷！！！</li>
 <li>默认慢查询日志没有开启，如果没有调优的需要的话，一般不建议启动该参数。开启慢日志或多或少会带来一定的性能影响。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202057.png" alt="image-20210824202056984"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202306.png" alt="image-20210824202306149"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202447.png" alt="image-20210824202446848"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202057.png" srcset="/img/loading.gif" lazyload alt="image-20210824202056984"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202306.png" srcset="/img/loading.gif" lazyload alt="image-20210824202306149"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202447.png" srcset="/img/loading.gif" lazyload alt="image-20210824202446848"></p>
 <ul>
 <li>哪些SQL会被记录呢？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202630.png" alt="image-20210824202629840"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202630.png" srcset="/img/loading.gif" lazyload alt="image-20210824202629840"></p>
 <p>这里记录的值，是判断大于long_query_time，而不是大于等于嗷！！！</p>
 <p>设置以后查看发现还是10秒？？？</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202827.png" alt="image-20210824202827142"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824202827.png" srcset="/img/loading.gif" lazyload alt="image-20210824202827142"></p>
 <ul>
 <li>如何演示控制睡眠？</li>
 </ul>
 <p><code>select sleep(n seconds)</code></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203119.png" alt="image-20210824203118948"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203200.png" alt="image-20210824203159934"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203119.png" srcset="/img/loading.gif" lazyload alt="image-20210824203118948"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203200.png" srcset="/img/loading.gif" lazyload alt="image-20210824203159934"></p>
 <ul>
 <li>那么如何使用配置文件来实现上述这些配置呢？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203315.png" alt="image-20210824203315582"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203315.png" srcset="/img/loading.gif" lazyload alt="image-20210824203315582"></p>
 <ul>
 <li>日志分析工具mysqldumpslow：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203511.png" alt="image-20210824203510679"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203522.png" alt="image-20210824203522454"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203511.png" srcset="/img/loading.gif" lazyload alt="image-20210824203510679"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203522.png" srcset="/img/loading.gif" lazyload alt="image-20210824203522454"></p>
 <h2 id="批量数据脚本："><a href="#批量数据脚本：" class="headerlink" title="批量数据脚本："></a>批量数据脚本：</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1KW411u7vy?p=50&amp;spm_id_from=pageDriver">SQL批量数据脚本教学嗷！！！</a></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203909.png" alt="image-20210824203908606"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824203909.png" srcset="/img/loading.gif" lazyload alt="image-20210824203908606"></p>
 <ul>
 <li>定义函数插入数据：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824204024.png" alt="image-20210824204024692"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824204024.png" srcset="/img/loading.gif" lazyload alt="image-20210824204024692"></p>
 <h2 id="Show-Profile："><a href="#Show-Profile：" class="headerlink" title="Show Profile："></a>Show Profile：</h2><ul>
 <li>mysql提供的可以用来分析当前会话中语句执行的资源消耗情况，可以用于SQL的调优测量。</li>
 <li>默认处于关闭状态，保存最佳15次的运行结果。</li>
 <li>查看mysql版本是否支持：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824212802.png" alt="image-20210824212802439"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824212802.png" srcset="/img/loading.gif" lazyload alt="image-20210824212802439"></p>
 <ul>
 <li>开启功能：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824212918.png" alt="image-20210824212918144"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824212918.png" srcset="/img/loading.gif" lazyload alt="image-20210824212918144"></p>
 <ul>
 <li>运行SQL并且验证：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213153.png" alt="image-20210824213152999"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213304.png" alt="image-20210824213304267"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213153.png" srcset="/img/loading.gif" lazyload alt="image-20210824213152999"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213304.png" srcset="/img/loading.gif" lazyload alt="image-20210824213304267"></p>
 <p>这里就指的是上面的3号语句</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213347.png" alt="image-20210824213346423"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213347.png" srcset="/img/loading.gif" lazyload alt="image-20210824213346423"></p>
 <ul>
 <li>show profile所能用到的参数：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213605.png" alt="image-20210824213605714"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213605.png" srcset="/img/loading.gif" lazyload alt="image-20210824213605714"></p>
 <ul>
 <li>常见的大问题！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213752.png" alt="image-20210824213752317"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213752.png" srcset="/img/loading.gif" lazyload alt="image-20210824213752317"></p>
 <p>化验单例子：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213917.png" alt="image-20210824213917058"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824213917.png" srcset="/img/loading.gif" lazyload alt="image-20210824213917058"></p>
 <ul>
 <li>Summary：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824214005.png" alt="image-20210824214005001"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210824214005.png" srcset="/img/loading.gif" lazyload alt="image-20210824214005001"></p>
 <h2 id="全局查询日志；"><a href="#全局查询日志；" class="headerlink" title="全局查询日志；"></a>全局查询日志；</h2><ul>
 <li><p>只能够在测试环境用，不能在生产环境使用嗷！！！永远不要在生产开启这个功能嗷！！！</p>
 </li>
 <li><p>打开全局查询日志：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825085040.png" alt="image-20210825085024063"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825085146.png" alt="image-20210825085146180"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825085040.png" srcset="/img/loading.gif" lazyload alt="image-20210825085024063"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825085146.png" srcset="/img/loading.gif" lazyload alt="image-20210825085146180"></p>
 <h1 id="数据库锁理论："><a href="#数据库锁理论：" class="headerlink" title="数据库锁理论："></a>数据库锁理论：</h1><ul>
 <li>锁可以对于有限的资源进行保护，解决隔离和并发的矛盾。</li>
 <li>锁的分类：<ul>
@@ -1111,7 +1215,7 @@ Records: 0  Duplicates: 0  Warnings: 0
 <h2 id="MyISAM表锁："><a href="#MyISAM表锁：" class="headerlink" title="MyISAM表锁："></a>MyISAM表锁：</h2><ul>
 <li>创建表：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825091933.png" alt="image-20210825091932879"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825091933.png" srcset="/img/loading.gif" lazyload alt="image-20210825091932879"></p>
 <ul>
 <li>手动增加表锁：</li>
 </ul>
@@ -1139,9 +1243,9 @@ Records: 0  Duplicates: 0  Warnings: 0
 <li><p>summary：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825101546.png" alt="image-20210825101546589"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825101511.png" alt="image-20210825101511460"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825101528.png" alt="image-20210825101527916"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825101546.png" srcset="/img/loading.gif" lazyload alt="image-20210825101546589"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825101511.png" srcset="/img/loading.gif" lazyload alt="image-20210825101511460"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825101528.png" srcset="/img/loading.gif" lazyload alt="image-20210825101527916"></p>
 <h3 id="案例2："><a href="#案例2：" class="headerlink" title="案例2："></a>案例2：</h3><ul>
 <li><p>Session1加写锁，Session2不管，尝试实验。</p>
 </li>
@@ -1154,16 +1258,16 @@ Records: 0  Duplicates: 0  Warnings: 0
 <li><p>summary：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825113650.png" alt="image-20210825113650194"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825113812.png" alt="image-20210825113811966"></p>
-<h3 id="小总结："><a href="#小总结：" class="headerlink" title="小总结："></a>小总结：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825113842.png" alt="image-20210825113841799"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115036.png" alt="image-20210825115035980"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825113650.png" srcset="/img/loading.gif" lazyload alt="image-20210825113650194"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825113812.png" srcset="/img/loading.gif" lazyload alt="image-20210825113811966"></p>
+<h3 id="小总结："><a href="#小总结：" class="headerlink" title="小总结："></a>小总结：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825113842.png" srcset="/img/loading.gif" lazyload alt="image-20210825113841799"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115036.png" srcset="/img/loading.gif" lazyload alt="image-20210825115035980"></p>
 <ul>
 <li>分析锁定的表：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115757.png" alt="image-20210825115756496"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115817.png" alt="image-20210825115817258"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115917.png" alt="image-20210825115917153"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115757.png" srcset="/img/loading.gif" lazyload alt="image-20210825115756496"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115817.png" srcset="/img/loading.gif" lazyload alt="image-20210825115817258"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825115917.png" srcset="/img/loading.gif" lazyload alt="image-20210825115917153"></p>
 <ul>
 <li>MyISAM就是因为表锁的锁定，而适用于读取，而不是读取和修改嗷！！！</li>
 </ul>
@@ -1206,12 +1310,12 @@ Records: 0  Duplicates: 0  Warnings: 0
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825120725.png" alt="image-20210825120724813"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825120952.png" alt="image-20210825120952563"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825120725.png" srcset="/img/loading.gif" lazyload alt="image-20210825120724813"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825120952.png" srcset="/img/loading.gif" lazyload alt="image-20210825120952563"></p>
 <ul>
 <li>默认即使RR -&gt; 可重复读嗷！！！</li>
 </ul>
-<h3 id="案例："><a href="#案例：" class="headerlink" title="案例："></a>案例：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825125607.png" alt="image-20210825125607574"></p>
+<h3 id="案例："><a href="#案例：" class="headerlink" title="案例："></a>案例：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825125607.png" srcset="/img/loading.gif" lazyload alt="image-20210825125607574"></p>
 <ul>
 <li>多个Session去操作同一行，第一个操作的那个会获得锁，后面的其他Session都会阻塞嗷！！！</li>
 <li>但是如果多个Session操作的是不同行，获得的是不同行的锁，就没问题嗷！！！</li>
@@ -1221,23 +1325,23 @@ Records: 0  Duplicates: 0  Warnings: 0
 <h3 id="索引失效："><a href="#索引失效：" class="headerlink" title="索引失效："></a>索引失效：</h3><ul>
 <li>导致行锁升级为表锁嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825152426.png" alt="image-20210825152425346"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825152426.png" srcset="/img/loading.gif" lazyload alt="image-20210825152425346"></p>
 <ul>
 <li>所以说，开发过程中，这一类的Bug是最难找的嗷！！！varchar类型赋值的时候写成数字，就会gg！！！是重罪！！！</li>
 <li>只有左边提交了，右边的阻塞才能够结束嗷！！</li>
 </ul>
-<h3 id="间隙锁危害："><a href="#间隙锁危害：" class="headerlink" title="间隙锁危害："></a>间隙锁危害：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825152924.png" alt="image-20210825152923810"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825153001.png" alt="image-20210825153001107"></p>
-<h3 id="如何锁定一行："><a href="#如何锁定一行：" class="headerlink" title="如何锁定一行："></a>如何锁定一行：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825153228.png" alt="image-20210825153228092"></p>
+<h3 id="间隙锁危害："><a href="#间隙锁危害：" class="headerlink" title="间隙锁危害："></a>间隙锁危害：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825152924.png" srcset="/img/loading.gif" lazyload alt="image-20210825152923810"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825153001.png" srcset="/img/loading.gif" lazyload alt="image-20210825153001107"></p>
+<h3 id="如何锁定一行："><a href="#如何锁定一行：" class="headerlink" title="如何锁定一行："></a>如何锁定一行：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825153228.png" srcset="/img/loading.gif" lazyload alt="image-20210825153228092"></p>
 <ul>
 <li>这里经过测试之后证明，左边锁定了这一行之后，右边仍然可以读取这一行的数据，但是右边是不可以对于这一行做修改的嗷！！！</li>
 <li>实现了行级锁定，虽然锁定机制的性能损耗可能高一些。但是在并发处理能力远远优于MyISAM的表级锁定嗷！！！但是如果使用不当，性能甚至可能比MyISAM更差哦！</li>
 <li>一个命令：</li>
 </ul>
 <p><code>show status like 'innodb_row_lock%';</code></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825161243.png" alt="image-20210825161243241"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825161243.png" srcset="/img/loading.gif" lazyload alt="image-20210825161243241"></p>
 <p>比较重要的是：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825161339.png" alt="image-20210825161338997"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825161339.png" srcset="/img/loading.gif" lazyload alt="image-20210825161338997"></p>
 <ul>
 <li>优化建议：</li>
 </ul>
@@ -1254,7 +1358,7 @@ Records: 0  Duplicates: 0  Warnings: 0
 <h2 id="复制基本原理："><a href="#复制基本原理：" class="headerlink" title="复制基本原理："></a>复制基本原理：</h2><ul>
 <li>slave会从master读取binlog来进行数据同步。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825161856.png" alt="image-20210825161855636"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825161856.png" srcset="/img/loading.gif" lazyload alt="image-20210825161855636"></p>
 <ul>
 <li>基本原则：<ol>
 <li>一个slave只有一个master</li>
@@ -1276,8 +1380,8 @@ Records: 0  Duplicates: 0  Warnings: 0
 <li>修改my.ini文件，[我的主机中，配置文件所在的位置](C:\ProgramData\MySQL\MySQL Server 8.0)</li>
 <li>配置如下：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164218.png" alt="image-20210825164218482"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164304.png" alt="image-20210825164304266"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164218.png" srcset="/img/loading.gif" lazyload alt="image-20210825164218482"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164304.png" srcset="/img/loading.gif" lazyload alt="image-20210825164304266"></p>
 <ul>
 <li>可选的可以都不用咋调整嗷！！！</li>
 <li>配置完成之后重启嗷！！！</li>
@@ -1285,26 +1389,459 @@ Records: 0  Duplicates: 0  Warnings: 0
 <h3 id="从机："><a href="#从机：" class="headerlink" title="从机："></a>从机：</h3><ul>
 <li>修改my.cnf配置文件嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164520.png" alt="image-20210825164520575"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164520.png" srcset="/img/loading.gif" lazyload alt="image-20210825164520575"></p>
 <ul>
 <li>配置完成之后重启嗷！！！</li>
 </ul>
-<h3 id="主机建立账户并授权slave："><a href="#主机建立账户并授权slave：" class="headerlink" title="主机建立账户并授权slave："></a>主机建立账户并授权slave：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164805.png" alt="image-20210825164805080"></p>
+<h3 id="主机建立账户并授权slave："><a href="#主机建立账户并授权slave：" class="headerlink" title="主机建立账户并授权slave："></a>主机建立账户并授权slave：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164805.png" srcset="/img/loading.gif" lazyload alt="image-20210825164805080"></p>
 <ul>
 <li>允许服务器以zhangsan用户连接并完成主从复制嗷！！！</li>
 <li>show master status：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164924.png" alt="image-20210825164924338"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825164924.png" srcset="/img/loading.gif" lazyload alt="image-20210825164924338"></p>
 <p>第一个代表文件名称，第二个代表开始复制的位置嗷！！！Do没有，代表都要复制。Ignore代表忽略，不需要复制的数据库。</p>
-<h3 id="从机完成相应的配置："><a href="#从机完成相应的配置：" class="headerlink" title="从机完成相应的配置："></a>从机完成相应的配置：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825165210.png" alt="image-20210825165209721"></p>
+<h3 id="从机完成相应的配置："><a href="#从机完成相应的配置：" class="headerlink" title="从机完成相应的配置："></a>从机完成相应的配置：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825165210.png" srcset="/img/loading.gif" lazyload alt="image-20210825165209721"></p>
 <ul>
 <li>第一行就是上面这一行嗷！！！主要是完成主机连接的一些设置而已嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825165323.png" alt="image-20210825165322744"></p>
-<h3 id="停止从机："><a href="#停止从机：" class="headerlink" title="停止从机："></a>停止从机：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825165610.png" alt="image-20210825165610396"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825165323.png" srcset="/img/loading.gif" lazyload alt="image-20210825165322744"></p>
+<h3 id="停止从机："><a href="#停止从机：" class="headerlink" title="停止从机："></a>停止从机：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825165610.png" srcset="/img/loading.gif" lazyload alt="image-20210825165610396"></p>
 <h3 id="错误处理："><a href="#错误处理：" class="headerlink" title="错误处理："></a>错误处理：</h3><ul>
 <li>随着写入数据的变化，master status也会有变化，会出一些问题。</li>
 <li>所以每次重新开始同步的时候，都需要先查看一下master status，再进行同步嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825170028.png" alt="image-20210825170027954"></p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Alexander Liu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/08/21/mysql-shu-ju-ku-gao-ji/">http://example.com/2021/08/21/mysql-shu-ju-ku-gao-ji/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">兔の博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%90%8E%E7%AB%AF/">后端</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210821192227.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/08/25/elasticsearch-xue-xi/"><img class="prev-cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825185001.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">ElasticSearch学习</div></div></a></div><div class="next-post pull-right"><a href="/2021/08/19/docker-jin-jie/"><img class="next-cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210819205713.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Docker进阶</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/08/19/docker-jin-jie/" title="Docker进阶"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210819205713.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-19</div><div class="title">Docker进阶</div></div></a></div><div><a href="/2021/05/19/docker-xue-xi/" title="Docker学习"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210819205713.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-19</div><div class="title">Docker学习</div></div></a></div><div><a href="/2021/08/25/elasticsearch-xue-xi/" title="ElasticSearch学习"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825185001.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-25</div><div class="title">ElasticSearch学习</div></div></a></div><div><a href="/2021/03/16/jdbc-xue-xi/" title="JDBC学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-16</div><div class="title">JDBC学习</div></div></a></div><div><a href="/2021/04/21/jsp-xue-xi/" title="JSP学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-21</div><div class="title">JSP学习</div></div></a></div><div><a href="/2021/02/20/java-fu-xi/" title="Java大二上所学内容"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-02-20</div><div class="title">Java大二上所学内容</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Alexander Liu</div><div class="author-info__description">欢迎来到兔子的小窝，这里是兔子的一些笔记分享</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Mysql%E4%BC%98%E5%8C%96%E5%85%88%E5%BA%B7%E5%BA%B7%E5%97%B7%EF%BC%8C%E6%88%91%E8%A3%82%E5%BC%80%E6%9D%A5%EF%BC%8CDocker%E7%9C%8B%E7%9A%84%E8%84%91%E9%98%94%E7%96%BC%EF%BC%8C%E5%AD%A6%E5%AE%8C%E8%BF%99%E4%B8%AA%E5%86%8D%E5%8E%BB%E5%AD%A6K8S%E5%97%B7%EF%BC%81%EF%BC%81%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">Mysql优化先康康嗷，我裂开来，Docker看的脑阔疼，学完这个再去学K8S嗷！！！</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Mysql%E7%9A%84Linux%E7%89%88%E7%9A%84%E5%AE%89%E8%A3%85%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">Mysql的Linux版的安装：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9D%E8%AF%86Mysql%E6%9E%B6%E6%9E%84%EF%BC%9A"><span class="toc-number">1.2.</span> <span class="toc-text">初识Mysql架构：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MyISAM%E5%92%8CInnoDB%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9A"><span class="toc-number">1.2.1.</span> <span class="toc-text">MyISAM和InnoDB的区别：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">索引优化：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E5%88%86%E6%9E%90%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">优化分析：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E4%B8%8B%E9%99%8DSQL%E6%85%A2%EF%BC%9A"><span class="toc-number">2.1.1.</span> <span class="toc-text">性能下降SQL慢：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%80%9A%E7%94%A8%E7%9A%84Join%E6%9F%A5%E8%AF%A2%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">常见通用的Join查询：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%80%E6%9C%89%E7%9A%84%E4%B8%83%E7%A7%8DJoin%E5%85%B3%E7%B3%BB%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">所有的七种Join关系：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%83%E7%A7%8DJoin%E5%85%B3%E7%B3%BB%E7%9A%84%E7%BC%96%E5%86%99%EF%BC%9A"><span class="toc-number">2.2.2.</span> <span class="toc-text">七种Join关系的编写：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E7%AE%80%E4%BB%8B%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">索引简介：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql%E7%B4%A2%E5%BC%95%E7%BB%93%E6%9E%84%EF%BC%9A"><span class="toc-number">2.3.1.</span> <span class="toc-text">Mysql索引结构：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="toc-number">2.4.</span> <span class="toc-text">建索引：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E5%BB%BA%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="toc-number">2.5.</span> <span class="toc-text">不建索引：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">性能分析：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Explain%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">Explain：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E6%AE%B5%E8%A7%A3%E9%87%8A%EF%BC%9A"><span class="toc-number">3.1.1.</span> <span class="toc-text">字段解释：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96%EF%BC%9A-1"><span class="toc-number">3.2.</span> <span class="toc-text">索引优化：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E5%88%86%E6%9E%90%EF%BC%9A"><span class="toc-number">3.2.1.</span> <span class="toc-text">索引分析：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%95%E8%A1%A8%EF%BC%9A"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">单表：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8C%E8%A1%A8%EF%BC%9A"><span class="toc-number">3.2.1.2.</span> <span class="toc-text">双表：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E8%A1%A8%EF%BC%9A"><span class="toc-number">3.2.1.3.</span> <span class="toc-text">三表：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96%E9%87%8D%E7%82%B9%EF%BC%9A"><span class="toc-number">3.2.2.</span> <span class="toc-text">索引优化重点：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%81%BF%E5%85%8D%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%EF%BC%9A"><span class="toc-number">3.2.2.1.</span> <span class="toc-text">避免索引失效：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E5%85%A8%E5%80%BC%E5%8C%B9%E9%85%8D%E6%88%91%E6%9C%80%E7%88%B1%EF%BC%9A"><span class="toc-number">3.2.2.1.1.</span> <span class="toc-text">1. 全值匹配我最爱：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E6%9C%80%E4%BD%B3%E5%B7%A6%E5%89%8D%E7%BC%80%E6%B3%95%E5%88%99%EF%BC%9A"><span class="toc-number">3.2.2.1.2.</span> <span class="toc-text">2. 最佳左前缀法则：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E4%B8%8D%E5%9C%A8%E7%B4%A2%E5%BC%95%E5%88%97%E5%81%9A%E4%BB%BB%E4%BD%95%E6%93%8D%E4%BD%9C%EF%BC%9A"><span class="toc-number">3.2.2.1.3.</span> <span class="toc-text">3. 不在索引列做任何操作：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%8D%E8%83%BD%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E4%B8%AD%E8%8C%83%E5%9B%B4%E6%9D%A1%E4%BB%B6%E5%8F%B3%E8%BE%B9%E7%9A%84%E5%88%97%EF%BC%9A"><span class="toc-number">3.2.2.1.4.</span> <span class="toc-text">4. 存储引擎不能使用索引中范围条件右边的列：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-%E5%B0%BD%E9%87%8F%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95%EF%BC%8C%E5%87%8F%E5%B0%91select-%EF%BC%9A"><span class="toc-number">3.2.2.1.5.</span> <span class="toc-text">5. 尽量覆盖索引，减少select *：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-%E4%BD%BF%E7%94%A8%E4%B8%8D%E7%AD%89%E4%BA%8E%E7%9A%84%E6%97%B6%E5%80%99%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="toc-number">3.2.2.1.6.</span> <span class="toc-text">6. 使用不等于的时候无法使用索引：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-IS-NOT-NULL%E4%B9%9F%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%EF%BC%9A"><span class="toc-number">3.2.2.1.7.</span> <span class="toc-text">7. IS [NOT] NULL也无法使用索引：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#8-%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2%EF%BC%9A"><span class="toc-number">3.2.2.1.8.</span> <span class="toc-text">8. 模糊查询：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#9-%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%8D%E5%8A%A0%E5%8D%95%E5%BC%95%E5%8F%B7%E5%AF%BC%E8%87%B4%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%EF%BC%9A"><span class="toc-number">3.2.2.1.9.</span> <span class="toc-text">9. 字符串不加单引号导致索引失效：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#10-%E5%B0%91%E7%94%A8or%E6%9D%A5%E8%BF%9E%E6%8E%A5%EF%BC%8C%E4%BC%9A%E5%AF%BC%E8%87%B4%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%EF%BC%9A"><span class="toc-number">3.2.2.1.10.</span> <span class="toc-text">10. 少用or来连接，会导致索引失效：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#11-%E5%B0%8F%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">3.2.2.1.11.</span> <span class="toc-text">11. 小总结：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E8%88%AC%E6%80%A7%E5%BB%BA%E8%AE%AE%EF%BC%9A"><span class="toc-number">3.2.2.2.</span> <span class="toc-text">一般性建议：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E6%88%AA%E5%8F%96%E5%88%86%E6%9E%90%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">查询截取分析：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%EF%BC%9A"><span class="toc-number">4.1.</span> <span class="toc-text">查询优化：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E8%A1%A8%E9%A9%B1%E5%8A%A8%E5%A4%A7%E8%A1%A8%EF%BC%9A"><span class="toc-number">4.1.1.</span> <span class="toc-text">小表驱动大表：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Order-By%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96%EF%BC%9A"><span class="toc-number">4.1.2.</span> <span class="toc-text">Order By排序优化：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Group-By%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96%EF%BC%9A"><span class="toc-number">4.1.3.</span> <span class="toc-text">Group By排序优化：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97%EF%BC%9A"><span class="toc-number">4.1.4.</span> <span class="toc-text">慢查询日志：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%B9%E9%87%8F%E6%95%B0%E6%8D%AE%E8%84%9A%E6%9C%AC%EF%BC%9A"><span class="toc-number">4.2.</span> <span class="toc-text">批量数据脚本：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Show-Profile%EF%BC%9A"><span class="toc-number">4.3.</span> <span class="toc-text">Show Profile：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97%EF%BC%9B"><span class="toc-number">4.4.</span> <span class="toc-text">全局查询日志；</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E7%90%86%E8%AE%BA%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">数据库锁理论：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#MyISAM%E8%A1%A8%E9%94%81%EF%BC%9A"><span class="toc-number">5.1.</span> <span class="toc-text">MyISAM表锁：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B1%EF%BC%9A"><span class="toc-number">5.1.1.</span> <span class="toc-text">案例1：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B2%EF%BC%9A"><span class="toc-number">5.1.2.</span> <span class="toc-text">案例2：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">5.1.3.</span> <span class="toc-text">小总结：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB%E8%A1%8C%E9%94%81%EF%BC%9A"><span class="toc-number">5.2.</span> <span class="toc-text">InnoDB行锁：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A"><span class="toc-number">5.2.1.</span> <span class="toc-text">案例：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%EF%BC%9A"><span class="toc-number">5.2.2.</span> <span class="toc-text">索引失效：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%B4%E9%9A%99%E9%94%81%E5%8D%B1%E5%AE%B3%EF%BC%9A"><span class="toc-number">5.2.3.</span> <span class="toc-text">间隙锁危害：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E9%94%81%E5%AE%9A%E4%B8%80%E8%A1%8C%EF%BC%9A"><span class="toc-number">5.2.4.</span> <span class="toc-text">如何锁定一行：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%EF%BC%9A"><span class="toc-number">6.</span> <span class="toc-text">主从复制：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-number">6.1.</span> <span class="toc-text">复制基本原理：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%B8%BB%E4%B8%80%E4%BB%8E%EF%BC%9A"><span class="toc-number">6.2.</span> <span class="toc-text">一主一从：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%EF%BC%9A"><span class="toc-number">6.2.1.</span> <span class="toc-text">主机：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E6%9C%BA%EF%BC%9A"><span class="toc-number">6.2.2.</span> <span class="toc-text">从机：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%BB%BA%E7%AB%8B%E8%B4%A6%E6%88%B7%E5%B9%B6%E6%8E%88%E6%9D%83slave%EF%BC%9A"><span class="toc-number">6.2.3.</span> <span class="toc-text">主机建立账户并授权slave：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E6%9C%BA%E5%AE%8C%E6%88%90%E7%9B%B8%E5%BA%94%E7%9A%84%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="toc-number">6.2.4.</span> <span class="toc-text">从机完成相应的配置：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%9C%E6%AD%A2%E4%BB%8E%E6%9C%BA%EF%BC%9A"><span class="toc-number">6.2.5.</span> <span class="toc-text">停止从机：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A"><span class="toc-number">6.2.6.</span> <span class="toc-text">错误处理：</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071136497.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="1. 南京大学操作系统概述"/></a><div class="content"><a class="title" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述">1. 南京大学操作系统概述</a><time datetime="2022-12-07T03:35:42.000Z" title="发表于 2022-12-07 11:35:42">2022-12-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212051319709.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CPU Cache 学习"/></a><div class="content"><a class="title" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习">CPU Cache 学习</a><time datetime="2022-12-05T04:14:46.000Z" title="发表于 2022-12-05 12:14:46">2022-12-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/16/ml-ru-men/" title="ML入门"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ML入门"/></a><div class="content"><a class="title" href="/2022/01/16/ml-ru-men/" title="ML入门">ML入门</a><time datetime="2022-01-16T11:11:14.000Z" title="发表于 2022-01-16 19:11:14">2022-01-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习3"/></a><div class="content"><a class="title" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3">大数据分析与智能计算期末复习3</a><time datetime="2021-12-28T14:05:22.000Z" title="发表于 2021-12-28 22:05:22">2021-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习2"/></a><div class="content"><a class="title" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2">大数据分析与智能计算期末复习2</a><time datetime="2021-12-24T07:59:54.000Z" title="发表于 2021-12-24 15:59:54">2021-12-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Alexander Liu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825170028.png" srcset="/img/loading.gif" lazyload alt="image-20210825170027954"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%90%8E%E7%AB%AF/">#后端</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MySQL数据库高级</div>
+      <div>http://example.com/2021/08/21/mysql-shu-ju-ku-gao-ji/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/25/elasticsearch-xue-xi/" title="ElasticSearch学习">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ElasticSearch学习</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/19/docker-jin-jie/" title="Docker进阶">
+                        <span class="hidden-mobile">Docker进阶</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

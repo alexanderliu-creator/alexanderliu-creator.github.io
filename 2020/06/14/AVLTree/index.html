@@ -1,151 +1,322 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>AVLTree | 兔の博客</title><meta name="author" content="Alexander Liu"><meta name="copyright" content="Alexander Liu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本周做一期关于平衡二叉树的总结">
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="本周做一期关于平衡二叉树的总结">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AVLTree">
+<meta property="og:title" content="UESTC数据结构AVLTree">
 <meta property="og:url" content="http://example.com/2020/06/14/avltree/index.html">
 <meta property="og:site_name" content="兔の博客">
 <meta property="og:description" content="本周做一期关于平衡二叉树的总结">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+<meta property="og:image" content="http://example.com/AVLTree/LL.jpg">
+<meta property="og:image" content="http://example.com/AVLTree/LR.jpg">
+<meta property="og:image" content="http://example.com/AVLTree/RR.jpg">
+<meta property="og:image" content="http://example.com/AVLTree/RL.jpg">
 <meta property="article:published_time" content="2020-06-14T07:40:26.000Z">
-<meta property="article:modified_time" content="2021-02-20T11:46:52.000Z">
+<meta property="article:modified_time" content="2022-12-07T09:52:19.394Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="大一学习">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2020/06/14/avltree/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
-  root: '/',
-  algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
-  noticeOutdate: undefined,
-  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
-  copy: {
-    success: '复制成功',
-    error: '复制错误',
-    noSupport: '浏览器不支持'
-  },
-  relativeDate: {
-    homepage: false,
-    post: false
-  },
-  runtime: '',
-  date_suffix: {
-    just: '刚刚',
-    min: '分钟前',
-    hour: '小时前',
-    day: '天前',
-    month: '个月前'
-  },
-  copyright: undefined,
-  lightbox: 'fancybox',
-  Snackbar: undefined,
-  source: {
-    justifiedGallery: {
-      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
-      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
-    }
-  },
-  isPhotoFigcaption: false,
-  islazyload: false,
-  isAnchor: false
-}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: 'AVLTree',
-  isPost: true,
-  isHome: false,
-  isHighlightShrink: false,
-  isToc: true,
-  postUpdate: '2021-02-20 19:46:52'
-}</script><noscript><style type="text/css">
-  #nav {
-    opacity: 1
-  }
-  .justified-gallery img {
-    opacity: 1
-  }
-
-  #recent-posts time,
-  #post-meta time {
-    display: inline !important
-  }
-</style></noscript><script>(win=>{
-    win.saveToLocal = {
-      set: function setWithExpiry(key, value, ttl) {
-        if (ttl === 0) return
-        const now = new Date()
-        const expiryDay = ttl * 86400000
-        const item = {
-          value: value,
-          expiry: now.getTime() + expiryDay,
-        }
-        localStorage.setItem(key, JSON.stringify(item))
-      },
-
-      get: function getWithExpiry(key) {
-        const itemStr = localStorage.getItem(key)
-
-        if (!itemStr) {
-          return undefined
-        }
-        const item = JSON.parse(itemStr)
-        const now = new Date()
-
-        if (now.getTime() > item.expiry) {
-          localStorage.removeItem(key)
-          return undefined
-        }
-        return item.value
-      }
-    }
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/AVLTree/LL.jpg">
   
-    win.getScript = url => new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      script.onerror = reject
-      script.onload = script.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        script.onload = script.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(script)
-    })
   
-      win.activateDarkMode = function () {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = function () {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
-        
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-    const detectApple = () => {
-      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-        document.documentElement.classList.add('apple')
-      }
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>UESTC数据结构AVLTree - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
     }
-    detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.2.0">
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
-</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">兔の博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">AVLTree</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-06-14T07:40:26.000Z" title="发表于 2020-06-14 15:40:26">2020-06-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-02-20T11:46:52.000Z" title="更新于 2021-02-20 19:46:52">2021-02-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="AVLTree"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>本周做一期关于平衡二叉树的总结</p>
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="UESTC数据结构AVLTree"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-06-14 15:40" pubdate>
+          2020年6月14日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">UESTC数据结构AVLTree</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月7日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本周做一期关于平衡二叉树的总结</p>
 <span id="more"></span>
 <hr>
 <p>平衡二叉树里有一个很重要的概念叫BF(Balance Factor)，这个值是由左子树的高度减去右子树的高度得到的。<br>当一棵树为平衡二叉树时，BF的取值为-1，0或者1.</p>
@@ -157,258 +328,464 @@
 <li>更新相应的类似于leftchild,rightchild,parent,bf的值。</li>
 </ol>
 <hr>
-<h1 id="失衡类型以及相应的调整："><a href="#失衡类型以及相应的调整：" class="headerlink" title="失衡类型以及相应的调整："></a>失衡类型以及相应的调整：</h1><h2 id="LL类型的失衡："><a href="#LL类型的失衡：" class="headerlink" title="LL类型的失衡："></a>LL类型的失衡：</h2><p><img src="/AVLTree/LL.jpg" alt="LL类型失衡"></p>
+<h1 id="失衡类型以及相应的调整："><a href="#失衡类型以及相应的调整：" class="headerlink" title="失衡类型以及相应的调整："></a>失衡类型以及相应的调整：</h1><h2 id="LL类型的失衡："><a href="#LL类型的失衡：" class="headerlink" title="LL类型的失衡："></a>LL类型的失衡：</h2><p><img src="/AVLTree/LL.jpg" srcset="/img/loading.gif" lazyload alt="LL类型失衡"></p>
 <p>调整方式：<br>顺时针旋转下来，原来的根节点转换为现在根节点的右子树。以及一些相应的变换。<br>重点在于BF的值的调整：失衡的A,B结点的值全部转变为了0。</p>
-<h2 id="LR类型的失衡："><a href="#LR类型的失衡：" class="headerlink" title="LR类型的失衡："></a>LR类型的失衡：</h2><p><img src="/AVLTree/LR.jpg" alt="LR类型的失衡"><br>调整方式:<br>左半边逆时针旋转，右半边顺时针旋转。处于LR上的结点变换为新的根节点。<br>重点也在于BF值的调整：原来根节点的的BF为-1，其余的BF都归0.</p>
-<h2 id="RR类型的失衡："><a href="#RR类型的失衡：" class="headerlink" title="RR类型的失衡："></a>RR类型的失衡：</h2><p><img src="/AVLTree/RR.jpg" alt="RR类型的失衡"><br>调整方式：<br>逆时针旋转下来，原来的根节点调整为现在根节点的左子树。以及一些相应的变换。<br>重点在于BF的值的调整：失衡的A,B结点的值全部转变为了0。</p>
-<h2 id="RL类型的失衡："><a href="#RL类型的失衡：" class="headerlink" title="RL类型的失衡："></a>RL类型的失衡：</h2><p><img src="/AVLTree/RL.jpg" alt="RL类型的失衡"><br>调整方式：<br>左半边向下旋转，右半边也向下旋转。处于RL结点上的结点转换为新的根节点。<br>重点也在于BF值的调整：原来根节点的的BF为1，其余的BF都归0.</p>
-<h1 id="对应的代码如下："><a href="#对应的代码如下：" class="headerlink" title="对应的代码如下："></a>对应的代码如下：</h1><pre class="line-numbers language-none"><code class="language-none">//我不是代码的生产者，我只是没有感情的代码搬运工。
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
+<h2 id="LR类型的失衡："><a href="#LR类型的失衡：" class="headerlink" title="LR类型的失衡："></a>LR类型的失衡：</h2><p><img src="/AVLTree/LR.jpg" srcset="/img/loading.gif" lazyload alt="LR类型的失衡"><br>调整方式:<br>左半边逆时针旋转，右半边顺时针旋转。处于LR上的结点变换为新的根节点。<br>重点也在于BF值的调整：原来根节点的的BF为-1，其余的BF都归0.</p>
+<h2 id="RR类型的失衡："><a href="#RR类型的失衡：" class="headerlink" title="RR类型的失衡："></a>RR类型的失衡：</h2><p><img src="/AVLTree/RR.jpg" srcset="/img/loading.gif" lazyload alt="RR类型的失衡"><br>调整方式：<br>逆时针旋转下来，原来的根节点调整为现在根节点的左子树。以及一些相应的变换。<br>重点在于BF的值的调整：失衡的A,B结点的值全部转变为了0。</p>
+<h2 id="RL类型的失衡："><a href="#RL类型的失衡：" class="headerlink" title="RL类型的失衡："></a>RL类型的失衡：</h2><p><img src="/AVLTree/RL.jpg" srcset="/img/loading.gif" lazyload alt="RL类型的失衡"><br>调整方式：<br>左半边向下旋转，右半边也向下旋转。处于RL结点上的结点转换为新的根节点。<br>重点也在于BF值的调整：原来根节点的的BF为1，其余的BF都归0.</p>
+<h1 id="对应的代码如下："><a href="#对应的代码如下：" class="headerlink" title="对应的代码如下："></a>对应的代码如下：</h1><figure class="highlight zephir"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br></pre></td><td class="code"><pre><code class="hljs zephir"><span class="hljs-comment">//我不是代码的生产者，我只是没有感情的代码搬运工。</span><br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br><br>#define ENDKEY <span class="hljs-number">0</span><br><br>typedef <span class="hljs-keyword">int</span> KeyType;<br><br>typedef struct  node<br>{<br>   KeyType  key ; <br>   struct node  *lchild,*rchild;<br>   <span class="hljs-keyword">int</span> bf;	<br>}AVLTNode, *AVLTree;<br><br>void CreateAVLT(AVLTree *bst);<br>void ins_AVLtree(AVLTree *avlt, KeyType k);<br>void InOrder(AVLTree root);<br>AVLTNode *SearchAVLTree(AVLTree bst, KeyType k);<br> <br><span class="hljs-keyword">int</span> main()<br>{<br>	AVLTree T;<br>	AVLTNode *node;<br>	KeyType i;<br>	<br>	printf(<span class="hljs-string">"Now begin to create an AVLTree:\n"</span>);<br>    CreateAVLT(&amp;T);<br>	printf(<span class="hljs-string">"\nThe InOrder is:\n"</span>);<br>	InOrder(T);<br>	printf(<span class="hljs-string">"\n\n"</span>);<br>	i = <span class="hljs-number">53</span>;<br>	node=SearchAVLTree(T,i);<br>	<span class="hljs-keyword">if</span> (node)<br>	   printf(<span class="hljs-string">"The node %d is found, its bf is %d\n\n"</span>,node-&gt;key,node-&gt;bf);<br>	<span class="hljs-keyword">else</span><br>	   printf(<span class="hljs-string">"The node %d is not found\n\n"</span>,i);<br> 	   <br>	<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>}<br><br>void CreateAVLT(AVLTree *bst)<br>{ <br>   KeyType key;<br>   *bst = NULL;<br>   printf(<span class="hljs-string">"Please input the sequece to create an AVLTree\n"</span>);<br>   printf(<span class="hljs-string">"For example: 45 24 53 12 28 90 0\n"</span>);  <span class="hljs-comment">//p.272 eg.8.2</span><br>   scanf(<span class="hljs-string">"%d"</span>, &amp;key);<br>   <span class="hljs-keyword">while</span> (key!=ENDKEY)  <br>   {<br>      ins_AVLtree(bst, key);<br>      scanf(<span class="hljs-string">"%d"</span>, &amp;key);<br>   }<br>}<br><span class="hljs-comment">// algorithm 8.9 </span><br>void ins_AVLtree(AVLTree *avlt, KeyType k)<br>{<br>   AVLTNode *S;<br>   AVLTNode *A,*FA,*p,*fp,*B,*C;<br>   <br>   S = (AVLTree)malloc(sizeof(AVLTNode));<br>   S-&gt;key = k; <br>   S-&gt;lchild = S-&gt;rchild=NULL;<br>   S-&gt;bf = <span class="hljs-number">0</span>;<br>   <span class="hljs-keyword">if</span> (*avlt==NULL)  <br>      *avlt = S;<br>   <span class="hljs-keyword">else</span> <br>   { <br>   <span class="hljs-comment">// locate A and the place for inserting S</span><br>   A = *avlt;  <br>   FA = NULL;<br>   p = *avlt;  <br>   fp = NULL;<br>   <span class="hljs-keyword">while</span> (p!=NULL)<br>   { <br>      <span class="hljs-keyword">if</span> (p-&gt;bf!=<span class="hljs-number">0</span>) <br>      {<br>         A = p; <br>		 FA = fp;<br>      }<br>      fp = p;<br>      <span class="hljs-keyword">if</span> (k &lt; p-&gt;key)  <br>         p = p-&gt;lchild;<br>      <span class="hljs-keyword">else</span>  <br>         p = p-&gt;rchild;<br>   }<br>   <span class="hljs-comment">// insert S</span><br>   <span class="hljs-keyword">if</span> (k &lt; fp-&gt;key) <br>      fp-&gt;lchild = S;<br>   <span class="hljs-keyword">else</span><br>      fp-&gt;rchild = S;<br>   <span class="hljs-comment">// Locate B and adjust the bf of A   </span><br>   <span class="hljs-keyword">if</span> (k &lt; A-&gt;key)<br>   {<br>      B = A-&gt;lchild;<br>      A-&gt;bf = A-&gt;bf+<span class="hljs-number">1</span>;<br>   }<br>   <span class="hljs-keyword">else</span> <br>   {<br>      B = A-&gt;rchild;<br>      A-&gt;bf = A-&gt;bf<span class="hljs-number">-1</span>;<br>   }<br>   <span class="hljs-comment">// adjust the bf of the nodes from B to S</span><br>   p = B;<br>   <span class="hljs-keyword">while</span> (p!=S)<br>      <span class="hljs-keyword">if</span> (k &lt; p-&gt;key)<br>      {<br>         p-&gt;bf = <span class="hljs-number">1</span>;<br>         p = p-&gt;lchild;<br>      }<br>      <span class="hljs-keyword">else</span><br>      {<br>         p-&gt;bf=<span class="hljs-number">-1</span>;<br>         p=p-&gt;rchild;<br>      }<br>    <span class="hljs-comment">// adjust the shape to keep balance  </span><br>   <span class="hljs-keyword">if</span> (A-&gt;bf==<span class="hljs-number">2</span>&amp;&amp;B-&gt;bf==<span class="hljs-number">1</span>)   <span class="hljs-comment">// LL类型失衡</span><br>   {<br>      B = A-&gt;lchild;<br>      A-&gt;lchild = B-&gt;rchild;<br>      B-&gt;rchild = A;<br>      A-&gt;bf = <span class="hljs-number">0</span>;<br>      B-&gt;bf = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">if</span> (FA==NULL) <br>         *avlt = B;<br>      <span class="hljs-keyword">else</span> <br>         <span class="hljs-keyword">if</span> (A==FA-&gt;lchild) <br>            FA-&gt;lchild = B;<br>         <span class="hljs-keyword">else</span> <br>            FA-&gt;rchild = B;<br>   }<br>   <span class="hljs-keyword">else</span><br>      <span class="hljs-keyword">if</span> (A-&gt;bf==<span class="hljs-number">2</span> &amp;&amp; B-&gt;bf==<span class="hljs-number">-1</span>)  <span class="hljs-comment">// LR类型失衡</span><br>      {<br>         B = A-&gt;lchild;<br>	     C = B-&gt;rchild;<br>         B-&gt;rchild = C-&gt;lchild;<br>	 	 A-&gt;lchild = C-&gt;rchild;<br>	 	 C-&gt;lchild = B;<br>		 C-&gt;rchild = A;<br>		 <span class="hljs-keyword">if</span> (S-&gt;key &lt; C-&gt;key)<br>		 { <br>		    A-&gt;bf = <span class="hljs-number">-1</span>;<br>			B-&gt;bf = <span class="hljs-number">0</span>;<br>			C-&gt;bf = <span class="hljs-number">0</span>;<br>		 }<br>		 <span class="hljs-keyword">else</span> <br>            <span class="hljs-keyword">if</span> (S-&gt;key &gt;C-&gt;key)<br>		    {<br>               A-&gt;bf = <span class="hljs-number">0</span>;<br>			   B-&gt;bf = <span class="hljs-number">1</span>;<br>			   C-&gt;bf = <span class="hljs-number">0</span>;<br>		    }<br>		    <span class="hljs-keyword">else</span><br>		    { <br>                A-&gt;bf = <span class="hljs-number">0</span>;<br>				B-&gt;bf=<span class="hljs-number">0</span>;<br>			}<br>         <span class="hljs-keyword">if</span> (FA==NULL) <br>            *avlt = C;<br>		 <span class="hljs-keyword">else</span> <br>		    <span class="hljs-keyword">if</span> (A==FA-&gt;lchild) <br>			   FA-&gt;lchild = C;<br>			<span class="hljs-keyword">else</span> <br>			   FA-&gt;rchild = C;<br>			}<br>   <span class="hljs-keyword">else</span> <br>      <span class="hljs-keyword">if</span> (A-&gt;bf==<span class="hljs-number">-2</span> &amp;&amp; B-&gt;bf==<span class="hljs-number">1</span>)  <span class="hljs-comment">// RL类型失衡</span><br>	  {<br>         B = A-&gt;rchild;<br>		 C = B-&gt;lchild;<br>		 B-&gt;lchild = C-&gt;rchild;<br>		 A-&gt;rchild = C-&gt;lchild;<br>		 C-&gt;lchild = A;<br>		 C-&gt;rchild = B;<br>		 <span class="hljs-keyword">if</span> (S-&gt;key &lt;C-&gt;key) <br>		 { <br>            A-&gt;bf = <span class="hljs-number">0</span>;<br>			B-&gt;bf=<span class="hljs-number">-1</span>;<br>			C-&gt;bf=<span class="hljs-number">0</span>;<br>		 }<br>		 <span class="hljs-keyword">else</span> <br>		    <span class="hljs-keyword">if</span> (S-&gt;key &gt;C-&gt;key)<br>		    {<br>               A-&gt;bf = <span class="hljs-number">1</span>;<br>			   B-&gt;bf = <span class="hljs-number">0</span>;<br>			   C-&gt;bf = <span class="hljs-number">0</span>;<br>			}<br>			<span class="hljs-keyword">else</span> <br>			{ <br>			   A-&gt;bf = <span class="hljs-number">0</span>;<br>			   B-&gt;bf = <span class="hljs-number">0</span>;<br>			}<br>         <span class="hljs-keyword">if</span> (FA==NULL)  <br>		    *avlt = C;<br>		 <span class="hljs-keyword">else</span><br> 	        <span class="hljs-keyword">if</span> (A==FA-&gt;lchild) <br>		       FA-&gt;lchild = C;<br>			<span class="hljs-keyword">else</span>  <br>			   FA-&gt;rchild=C;<br>			}<br>   <span class="hljs-keyword">else</span> <br>      <span class="hljs-keyword">if</span> (A-&gt;bf==<span class="hljs-number">-2</span> &amp;&amp; B-&gt;bf==<span class="hljs-number">-1</span>)   <span class="hljs-comment">// RR类型失衡</span><br>	  {<br>         B = A-&gt;rchild;<br>		 A-&gt;rchild = B-&gt;lchild;<br>		 B-&gt;lchild = A;<br>		 A-&gt;bf = <span class="hljs-number">0</span>;<br>		 B-&gt;bf = <span class="hljs-number">0</span>;<br>		 <span class="hljs-keyword">if</span> (FA==NULL) <br>		    *avlt = B;<br>		 <span class="hljs-keyword">else</span><br>            <span class="hljs-keyword">if</span> (A==FA-&gt;lchild)<br>		       FA-&gt;lchild = B;<br>			<span class="hljs-keyword">else</span> <br>			   FA-&gt;rchild=B;<br>      }<br>   }<br>}<br><br><span class="hljs-comment">// InOrder </span><br>void InOrder(AVLTree root)<br>{<br>   <span class="hljs-keyword">if</span> (root != NULL)<br>   {<br>      InOrder(root-&gt;lchild);<br>      printf(<span class="hljs-string">"%4d"</span>,root-&gt;key);     <br>      InOrder(root-&gt;rchild);   	<br>   }<br>}<br><br>AVLTNode *SearchAVLTree(AVLTree bst, KeyType k)<br><span class="hljs-comment">//一直往下查找就ok了嗷！</span><br>{ <br>   AVLTNode *q;<br>   q = bst;<br>   <span class="hljs-keyword">while</span>(q)<br>   {<br>      <span class="hljs-keyword">if</span> (q-&gt;key == k) <br>         <span class="hljs-keyword">return</span> q;  <br>      <span class="hljs-keyword">if</span> (q-&gt;key &gt; k)  <br>         q = q-&gt;lchild;  <br>      <span class="hljs-keyword">else</span>  <br>         q = q-&gt;rchild;  <br>   }<br>   <span class="hljs-keyword">return</span> NULL; <br>}<br><br><br></code></pre></td></tr></tbody></table></figure>
 
-#define ENDKEY 0
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
 
-typedef int KeyType;
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/UESTC%E8%AF%BE%E5%86%85%E7%AC%94%E8%AE%B0/" class="category-chain-item">UESTC课内笔记</a>
+  
+  
 
-typedef struct  node
-{
-   KeyType  key ; 
-   struct node  *lchild,*rchild;
-   int bf;	
-}AVLTNode, *AVLTree;
+      </span>
+    
+  
+</span>
 
-void CreateAVLT(AVLTree *bst);
-void ins_AVLtree(AVLTree *avlt, KeyType k);
-void InOrder(AVLTree root);
-AVLTNode *SearchAVLTree(AVLTree bst, KeyType k);
- 
-int main()
-{
-	AVLTree T;
-	AVLTNode *node;
-	KeyType i;
-	
-	printf("Now begin to create an AVLTree:\n");
-    CreateAVLT(&amp;T);
-	printf("\nThe InOrder is:\n");
-	InOrder(T);
-	printf("\n\n");
-	i = 53;
-	node=SearchAVLTree(T,i);
-	if (node)
-	   printf("The node %d is found, its bf is %d\n\n",node-&gt;key,node-&gt;bf);
-	else
-	   printf("The node %d is not found\n\n",i);
- 	   
-	return 1;
-}
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/">#大一学习</a>
+      
+    </div>
+  
+</div>
 
-void CreateAVLT(AVLTree *bst)
-{ 
-   KeyType key;
-   *bst = NULL;
-   printf("Please input the sequece to create an AVLTree\n");
-   printf("For example: 45 24 53 12 28 90 0\n");  //p.272 eg.8.2
-   scanf("%d", &amp;key);
-   while (key!=ENDKEY)  
-   {
-      ins_AVLtree(bst, key);
-      scanf("%d", &amp;key);
-   }
-}
-// algorithm 8.9 
-void ins_AVLtree(AVLTree *avlt, KeyType k)
-{
-   AVLTNode *S;
-   AVLTNode *A,*FA,*p,*fp,*B,*C;
-   
-   S = (AVLTree)malloc(sizeof(AVLTNode));
-   S-&gt;key = k; 
-   S-&gt;lchild = S-&gt;rchild=NULL;
-   S-&gt;bf = 0;
-   if (*avlt==NULL)  
-      *avlt = S;
-   else 
-   { 
-   // locate A and the place for inserting S
-   A = *avlt;  
-   FA = NULL;
-   p = *avlt;  
-   fp = NULL;
-   while (p!=NULL)
-   { 
-      if (p-&gt;bf!=0) 
-      {
-         A = p; 
-		 FA = fp;
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>UESTC数据结构AVLTree</div>
+      <div>http://example.com/2020/06/14/avltree/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年6月14日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/02/20/mei-sai-lun-wen-zhuan-xie/" title="美赛论文写作指导">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">美赛论文写作指导</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/08/dfs/" title="UESTC DFS自学">
+                        <span class="hidden-mobile">UESTC DFS自学</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
       }
-      fp = p;
-      if (k &lt; p-&gt;key)  
-         p = p-&gt;lchild;
-      else  
-         p = p-&gt;rchild;
-   }
-   // insert S
-   if (k &lt; fp-&gt;key) 
-      fp-&gt;lchild = S;
-   else
-      fp-&gt;rchild = S;
-   // Locate B and adjust the bf of A   
-   if (k &lt; A-&gt;key)
-   {
-      B = A-&gt;lchild;
-      A-&gt;bf = A-&gt;bf+1;
-   }
-   else 
-   {
-      B = A-&gt;rchild;
-      A-&gt;bf = A-&gt;bf-1;
-   }
-   // adjust the bf of the nodes from B to S
-   p = B;
-   while (p!=S)
-      if (k &lt; p-&gt;key)
-      {
-         p-&gt;bf = 1;
-         p = p-&gt;lchild;
-      }
-      else
-      {
-         p-&gt;bf=-1;
-         p=p-&gt;rchild;
-      }
-    // adjust the shape to keep balance  
-   if (A-&gt;bf==2&amp;&amp;B-&gt;bf==1)   // LL类型失衡
-   {
-      B = A-&gt;lchild;
-      A-&gt;lchild = B-&gt;rchild;
-      B-&gt;rchild = A;
-      A-&gt;bf = 0;
-      B-&gt;bf = 0;
-      if (FA==NULL) 
-         *avlt = B;
-      else 
-         if (A==FA-&gt;lchild) 
-            FA-&gt;lchild = B;
-         else 
-            FA-&gt;rchild = B;
-   }
-   else
-      if (A-&gt;bf==2 &amp;&amp; B-&gt;bf==-1)  // LR类型失衡
-      {
-         B = A-&gt;lchild;
-	     C = B-&gt;rchild;
-         B-&gt;rchild = C-&gt;lchild;
-	 	 A-&gt;lchild = C-&gt;rchild;
-	 	 C-&gt;lchild = B;
-		 C-&gt;rchild = A;
-		 if (S-&gt;key &lt; C-&gt;key)
-		 { 
-		    A-&gt;bf = -1;
-			B-&gt;bf = 0;
-			C-&gt;bf = 0;
-		 }
-		 else 
-            if (S-&gt;key &gt;C-&gt;key)
-		    {
-               A-&gt;bf = 0;
-			   B-&gt;bf = 1;
-			   C-&gt;bf = 0;
-		    }
-		    else
-		    { 
-                A-&gt;bf = 0;
-				B-&gt;bf=0;
-			}
-         if (FA==NULL) 
-            *avlt = C;
-		 else 
-		    if (A==FA-&gt;lchild) 
-			   FA-&gt;lchild = C;
-			else 
-			   FA-&gt;rchild = C;
-			}
-   else 
-      if (A-&gt;bf==-2 &amp;&amp; B-&gt;bf==1)  // RL类型失衡
-	  {
-         B = A-&gt;rchild;
-		 C = B-&gt;lchild;
-		 B-&gt;lchild = C-&gt;rchild;
-		 A-&gt;rchild = C-&gt;lchild;
-		 C-&gt;lchild = A;
-		 C-&gt;rchild = B;
-		 if (S-&gt;key &lt;C-&gt;key) 
-		 { 
-            A-&gt;bf = 0;
-			B-&gt;bf=-1;
-			C-&gt;bf=0;
-		 }
-		 else 
-		    if (S-&gt;key &gt;C-&gt;key)
-		    {
-               A-&gt;bf = 1;
-			   B-&gt;bf = 0;
-			   C-&gt;bf = 0;
-			}
-			else 
-			{ 
-			   A-&gt;bf = 0;
-			   B-&gt;bf = 0;
-			}
-         if (FA==NULL)  
-		    *avlt = C;
-		 else
- 	        if (A==FA-&gt;lchild) 
-		       FA-&gt;lchild = C;
-			else  
-			   FA-&gt;rchild=C;
-			}
-   else 
-      if (A-&gt;bf==-2 &amp;&amp; B-&gt;bf==-1)   // RR类型失衡
-	  {
-         B = A-&gt;rchild;
-		 A-&gt;rchild = B-&gt;lchild;
-		 B-&gt;lchild = A;
-		 A-&gt;bf = 0;
-		 B-&gt;bf = 0;
-		 if (FA==NULL) 
-		    *avlt = B;
-		 else
-            if (A==FA-&gt;lchild)
-		       FA-&gt;lchild = B;
-			else 
-			   FA-&gt;rchild=B;
-      }
-   }
-}
+    });
+  });
+</script>
 
-// InOrder 
-void InOrder(AVLTree root)
-{
-   if (root != NULL)
-   {
-      InOrder(root-&gt;lchild);
-      printf("%4d",root-&gt;key);     
-      InOrder(root-&gt;rchild);   	
-   }
-}
 
-AVLTNode *SearchAVLTree(AVLTree bst, KeyType k)
-//一直往下查找就ok了嗷！
-{ 
-   AVLTNode *q;
-   q = bst;
-   while(q)
-   {
-      if (q-&gt;key == k) 
-         return q;  
-      if (q-&gt;key &gt; k)  
-         q = q-&gt;lchild;  
-      else  
-         q = q-&gt;rchild;  
-   }
-   return NULL; 
-}
 
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Alexander Liu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2020/06/14/avltree/">http://example.com/2020/06/14/avltree/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">兔の博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%A4%A7%E4%B8%80%E5%AD%A6%E4%B9%A0/">大一学习</a></div><div class="post_share"><div class="social-share" data-image="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/02/20/mei-sai-lun-wen-zhuan-xie/"><img class="prev-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">美赛论文写作指导</div></div></a></div><div class="next-post pull-right"><a href="/2020/06/08/dfs/"><img class="next-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">DFS</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/06/08/dfs/" title="DFS"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-08</div><div class="title">DFS</div></div></a></div><div><a href="/2020/05/30/xian-xing-biao-zong-jie-ti-gao/" title="线性表总结提高"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-05-30</div><div class="title">线性表总结提高</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Alexander Liu</div><div class="author-info__description">欢迎来到兔子的小窝，这里是兔子的一些笔记分享</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E4%BD%93%E7%9A%84%E8%B0%83%E6%95%B4%E6%80%9D%E8%B7%AF%E5%92%8C%E8%B0%83%E6%95%B4%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">总体的调整思路和调整的方法：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%B1%E8%A1%A1%E7%B1%BB%E5%9E%8B%E4%BB%A5%E5%8F%8A%E7%9B%B8%E5%BA%94%E7%9A%84%E8%B0%83%E6%95%B4%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">失衡类型以及相应的调整：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#LL%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%A4%B1%E8%A1%A1%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">LL类型的失衡：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LR%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%A4%B1%E8%A1%A1%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">LR类型的失衡：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RR%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%A4%B1%E8%A1%A1%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">RR类型的失衡：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RL%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%A4%B1%E8%A1%A1%EF%BC%9A"><span class="toc-number">2.4.</span> <span class="toc-text">RL类型的失衡：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E5%BA%94%E7%9A%84%E4%BB%A3%E7%A0%81%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">对应的代码如下：</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071136497.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="1. 南京大学操作系统概述"/></a><div class="content"><a class="title" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述">1. 南京大学操作系统概述</a><time datetime="2022-12-07T03:35:42.000Z" title="发表于 2022-12-07 11:35:42">2022-12-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212051319709.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CPU Cache 学习"/></a><div class="content"><a class="title" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习">CPU Cache 学习</a><time datetime="2022-12-05T04:14:46.000Z" title="发表于 2022-12-05 12:14:46">2022-12-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/16/ml-ru-men/" title="ML入门"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ML入门"/></a><div class="content"><a class="title" href="/2022/01/16/ml-ru-men/" title="ML入门">ML入门</a><time datetime="2022-01-16T11:11:14.000Z" title="发表于 2022-01-16 19:11:14">2022-01-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习3"/></a><div class="content"><a class="title" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3">大数据分析与智能计算期末复习3</a><time datetime="2021-12-28T14:05:22.000Z" title="发表于 2021-12-28 22:05:22">2021-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习2"/></a><div class="content"><a class="title" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2">大数据分析与智能计算期末复习2</a><time datetime="2021-12-24T07:59:54.000Z" title="发表于 2021-12-24 15:59:54">2021-12-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Alexander Liu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

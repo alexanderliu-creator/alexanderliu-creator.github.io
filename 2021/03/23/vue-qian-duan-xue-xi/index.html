@@ -1,158 +1,329 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Vue前端学习 | 兔の博客</title><meta name="author" content="Alexander Liu"><meta name="copyright" content="Alexander Liu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2.x版本的。">
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2.x版本的。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vue前端学习">
 <meta property="og:url" content="http://example.com/2021/03/23/vue-qian-duan-xue-xi/index.html">
 <meta property="og:site_name" content="兔の博客">
 <meta property="og:description" content="由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2.x版本的。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323193416642.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323194858209.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323194745344.png">
+<meta property="og:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323195404680.png">
 <meta property="article:published_time" content="2021-03-23T11:29:54.000Z">
 <meta property="article:modified_time" content="2021-03-24T13:15:11.000Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="前端">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/03/23/vue-qian-duan-xue-xi/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
-  root: '/',
-  algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
-  noticeOutdate: undefined,
-  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
-  copy: {
-    success: '复制成功',
-    error: '复制错误',
-    noSupport: '浏览器不支持'
-  },
-  relativeDate: {
-    homepage: false,
-    post: false
-  },
-  runtime: '',
-  date_suffix: {
-    just: '刚刚',
-    min: '分钟前',
-    hour: '小时前',
-    day: '天前',
-    month: '个月前'
-  },
-  copyright: undefined,
-  lightbox: 'fancybox',
-  Snackbar: undefined,
-  source: {
-    justifiedGallery: {
-      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
-      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
-    }
-  },
-  isPhotoFigcaption: false,
-  islazyload: false,
-  isAnchor: false
-}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: 'Vue前端学习',
-  isPost: true,
-  isHome: false,
-  isHighlightShrink: false,
-  isToc: true,
-  postUpdate: '2021-03-24 21:15:11'
-}</script><noscript><style type="text/css">
-  #nav {
-    opacity: 1
-  }
-  .justified-gallery img {
-    opacity: 1
-  }
-
-  #recent-posts time,
-  #post-meta time {
-    display: inline !important
-  }
-</style></noscript><script>(win=>{
-    win.saveToLocal = {
-      set: function setWithExpiry(key, value, ttl) {
-        if (ttl === 0) return
-        const now = new Date()
-        const expiryDay = ttl * 86400000
-        const item = {
-          value: value,
-          expiry: now.getTime() + expiryDay,
-        }
-        localStorage.setItem(key, JSON.stringify(item))
-      },
-
-      get: function getWithExpiry(key) {
-        const itemStr = localStorage.getItem(key)
-
-        if (!itemStr) {
-          return undefined
-        }
-        const item = JSON.parse(itemStr)
-        const now = new Date()
-
-        if (now.getTime() > item.expiry) {
-          localStorage.removeItem(key)
-          return undefined
-        }
-        return item.value
-      }
-    }
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323193416642.png">
   
-    win.getScript = url => new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      script.onerror = reject
-      script.onload = script.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        script.onload = script.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(script)
-    })
   
-      win.activateDarkMode = function () {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = function () {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
-        
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-    const detectApple = () => {
-      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-        document.documentElement.classList.add('apple')
-      }
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Vue前端学习 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
     }
-    detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.2.0">
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
-</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">兔の博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Vue前端学习</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-23T11:29:54.000Z" title="发表于 2021-03-23 19:29:54">2021-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-03-24T13:15:11.000Z" title="更新于 2021-03-24 21:15:11">2021-03-24</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Vue前端学习"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2-x版本的。"><a href="#由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2-x版本的。" class="headerlink" title="由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2.x版本的。"></a>由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2.x版本的。</h1><span id="more"></span>
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Vue前端学习"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-03-23 19:29" pubdate>
+          2021年3月23日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          44 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Vue前端学习</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2021年3月24日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2-x版本的。"><a href="#由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2-x版本的。" class="headerlink" title="由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2.x版本的。"></a>由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2.x版本的。</h1><span id="more"></span>
 
 
 
 <h1 id="Vue与前端的恩恩怨怨"><a href="#Vue与前端的恩恩怨怨" class="headerlink" title="Vue与前端的恩恩怨怨"></a>Vue与前端的恩恩怨怨</h1><ul>
 <li>前端发展路线：</li>
 </ul>
-<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323193416642.png" alt="image-20210323193416642"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323193416642.png" srcset="/img/loading.gif" lazyload alt="image-20210323193416642"></p>
 <ul>
 <li>框架是一套完整的解决方案，库只是小功能的集合</li>
 </ul>
@@ -177,18 +348,18 @@
 <h1 id="Vue基础语法"><a href="#Vue基础语法" class="headerlink" title="Vue基础语法"></a>Vue基础语法</h1><h2 id="Nginx部署使用："><a href="#Nginx部署使用：" class="headerlink" title="Nginx部署使用："></a>Nginx部署使用：</h2><ul>
 <li>配置文件：</li>
 </ul>
-<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323194858209.png" alt="image-20210323194858209"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323194858209.png" srcset="/img/loading.gif" lazyload alt="image-20210323194858209"></p>
 <ul>
 <li>配置文件：</li>
 </ul>
-<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323194745344.png" alt="Nginx配置文件内容"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323194745344.png" srcset="/img/loading.gif" lazyload alt="Nginx配置文件内容"></p>
 <ul>
 <li>注意，location这里的根目录是Nginx.exe所在的那个目录。</li>
 <li>双击一闪而过说明打开正常</li>
 <li><code>localhost:80</code>即可访问。</li>
 <li>Nginx服务的关闭：</li>
 </ul>
-<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323195404680.png" alt="image-20210323195404680"></p>
+<p><img src="https://gitee.com/alexs-rabbit//picture/raw/master/image-20210323195404680.png" srcset="/img/loading.gif" lazyload alt="image-20210323195404680"></p>
 <h2 id="基本语法（不使用脚手架的写法）："><a href="#基本语法（不使用脚手架的写法）：" class="headerlink" title="基本语法（不使用脚手架的写法）："></a>基本语法（不使用脚手架的写法）：</h2><h3 id="数据单向绑定："><a href="#数据单向绑定：" class="headerlink" title="数据单向绑定："></a>数据单向绑定：</h3><ul>
 <li><code>v-bind:value="message"</code>,从下往上绑定，message可以改变value，但是value却不能改变message</li>
 <li><code>{{ message }}</code>，数据绑定，实现信息传递。</li>
@@ -202,18 +373,7 @@
 <li><p><code>v-model.lazy='a_0'</code>，失去焦点的时候才更新，和<code>onblur</code>有点像</p>
 </li>
 <li><p>和JS中有点像，比如：</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token attr-name">v-model</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>a_1<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>1号<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-
-
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script"><span class="token language-javascript">
-	<span class="token keyword">var</span> vm <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vue</span><span class="token punctuation">{</span>
-        <span class="token literal-property property">el</span><span class="token operator">:</span> <span class="token string">'#app'</span><span class="token punctuation">,</span>
-        <span class="token literal-property property">data</span><span class="token operator">:</span>
-        <span class="token punctuation">{</span>
-            <span class="token literal-property property">a_1</span><span class="token operator">:</span> <span class="token boolean">false</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"checkbox"</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"a_1"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"1号"</span>&gt;</span><br><br><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"></span><br><span class="language-javascript">	<span class="hljs-keyword">var</span> vm = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Vue</span>{</span><br><span class="language-javascript">        <span class="hljs-attr">el</span>: <span class="hljs-string">'#app'</span>,</span><br><span class="language-javascript">        <span class="hljs-attr">data</span>:</span><br><span class="language-javascript">        {</span><br><span class="language-javascript">            <span class="hljs-attr">a_1</span>: <span class="hljs-literal">false</span></span><br><span class="language-javascript">        }</span><br><span class="language-javascript">    }</span><br><span class="language-javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 </li>
 <li><p>input触发的对应的值，都会和下面相绑定，比如说value对应的值，会直接和我下方的data中的数据结构绑定，并更新到数据结构中来。</p>
 </li>
@@ -229,9 +389,7 @@
 <h3 id="v-if"><a href="#v-if" class="headerlink" title="v-if:"></a>v-if:</h3><ul>
 <li>这个本质上是结点的删除与重新创建，不符合条件的对象直接就从DOM中删除掉了！！！</li>
 </ul>
-<h3 id="v-for"><a href="#v-for" class="headerlink" title="v-for:"></a>v-for:</h3><pre class="line-numbers language-vue" data-language="vue"><code class="language-vue">&lt;li v-for="(item,index) in items"&gt;
-	值:{{ item }}, 索引:{{ index }}
-&lt;/li&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="v-for"><a href="#v-for" class="headerlink" title="v-for:"></a>v-for:</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs vue">&lt;li v-for="(item,index) in items"&gt;<br>	值:{{ item }}, 索引:{{ index }}<br>&lt;/li&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>第一个是元素，第二个是索引。这个和原生JS中，<code>for(var i = 0;i &lt; items.length ; i++){target = target + items[i]}</code>是一样的嗷！！！</li>
@@ -260,24 +418,7 @@
 <li><p>computed方法体中的某些信息被改变之后，方法体本身才会被又一次执行刷新嗷！！！不过只调用方法，不改方法体中的值，调用的仍然是其中的缓存</p>
 </li>
 <li><p>实例：</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script"><span class="token language-javascript">
-<span class="token literal-property property">data</span><span class="token operator">:</span>
-<span class="token punctuation">{</span>
-	<span class="token literal-property property">inputing</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span>
-	<span class="token literal-property property">list</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"Hi"</span><span class="token punctuation">,</span><span class="token string">"Ha"</span><span class="token punctuation">,</span><span class="token string">"Hab"</span><span class="token punctuation">,</span><span class="token string">"Habc"</span><span class="token punctuation">,</span><span class="token string">"Habcd"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span>
-
-<span class="token literal-property property">computed</span><span class="token operator">:</span>
-<span class="token punctuation">{</span>
-	<span class="token function">myList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">// myList = function(){}</span>
-	<span class="token punctuation">{</span>
-		<span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>list<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>
-			<span class="token parameter">item</span> <span class="token operator">=&gt;</span>
-            item<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>inputing<span class="token punctuation">)</span><span class="token operator">&gt;</span><span class="token operator">-</span><span class="token number">1</span>
-		<span class="token punctuation">)</span>
-	<span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"></span><br><span class="language-javascript"><span class="hljs-attr">data</span>:</span><br><span class="language-javascript">{</span><br><span class="language-javascript">	<span class="hljs-attr">inputing</span>:<span class="hljs-string">""</span>,</span><br><span class="language-javascript">	<span class="hljs-attr">list</span>: [<span class="hljs-string">"Hi"</span>,<span class="hljs-string">"Ha"</span>,<span class="hljs-string">"Hab"</span>,<span class="hljs-string">"Habc"</span>,<span class="hljs-string">"Habcd"</span>],</span><br><span class="language-javascript">}</span><br><span class="language-javascript"></span><br><span class="language-javascript"><span class="hljs-attr">computed</span>:</span><br><span class="language-javascript">{</span><br><span class="language-javascript">	<span class="hljs-title function_">myList</span>()<span class="hljs-comment">// myList = function(){}</span></span><br><span class="language-javascript">	{</span><br><span class="language-javascript">		<span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">list</span>.<span class="hljs-title function_">filter</span>(</span><br><span class="language-javascript">			<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span></span><br><span class="language-javascript">            item.<span class="hljs-title function_">indexOf</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">inputing</span>)&gt;-<span class="hljs-number">1</span></span><br><span class="language-javascript">		)</span><br><span class="language-javascript">	}</span><br><span class="language-javascript">}</span><br><span class="language-javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 </li>
 <li><p>这个地方的意思就是说，当inputing这个属性改变时，computed属性内部的值改变了，这个时候就要重新计算。有点像它的名字！！！computed是计算属性，当内部的元素发生了改变时，该方法自动进行计算。</p>
 </li>
@@ -289,27 +430,7 @@
 <li><p>与new Vue是一个档次的，以Vue.component开头嗷！</p>
 </li>
 <li><p>实例:</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script"><span class="token language-javascript">
-Vue<span class="token punctuation">.</span><span class="token function">component</span>
-<span class="token punctuation">(</span>
-	<span class="token string">'abar'</span><span class="token punctuation">,</span>
-     <span class="token punctuation">{</span>
-        <span class="token literal-property property">template</span><span class="token operator">:</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
-			&lt;div style="backgroud:yellow"&gt;
-			&lt;button @click='ccc&gt;确定&lt;/button&gt;
-			&lt;/div&gt;'</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-        <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>  <span class="token comment">//注意这里data的写法嗷！！！</span>
-    		<span class="token keyword">return</span><span class="token punctuation">{</span><span class="token literal-property property">abarname</span><span class="token operator">:</span><span class="token string">"abarname"</span><span class="token punctuation">}</span>
-		<span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token literal-property property">methods</span><span class="token operator">:</span>
-        <span class="token punctuation">(</span>
-        	<span class="token function">ccc</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            	<span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">"bbar"</span><span class="token punctuation">)</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">)</span>
-</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"></span><br><span class="language-javascript"><span class="hljs-title class_">Vue</span>.<span class="hljs-property">component</span></span><br><span class="language-javascript">(</span><br><span class="language-javascript">	<span class="hljs-string">'abar'</span>,</span><br><span class="language-javascript">     {</span><br><span class="language-javascript">        <span class="hljs-attr">template</span>:<span class="hljs-string">`</span></span><br><span class="hljs-string"><span class="language-javascript">			&lt;div style="backgroud:yellow"&gt;</span></span><br><span class="hljs-string"><span class="language-javascript">			&lt;button @click='ccc&gt;确定&lt;/button&gt;</span></span><br><span class="hljs-string"><span class="language-javascript">			&lt;/div&gt;'`</span>,</span><br><span class="language-javascript">        <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>){  <span class="hljs-comment">//注意这里data的写法嗷！！！</span></span><br><span class="language-javascript">    		<span class="hljs-keyword">return</span>{<span class="hljs-attr">abarname</span>:<span class="hljs-string">"abarname"</span>}</span><br><span class="language-javascript">		},</span><br><span class="language-javascript">        <span class="hljs-attr">methods</span>:</span><br><span class="language-javascript">        (</span><br><span class="language-javascript">        	<span class="hljs-title function_">ccc</span>(<span class="hljs-params"></span>){</span><br><span class="language-javascript">            	<span class="hljs-title function_">alert</span>(<span class="hljs-string">"bbar"</span>)</span><br><span class="language-javascript">            }</span><br><span class="language-javascript">        )</span><br><span class="language-javascript">    }</span><br><span class="language-javascript">)</span><br><span class="language-javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 </li>
 <li><p>子组件里面可以嵌套子组件，如果在内部就是私有，如果在外部就是公有的组件。</p>
 </li>
@@ -328,37 +449,7 @@ Vue<span class="token punctuation">.</span><span class="token function">componen
     thename: String,
     show: Boolean,
 }
-<pre class="line-numbers language-none"><code class="language-none">
-- 这个属性用来定义父传子的属性。父组件可以在使用子组件的时候传递props里面的属性给子组件。
-
-- 这里加上属性的类型比较好，可以及逆行类型检查。
-
-
-
-
-
-#### 子传父：
-
-- ```vue
-  methods:
-  {
-  	send(){
-  		this.$emit('b_event','雷猴')
-  	}
-  } //子组件
-  
-  &lt;bbar @b_event='receive($event)'&gt;&lt;/bbar&gt;
-  //bbar是在父组件中对于子组件的调用，可以在父组件中写对应的方法来对于子组件的信息进行处理
-  
-  data:
-  {
-  	show: [],
-  }
-  
-  methods:
-  {
-  	receive(e){this.show.push('父组件收到消息！！！${e}')}
-  } //父组件处理方法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight dart"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs dart"><br>- 这个属性用来定义父传子的属性。父组件可以在使用子组件的时候传递props里面的属性给子组件。<br><br>- 这里加上属性的类型比较好，可以及逆行类型检查。<br><br><br><br><br><br>#### 子传父：<br><br>- ```vue<br>  methods:<br>  {<br>  	send(){<br>  		<span class="hljs-keyword">this</span>.$emit(<span class="hljs-string">'b_event'</span>,<span class="hljs-string">'雷猴'</span>)<br>  	}<br>  } <span class="hljs-comment">//子组件</span><br>  <br>  &lt;bbar <span class="hljs-meta">@b</span>_event=<span class="hljs-string">'receive(<span class="hljs-subst">$event</span>)'</span>&gt;&lt;/bbar&gt;<br>  <span class="hljs-comment">//bbar是在父组件中对于子组件的调用，可以在父组件中写对应的方法来对于子组件的信息进行处理</span><br>  <br>  data:<br>  {<br>  	<span class="hljs-keyword">show</span>: [],<br>  }<br>  <br>  methods:<br>  {<br>  	receive(e){<span class="hljs-keyword">this</span>.<span class="hljs-keyword">show</span>.push(<span class="hljs-string">'父组件收到消息！！！<span class="hljs-subst">${e}</span>'</span>)}<br>  } <span class="hljs-comment">//父组件处理方法</span><br></code></pre></td></tr></tbody></table></figure>
 </code></pre>
 </li>
 <li><p>子组件事件发生，发出事件给父组件，父组件通过监听子组件的反馈来完成信息传递。</p>
@@ -371,27 +462,7 @@ Vue<span class="token punctuation">.</span><span class="token function">componen
 <h4 id="事件总线"><a href="#事件总线" class="headerlink" title="事件总线"></a>事件总线</h4><ul>
 <li>事件总线</li>
 </ul>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script"><span class="token language-javascript">
-	<span class="token literal-property property">template</span><span class="token operator">:</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
-		&lt;div&gt;
-			&lt;input type='text' ref='b_text'/&gt;
-			&lt;button @click='send()'&gt;点击发送&lt;/button&gt;</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-     <span class="token literal-property property">methods</span><span class="token operator">:</span><span class="token punctuation">{</span>
-         <span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-             bus<span class="token punctuation">.</span><span class="token function">$emit</span><span class="token punctuation">(</span><span class="token string">'c_message'</span><span class="token punctuation">,</span><span class="token keyword">this</span><span class="token punctuation">.</span>$refs<span class="token punctuation">.</span>b_text<span class="token punctuation">.</span>value<span class="token punctuation">)</span>
-         <span class="token punctuation">}</span>
-     <span class="token punctuation">}</span> <span class="token comment">//一个组件</span>
-    
-    
-    Vue<span class="token punctuation">.</span><span class="token function">component</span><span class="token punctuation">(</span>
-    	<span class="token function">mounted</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        	bus<span class="token punctuation">.</span><span class="token function">$on</span><span class="token punctuation">(</span><span class="token string">'c_message'</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token parameter">data</span><span class="token punctuation">)</span><span class="token operator">=&gt;</span><span class="token punctuation">{</span>console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"已收到bbar的消息"</span><span class="token punctuation">,</span>data<span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">)</span><span class="token comment">//另一个组件</span>
-    
-    
-    <span class="token keyword">var</span> bus <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//这个就是事件总线，啥都不用写哈！！！</span>
-</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"></span><br><span class="language-javascript">	<span class="hljs-attr">template</span>:<span class="hljs-string">`</span></span><br><span class="hljs-string"><span class="language-javascript">		&lt;div&gt;</span></span><br><span class="hljs-string"><span class="language-javascript">			&lt;input type='text' ref='b_text'/&gt;</span></span><br><span class="hljs-string"><span class="language-javascript">			&lt;button @click='send()'&gt;点击发送&lt;/button&gt;`</span>,</span><br><span class="language-javascript">     <span class="hljs-attr">methods</span>:{</span><br><span class="language-javascript">         <span class="hljs-title function_">send</span>(<span class="hljs-params"></span>){</span><br><span class="language-javascript">             bus.$emit(<span class="hljs-string">'c_message'</span>,<span class="hljs-variable language_">this</span>.<span class="hljs-property">$refs</span>.<span class="hljs-property">b_text</span>.<span class="hljs-property">value</span>)</span><br><span class="language-javascript">         }</span><br><span class="language-javascript">     } <span class="hljs-comment">//一个组件</span></span><br><span class="language-javascript">    </span><br><span class="language-javascript">    </span><br><span class="language-javascript">    <span class="hljs-title class_">Vue</span>.<span class="hljs-title function_">component</span>(</span><br><span class="language-javascript">    	<span class="hljs-title function_">mounted</span>(<span class="hljs-params"></span>){</span><br><span class="language-javascript">        	bus.$on(<span class="hljs-string">'c_message'</span>,<span class="hljs-function">(<span class="hljs-params">data</span>)=&gt;</span>{<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"已收到bbar的消息"</span>,data)})</span><br><span class="language-javascript">        }</span><br><span class="language-javascript">    )<span class="hljs-comment">//另一个组件</span></span><br><span class="language-javascript">    </span><br><span class="language-javascript">    </span><br><span class="language-javascript">    <span class="hljs-keyword">var</span> bus = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Vue</span>();<span class="hljs-comment">//这个就是事件总线，啥都不用写哈！！！</span></span><br><span class="language-javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>用于事件混杂的时候，有的时候组件层数太多着实不好搞。</li>
@@ -402,13 +473,7 @@ Vue<span class="token punctuation">.</span><span class="token function">componen
 <li><p>这个东西可以根据输入来动态切换组件</p>
 </li>
 </ul>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>component</span> <span class="token attr-name">:is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>who<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>component</span><span class="token punctuation">&gt;</span></span>
-<span class="token comment">&lt;!--上面这个是引用的组件--&gt;</span>
-
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">&gt;</span></span>
-    &lt;li @click='who'='home'&gt;首页<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
-    &lt;li @click='who'='news'&gt;新闻<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">component</span> <span class="hljs-attr">:is</span>=<span class="hljs-string">"who"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">component</span>&gt;</span><br><span class="hljs-comment">&lt;!--上面这个是引用的组件--&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">'who'</span>=<span class="hljs-string">'home'</span>&gt;</span>首页<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">'who'</span>=<span class="hljs-string">'news'</span>&gt;</span>新闻<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li><code>&lt;keep-alive&gt;</code>标签，组件切换的时候能够保留组件内残留的值，切换回来仍然可以康到嗷。注意哈，这个保留的结点也是新建和删除，数据被Vue框架保存了</li>
@@ -417,10 +482,7 @@ Vue<span class="token punctuation">.</span><span class="token function">componen
 <ul>
 <li>为了插入多个插槽，<code>&lt;slot name="no.1"&gt;</code>，使用的过程中，<code>&lt;div slot="no.1"&gt;&lt;/div&gt;</code></li>
 </ul>
-<h5 id="嵌套："><a href="#嵌套：" class="headerlink" title="嵌套："></a>嵌套：</h5><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>todo</span><span class="token punctuation">&gt;</span></span>
-	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>todo-title</span> <span class="token attr-name">slot</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>todo-title<span class="token punctuation">"</span></span> <span class="token attr-name">:title_e</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>title<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>todo-title</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>todo-items</span> <span class="token attr-name">slot</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>todo-items<span class="token punctuation">"</span></span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>item in items<span class="token punctuation">"</span></span> <span class="token attr-name">:item_m</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>item<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>todo-items</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>todo</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="嵌套："><a href="#嵌套：" class="headerlink" title="嵌套："></a>嵌套：</h5><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">todo</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">todo-title</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"todo-title"</span> <span class="hljs-attr">:title_e</span>=<span class="hljs-string">"title"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">todo-title</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">todo-items</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"todo-items"</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">"item in items"</span> <span class="hljs-attr">:item_m</span>=<span class="hljs-string">"item"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">todo-items</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">todo</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 
 
@@ -451,18 +513,439 @@ Vue<span class="token punctuation">.</span><span class="token function">componen
 <li>注意注意，这些生命周期是对于<strong>某个组件</strong>来说的，对于某个组件的设置有十分重要的作用！！！</li>
 <li>注意，非常重要嗷！！！！！</li>
 </ul>
-<h2 id="ajax的一丢丢内容"><a href="#ajax的一丢丢内容" class="headerlink" title="ajax的一丢丢内容"></a>ajax的一丢丢内容</h2><pre class="line-numbers language-vue" data-language="vue"><code class="language-vue">&lt;script&gt;
-	methods:
-    {
-        ajaxx(){
-            axios.get(this.ipp+this.dataa).then(
-            res =&gt; {
-                	console.log(res.data);
-                	this.getdata = res.data;
-            	}
-            )
-        }
-    }
-&lt;/script&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="ajax的一丢丢内容"><a href="#ajax的一丢丢内容" class="headerlink" title="ajax的一丢丢内容"></a>ajax的一丢丢内容</h2><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs vue">&lt;script&gt;<br>	methods:<br>    {<br>        ajaxx(){<br>            axios.get(this.ipp+this.dataa).then(<br>            res =&gt; {<br>                	console.log(res.data);<br>                	this.getdata = res.data;<br>            	}<br>            )<br>        }<br>    }<br>&lt;/script&gt;<br></code></pre></td></tr></tbody></table></figure>
 
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Alexander Liu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/03/23/vue-qian-duan-xue-xi/">http://example.com/2021/03/23/vue-qian-duan-xue-xi/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">兔の博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%89%8D%E7%AB%AF/">前端</a></div><div class="post_share"><div class="social-share" data-image="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/03/24/vue-cli-jiao-shou-jia-shi-yong/"><img class="prev-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">vue-cli脚手架使用</div></div></a></div><div class="next-post pull-right"><a href="/2021/03/22/xshell-he-xftp7-shi-yong-ssh-fu-wu/"><img class="next-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">XShell和Xftp7使用ssh服务</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/03/18/css-jian-dan-fu-xi-hou-duan-chang-yong-yang-shi-qiang-hua/" title="CSS简单复习-后端常用样式强化"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-18</div><div class="title">CSS简单复习-后端常用样式强化</div></div></a></div><div><a href="/2021/03/25/element-ui-xue-xi/" title="Element-UI学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-25</div><div class="title">Element-UI学习</div></div></a></div><div><a href="/2021/03/17/html-jian-dan-fu-xi-hou-duan-biao-dan-qiang-hua/" title="HTML简单复习-后端表单强化"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-17</div><div class="title">HTML简单复习-后端表单强化</div></div></a></div><div><a href="/2021/03/19/javascript-chu-ci-xue-xi/" title="JavaScript初次学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-19</div><div class="title">JavaScript初次学习</div></div></a></div><div><a href="/2021/03/27/vue-lu-you-xue-xi/" title="Vue路由学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-27</div><div class="title">Vue路由学习</div></div></a></div><div><a href="/2021/03/24/vue-cli-jiao-shou-jia-shi-yong/" title="vue-cli脚手架使用"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-24</div><div class="title">vue-cli脚手架使用</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Alexander Liu</div><div class="author-info__description">欢迎来到兔子的小窝，这里是兔子的一些笔记分享</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%B1%E4%BA%8E%E5%8F%82%E5%8A%A0%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%AE%BE%E8%AE%A1%E5%A4%A7%E8%B5%9B%EF%BC%8C%E6%9C%80%E8%BF%91%E6%8A%8AVue%E6%8D%A1%E8%B5%B7%E6%9D%A5%EF%BC%8C%E8%BF%99%E6%98%AF%E7%AC%AC%E4%B8%89%E6%AC%A1%E7%9C%8BVue%E4%BA%86%EF%BC%8C%E6%95%B4%E7%90%86%E4%B8%80%E4%BB%BD%E5%AF%B9%E5%BA%94%E7%9A%84%E7%AC%94%E8%AE%B0%E5%87%BA%E6%9D%A5%E3%80%82%E5%AF%B9%E5%BA%94%E7%9A%84Vue%E6%98%AF2-x%E7%89%88%E6%9C%AC%E7%9A%84%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">由于参加计算机设计大赛，最近把Vue捡起来，这是第三次看Vue了，整理一份对应的笔记出来。对应的Vue是2.x版本的。</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Vue%E4%B8%8E%E5%89%8D%E7%AB%AF%E7%9A%84%E6%81%A9%E6%81%A9%E6%80%A8%E6%80%A8"><span class="toc-number">2.</span> <span class="toc-text">Vue与前端的恩恩怨怨</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">核心模块：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Vue%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">Vue基础语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx%E9%83%A8%E7%BD%B2%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">Nginx部署使用：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%EF%BC%88%E4%B8%8D%E4%BD%BF%E7%94%A8%E8%84%9A%E6%89%8B%E6%9E%B6%E7%9A%84%E5%86%99%E6%B3%95%EF%BC%89%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">基本语法（不使用脚手架的写法）：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%95%E5%90%91%E7%BB%91%E5%AE%9A%EF%BC%9A"><span class="toc-number">3.2.1.</span> <span class="toc-text">数据单向绑定：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%EF%BC%9A"><span class="toc-number">3.2.2.</span> <span class="toc-text">数据双向绑定：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#v-html%EF%BC%9A"><span class="toc-number">3.2.3.</span> <span class="toc-text">v-html：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#v-show%EF%BC%9A"><span class="toc-number">3.2.4.</span> <span class="toc-text">v-show：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#v-if"><span class="toc-number">3.2.5.</span> <span class="toc-text">v-if:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#v-for"><span class="toc-number">3.2.6.</span> <span class="toc-text">v-for:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Vue-set"><span class="toc-number">3.2.7.</span> <span class="toc-text">Vue.set:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ajax"><span class="toc-number">3.2.8.</span> <span class="toc-text">Ajax:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Computed%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="toc-number">3.2.9.</span> <span class="toc-text">Computed属性：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Method%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="toc-number">3.2.10.</span> <span class="toc-text">Method属性：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E5%9F%BA%E7%A1%80%EF%BC%9A"><span class="toc-number">3.2.11.</span> <span class="toc-text">组件基础：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%E6%A0%BC%E5%BC%8F%EF%BC%9A"><span class="toc-number">3.2.11.1.</span> <span class="toc-text">基本语法格式：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%B6%E4%BC%A0%E5%AD%90%EF%BC%9A"><span class="toc-number">3.2.11.2.</span> <span class="toc-text">父传子：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ref"><span class="toc-number">3.2.11.3.</span> <span class="toc-text">ref</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF"><span class="toc-number">3.2.11.4.</span> <span class="toc-text">事件总线</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E7%BB%84%E4%BB%B6%EF%BC%9A"><span class="toc-number">3.2.11.5.</span> <span class="toc-text">动态组件：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%92%E6%A7%BD%EF%BC%9A"><span class="toc-number">3.2.11.6.</span> <span class="toc-text">插槽：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B5%8C%E5%A5%97%EF%BC%9A"><span class="toc-number">3.2.11.6.1.</span> <span class="toc-text">嵌套：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="toc-number">3.2.11.6.2.</span> <span class="toc-text">实际应用：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="toc-number">3.2.12.</span> <span class="toc-text">钩子函数：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ajax%E7%9A%84%E4%B8%80%E4%B8%A2%E4%B8%A2%E5%86%85%E5%AE%B9"><span class="toc-number">3.3.</span> <span class="toc-text">ajax的一丢丢内容</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071136497.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="1. 南京大学操作系统概述"/></a><div class="content"><a class="title" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述">1. 南京大学操作系统概述</a><time datetime="2022-12-07T03:35:42.000Z" title="发表于 2022-12-07 11:35:42">2022-12-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212051319709.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CPU Cache 学习"/></a><div class="content"><a class="title" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习">CPU Cache 学习</a><time datetime="2022-12-05T04:14:46.000Z" title="发表于 2022-12-05 12:14:46">2022-12-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/16/ml-ru-men/" title="ML入门"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ML入门"/></a><div class="content"><a class="title" href="/2022/01/16/ml-ru-men/" title="ML入门">ML入门</a><time datetime="2022-01-16T11:11:14.000Z" title="发表于 2022-01-16 19:11:14">2022-01-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习3"/></a><div class="content"><a class="title" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3">大数据分析与智能计算期末复习3</a><time datetime="2021-12-28T14:05:22.000Z" title="发表于 2021-12-28 22:05:22">2021-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习2"/></a><div class="content"><a class="title" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2">大数据分析与智能计算期末复习2</a><time datetime="2021-12-24T07:59:54.000Z" title="发表于 2021-12-24 15:59:54">2021-12-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Alexander Liu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%89%8D%E7%AB%AF/">#前端</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Vue前端学习</div>
+      <div>http://example.com/2021/03/23/vue-qian-duan-xue-xi/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年3月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/03/24/vue-cli-jiao-shou-jia-shi-yong/" title="vue-cli脚手架使用">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">vue-cli脚手架使用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/03/22/xshell-he-xftp7-shi-yong-ssh-fu-wu/" title="XShell和Xftp7使用ssh服务">
+                        <span class="hidden-mobile">XShell和Xftp7使用ssh服务</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

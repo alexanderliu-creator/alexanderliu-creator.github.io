@@ -1,155 +1,474 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Java常问面试题总结与提高2 | 兔の博客</title><meta name="author" content="Alexander Liu"><meta name="copyright" content="Alexander Liu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="这里是对于Java基础和其他一些概念的深入理解！！！Java基础Java字符串常量池  题目：    Intern()方法： 如果字符串常量池存在这个常量的话，就直接返回这个常量的引用。 如果字符串常量池不存在这个常量的话，就会自动创建出这个字符串，并且加入到常量池中嗷！！！   new StringBuilder会构造一个全新的字符串并且返回应用，如果它发现，字符串常量池中没有这个字符串，它就会">
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="这里是对于Java基础和其他一些概念的深入理解！！！Java基础Java字符串常量池  题目：    Intern()方法： 如果字符串常量池存在这个常量的话，就直接返回这个常量的引用。 如果字符串常量池不存在这个常量的话，就会自动创建出这个字符串，并且加入到常量池中嗷！！！   new StringBuilder会构造一个全新的字符串并且返回应用，如果它发现，字符串常量池中没有这个字符串，它就会">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java常问面试题总结与提高2">
 <meta property="og:url" content="http://example.com/2021/09/27/java-da-han-chang-wen-mian-shi-ti-2/index.html">
 <meta property="og:site_name" content="兔の博客">
 <meta property="og:description" content="这里是对于Java基础和其他一些概念的深入理解！！！Java基础Java字符串常量池  题目：    Intern()方法： 如果字符串常量池存在这个常量的话，就直接返回这个常量的引用。 如果字符串常量池不存在这个常量的话，就会自动创建出这个字符串，并且加入到常量池中嗷！！！   new StringBuilder会构造一个全新的字符串并且返回应用，如果它发现，字符串常量池中没有这个字符串，它就会">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103611.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927105547.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927105619.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927111551.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927111712.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927113927.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927112205.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927163205.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927163550.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927163706.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927164116.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927170203.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927170231.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927171415.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927171248.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927184755.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927184653.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927185508.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927185910.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927185938.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190028.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190057.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190317.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190526.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190849.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927191342.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927191441.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928151218.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928151953.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152026.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152116.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152140.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152150.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152208.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928153130.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928153722.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928154041.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928154907.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928154932.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928155124.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160418.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160613.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160702.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160904.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928161119.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928162704.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928164148.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928164401.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928165421.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173049.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173114.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173152.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173028.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173851.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173921.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928174202.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928174237.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928174428.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928185553.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929192920.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193033.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193415.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193523.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193603.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929200910.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929201031.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203441.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203459.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203524.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203606.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203718.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203733.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203806.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203946.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204000.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204017.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204218.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204259.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204351.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204507.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204704.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007135243.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007135651.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007150842.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007151919.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152009.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152443.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152926.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007153145.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007153321.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152009.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007155240.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007155739.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007155916.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007160014.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007160903.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007161400.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007161949.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007163631.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164116.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164404.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164633.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164550.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164710.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164750.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007170042.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007171029.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007171147.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007171533.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172543.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172616.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172634.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172700.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007183105.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007183547.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007205548.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007205601.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007210052.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007210103.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007211526.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007211606.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007220109.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007220408.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008144754.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008144850.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008144951.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145124.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145255.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145509.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145537.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145637.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145603.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145913.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008150443.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008150626.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008151018.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008151043.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008151526.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008152250.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008152802.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008152827.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008154417.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008154442.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008155131.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008155600.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008155704.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008160018.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008160056.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008183914.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008185402.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008185551.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008185734.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008191141.png">
 <meta property="article:published_time" content="2021-09-27T02:33:03.000Z">
 <meta property="article:modified_time" content="2021-10-12T02:37:20.000Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="大三自学">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103611.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/09/27/java-da-han-chang-wen-mian-shi-ti-2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
-  root: '/',
-  algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
-  noticeOutdate: undefined,
-  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
-  copy: {
-    success: '复制成功',
-    error: '复制错误',
-    noSupport: '浏览器不支持'
-  },
-  relativeDate: {
-    homepage: false,
-    post: false
-  },
-  runtime: '',
-  date_suffix: {
-    just: '刚刚',
-    min: '分钟前',
-    hour: '小时前',
-    day: '天前',
-    month: '个月前'
-  },
-  copyright: undefined,
-  lightbox: 'fancybox',
-  Snackbar: undefined,
-  source: {
-    justifiedGallery: {
-      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
-      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
-    }
-  },
-  isPhotoFigcaption: false,
-  islazyload: false,
-  isAnchor: false
-}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: 'Java常问面试题总结与提高2',
-  isPost: true,
-  isHome: false,
-  isHighlightShrink: false,
-  isToc: true,
-  postUpdate: '2021-10-12 10:37:20'
-}</script><noscript><style type="text/css">
-  #nav {
-    opacity: 1
-  }
-  .justified-gallery img {
-    opacity: 1
-  }
-
-  #recent-posts time,
-  #post-meta time {
-    display: inline !important
-  }
-</style></noscript><script>(win=>{
-    win.saveToLocal = {
-      set: function setWithExpiry(key, value, ttl) {
-        if (ttl === 0) return
-        const now = new Date()
-        const expiryDay = ttl * 86400000
-        const item = {
-          value: value,
-          expiry: now.getTime() + expiryDay,
-        }
-        localStorage.setItem(key, JSON.stringify(item))
-      },
-
-      get: function getWithExpiry(key) {
-        const itemStr = localStorage.getItem(key)
-
-        if (!itemStr) {
-          return undefined
-        }
-        const item = JSON.parse(itemStr)
-        const now = new Date()
-
-        if (now.getTime() > item.expiry) {
-          localStorage.removeItem(key)
-          return undefined
-        }
-        return item.value
-      }
-    }
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927105547.png">
   
-    win.getScript = url => new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      script.onerror = reject
-      script.onload = script.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        script.onload = script.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(script)
-    })
   
-      win.activateDarkMode = function () {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = function () {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
-        
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-    const detectApple = () => {
-      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-        document.documentElement.classList.add('apple')
-      }
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Java常问面试题总结与提高2 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
     }
-    detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.2.0">
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
-</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103611.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">兔の博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Java常问面试题总结与提高2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-09-27T02:33:03.000Z" title="发表于 2021-09-27 10:33:03">2021-09-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-10-12T02:37:20.000Z" title="更新于 2021-10-12 10:37:20">2021-10-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Java常问面试题总结与提高2"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="这里是对于Java基础和其他一些概念的深入理解！！！"><a href="#这里是对于Java基础和其他一些概念的深入理解！！！" class="headerlink" title="这里是对于Java基础和其他一些概念的深入理解！！！"></a>这里是对于Java基础和其他一些概念的深入理解！！！</h1><h1 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h1><h2 id="Java字符串常量池"><a href="#Java字符串常量池" class="headerlink" title="Java字符串常量池"></a>Java字符串常量池</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927105547.png" alt="image-20210927105547110"></p>
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Java常问面试题总结与提高2"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-09-27 10:33" pubdate>
+          2021年9月27日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          14k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          117 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Java常问面试题总结与提高2</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2021年10月12日 上午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="这里是对于Java基础和其他一些概念的深入理解！！！"><a href="#这里是对于Java基础和其他一些概念的深入理解！！！" class="headerlink" title="这里是对于Java基础和其他一些概念的深入理解！！！"></a>这里是对于Java基础和其他一些概念的深入理解！！！</h1><h1 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h1><h2 id="Java字符串常量池"><a href="#Java字符串常量池" class="headerlink" title="Java字符串常量池"></a>Java字符串常量池</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927105547.png" srcset="/img/loading.gif" lazyload alt="image-20210927105547110"></p>
 <ul>
 <li>题目：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927105619.png" alt="image-20210927105618976"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927105619.png" srcset="/img/loading.gif" lazyload alt="image-20210927105618976"></p>
 <ul>
 <li>Intern()方法：<ul>
 <li>如果字符串常量池存在这个常量的话，就直接返回这个常量的引用。</li>
@@ -159,17 +478,17 @@
 <li>new StringBuilder会构造一个全新的字符串并且返回应用，如果它发现，字符串常量池中没有这个字符串，它就会把自己加入到字符串常量池中，因此，返回的是true嗷，intern()获得的，就是我们构造的嗷！！！</li>
 <li>我们intern()得到的Java，不是我们自己构建的Java，说明Java早就存在于字符串常量池中了，这个Java，是从<code>sun.misc.Version</code>这个类中加载进来的嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927111551.png" alt="image-20210927111551445"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927111551.png" srcset="/img/loading.gif" lazyload alt="image-20210927111551445"></p>
 <p>由于我们调，用了System，System这个类加载的时候，会自动加载Version这个类，这个类中具有很多静态变量，静态字符串常量，在这个过程中，Java被加载进来了嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927111712.png" alt="image-20210927111712623"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927111712.png" srcset="/img/loading.gif" lazyload alt="image-20210927111712623"></p>
 <ul>
 <li>书中讲解：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927113927.png" alt="image-20210927113927252"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927113927.png" srcset="/img/loading.gif" lazyload alt="image-20210927113927252"></p>
 <ul>
 <li>JVM结构：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927112205.png" alt="image-20210927112204978"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927112205.png" srcset="/img/loading.gif" lazyload alt="image-20210927112204978"></p>
 <ul>
 <li><p>OpenJDK8源码分析：</p>
 </li>
@@ -190,7 +509,7 @@
 </ol>
 </li>
 </ul>
-<h3 id="可重入锁验证1："><a href="#可重入锁验证1：" class="headerlink" title="可重入锁验证1："></a>可重入锁验证1：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927163205.png" alt="image-20210927163149751"></p>
+<h3 id="可重入锁验证1："><a href="#可重入锁验证1：" class="headerlink" title="可重入锁验证1："></a>可重入锁验证1：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927163205.png" srcset="/img/loading.gif" lazyload alt="image-20210927163149751"></p>
 <p>这里注意一下，这里锁住的是同一个对象嗷，不然的话不可重入嗷！！！</p>
 <ul>
 <li>一个线程可以多次获得同一把锁嗷！！！</li>
@@ -198,11 +517,11 @@
 <h3 id="可重入锁验证2："><a href="#可重入锁验证2：" class="headerlink" title="可重入锁验证2："></a>可重入锁验证2：</h3><ul>
 <li>在一个synchronized的代码块内，调用本类其他synchronized修饰的方法或代码块的时候，是永远可以得到锁的！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927163550.png" alt="image-20210927163549576"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927163550.png" srcset="/img/loading.gif" lazyload alt="image-20210927163549576"></p>
 <h3 id="底层："><a href="#底层：" class="headerlink" title="底层："></a>底层：</h3><ul>
 <li>monitorenter和monitorexit：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927163706.png" alt="image-20210927163705956"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927163706.png" srcset="/img/loading.gif" lazyload alt="image-20210927163705956"></p>
 <p>加一次锁就释放一次锁，一一配对。</p>
 <ul>
 <li>每一个锁对象都拥有一个锁计数器和一个指向该锁的线程的指针。</li>
@@ -210,7 +529,7 @@
 <li>否则就要等待，纸质持有线程释放锁。</li>
 <li><code>monitorexit</code>，Java虚拟机会将锁对象的计数器减1，计数器为0代表锁被释放。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927164116.png" alt="image-20210927164115920"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927164116.png" srcset="/img/loading.gif" lazyload alt="image-20210927164115920"></p>
 <ul>
 <li><p>可重入锁由于可以被已经获得锁的进程多次获取，lock几次，就要unlock几次嗷！！！两两要配对嗷！！</p>
 </li>
@@ -226,20 +545,20 @@
 </li>
 <li>技术演变过程：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927170203.png" alt="image-20210927170202760"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927170231.png" alt="image-20210927170231606"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927170203.png" srcset="/img/loading.gif" lazyload alt="image-20210927170202760"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927170231.png" srcset="/img/loading.gif" lazyload alt="image-20210927170231606"></p>
 <h3 id="技术横向对比："><a href="#技术横向对比：" class="headerlink" title="技术横向对比："></a>技术横向对比：</h3><ol>
 <li>Object类中的wait和notify方法实现线程的等待和唤醒</li>
 </ol>
 <ul>
 <li>示例代码：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927171415.png" alt="image-20210927171414787"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927171415.png" srcset="/img/loading.gif" lazyload alt="image-20210927171414787"></p>
 <ul>
 <li><p>异常1：</p>
 <ul>
 <li>wait和notify方法，两个都去掉同步代码块</li>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927171248.png" alt="image-20210927171247983"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927171248.png" srcset="/img/loading.gif" lazyload alt="image-20210927171247983"></li>
 </ul>
 </li>
 <li><p>异常2：</p>
@@ -260,8 +579,8 @@
 <ul>
 <li>示例代码：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927184755.png" alt="image-20210927184755148"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927184653.png" alt="image-20210927184652284"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927184755.png" srcset="/img/loading.gif" lazyload alt="image-20210927184755148"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927184653.png" srcset="/img/loading.gif" lazyload alt="image-20210927184652284"></p>
 <ul>
 <li>await和signal</li>
 <li>异常的两个遇到的问题，和上面是一样的嗷！！！</li>
@@ -274,16 +593,16 @@
 <ol start="3">
 <li>LockSupport类中的park等待和unpark唤醒</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927185508.png" alt="image-20210927185508269"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927185508.png" srcset="/img/loading.gif" lazyload alt="image-20210927185508269"></p>
 <ul>
 <li>LockSupport提供了一种名字为Permit（许可）的概念来做到阻塞和唤醒线程的功能，每个线程都有一个Permit。Permit可以被看做为0，1信号量，默认为0嗷！！！许可的累加上限为1。</li>
 <li>阻塞和唤醒函数以及底层：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927185910.png" alt="image-20210927185910312"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927185910.png" srcset="/img/loading.gif" lazyload alt="image-20210927185910312"></p>
 <p>底层：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927185938.png" alt="image-20210927185938685"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190028.png" alt="image-20210927190028745"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190057.png" alt="image-20210927190057773"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927185938.png" srcset="/img/loading.gif" lazyload alt="image-20210927185938685"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190028.png" srcset="/img/loading.gif" lazyload alt="image-20210927190028745"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190057.png" srcset="/img/loading.gif" lazyload alt="image-20210927190057773"></p>
 <p>调用的都是底层的Unsafe类嗷！！！</p>
 <ul>
 <li><p>到了这个时候，我们已经能够具体操纵，哪个线程的唤醒了嗷！！！</p>
@@ -291,9 +610,9 @@
 <li><p>示例代码：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190317.png" alt="image-20210927190316769"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190317.png" srcset="/img/loading.gif" lazyload alt="image-20210927190316769"></p>
 <p>不用之前的synchronized和lock，直接可以使用，十分方便嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190526.png" alt="image-20210927190525871"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190526.png" srcset="/img/loading.gif" lazyload alt="image-20210927190525871"></p>
 <ul>
 <li>unpark甚至能够在park之前执行嗷！！！</li>
 <li>上面两点的劣势都不复存在嗷！！！超级棒！！！</li>
@@ -301,31 +620,31 @@
 <h3 id="LockSupport解析："><a href="#LockSupport解析：" class="headerlink" title="LockSupport解析："></a>LockSupport解析：</h3><ul>
 <li>LockSupport是一个线程阻塞工具类，<strong>所有的方法都是静态方法</strong>，可以让线程在任意位置阻塞，阻塞之后也有对应的唤醒方法，LockSupport底层调用的Unsafe中的native代码嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190849.png" alt="image-20210927190849217"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927190849.png" srcset="/img/loading.gif" lazyload alt="image-20210927190849217"></p>
 <ul>
 <li>有点像请柬，一个人没有拿到请柬就进不了聚会厅。他可以等在门口，等别人给他请柬，他才能进去。他也可以先拿到给他的请柬，直接进入聚会厅。但是，给一个人的请柬只能有一张，他不可以同时拥有多张专属于他的请柬。这次舞会结束，可以再发给他下次的，但是他不能同时持有多张请柬嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927191342.png" alt="image-20210927191341665"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927191342.png" srcset="/img/loading.gif" lazyload alt="image-20210927191341665"></p>
 <p>unpark最多发放一个Permit给对应的线程，多次调用unpark也只能给一个凭证嗷！！！</p>
 <ul>
 <li>面试题：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927191441.png" alt="image-20210927191441278"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210927191441.png" srcset="/img/loading.gif" lazyload alt="image-20210927191441278"></p>
 <h2 id="AQS："><a href="#AQS：" class="headerlink" title="AQS："></a>AQS：</h2><ul>
 <li>AbstractQueuedSynchronizer，抽象队列同步器</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928151218.png" alt="image-20210928151217814"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928151218.png" srcset="/img/loading.gif" lazyload alt="image-20210928151217814"></p>
 <p> 接口，定义的方法足够底层嗷！！！</p>
 <ul>
 <li>基础解释：用来构建所或者其他同步器组件的 <strong>重量级基础框架以及整个JUC体系的基石</strong> ，通过内置的FIFO队列来完成资源获取线程的排队工作，并且通过一个 <strong>int型变量表示持有锁的状态</strong>。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928151953.png" alt="image-20210928151921012"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928151953.png" srcset="/img/loading.gif" lazyload alt="image-20210928151921012"></p>
 <p>就是阻塞队列？？？多了一个Int变量来表示锁的状态而已嗷！！！</p>
-<h3 id="AQS能干啥？"><a href="#AQS能干啥？" class="headerlink" title="AQS能干啥？"></a>AQS能干啥？</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152026.png" alt="image-20210928152026636"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152116.png" alt="image-20210928152115764"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152140.png" alt="image-20210928152139727"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152150.png" alt="image-20210928152150432"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152208.png" alt="image-20210928152208422"></p>
+<h3 id="AQS能干啥？"><a href="#AQS能干啥？" class="headerlink" title="AQS能干啥？"></a>AQS能干啥？</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152026.png" srcset="/img/loading.gif" lazyload alt="image-20210928152026636"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152116.png" srcset="/img/loading.gif" lazyload alt="image-20210928152115764"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152140.png" srcset="/img/loading.gif" lazyload alt="image-20210928152139727"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152150.png" srcset="/img/loading.gif" lazyload alt="image-20210928152150432"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928152208.png" srcset="/img/loading.gif" lazyload alt="image-20210928152208422"></p>
 <ul>
 <li>好多东西底层都是AQS</li>
 <li>锁和同步器的关系：<ul>
@@ -338,19 +657,19 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928153130.png" alt="image-20210928153130392"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928153130.png" srcset="/img/loading.gif" lazyload alt="image-20210928153130392"></p>
 <h3 id="源码体系："><a href="#源码体系：" class="headerlink" title="源码体系："></a>源码体系：</h3><ul>
 <li><p>使用volatiled的int类型的成员变量来表示同步状态，通过内置的FIFO队列来完成资源获取的排队工作。将每条要去抢占资源的线程封装为一个<strong>Node节点</strong>来实现锁的分配，通过CAS完成对于State值的修改！！！</p>
 </li>
 <li><p>底层和HashMap有点相似嗷！！！</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928153722.png" alt="image-20210928153722789"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928153722.png" srcset="/img/loading.gif" lazyload alt="image-20210928153722789"></p>
 <p>将thread封装为一个叫做Node的数据结构，放入一个双向链表中进行管理嗷！！！</p>
 <ul>
 <li>内部体系架构：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928154041.png" alt="image-20210928154040792"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928154041.png" srcset="/img/loading.gif" lazyload alt="image-20210928154040792"></p>
 <ul>
 <li><p>AQS的同步状态State成员变量：</p>
 <ul>
@@ -377,35 +696,35 @@
 <p>每个等待线程的封装体就是一个Node，每个Node都有一个自己的等待状态嗷！！！</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928154907.png" alt="image-20210928154906868"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928154932.png" alt="image-20210928154932551"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928154907.png" srcset="/img/loading.gif" lazyload alt="image-20210928154906868"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928154932.png" srcset="/img/loading.gif" lazyload alt="image-20210928154932551"></p>
 <ul>
 <li><p>Node = waitStatus + 前后指针指向</p>
 </li>
 <li><p>塔玛希之图：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928155124.png" alt="image-20210928155124174"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928155124.png" srcset="/img/loading.gif" lazyload alt="image-20210928155124174"></p>
 <h3 id="AQS源码解读："><a href="#AQS源码解读：" class="headerlink" title="AQS源码解读："></a>AQS源码解读：</h3><h4 id="ReentrantLock的例子："><a href="#ReentrantLock的例子：" class="headerlink" title="ReentrantLock的例子："></a>ReentrantLock的例子：</h4><ul>
 <li>这里以ReentrantLock为例子来解读AQS</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160418.png" alt="image-20210928160418400"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160418.png" srcset="/img/loading.gif" lazyload alt="image-20210928160418400"></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1zb411M7NQ?p=140&amp;spm_id_from=pageDriver">源码解读教程</a></p>
 <ul>
 <li>公平与非公平：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160613.png" alt="image-20210928160613454"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160613.png" srcset="/img/loading.gif" lazyload alt="image-20210928160613454"></p>
 <ul>
 <li>我们看一眼源码：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160702.png" alt="image-20210928160701931"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160702.png" srcset="/img/loading.gif" lazyload alt="image-20210928160701931"></p>
 <p>发现区别非常小。。。hasQueuedPredecessors()是公平锁加锁时等待队列中是否存在有效节点的方法。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160904.png" alt="image-20210928160904458"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928160904.png" srcset="/img/loading.gif" lazyload alt="image-20210928160904458"></p>
 <ul>
 <li>公平锁先来先得，排队，按照队列顺序来给你锁。</li>
 <li>非公平锁：不管是否等待，如果可以立即获取锁，立即获得锁对象，</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928161119.png" alt="image-20210928161119391"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928161119.png" srcset="/img/loading.gif" lazyload alt="image-20210928161119391"></p>
 <ul>
 <li>ReentrantLock的加锁过程，可以分为三个阶段：<ol>
 <li>尝试加锁</li>
@@ -417,16 +736,11 @@
 <h4 id="三个线程办理业务例子："><a href="#三个线程办理业务例子：" class="headerlink" title="三个线程办理业务例子："></a>三个线程办理业务例子：</h4><h5 id="Lock解析："><a href="#Lock解析：" class="headerlink" title="Lock解析："></a>Lock解析：</h5><ul>
 <li>A办理业务20分钟，B,C都只能等着嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928162704.png" alt="image-20210928162703857"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928162704.png" srcset="/img/loading.gif" lazyload alt="image-20210928162703857"></p>
 <ul>
 <li>默认new的那个锁是非公平锁，我们找到非公平对于这个方法的实现：</li>
 </ul>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compareAndSetState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-        <span class="token function">setExclusiveOwnerThread</span><span class="token punctuation">(</span><span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">else</span>
-        <span class="token function">acquire</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">lock</span><span class="hljs-params">()</span> {<br>    <span class="hljs-keyword">if</span> (compareAndSetState(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>))<br>        setExclusiveOwnerThread(Thread.currentThread());<br>    <span class="hljs-keyword">else</span><br>        acquire(<span class="hljs-number">1</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <ol>
 <li><p>compareAndSetState的底层就是Compare And Set嗷！！！底层的保证原子性的，这里的意思就是抢到了这把锁并且置为1。（这里用到了底层CAS中的那个state，把那个state的值置为1了嗷！！！）</p>
@@ -436,11 +750,7 @@
 <li><p>B和C来的时候，if都进不去嗷！！！因为state的值为1，CAS进不去，执行else，都执行<code>acquire(1);</code></p>
 </li>
 </ol>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">acquire</span><span class="token punctuation">(</span><span class="token keyword">int</span> arg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">tryAcquire</span><span class="token punctuation">(</span>arg<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
-        <span class="token function">acquireQueued</span><span class="token punctuation">(</span><span class="token function">addWaiter</span><span class="token punctuation">(</span><span class="token class-name">Node</span><span class="token punctuation">.</span>EXCLUSIVE<span class="token punctuation">)</span><span class="token punctuation">,</span> arg<span class="token punctuation">)</span><span class="token punctuation">)</span>
-        <span class="token function">selfInterrupt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">acquire</span><span class="hljs-params">(<span class="hljs-type">int</span> arg)</span> {<br>    <span class="hljs-keyword">if</span> (!tryAcquire(arg) &amp;&amp;<br>        acquireQueued(addWaiter(Node.EXCLUSIVE), arg))<br>        selfInterrupt();<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>这里有三个方法，我们一一解析：</li>
@@ -448,174 +758,69 @@
 <ol>
 <li>!tryAcquire(arg)：</li>
 </ol>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token keyword">boolean</span> <span class="token function">nonfairTryAcquire</span><span class="token punctuation">(</span><span class="token keyword">int</span> acquires<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">final</span> <span class="token class-name">Thread</span> current <span class="token operator">=</span> <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    
-    <span class="token comment">//当b刚进来，a办理完了，有这种可能叭？对哇，所以这里就是一个判断哦</span>
-    <span class="token keyword">int</span> c <span class="token operator">=</span> <span class="token function">getState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//获取state的值</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>c <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compareAndSetState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> acquires<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">setExclusiveOwnerThread</span><span class="token punctuation">(</span>current<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-    
-    <span class="token comment">//当前线程是不是正在办理业务的线程？这里其实体现了这个锁的可重入性嗷！！！</span>
-    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>current <span class="token operator">==</span> <span class="token function">getExclusiveOwnerThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">int</span> nextc <span class="token operator">=</span> c <span class="token operator">+</span> acquires<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>nextc <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token comment">// overflow</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">"Maximum lock count exceeded"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">setState</span><span class="token punctuation">(</span>nextc<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    
-    <span class="token comment">//返回false了。</span>
-    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">nonfairTryAcquire</span><span class="hljs-params">(<span class="hljs-type">int</span> acquires)</span> {<br>    <span class="hljs-keyword">final</span> <span class="hljs-type">Thread</span> <span class="hljs-variable">current</span> <span class="hljs-operator">=</span> Thread.currentThread();<br>    <br>    <span class="hljs-comment">//当b刚进来，a办理完了，有这种可能叭？对哇，所以这里就是一个判断哦</span><br>    <span class="hljs-type">int</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> getState();<span class="hljs-comment">//获取state的值</span><br>    <span class="hljs-keyword">if</span> (c == <span class="hljs-number">0</span>) {<br>        <span class="hljs-keyword">if</span> (compareAndSetState(<span class="hljs-number">0</span>, acquires)) {<br>            setExclusiveOwnerThread(current);<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>        }<br>    }<br>    <br>    <span class="hljs-comment">//当前线程是不是正在办理业务的线程？这里其实体现了这个锁的可重入性嗷！！！</span><br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (current == getExclusiveOwnerThread()) {<br>        <span class="hljs-type">int</span> <span class="hljs-variable">nextc</span> <span class="hljs-operator">=</span> c + acquires;<br>        <span class="hljs-keyword">if</span> (nextc &lt; <span class="hljs-number">0</span>) <span class="hljs-comment">// overflow</span><br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">"Maximum lock count exceeded"</span>);<br>        setState(nextc);<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    }<br>    <br>    <span class="hljs-comment">//返回false了。</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>第一个方法走到头了，我们找到在非公平锁中，其对应的实现，我们查看上面源码中的流程。</p>
 <ol start="2">
 <li>addWaiter(Node.EXCLUSIVE)：</li>
 </ol>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">Node</span> <span class="token function">addWaiter</span><span class="token punctuation">(</span><span class="token class-name">Node</span> mode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token class-name">Node</span> node <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Node</span><span class="token punctuation">(</span><span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> mode<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment">// Try the fast path of enq; backup to full enq on failure</span>
-    <span class="token class-name">Node</span> pred <span class="token operator">=</span> tail<span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>pred <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        node<span class="token punctuation">.</span>prev <span class="token operator">=</span> pred<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compareAndSetTail</span><span class="token punctuation">(</span>pred<span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            pred<span class="token punctuation">.</span>next <span class="token operator">=</span> node<span class="token punctuation">;</span>
-            <span class="token keyword">return</span> node<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-    <span class="token function">enq</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> node<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> Node <span class="hljs-title function_">addWaiter</span><span class="hljs-params">(Node mode)</span> {<br>    <span class="hljs-type">Node</span> <span class="hljs-variable">node</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Node</span>(Thread.currentThread(), mode);<br>    <span class="hljs-comment">// Try the fast path of enq; backup to full enq on failure</span><br>    <span class="hljs-type">Node</span> <span class="hljs-variable">pred</span> <span class="hljs-operator">=</span> tail;<br>    <span class="hljs-keyword">if</span> (pred != <span class="hljs-literal">null</span>) {<br>        node.prev = pred;<br>        <span class="hljs-keyword">if</span> (compareAndSetTail(pred, node)) {<br>            pred.next = node;<br>            <span class="hljs-keyword">return</span> node;<br>        }<br>    }<br>    enq(node);<br>    <span class="hljs-keyword">return</span> node;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>一开始tail就是为null，完了之后，if失败了，就执行<code>enq(node)</code></li>
 </ul>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">Node</span> <span class="token function">enq</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">Node</span> node<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token class-name">Node</span> t <span class="token operator">=</span> tail<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>t <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// Must initialize</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compareAndSetHead</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Node</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                tail <span class="token operator">=</span> head<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            node<span class="token punctuation">.</span>prev <span class="token operator">=</span> t<span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compareAndSetTail</span><span class="token punctuation">(</span>t<span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                t<span class="token punctuation">.</span>next <span class="token operator">=</span> node<span class="token punctuation">;</span>
-                <span class="token keyword">return</span> t<span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> Node <span class="hljs-title function_">enq</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Node node)</span> {<br>    <span class="hljs-keyword">for</span> (;;) {<br>        <span class="hljs-type">Node</span> <span class="hljs-variable">t</span> <span class="hljs-operator">=</span> tail;<br>        <span class="hljs-keyword">if</span> (t == <span class="hljs-literal">null</span>) { <span class="hljs-comment">// Must initialize</span><br>            <span class="hljs-keyword">if</span> (compareAndSetHead(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Node</span>()))<br>                tail = head;<br>        } <span class="hljs-keyword">else</span> {<br>            node.prev = t;<br>            <span class="hljs-keyword">if</span> (compareAndSetTail(t, node)) {<br>                t.next = node;<br>                <span class="hljs-keyword">return</span> t;<br>            }<br>        }<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这里看到，t就是尾指针，t就是null，然后就初始化，在Head上new了一个新的Node节点作为占位符。</p>
 <ul>
 <li>意思是：如果尾指针为null，说明还没有任何一个元素在队列中。新建一个Node节点设置为头节点。然后把头节点赋值为尾节点。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928164148.png" alt="image-20210928164147888"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928164148.png" srcset="/img/loading.gif" lazyload alt="image-20210928164147888"></p>
 <p>相当于对于链表进行了一个初始化嗷！！！</p>
 <ul>
 <li>说白了第一次进入循环完成了队列初始化，第二次进入循环，将当前节点（B节点），放到队尾。修改指针。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928164401.png" alt="image-20210928164400854"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928164401.png" srcset="/img/loading.gif" lazyload alt="image-20210928164400854"></p>
 <ul>
 <li>C来了，由于队列已经初始化好了，因此C可以直接append到B的后面嗷，直接进入enq的else嗷！！！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928165421.png" alt="image-20210928165421121"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928165421.png" srcset="/img/loading.gif" lazyload alt="image-20210928165421121"></p>
 <ol start="3">
 <li>acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</li>
 </ol>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token keyword">boolean</span> <span class="token function">acquireQueued</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">Node</span> node<span class="token punctuation">,</span> <span class="token keyword">int</span> arg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">boolean</span> failed <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token keyword">try</span> <span class="token punctuation">{</span>
-        <span class="token keyword">boolean</span> interrupted <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> <span class="token class-name">Node</span> p <span class="token operator">=</span> node<span class="token punctuation">.</span><span class="token function">predecessor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>p <span class="token operator">==</span> head <span class="token operator">&amp;&amp;</span> <span class="token function">tryAcquire</span><span class="token punctuation">(</span>arg<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token function">setHead</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                p<span class="token punctuation">.</span>next <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span> <span class="token comment">// help GC</span>
-                failed <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-                <span class="token keyword">return</span> interrupted<span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">shouldParkAfterFailedAcquire</span><span class="token punctuation">(</span>p<span class="token punctuation">,</span> node<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
-                <span class="token function">parkAndCheckInterrupt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                interrupted <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>failed<span class="token punctuation">)</span>
-            <span class="token function">cancelAcquire</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">acquireQueued</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Node node, <span class="hljs-type">int</span> arg)</span> {<br>    <span class="hljs-type">boolean</span> <span class="hljs-variable">failed</span> <span class="hljs-operator">=</span> <span class="hljs-literal">true</span>;<br>    <span class="hljs-keyword">try</span> {<br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">interrupted</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;<br>        <span class="hljs-keyword">for</span> (;;) {<br>            <span class="hljs-keyword">final</span> <span class="hljs-type">Node</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> node.predecessor();<br>            <span class="hljs-keyword">if</span> (p == head &amp;&amp; tryAcquire(arg)) {<br>                setHead(node);<br>                p.next = <span class="hljs-literal">null</span>; <span class="hljs-comment">// help GC</span><br>                failed = <span class="hljs-literal">false</span>;<br>                <span class="hljs-keyword">return</span> interrupted;<br>            }<br>            <span class="hljs-keyword">if</span> (shouldParkAfterFailedAcquire(p, node) &amp;&amp;<br>                parkAndCheckInterrupt())<br>                interrupted = <span class="hljs-literal">true</span>;<br>        }<br>    } <span class="hljs-keyword">finally</span> {<br>        <span class="hljs-keyword">if</span> (failed)<br>            cancelAcquire(node);<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>上面这里的for是个自旋嗷！！！</p>
 <ul>
 <li>node.predecessor()方法：</li>
 </ul>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">Node</span> <span class="token function">predecessor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">NullPointerException</span> <span class="token punctuation">{</span>
-    <span class="token class-name">Node</span> p <span class="token operator">=</span> prev<span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>p <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
-        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">NullPointerException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">else</span>
-        <span class="token keyword">return</span> p<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> Node <span class="hljs-title function_">predecessor</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> NullPointerException {<br>    <span class="hljs-type">Node</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> prev;<br>    <span class="hljs-keyword">if</span> (p == <span class="hljs-literal">null</span>)<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NullPointerException</span>();<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">return</span> p;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看到，这里获取了我们上面灰色的那个哨兵节点嗷！！！</p>
 <p>当返回的节点为头节点的时候，再次调用tryAcquire方法，尝试去获取锁嗷！！！B入队了之后任然不老实，还想去抢这个节点嗷！！！如果还没抢到，就要执行下面的代码：</p>
 <ul>
 <li>shouldParkAfterFailedAcquire</li>
 </ul>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">shouldParkAfterFailedAcquire</span><span class="token punctuation">(</span><span class="token class-name">Node</span> pred<span class="token punctuation">,</span> <span class="token class-name">Node</span> node<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">int</span> ws <span class="token operator">=</span> pred<span class="token punctuation">.</span>waitStatus<span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>ws <span class="token operator">==</span> <span class="token class-name">Node</span><span class="token punctuation">.</span>SIGNAL<span class="token punctuation">)</span>
-        <span class="token comment">/*
-         * This node has already set status asking a release
-         * to signal it, so it can safely park.
-         */</span>
-        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>ws <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">/*
-         * Predecessor was cancelled. Skip over predecessors and
-         * indicate retry.
-         */</span>
-        <span class="token keyword">do</span> <span class="token punctuation">{</span>
-            node<span class="token punctuation">.</span>prev <span class="token operator">=</span> pred <span class="token operator">=</span> pred<span class="token punctuation">.</span>prev<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span>pred<span class="token punctuation">.</span>waitStatus <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        pred<span class="token punctuation">.</span>next <span class="token operator">=</span> node<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-        <span class="token comment">/*
-         * waitStatus must be 0 or PROPAGATE.  Indicate that we
-         * need a signal, but don't park yet.  Caller will need to
-         * retry to make sure it cannot acquire before parking.
-         */</span>
-        <span class="token function">compareAndSetWaitStatus</span><span class="token punctuation">(</span>pred<span class="token punctuation">,</span> ws<span class="token punctuation">,</span> <span class="token class-name">Node</span><span class="token punctuation">.</span>SIGNAL<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">shouldParkAfterFailedAcquire</span><span class="hljs-params">(Node pred, Node node)</span> {<br>    <span class="hljs-type">int</span> <span class="hljs-variable">ws</span> <span class="hljs-operator">=</span> pred.waitStatus;<br>    <span class="hljs-keyword">if</span> (ws == Node.SIGNAL)<br>        <span class="hljs-comment">/*</span><br><span class="hljs-comment">         * This node has already set status asking a release</span><br><span class="hljs-comment">         * to signal it, so it can safely park.</span><br><span class="hljs-comment">         */</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    <span class="hljs-keyword">if</span> (ws &gt; <span class="hljs-number">0</span>) {<br>        <span class="hljs-comment">/*</span><br><span class="hljs-comment">         * Predecessor was cancelled. Skip over predecessors and</span><br><span class="hljs-comment">         * indicate retry.</span><br><span class="hljs-comment">         */</span><br>        <span class="hljs-keyword">do</span> {<br>            node.prev = pred = pred.prev;<br>        } <span class="hljs-keyword">while</span> (pred.waitStatus &gt; <span class="hljs-number">0</span>);<br>        pred.next = node;<br>    } <span class="hljs-keyword">else</span> {<br>        <span class="hljs-comment">/*</span><br><span class="hljs-comment">         * waitStatus must be 0 or PROPAGATE.  Indicate that we</span><br><span class="hljs-comment">         * need a signal, but don't park yet.  Caller will need to</span><br><span class="hljs-comment">         * retry to make sure it cannot acquire before parking.</span><br><span class="hljs-comment">         */</span><br>        compareAndSetWaitStatus(pred, ws, Node.SIGNAL);<br>    }<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>获取前一个结点（头节点）的status，值仍然为0嗷！！！</p>
 <p>ws == Node.SIGNAL将wait Status的值设置为了-1，然后compareAndSetWaitStatus，将头节点的值设置为-1。再次进入的时候，这里就直接返回True，就能够退出这个循环了嗷！！！</p>
 <ul>
 <li>parkAndCheckInterrupt()：</li>
 </ul>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> <span class="token function">parkAndCheckInterrupt</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token class-name">LockSupport</span><span class="token punctuation">.</span><span class="token function">park</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">interrupted</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">parkAndCheckInterrupt</span><span class="hljs-params">()</span> {<br>    LockSupport.park(<span class="hljs-built_in">this</span>);<br>    <span class="hljs-keyword">return</span> Thread.interrupted();<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>到这一步，才真正的park了B这个结点，B这样才真正的被阻塞挂起了嗷！！！要有人来唤醒B才行嗷！！！等A出来，执行unlock()的时候，才unpark嗷！！！B才能继续往前走哦！！！</p>
 <p>C也一样的，C也会park，在这里等待嗷！！！</p>
 <h5 id="UnLock解析："><a href="#UnLock解析：" class="headerlink" title="UnLock解析："></a>UnLock解析：</h5><ul>
 <li><p>底层调用的是<code>sync.release(1);</code></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173049.png" alt="image-20210928173049443"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173049.png" srcset="/img/loading.gif" lazyload alt="image-20210928173049443"></p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173114.png" alt="image-20210928173114193"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173152.png" alt="image-20210928173151825"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173114.png" srcset="/img/loading.gif" lazyload alt="image-20210928173114193"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173152.png" srcset="/img/loading.gif" lazyload alt="image-20210928173151825"></p>
 <p>tryRelease定义的足够高，如果子类不实现，我父类默认实现的就给你报错嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173028.png" alt="image-20210928173028435"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173028.png" srcset="/img/loading.gif" lazyload alt="image-20210928173028435"></p>
 <ul>
 <li><p>这里的tryRelease()，当A退出的时候：</p>
 <ul>
@@ -631,17 +836,17 @@
 <ul>
 <li>获得头指针</li>
 <li>哨兵结点确实不等于null , 并且waitStatus确实不为0，执行unparkSuccessor()</li>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173851.png" alt="image-20210928173851385"></li>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173921.png" alt="image-20210928173921300"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173851.png" srcset="/img/loading.gif" lazyload alt="image-20210928173851385"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928173921.png" srcset="/img/loading.gif" lazyload alt="image-20210928173921300"></li>
 </ul>
 </li>
 <li><p>B出来之后，再次循环，抢到了，就成功了嗷！！！从循环中出来，继续执行。B出来之后：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928174202.png" alt="image-20210928174201755"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928174237.png" alt="image-20210928174236859"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928174202.png" srcset="/img/loading.gif" lazyload alt="image-20210928174201755"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928174237.png" srcset="/img/loading.gif" lazyload alt="image-20210928174236859"></p>
 <p>原结点B变成了新的哨兵结点，原哨兵结点的next也被设置为了null，这个时候原哨兵结点就再也没有东西引用了，就会被GC逐步收集掉了嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928174428.png" alt="image-20210928174428550"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928174428.png" srcset="/img/loading.gif" lazyload alt="image-20210928174428550"></p>
 <h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><ul>
 <li><p>公平性的体现：</p>
 <ul>
@@ -661,16 +866,16 @@
 <li>@AfterThrowing：出现异常的时候通知</li>
 <li>@Around：环绕通知：环绕目标方法执行</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928185553.png" alt="image-20210928185553508"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210928185553.png" srcset="/img/loading.gif" lazyload alt="image-20210928185553508"></p>
 <p>底层的Spring的版本，随着Boot版本的升级也在升级嗷！！！</p>
 <h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h3><ul>
 <li>Service类编程：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929192920.png" alt="image-20210929192906200"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929192920.png" srcset="/img/loading.gif" lazyload alt="image-20210929192906200"></p>
 <ul>
 <li>切面类编程：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193033.png" alt="image-20210929193033323"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193033.png" srcset="/img/loading.gif" lazyload alt="image-20210929193033323"></p>
 <p>@Aspect，指定一个类为切面类</p>
 <p>@Component，将其纳入Spring容器管理</p>
 <h4 id="Boot使用1-x版本："><a href="#Boot使用1-x版本：" class="headerlink" title="Boot使用1.x版本："></a>Boot使用1.x版本：</h4><ul>
@@ -679,12 +884,12 @@
 <li><p>测试类编写：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193415.png" alt="image-20210929193415535"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193415.png" srcset="/img/loading.gif" lazyload alt="image-20210929193415535"></p>
 <ul>
 <li>结果：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193523.png" alt="image-20210929193523267"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193603.png" alt="image-20210929193603481"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193523.png" srcset="/img/loading.gif" lazyload alt="image-20210929193523267"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929193603.png" srcset="/img/loading.gif" lazyload alt="image-20210929193603481"></p>
 <p>正常执行：@Before === @After === @AfterReturning</p>
 <p>异常执行：@Before === @After === @AfterThrowing</p>
 <p>至于环绕通知，正常的情况下在Before和After之前，异常的化只有Before没有After</p>
@@ -693,8 +898,8 @@
 <li>测试类和上面一样嗷！！！</li>
 <li>结果：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929200910.png" alt="image-20210929200909934"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929201031.png" alt="image-20210929201030580"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929200910.png" srcset="/img/loading.gif" lazyload alt="image-20210929200909934"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929201031.png" srcset="/img/loading.gif" lazyload alt="image-20210929201030580"></p>
 <p>正常执行：@Before === @AfterReturning === @After</p>
 <p>异常执行：@Before === @AfterThrowing === @After</p>
 <p>@After的用法就和try … catch … finally 中的finally一样的嗷，这个是总会在最后执行的嗷！！！环绕通知就像饺子皮一样，包在最外面哦，如果出问题了，饺子皮被扯破了，就只有After兜着了嗷！！！</p>
@@ -708,18 +913,18 @@
 </li>
 <li>当我们AB循环依赖问题只要A的注入方法是setter并且为Singleton，就不会有循环依赖问题嗷！！！</li>
 </ul>
-<h3 id="故障示例："><a href="#故障示例：" class="headerlink" title="故障示例："></a>故障示例：</h3><h4 id="构造器导致循环依赖："><a href="#构造器导致循环依赖：" class="headerlink" title="构造器导致循环依赖："></a>构造器导致循环依赖：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203441.png" alt="image-20210929203440662"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203459.png" alt="image-20210929203459103"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203524.png" alt="image-20210929203523775"></p>
+<h3 id="故障示例："><a href="#故障示例：" class="headerlink" title="故障示例："></a>故障示例：</h3><h4 id="构造器导致循环依赖："><a href="#构造器导致循环依赖：" class="headerlink" title="构造器导致循环依赖："></a>构造器导致循环依赖：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203441.png" srcset="/img/loading.gif" lazyload alt="image-20210929203440662"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203459.png" srcset="/img/loading.gif" lazyload alt="image-20210929203459103"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203524.png" srcset="/img/loading.gif" lazyload alt="image-20210929203523775"></p>
 <p>套娃了兄弟，构造器循环依赖了</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203606.png" alt="image-20210929203605787"></p>
-<h4 id="Set解决循环依赖："><a href="#Set解决循环依赖：" class="headerlink" title="Set解决循环依赖："></a>Set解决循环依赖：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203718.png" alt="image-20210929203717875"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203733.png" alt="image-20210929203733272"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203806.png" alt="image-20210929203806393"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203606.png" srcset="/img/loading.gif" lazyload alt="image-20210929203605787"></p>
+<h4 id="Set解决循环依赖："><a href="#Set解决循环依赖：" class="headerlink" title="Set解决循环依赖："></a>Set解决循环依赖：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203718.png" srcset="/img/loading.gif" lazyload alt="image-20210929203717875"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203733.png" srcset="/img/loading.gif" lazyload alt="image-20210929203733272"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203806.png" srcset="/img/loading.gif" lazyload alt="image-20210929203806393"></p>
 <p>Set可以解决问题嗷！！！</p>
-<h4 id="Spring容器："><a href="#Spring容器：" class="headerlink" title="Spring容器："></a>Spring容器：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203946.png" alt="image-20210929203946407"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204000.png" alt="image-20210929203959791"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204017.png" alt="image-20210929204016853"></p>
+<h4 id="Spring容器："><a href="#Spring容器：" class="headerlink" title="Spring容器："></a>Spring容器：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929203946.png" srcset="/img/loading.gif" lazyload alt="image-20210929203946407"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204000.png" srcset="/img/loading.gif" lazyload alt="image-20210929203959791"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204017.png" srcset="/img/loading.gif" lazyload alt="image-20210929204016853"></p>
 <ul>
 <li>上面是code-Java的代码嗷！！！</li>
 <li>Spring容器中：<ul>
@@ -728,18 +933,18 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204218.png" alt="image-20210929204218505"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204218.png" srcset="/img/loading.gif" lazyload alt="image-20210929204218505"></p>
 <p>正常运行嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204259.png" alt="image-20210929204259525"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204259.png" srcset="/img/loading.gif" lazyload alt="image-20210929204259525"></p>
 <p>改成prototype之后：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204351.png" alt="image-20210929204351212"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204507.png" alt="image-20210929204506717"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204351.png" srcset="/img/loading.gif" lazyload alt="image-20210929204351212"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204507.png" srcset="/img/loading.gif" lazyload alt="image-20210929204506717"></p>
 <h4 id="重要结论："><a href="#重要结论：" class="headerlink" title="重要结论："></a>重要结论：</h4><ul>
 <li>Spring内部通过三级缓存来解决循环依赖嗷！！！</li>
 <li><code>DefaultSingletonBeanRegistry</code></li>
 <li>本质上是三个Map嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204704.png" alt="image-20210929204704269"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210929204704.png" srcset="/img/loading.gif" lazyload alt="image-20210929204704269"></p>
 <p>从上往下对应的缓存的顺序是，一级缓存，三级缓存，二级缓存嗷！！！</p>
 <ul>
 <li>三级缓存：<ul>
@@ -761,14 +966,14 @@
 <li><p>3个Map和四大方法：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007135243.png" alt="image-20211007135228467"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007135243.png" srcset="/img/loading.gif" lazyload alt="image-20211007135228467"></p>
 <p>SingletonObjects存放的是已经初始化好了的Bean</p>
 <p>earlySingletonObjects存放的是实例化了，但是没有初始化的Bean</p>
 <p>singletonFactories存放的是FactoryBean，加入A类实现了FactoryBean，DI的时候不是A类，而是A类产生的Bean</p>
 <ul>
 <li>迁移顺序：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007135651.png" alt="image-20211007135650252"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007135651.png" srcset="/img/loading.gif" lazyload alt="image-20211007135650252"></p>
 <h4 id="断点查看源码："><a href="#断点查看源码：" class="headerlink" title="断点查看源码："></a>断点查看源码：</h4><ul>
 <li><p>打断点的位置是不固定的嗷，这种测试经常要看我们的日志的嗷！！！如果日志打印出来了，说明断点打晚了，把断点往前打就成嗷！！！</p>
 </li>
@@ -779,20 +984,20 @@
 <li><p>牛啊！！！</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007150842.png" alt="image-20211007150842123"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007150842.png" srcset="/img/loading.gif" lazyload alt="image-20211007150842123"></p>
 <p>三级装的是还没实例化好的对象。</p>
 <p>二级中装的是实例化但是没有初始化的对象。</p>
 <p>一级中装的是初始化完成的对象。</p>
-<h4 id="精简版总结："><a href="#精简版总结：" class="headerlink" title="精简版总结："></a>精简版总结：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007151919.png" alt="image-20211007151919059"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152009.png" alt="image-20211007152009152"></p>
+<h4 id="精简版总结："><a href="#精简版总结：" class="headerlink" title="精简版总结："></a>精简版总结：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007151919.png" srcset="/img/loading.gif" lazyload alt="image-20211007151919059"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152009.png" srcset="/img/loading.gif" lazyload alt="image-20211007152009152"></p>
 <ul>
 <li>断点在哪里呀？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152443.png" alt="image-20211007152442047"></p>
-<h4 id="小总结："><a href="#小总结：" class="headerlink" title="小总结："></a>小总结：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152926.png" alt="image-20211007152925759"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007153145.png" alt="image-20211007153144355"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007153321.png" alt="image-20211007153320473"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152009.png" alt="image-20211007152009152"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152443.png" srcset="/img/loading.gif" lazyload alt="image-20211007152442047"></p>
+<h4 id="小总结："><a href="#小总结：" class="headerlink" title="小总结："></a>小总结：</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152926.png" srcset="/img/loading.gif" lazyload alt="image-20211007152925759"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007153145.png" srcset="/img/loading.gif" lazyload alt="image-20211007153144355"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007153321.png" srcset="/img/loading.gif" lazyload alt="image-20211007153320473"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007152009.png" srcset="/img/loading.gif" lazyload alt="image-20211007152009152"></p>
 <h1 id="Redis："><a href="#Redis：" class="headerlink" title="Redis："></a>Redis：</h1><h2 id="五大类型落地应用："><a href="#五大类型落地应用：" class="headerlink" title="五大类型落地应用："></a>五大类型落地应用：</h2><h3 id="小细节说明："><a href="#小细节说明：" class="headerlink" title="小细节说明："></a>小细节说明：</h3><ol>
 <li>命令是不区分大小写的，但是我们插入的key是区分大小写的嗷！！！</li>
 <li><code>help @类型名称</code></li>
@@ -805,12 +1010,12 @@
 <li>set和get</li>
 <li>获取多个键值</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007155240.png" alt="image-20211007155240461"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007155240.png" srcset="/img/loading.gif" lazyload alt="image-20211007155240461"></p>
 <p>这里的m就是more的意思，可以同时插入/查找多个键值</p>
 <ol start="3">
 <li>数值增减：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007155739.png" alt="image-20211007155739555"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007155739.png" srcset="/img/loading.gif" lazyload alt="image-20211007155739555"></p>
 <ol start="4">
 <li>获取字符串的长度：</li>
 </ol>
@@ -818,8 +1023,8 @@
 <ol start="5">
 <li>分布式锁：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007155916.png" alt="image-20211007155915947"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007160014.png" alt="image-20211007160013601"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007155916.png" srcset="/img/loading.gif" lazyload alt="image-20211007155915947"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007160014.png" srcset="/img/loading.gif" lazyload alt="image-20211007160013601"></p>
 <ol start="6">
 <li>查看key的寿命：</li>
 </ol>
@@ -855,13 +1060,13 @@
 <li>hlen：获取某个key内的全部数量</li>
 <li>hdel：删除一个key</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007160903.png" alt="image-20211007160902841"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007160903.png" srcset="/img/loading.gif" lazyload alt="image-20211007160902841"></p>
 <ul>
 <li><p>使用场景：</p>
 <ul>
 <li>简单版的购物车，快递，订餐之类的（中小厂可以使用）：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007161400.png" alt="image-20211007161359767"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007161400.png" srcset="/img/loading.gif" lazyload alt="image-20211007161359767"></p>
 <p>商品总数指的是，我们选中的商品有哪些嗷！！！</p>
 </li>
 </ul>
@@ -879,7 +1084,7 @@
 <ul>
 <li>微信文章订阅公众号</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007161949.png" alt="image-20211007161948928"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007161949.png" srcset="/img/loading.gif" lazyload alt="image-20211007161948928"></p>
 <p>关注的作者推送的文章全部塞进你的list里面，然后从上往下进行排序，一次显示几条这样子的嗷！！！List刚刚好就可以把最新更新的放在最上面，供我们观看嗷！！！</p>
 </li>
 </ul>
@@ -905,7 +1110,7 @@
 <li><p>DEL key：删除某个Set嗷！！！</p>
 </li>
 <li><p>集合运算：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007163631.png" alt="image-20211007163630292"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007163631.png" srcset="/img/loading.gif" lazyload alt="image-20211007163630292"></p>
 </li>
 </ol>
 <ul>
@@ -917,24 +1122,24 @@
 <p><code>sadd 抽奖活动对应的key 参与抽奖的用户ID</code></p>
 <p><code>scard 抽奖活动对应的key</code>显示参与抽奖活动的人数</p>
 <p><code>spop 抽奖活动对应的key number</code>抽出用户</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164116.png" alt="image-20211007164115844"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164116.png" srcset="/img/loading.gif" lazyload alt="image-20211007164115844"></p>
 <ul>
 <li>微信朋友圈点赞：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164404.png" alt="image-20211007164404310"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164404.png" srcset="/img/loading.gif" lazyload alt="image-20211007164404310"></p>
 <ul>
 <li>微博好友关注社交关系：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164633.png" alt="image-20211007164632830"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164633.png" srcset="/img/loading.gif" lazyload alt="image-20211007164632830"></p>
 <p>比如我们常见的，xxx位好友已关注：</p>
 <p>本质上就可以使集合的交运算嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164550.png" alt="image-20211007164549777"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164550.png" srcset="/img/loading.gif" lazyload alt="image-20211007164549777"></p>
 <p>关注的人也关注过：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164710.png" alt="image-20211007164709928"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164710.png" srcset="/img/loading.gif" lazyload alt="image-20211007164709928"></p>
 <ul>
 <li>QQ内推：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164750.png" alt="image-20211007164750271"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007164750.png" srcset="/img/loading.gif" lazyload alt="image-20211007164750271"></p>
 <p>你和我去掉我们的共同好友，就是我们可能想要相互认识的人嗷！！！Inter就是我们都认识的人，Diff就是我们其中一边认识的人嗷！！！</p>
 </li>
 <li><p>Set对于电商，社交关系查找和社交推荐都有很大的作用嗷，威力很大的嗷！！！</p>
@@ -945,7 +1150,7 @@
 <li>常用命令：</li>
 </ul>
 <ol>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007170042.png" alt="image-20211007170041777"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007170042.png" srcset="/img/loading.gif" lazyload alt="image-20211007170041777"></li>
 </ol>
 <p><code>ZADD zset1 100 mov1 20 mov2</code></p>
 <ol start="2">
@@ -971,12 +1176,12 @@
 <ul>
 <li>定义商品销售排行榜：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007171029.png" alt="image-20211007171028680"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007171029.png" srcset="/img/loading.gif" lazyload alt="image-20211007171028680"></p>
 <ul>
 <li>抖音热搜：</li>
 </ul>
 <p>key使固定的，score一致在变，然后排序显示热榜就成嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007171147.png" alt="image-20211007171146725"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007171147.png" srcset="/img/loading.gif" lazyload alt="image-20211007171146725"></p>
 </li>
 </ul>
 <h2 id="分布式锁："><a href="#分布式锁：" class="headerlink" title="分布式锁："></a>分布式锁：</h2><ul>
@@ -1002,7 +1207,7 @@
 <ul>
 <li>常见面试题：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007171533.png" alt="image-20211007171533076"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007171533.png" srcset="/img/loading.gif" lazyload alt="image-20211007171533076"></p>
 <h3 id="Boot整合Redis："><a href="#Boot整合Redis：" class="headerlink" title="Boot整合Redis："></a>Boot整合Redis：</h3><ul>
 <li>过程：<ol>
 <li>建Module</li>
@@ -1014,13 +1219,13 @@
 </li>
 <li>POM配置:</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172543.png" alt="image-20211007172542862"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172616.png" alt="image-20211007172616445"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172634.png" alt="image-20211007172634050"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172543.png" srcset="/img/loading.gif" lazyload alt="image-20211007172542862"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172616.png" srcset="/img/loading.gif" lazyload alt="image-20211007172616445"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172634.png" srcset="/img/loading.gif" lazyload alt="image-20211007172634050"></p>
 <ul>
 <li>写Yaml：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172700.png" alt="image-20211007172659743"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007172700.png" srcset="/img/loading.gif" lazyload alt="image-20211007172659743"></p>
 <ul>
 <li><p>主启动自动就是好的嗷！！！</p>
 </li>
@@ -1028,11 +1233,11 @@
 <ul>
 <li>为了使用RedisTemplate，我们需要将其注入到容器中来嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007183105.png" alt="image-20211007183105219"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007183105.png" srcset="/img/loading.gif" lazyload alt="image-20211007183105219"></p>
 <ul>
 <li>真正的业务类：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007183547.png" alt="image-20211007183546757"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007183547.png" srcset="/img/loading.gif" lazyload alt="image-20211007183546757"></p>
 <p>注入小工具，我们对于Redis进行操作</p>
 </li>
 <li><p>启动两台机器，代码都是一样的，只有端口不一样哈！！！</p>
@@ -1048,13 +1253,13 @@
 <li>sync叫<strong>不见不散</strong>，一定等到你其中的线程挂了或者执行完了，才能离开，容易造成 <strong>线程积压</strong></li>
 <li>reentrantlock叫<strong>过时不候</strong>，可以采用tryLock方法尝试获取锁。如果获取到了就执行，获取不到就放弃嗷！！！更加友好：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007205548.png" alt="image-20211007205540917"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007205601.png" alt="image-20211007205601157"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007205548.png" srcset="/img/loading.gif" lazyload alt="image-20211007205540917"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007205601.png" srcset="/img/loading.gif" lazyload alt="image-20211007205601157"></p>
 <h4 id="2-单机锁出现超卖现象"><a href="#2-单机锁出现超卖现象" class="headerlink" title="2. 单机锁出现超卖现象"></a>2. 单机锁出现超卖现象</h4><ul>
 <li>启动Nginx并且测试通过嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007210052.png" alt="image-20211007210052179"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007210103.png" alt="image-20211007210103310"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007210052.png" srcset="/img/loading.gif" lazyload alt="image-20211007210052179"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007210103.png" srcset="/img/loading.gif" lazyload alt="image-20211007210103310"></p>
 <ul>
 <li><p>JMeter一压测，立马就出现超卖现象了嗷！！！</p>
 </li>
@@ -1073,19 +1278,19 @@
 </li>
 </ul>
 <p>下面这个setIfAbsent就是setnx嗷！！！没啥区别，这儿就是先尝试去加锁，由于Redis中是单线程，操作都是原子操作嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007211526.png" alt="image-20211007211525898"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007211606.png" alt="image-20211007211606438"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007211526.png" srcset="/img/loading.gif" lazyload alt="image-20211007211525898"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007211606.png" srcset="/img/loading.gif" lazyload alt="image-20211007211606438"></p>
 <p>架构图是一个Nginx，两台Server，连接同一个Redis，这里就在Redis通过setnx这种操作来实现了加锁，十分简单方便嗷！！！</p>
 <h4 id="3-锁出问题没有释放诶！"><a href="#3-锁出问题没有释放诶！" class="headerlink" title="3. 锁出问题没有释放诶！"></a>3. 锁出问题没有释放诶！</h4><ul>
 <li>如果在业务代码执行间出错了，那么锁就一直解不了嗷，会造成非常大的问题嗷！！！</li>
 <li>代码层面要加上try…finally…，解锁的时候一定要养成这个意识嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007220109.png" alt="image-20211007220109145"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007220109.png" srcset="/img/loading.gif" lazyload alt="image-20211007220109145"></p>
 <h4 id="4-宕机了orz"><a href="#4-宕机了orz" class="headerlink" title="4. 宕机了orz"></a>4. 宕机了orz</h4><ul>
 <li>宕机了，机器根本走不到finally，裂开。代码层面保证了，硬件出现问题了嗷orz，这该咋办捏？？？</li>
 <li>万全之策：对于加的这把锁设置一个过期时间嗷！！！就算出现问题的话，一段时间后也能够自行解决嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007220408.png" alt="image-20211007220407911"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211007220408.png" srcset="/img/loading.gif" lazyload alt="image-20211007220407911"></p>
 <h4 id="5-加锁和设置过期时间"><a href="#5-加锁和设置过期时间" class="headerlink" title="5. 加锁和设置过期时间"></a>5. 加锁和设置过期时间</h4><ul>
 <li>不在同一行啊啊啊啊</li>
 <li>你前面设置了锁，还没来得及设置过期时间，然后机器就宕机了，不一样程序无法继续正常执行了嘛orz。</li>
@@ -1101,52 +1306,52 @@
 <li>业务逻辑没有完成，锁就过期了，这就导致并发冲突了orz，着很大的问题啊orz。A堵住了，A加的锁过期了，B进来了，诶，A又好了，A比B跑得快，A把B加的锁直接给释放了orz，这是个非常大的问题嗷！！！</li>
 <li>张冠李戴，释放了别人的锁。这是非常严重的bug嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008144754.png" alt="image-20211008144739656"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008144754.png" srcset="/img/loading.gif" lazyload alt="image-20211008144739656"></p>
 <ul>
 <li>解决：<ul>
 <li>判断一下，只能删除自己的锁嗷！！！</li>
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008144850.png" alt="image-20211008144849960"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008144850.png" srcset="/img/loading.gif" lazyload alt="image-20211008144849960"></p>
 <p>每一个value都是每个线程自己的，都是不一样的嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008144951.png" alt="image-20211008144950859"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008144951.png" srcset="/img/loading.gif" lazyload alt="image-20211008144950859"></p>
 <p>释放的时候判断一下，这个锁对应的值是不是自己的，只有自己的才能够释放嗷！！！</p>
-<h4 id="7-删除的原子性又裂开了"><a href="#7-删除的原子性又裂开了" class="headerlink" title="7. 删除的原子性又裂开了"></a>7. 删除的原子性又裂开了</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145124.png" alt="image-20211008145123838"></p>
+<h4 id="7-删除的原子性又裂开了"><a href="#7-删除的原子性又裂开了" class="headerlink" title="7. 删除的原子性又裂开了"></a>7. 删除的原子性又裂开了</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145124.png" srcset="/img/loading.gif" lazyload alt="image-20211008145123838"></p>
 <ul>
 <li>你判断为true，然后进来了，然后刚好锁过期了，别的线程加了一把锁，这就导致，你又把别人的锁释放了orz。</li>
 <li>LUA脚本来保证原子性！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145255.png" alt="image-20211008145255475"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145255.png" srcset="/img/loading.gif" lazyload alt="image-20211008145255475"></p>
 <p>不可以用LUA脚本，怎么解决呢？？？</p>
 <ul>
 <li>Redis也有事务哇！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145509.png" alt="image-20211008145509228"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145537.png" alt="image-20211008145536790"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145637.png" alt="image-20211008145637267"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145509.png" srcset="/img/loading.gif" lazyload alt="image-20211008145509228"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145537.png" srcset="/img/loading.gif" lazyload alt="image-20211008145536790"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145637.png" srcset="/img/loading.gif" lazyload alt="image-20211008145637267"></p>
 <ul>
 <li>事务实例：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145603.png" alt="image-20211008145603207"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145913.png" alt="image-20211008145913408"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145603.png" srcset="/img/loading.gif" lazyload alt="image-20211008145603207"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008145913.png" srcset="/img/loading.gif" lazyload alt="image-20211008145913408"></p>
 <p>Watch指令可以监控某一个key，如果这个key被人动过了的话，那我的修改就会失败嗷！！！（<strong>乐观锁</strong>）</p>
 <ul>
 <li>修改结果：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008150443.png" alt="image-20211008150443397"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008150443.png" srcset="/img/loading.gif" lazyload alt="image-20211008150443397"></p>
 <ul>
 <li>那LUA脚本如何使用呢？</li>
 </ul>
 <ol>
 <li>编写Jedis工具类：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008150626.png" alt="image-20211008150625640"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008150626.png" srcset="/img/loading.gif" lazyload alt="image-20211008150625640"></p>
 <ol start="2">
 <li>finally中使用LUA脚本完成对应键值对的删除：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008151018.png" alt="image-20211008151017453"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008151043.png" alt="image-20211008151043315"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008151018.png" srcset="/img/loading.gif" lazyload alt="image-20211008151017453"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008151043.png" srcset="/img/loading.gif" lazyload alt="image-20211008151043315"></p>
 <h4 id="8-Redis锁的续期问题"><a href="#8-Redis锁的续期问题" class="headerlink" title="8. Redis锁的续期问题"></a>8. Redis锁的续期问题</h4><ul>
 <li><p>如果对应的锁没有续期，就可能会导致并发冲突嗷！！！</p>
 </li>
@@ -1155,7 +1360,7 @@
 <li><p>还可能有很大的问题！！！</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008151526.png" alt="image-20211008151526430"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008151526.png" srcset="/img/loading.gif" lazyload alt="image-20211008151526430"></p>
 <p>Redis为了保证AP，实际上是牺牲了一部分的C的嗷！！！</p>
 <p>ZooKeeper就不一样嗷！！！ZooKeeper就是保证了CP，牺牲了C嗷！！！</p>
 <ul>
@@ -1169,22 +1374,22 @@
 <ol>
 <li>将Redisson添加到容器中：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008152250.png" alt="image-20211008152250372"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008152250.png" srcset="/img/loading.gif" lazyload alt="image-20211008152250372"></p>
 <ol start="2">
 <li>重写业务代码：</li>
 </ol>
 <p>不用再苦苦自己考虑逻辑加锁了，也不用考虑原子性了，直接上大招！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008152802.png" alt="image-20211008152801427"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008152827.png" alt="image-20211008152826785"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008152802.png" srcset="/img/loading.gif" lazyload alt="image-20211008152801427"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008152827.png" srcset="/img/loading.gif" lazyload alt="image-20211008152826785"></p>
 <ol start="3">
 <li>JMeter压测也没啥问题嗷！！！</li>
 </ol>
 <h4 id="9-unlock有问题"><a href="#9-unlock有问题" class="headerlink" title="9. unlock有问题"></a>9. unlock有问题</h4><ul>
 <li>超高并发的情况下，可能会报出异常：<code>attempt to unlock lock, not locked by current thread by node id: xxx</code></li>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008154417.png" alt="image-20211008154416834"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008154417.png" srcset="/img/loading.gif" lazyload alt="image-20211008154416834"></li>
 </ul>
 <p>或者下面这个：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008154442.png" alt="image-20211008154442379"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008154442.png" srcset="/img/loading.gif" lazyload alt="image-20211008154442379"></p>
 <p>上面这个健壮性会好一些嗷！！！</p>
 <h2 id="Redis缓存过期淘汰策略"><a href="#Redis缓存过期淘汰策略" class="headerlink" title="Redis缓存过期淘汰策略"></a>Redis缓存过期淘汰策略</h2><h3 id="Redis内存满了咋办："><a href="#Redis内存满了咋办：" class="headerlink" title="Redis内存满了咋办："></a>Redis内存满了咋办：</h3><h4 id="查看Redis最大内存："><a href="#查看Redis最大内存：" class="headerlink" title="查看Redis最大内存："></a>查看Redis最大内存：</h4><ul>
 <li>可以看redis的内存有多少：<ul>
@@ -1193,7 +1398,7 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008155131.png" alt="image-20211008155130540"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008155131.png" srcset="/img/loading.gif" lazyload alt="image-20211008155130540"></p>
 <p>注意：maxmemory是bytes字节类型，要注意转换嗷！！！</p>
 <ul>
 <li>859行默认是被注释掉的，没有配置嗷！！！这样才能够多吃多占，充分利用性能嗷！！！</li>
@@ -1204,11 +1409,11 @@
 <h4 id="设置内存大小："><a href="#设置内存大小：" class="headerlink" title="设置内存大小："></a>设置内存大小：</h4><ul>
 <li>配置文件：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008155600.png" alt="image-20211008155559640"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008155600.png" srcset="/img/loading.gif" lazyload alt="image-20211008155559640"></p>
 <ul>
 <li>命令行配置：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008155704.png" alt="image-20211008155703883"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008155704.png" srcset="/img/loading.gif" lazyload alt="image-20211008155703883"></p>
 <ul>
 <li>查看内存使用的命令：</li>
 </ul>
@@ -1216,12 +1421,12 @@
 <h4 id="内存超出最大值会咋样？（内存打满）："><a href="#内存超出最大值会咋样？（内存打满）：" class="headerlink" title="内存超出最大值会咋样？（内存打满）："></a>内存超出最大值会咋样？（内存打满）：</h4><ul>
 <li>可以故意把最大值设置为1个byte来试试嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008160018.png" alt="image-20211008160018064"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008160056.png" alt="image-20211008160055930"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008160018.png" srcset="/img/loading.gif" lazyload alt="image-20211008160018064"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008160056.png" srcset="/img/loading.gif" lazyload alt="image-20211008160055930"></p>
 <h4 id="内存淘汰策略："><a href="#内存淘汰策略：" class="headerlink" title="内存淘汰策略："></a>内存淘汰策略：</h4><ul>
 <li>配置文件中有写嗷：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008183914.png" alt="image-20211008183913522"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008183914.png" srcset="/img/loading.gif" lazyload alt="image-20211008183913522"></p>
 <ul>
 <li>默认使用的是：</li>
 </ul>
@@ -1251,16 +1456,16 @@
 <li><p>所有策略：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008185402.png" alt="image-20211008185402227"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008185402.png" srcset="/img/loading.gif" lazyload alt="image-20211008185402227"></p>
 <p>LRU和LFU是两种完全不一样的东西嗷！！！LRU有两个，一个是对于所有过期键筛选，另外一个是对于所有key筛选。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008185551.png" alt="image-20211008185551172"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008185551.png" srcset="/img/loading.gif" lazyload alt="image-20211008185551172"></p>
 <h3 id="平时使用："><a href="#平时使用：" class="headerlink" title="平时使用："></a>平时使用：</h3><ul>
 <li><p>最常用是<code>allkeys-lru</code>，不要用默认的嗷！！！</p>
 </li>
 <li><p>如何配置：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008185734.png" alt="image-20211008185733320"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008185734.png" srcset="/img/loading.gif" lazyload alt="image-20211008185733320"></p>
 <p>也可以：</p>
 <p><code>config set maxmemory-policy allkeys-lru</code></p>
 <p><code>config get maxmemory-policy</code></p>
@@ -1282,9 +1487,442 @@
 <li>LinkedHashMap:</li>
 </ul>
 <p>源代码中：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008191141.png" alt="image-20211008191140475"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211008191141.png" srcset="/img/loading.gif" lazyload alt="image-20211008191140475"></p>
 </li>
 <li><p>手写LRU算法和继承LinkedHashMap的内容建议上LeetCode自己复习嗷！！</p>
 </li>
 </ul>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Alexander Liu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/09/27/java-da-han-chang-wen-mian-shi-ti-2/">http://example.com/2021/09/27/java-da-han-chang-wen-mian-shi-ti-2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">兔の博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/">大三自学</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103611.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/10/12/chu-shi-go-yu-yan/"><img class="prev-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">初识Go语言</div></div></a></div><div class="next-post pull-right"><a href="/2021/09/22/ruan-jian-xi-tong-jia-gou/"><img class="next-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">电子科大软件系统架构</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/08/05/java-da-han-chang-wen-mian-shi-ti/" title="Java常问面试题总结与提高"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103611.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-05</div><div class="title">Java常问面试题总结与提高</div></div></a></div><div><a href="/2022/01/16/ml-ru-men/" title="ML入门"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-16</div><div class="title">ML入门</div></div></a></div><div><a href="/2021/10/12/chu-shi-go-yu-yan/" title="初识Go语言"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-10-12</div><div class="title">初识Go语言</div></div></a></div><div><a href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-28</div><div class="title">大数据分析与智能计算期末复习3</div></div></a></div><div><a href="/2021/09/14/da-shu-ju-fen-xi-ke-cheng/" title="大数据分析课程"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-09-14</div><div class="title">大数据分析课程</div></div></a></div><div><a href="/2021/12/20/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi/" title="大数据分析与智能计算期末复习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-20</div><div class="title">大数据分析与智能计算期末复习</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Alexander Liu</div><div class="author-info__description">欢迎来到兔子的小窝，这里是兔子的一些笔记分享</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%99%E9%87%8C%E6%98%AF%E5%AF%B9%E4%BA%8EJava%E5%9F%BA%E7%A1%80%E5%92%8C%E5%85%B6%E4%BB%96%E4%B8%80%E4%BA%9B%E6%A6%82%E5%BF%B5%E7%9A%84%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%EF%BC%81%EF%BC%81%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">这里是对于Java基础和其他一些概念的深入理解！！！</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">Java基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.1.</span> <span class="toc-text">Java字符串常量池</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AB%98%E5%B9%B6%E5%8F%91%E5%92%8CJUC"><span class="toc-number">3.</span> <span class="toc-text">高并发和JUC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81%EF%BC%88%E9%80%92%E5%BD%92%E9%94%81%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">可重入锁（递归锁）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81%E9%AA%8C%E8%AF%811%EF%BC%9A"><span class="toc-number">3.1.1.</span> <span class="toc-text">可重入锁验证1：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81%E9%AA%8C%E8%AF%812%EF%BC%9A"><span class="toc-number">3.1.2.</span> <span class="toc-text">可重入锁验证2：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%95%E5%B1%82%EF%BC%9A"><span class="toc-number">3.1.3.</span> <span class="toc-text">底层：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LockSupport%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">LockSupport：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E6%A8%AA%E5%90%91%E5%AF%B9%E6%AF%94%EF%BC%9A"><span class="toc-number">3.2.1.</span> <span class="toc-text">技术横向对比：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LockSupport%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="toc-number">3.2.2.</span> <span class="toc-text">LockSupport解析：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AQS%EF%BC%9A"><span class="toc-number">3.3.</span> <span class="toc-text">AQS：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AQS%E8%83%BD%E5%B9%B2%E5%95%A5%EF%BC%9F"><span class="toc-number">3.3.1.</span> <span class="toc-text">AQS能干啥？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BA%90%E7%A0%81%E4%BD%93%E7%B3%BB%EF%BC%9A"><span class="toc-number">3.3.2.</span> <span class="toc-text">源码体系：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AQS%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB%EF%BC%9A"><span class="toc-number">3.3.3.</span> <span class="toc-text">AQS源码解读：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ReentrantLock%E7%9A%84%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="toc-number">3.3.3.1.</span> <span class="toc-text">ReentrantLock的例子：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%8A%9E%E7%90%86%E4%B8%9A%E5%8A%A1%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="toc-number">3.3.3.2.</span> <span class="toc-text">三个线程办理业务例子：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Lock%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="toc-number">3.3.3.2.1.</span> <span class="toc-text">Lock解析：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#UnLock%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="toc-number">3.3.3.2.2.</span> <span class="toc-text">UnLock解析：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">3.3.4.</span> <span class="toc-text">总结：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">Spring：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#AOP"><span class="toc-number">4.1.</span> <span class="toc-text">AOP:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3%EF%BC%9A"><span class="toc-number">4.1.1.</span> <span class="toc-text">常用注解：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="toc-number">4.1.2.</span> <span class="toc-text">例子：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Boot%E4%BD%BF%E7%94%A81-x%E7%89%88%E6%9C%AC%EF%BC%9A"><span class="toc-number">4.1.2.1.</span> <span class="toc-text">Boot使用1.x版本：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Boot%E4%BD%BF%E7%94%A82-x%E7%89%88%E6%9C%AC%EF%BC%9A"><span class="toc-number">4.1.2.2.</span> <span class="toc-text">Boot使用2.x版本：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%EF%BC%9A"><span class="toc-number">4.2.</span> <span class="toc-text">Spring循环依赖：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="toc-number">4.2.1.</span> <span class="toc-text">故障示例：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E5%99%A8%E5%AF%BC%E8%87%B4%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%EF%BC%9A"><span class="toc-number">4.2.1.1.</span> <span class="toc-text">构造器导致循环依赖：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Set%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%EF%BC%9A"><span class="toc-number">4.2.1.2.</span> <span class="toc-text">Set解决循环依赖：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Spring%E5%AE%B9%E5%99%A8%EF%BC%9A"><span class="toc-number">4.2.1.3.</span> <span class="toc-text">Spring容器：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E7%BB%93%E8%AE%BA%EF%BC%9A"><span class="toc-number">4.2.1.4.</span> <span class="toc-text">重要结论：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96Debug-%E5%9B%B0%E9%9A%BE%EF%BC%9A"><span class="toc-number">4.2.2.</span> <span class="toc-text">循环依赖Debug-困难：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%9A"><span class="toc-number">4.2.2.1.</span> <span class="toc-text">基本概念：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%AD%E7%82%B9%E6%9F%A5%E7%9C%8B%E6%BA%90%E7%A0%81%EF%BC%9A"><span class="toc-number">4.2.2.2.</span> <span class="toc-text">断点查看源码：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B2%BE%E7%AE%80%E7%89%88%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">4.2.2.3.</span> <span class="toc-text">精简版总结：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%8F%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">4.2.2.4.</span> <span class="toc-text">小总结：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">Redis：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E5%A4%A7%E7%B1%BB%E5%9E%8B%E8%90%BD%E5%9C%B0%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="toc-number">5.1.</span> <span class="toc-text">五大类型落地应用：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%BB%86%E8%8A%82%E8%AF%B4%E6%98%8E%EF%BC%9A"><span class="toc-number">5.1.1.</span> <span class="toc-text">小细节说明：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#String%E7%9A%84%E8%90%BD%E5%9C%B0%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="toc-number">5.1.2.</span> <span class="toc-text">String的落地使用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash%E7%9A%84%E8%90%BD%E5%9C%B0%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="toc-number">5.1.3.</span> <span class="toc-text">Hash的落地使用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#List%E7%9A%84%E8%90%BD%E5%9C%B0%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="toc-number">5.1.4.</span> <span class="toc-text">List的落地使用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Set%E7%9A%84%E8%90%BD%E5%9C%B0%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="toc-number">5.1.5.</span> <span class="toc-text">Set的落地使用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZSet%E7%9A%84%E8%90%BD%E5%9C%B0%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="toc-number">5.1.6.</span> <span class="toc-text">ZSet的落地使用：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%EF%BC%9A"><span class="toc-number">5.2.</span> <span class="toc-text">分布式锁：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-number">5.2.1.</span> <span class="toc-text">Redis分布式锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Boot%E6%95%B4%E5%90%88Redis%EF%BC%9A"><span class="toc-number">5.2.2.</span> <span class="toc-text">Boot整合Redis：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E5%AE%B6%E6%9D%A5%E6%89%BE%E8%8C%AC%EF%BC%9A"><span class="toc-number">5.2.3.</span> <span class="toc-text">大家来找茬：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%8D%95%E6%9C%BA%E7%89%88%E6%B2%A1%E6%9C%89%E5%8A%A0%E9%94%81"><span class="toc-number">5.2.3.1.</span> <span class="toc-text">1. 单机版没有加锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8D%95%E6%9C%BA%E9%94%81%E5%87%BA%E7%8E%B0%E8%B6%85%E5%8D%96%E7%8E%B0%E8%B1%A1"><span class="toc-number">5.2.3.2.</span> <span class="toc-text">2. 单机锁出现超卖现象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%94%81%E5%87%BA%E9%97%AE%E9%A2%98%E6%B2%A1%E6%9C%89%E9%87%8A%E6%94%BE%E8%AF%B6%EF%BC%81"><span class="toc-number">5.2.3.3.</span> <span class="toc-text">3. 锁出问题没有释放诶！</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%AE%95%E6%9C%BA%E4%BA%86orz"><span class="toc-number">5.2.3.4.</span> <span class="toc-text">4. 宕机了orz</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%8A%A0%E9%94%81%E5%92%8C%E8%AE%BE%E7%BD%AE%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="toc-number">5.2.3.5.</span> <span class="toc-text">5. 加锁和设置过期时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E8%BF%90%E8%A1%8C%E6%BD%9C%E5%9C%A8%E9%9A%90%E6%82%A3"><span class="toc-number">5.2.3.6.</span> <span class="toc-text">6. 运行潜在隐患</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E5%88%A0%E9%99%A4%E7%9A%84%E5%8E%9F%E5%AD%90%E6%80%A7%E5%8F%88%E8%A3%82%E5%BC%80%E4%BA%86"><span class="toc-number">5.2.3.7.</span> <span class="toc-text">7. 删除的原子性又裂开了</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-Redis%E9%94%81%E7%9A%84%E7%BB%AD%E6%9C%9F%E9%97%AE%E9%A2%98"><span class="toc-number">5.2.3.8.</span> <span class="toc-text">8. Redis锁的续期问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-unlock%E6%9C%89%E9%97%AE%E9%A2%98"><span class="toc-number">5.2.3.9.</span> <span class="toc-text">9. unlock有问题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E7%BC%93%E5%AD%98%E8%BF%87%E6%9C%9F%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5"><span class="toc-number">5.3.</span> <span class="toc-text">Redis缓存过期淘汰策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E5%86%85%E5%AD%98%E6%BB%A1%E4%BA%86%E5%92%8B%E5%8A%9E%EF%BC%9A"><span class="toc-number">5.3.1.</span> <span class="toc-text">Redis内存满了咋办：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8BRedis%E6%9C%80%E5%A4%A7%E5%86%85%E5%AD%98%EF%BC%9A"><span class="toc-number">5.3.1.1.</span> <span class="toc-text">查看Redis最大内存：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E4%BA%A7%E4%B8%8A%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="toc-number">5.3.1.2.</span> <span class="toc-text">生产上如何配置：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E5%86%85%E5%AD%98%E5%A4%A7%E5%B0%8F%EF%BC%9A"><span class="toc-number">5.3.1.3.</span> <span class="toc-text">设置内存大小：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E8%B6%85%E5%87%BA%E6%9C%80%E5%A4%A7%E5%80%BC%E4%BC%9A%E5%92%8B%E6%A0%B7%EF%BC%9F%EF%BC%88%E5%86%85%E5%AD%98%E6%89%93%E6%BB%A1%EF%BC%89%EF%BC%9A"><span class="toc-number">5.3.1.4.</span> <span class="toc-text">内存超出最大值会咋样？（内存打满）：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="toc-number">5.3.1.5.</span> <span class="toc-text">内存淘汰策略：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B3%E6%97%B6%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="toc-number">5.3.2.</span> <span class="toc-text">平时使用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LRU%E7%AE%80%E4%BB%8B%EF%BC%9A"><span class="toc-number">5.3.3.</span> <span class="toc-text">LRU简介：</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071136497.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="1. 南京大学操作系统概述"/></a><div class="content"><a class="title" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述">1. 南京大学操作系统概述</a><time datetime="2022-12-07T03:35:42.000Z" title="发表于 2022-12-07 11:35:42">2022-12-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212051319709.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CPU Cache 学习"/></a><div class="content"><a class="title" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习">CPU Cache 学习</a><time datetime="2022-12-05T04:14:46.000Z" title="发表于 2022-12-05 12:14:46">2022-12-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/16/ml-ru-men/" title="ML入门"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ML入门"/></a><div class="content"><a class="title" href="/2022/01/16/ml-ru-men/" title="ML入门">ML入门</a><time datetime="2022-01-16T11:11:14.000Z" title="发表于 2022-01-16 19:11:14">2022-01-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习3"/></a><div class="content"><a class="title" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3">大数据分析与智能计算期末复习3</a><time datetime="2021-12-28T14:05:22.000Z" title="发表于 2021-12-28 22:05:22">2021-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习2"/></a><div class="content"><a class="title" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2">大数据分析与智能计算期末复习2</a><time datetime="2021-12-24T07:59:54.000Z" title="发表于 2021-12-24 15:59:54">2021-12-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Alexander Liu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/">#大三自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Java常问面试题总结与提高2</div>
+      <div>http://example.com/2021/09/27/java-da-han-chang-wen-mian-shi-ti-2/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年9月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/10/12/chu-shi-go-yu-yan/" title="初识Go语言">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">初识Go语言</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/09/22/ruan-jian-xi-tong-jia-gou/" title="UESTC软件系统架构">
+                        <span class="hidden-mobile">UESTC软件系统架构</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,157 +1,319 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>使用kubeadm搭建高可用的K8s集群 | 兔の博客</title><meta name="author" content="Alexander Liu"><meta name="copyright" content="Alexander Liu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。 这个工具能通过两条指令完成一个kubernetes集群的部署： # 创建一个 Master 节点 $ kubeadm init  # 将一个 Node 节点加入到当前集群中 $ kubeadm join &lt;Master节点的IP和端口 &gt;  1">
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。 这个工具能通过两条指令完成一个kubernetes集群的部署： 12345# 创建一个 Master 节点$ kubeadm init# 将一个 Node 节点加入到当前集群中$ kubeadm join &lt;Master节点的IP和端口 &gt;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用kubeadm搭建高可用的K8s集群">
 <meta property="og:url" content="http://example.com/2021/08/26/shi-yong-kubeadm-da-jian-gao-ke-yong-de-k8s-ji-qun/index.html">
 <meta property="og:site_name" content="兔の博客">
-<meta property="og:description" content="这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。 这个工具能通过两条指令完成一个kubernetes集群的部署： # 创建一个 Master 节点 $ kubeadm init  # 将一个 Node 节点加入到当前集群中 $ kubeadm join &lt;Master节点的IP和端口 &gt;  1">
+<meta property="og:description" content="这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。 这个工具能通过两条指令完成一个kubernetes集群的部署： 12345# 创建一个 Master 节点$ kubeadm init# 将一个 Node 节点加入到当前集群中$ kubeadm join &lt;Master节点的IP和端口 &gt;">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174644.png">
 <meta property="article:published_time" content="2021-08-26T07:23:44.000Z">
 <meta property="article:modified_time" content="2021-08-26T11:03:15.000Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="后端">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174644.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/08/26/shi-yong-kubeadm-da-jian-gao-ke-yong-de-k8s-ji-qun/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
-  root: '/',
-  algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
-  noticeOutdate: undefined,
-  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
-  copy: {
-    success: '复制成功',
-    error: '复制错误',
-    noSupport: '浏览器不支持'
-  },
-  relativeDate: {
-    homepage: false,
-    post: false
-  },
-  runtime: '',
-  date_suffix: {
-    just: '刚刚',
-    min: '分钟前',
-    hour: '小时前',
-    day: '天前',
-    month: '个月前'
-  },
-  copyright: undefined,
-  lightbox: 'fancybox',
-  Snackbar: undefined,
-  source: {
-    justifiedGallery: {
-      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
-      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
-    }
-  },
-  isPhotoFigcaption: false,
-  islazyload: false,
-  isAnchor: false
-}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: '使用kubeadm搭建高可用的K8s集群',
-  isPost: true,
-  isHome: false,
-  isHighlightShrink: false,
-  isToc: true,
-  postUpdate: '2021-08-26 19:03:15'
-}</script><noscript><style type="text/css">
-  #nav {
-    opacity: 1
-  }
-  .justified-gallery img {
-    opacity: 1
-  }
-
-  #recent-posts time,
-  #post-meta time {
-    display: inline !important
-  }
-</style></noscript><script>(win=>{
-    win.saveToLocal = {
-      set: function setWithExpiry(key, value, ttl) {
-        if (ttl === 0) return
-        const now = new Date()
-        const expiryDay = ttl * 86400000
-        const item = {
-          value: value,
-          expiry: now.getTime() + expiryDay,
-        }
-        localStorage.setItem(key, JSON.stringify(item))
-      },
-
-      get: function getWithExpiry(key) {
-        const itemStr = localStorage.getItem(key)
-
-        if (!itemStr) {
-          return undefined
-        }
-        const item = JSON.parse(itemStr)
-        const now = new Date()
-
-        if (now.getTime() > item.expiry) {
-          localStorage.removeItem(key)
-          return undefined
-        }
-        return item.value
-      }
-    }
+<meta name="twitter:card" content="summary_large_image">
   
-    win.getScript = url => new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      script.onerror = reject
-      script.onload = script.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        script.onload = script.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(script)
-    })
   
-      win.activateDarkMode = function () {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = function () {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
-        
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-    const detectApple = () => {
-      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-        document.documentElement.classList.add('apple')
-      }
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>使用kubeadm搭建高可用的K8s集群 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
     }
-    detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.2.0">
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
-</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174644.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">兔の博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用kubeadm搭建高可用的K8s集群</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-26T07:23:44.000Z" title="发表于 2021-08-26 15:23:44">2021-08-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-08-26T11:03:15.000Z" title="更新于 2021-08-26 19:03:15">2021-08-26</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="使用kubeadm搭建高可用的K8s集群"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！"><a href="#这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！" class="headerlink" title="这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！"></a>这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！</h1><p>kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。</p>
-<p>这个工具能通过两条指令完成一个kubernetes集群的部署：</p>
-<pre class="line-numbers language-none"><code class="language-none"># 创建一个 Master 节点
-$ kubeadm init
+</head>
 
-# 将一个 Node 节点加入到当前集群中
-$ kubeadm join &lt;Master节点的IP和端口 &gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用kubeadm搭建高可用的K8s集群"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-26 15:23" pubdate>
+          2021年8月26日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          70 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">使用kubeadm搭建高可用的K8s集群</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2021年8月26日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！"><a href="#这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！" class="headerlink" title="这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！"></a>这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！</h1><p>kubeadm是官方社区推出的一个用于快速部署kubernetes集群的工具。</p>
+<p>这个工具能通过两条指令完成一个kubernetes集群的部署：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">创建一个 Master 节点</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">kubeadm init</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">将一个 Node 节点加入到当前集群中</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">kubeadm <span class="hljs-built_in">join</span> &lt;Master节点的IP和端口 &gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="1-安装要求"><a href="#1-安装要求" class="headerlink" title="1. 安装要求"></a>1. 安装要求</h2><p>在开始之前，部署Kubernetes集群机器需要满足以下几个条件：</p>
 <ul>
@@ -184,362 +346,538 @@ $ kubeadm join &lt;Master节点的IP和端口 &gt;<span aria-hidden="true" class
 <td>192.168.44.158</td>
 </tr>
 </tbody></table>
-<pre class="line-numbers language-none"><code class="language-none"># 关闭防火墙
-systemctl stop firewalld
-systemctl disable firewalld
-
-# 关闭selinux
-sed -i 's/enforcing/disabled/' /etc/selinux/config  # 永久
-setenforce 0  # 临时
-
-# 关闭swap
-swapoff -a  # 临时
-sed -ri 's/.*swap.*/#&amp;/' /etc/fstab    # 永久
-
-# 根据规划设置主机名
-hostnamectl set-hostname &lt;hostname&gt;
-
-# 在master添加hosts
-cat &gt;&gt; /etc/hosts &lt;&lt; EOF
-192.168.44.158    master.k8s.io   k8s-vip
-192.168.44.155    master01.k8s.io master1
-192.168.44.156    master02.k8s.io master2
-192.168.44.157    node01.k8s.io   node1
-EOF
-
-# 将桥接的IPv4流量传递到iptables的链
-cat &gt; /etc/sysctl.d/k8s.conf &lt;&lt; EOF
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-EOF
-sysctl --system  # 生效
-
-# 时间同步
-yum install ntpdate -y
-ntpdate time.windows.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 关闭防火墙</span><br>systemctl stop firewalld<br>systemctl <span class="hljs-built_in">disable</span> firewalld<br><br><span class="hljs-comment"># 关闭selinux</span><br>sed -i <span class="hljs-string">'s/enforcing/disabled/'</span> /etc/selinux/config  <span class="hljs-comment"># 永久</span><br>setenforce 0  <span class="hljs-comment"># 临时</span><br><br><span class="hljs-comment"># 关闭swap</span><br>swapoff -a  <span class="hljs-comment"># 临时</span><br>sed -ri <span class="hljs-string">'s/.*swap.*/#&amp;/'</span> /etc/fstab    <span class="hljs-comment"># 永久</span><br><br><span class="hljs-comment"># 根据规划设置主机名</span><br>hostnamectl set-hostname &lt;hostname&gt;<br><br><span class="hljs-comment"># 在master添加hosts</span><br><span class="hljs-built_in">cat</span> &gt;&gt; /etc/hosts &lt;&lt; <span class="hljs-string">EOF</span><br><span class="hljs-string">192.168.44.158    master.k8s.io   k8s-vip</span><br><span class="hljs-string">192.168.44.155    master01.k8s.io master1</span><br><span class="hljs-string">192.168.44.156    master02.k8s.io master2</span><br><span class="hljs-string">192.168.44.157    node01.k8s.io   node1</span><br><span class="hljs-string">EOF</span><br><br><span class="hljs-comment"># 将桥接的IPv4流量传递到iptables的链</span><br><span class="hljs-built_in">cat</span> &gt; /etc/sysctl.d/k8s.conf &lt;&lt; <span class="hljs-string">EOF</span><br><span class="hljs-string">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="hljs-string">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="hljs-string">EOF</span><br>sysctl --system  <span class="hljs-comment"># 生效</span><br><br><span class="hljs-comment"># 时间同步</span><br>yum install ntpdate -y<br>ntpdate time.windows.com<br></code></pre></td></tr></tbody></table></figure>
 
 
 
-<h2 id="3-所有master节点部署keepalived"><a href="#3-所有master节点部署keepalived" class="headerlink" title="3. 所有master节点部署keepalived"></a>3. 所有master节点部署keepalived</h2><h3 id="3-1-安装相关包和keepalived"><a href="#3-1-安装相关包和keepalived" class="headerlink" title="3.1 安装相关包和keepalived"></a>3.1 安装相关包和keepalived</h3><pre class="line-numbers language-none"><code class="language-none">yum install -y conntrack-tools libseccomp libtool-ltdl
-
-yum install -y keepalived<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="3-所有master节点部署keepalived"><a href="#3-所有master节点部署keepalived" class="headerlink" title="3. 所有master节点部署keepalived"></a>3. 所有master节点部署keepalived</h2><h3 id="3-1-安装相关包和keepalived"><a href="#3-1-安装相关包和keepalived" class="headerlink" title="3.1 安装相关包和keepalived"></a>3.1 安装相关包和keepalived</h3><figure class="highlight cmake"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cmake">yum <span class="hljs-keyword">install</span> -y conntrack-tools libseccomp libtool-ltdl<br><br>yum <span class="hljs-keyword">install</span> -y keepalived<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="3-2配置master节点"><a href="#3-2配置master节点" class="headerlink" title="3.2配置master节点"></a>3.2配置master节点</h3><p>master1节点配置</p>
-<pre class="line-numbers language-none"><code class="language-none">cat &gt; /etc/keepalived/keepalived.conf &lt;&lt;EOF 
-! Configuration File for keepalived
-
-global_defs {
-   router_id k8s
-}
-
-vrrp_script check_haproxy {
-    script "killall -0 haproxy"
-    interval 3
-    weight -2
-    fall 10
-    rise 2
-}
-
-vrrp_instance VI_1 {
-    state MASTER 
-    interface ens33 
-    virtual_router_id 51
-    priority 250
-    advert_int 1
-    authentication {
-        auth_type PASS
-        auth_pass ceb1b3ec013d66163d6ab
-    }
-    virtual_ipaddress {
-        192.168.44.158
-    }
-    track_script {
-        check_haproxy
-    }
-
-}
-EOF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight angelscript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">cat &gt; /etc/keepalived/keepalived.conf &lt;&lt;EOF <br>! Configuration File <span class="hljs-keyword">for</span> keepalived<br><br>global_defs {<br>   router_id k8s<br>}<br><br>vrrp_script check_haproxy {<br>    script <span class="hljs-string">"killall -0 haproxy"</span><br>    <span class="hljs-built_in">int</span>erval <span class="hljs-number">3</span><br>    weight <span class="hljs-number">-2</span><br>    fall <span class="hljs-number">10</span><br>    rise <span class="hljs-number">2</span><br>}<br><br>vrrp_instance VI_1 {<br>    state MASTER <br>    <span class="hljs-keyword">interface</span> <span class="hljs-symbol">ens33</span> <br>    <span class="hljs-symbol">virtual_router_id</span> <span class="hljs-symbol">51</span><br>    <span class="hljs-symbol">priority</span> <span class="hljs-symbol">250</span><br>    <span class="hljs-symbol">advert_int</span> <span class="hljs-symbol">1</span><br>    <span class="hljs-symbol">authentication</span> {<br>        auth_type PASS<br>        auth_pass ceb1b3ec013d66163d6ab<br>    }<br>    virtual_ipaddress {<br>        <span class="hljs-number">192.168</span><span class="hljs-number">.44</span><span class="hljs-number">.158</span><br>    }<br>    track_script {<br>        check_haproxy<br>    }<br><br>}<br>EOF<br></code></pre></td></tr></tbody></table></figure>
 
 <p>master2节点配置</p>
-<pre class="line-numbers language-none"><code class="language-none">cat &gt; /etc/keepalived/keepalived.conf &lt;&lt;EOF 
-! Configuration File for keepalived
-
-global_defs {
-   router_id k8s
-}
-
-vrrp_script check_haproxy {
-    script "killall -0 haproxy"
-    interval 3
-    weight -2
-    fall 10
-    rise 2
-}
-
-vrrp_instance VI_1 {
-    state BACKUP 
-    interface ens33 
-    virtual_router_id 51
-    priority 200
-    advert_int 1
-    authentication {
-        auth_type PASS
-        auth_pass ceb1b3ec013d66163d6ab
-    }
-    virtual_ipaddress {
-        192.168.44.158
-    }
-    track_script {
-        check_haproxy
-    }
-
-}
-EOF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight angelscript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">cat &gt; /etc/keepalived/keepalived.conf &lt;&lt;EOF <br>! Configuration File <span class="hljs-keyword">for</span> keepalived<br><br>global_defs {<br>   router_id k8s<br>}<br><br>vrrp_script check_haproxy {<br>    script <span class="hljs-string">"killall -0 haproxy"</span><br>    <span class="hljs-built_in">int</span>erval <span class="hljs-number">3</span><br>    weight <span class="hljs-number">-2</span><br>    fall <span class="hljs-number">10</span><br>    rise <span class="hljs-number">2</span><br>}<br><br>vrrp_instance VI_1 {<br>    state BACKUP <br>    <span class="hljs-keyword">interface</span> <span class="hljs-symbol">ens33</span> <br>    <span class="hljs-symbol">virtual_router_id</span> <span class="hljs-symbol">51</span><br>    <span class="hljs-symbol">priority</span> <span class="hljs-symbol">200</span><br>    <span class="hljs-symbol">advert_int</span> <span class="hljs-symbol">1</span><br>    <span class="hljs-symbol">authentication</span> {<br>        auth_type PASS<br>        auth_pass ceb1b3ec013d66163d6ab<br>    }<br>    virtual_ipaddress {<br>        <span class="hljs-number">192.168</span><span class="hljs-number">.44</span><span class="hljs-number">.158</span><br>    }<br>    track_script {<br>        check_haproxy<br>    }<br><br>}<br>EOF<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="3-3-启动和检查"><a href="#3-3-启动和检查" class="headerlink" title="3.3 启动和检查"></a>3.3 启动和检查</h3><p>在两台master节点都执行</p>
-<pre class="line-numbers language-none"><code class="language-none"># 启动keepalived
-$ systemctl start keepalived.service
-设置开机启动
-$ systemctl enable keepalived.service
-# 查看启动状态
-$ systemctl status keepalived.service<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight powershell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 启动keepalived</span><br><span class="hljs-variable">$</span> systemctl <span class="hljs-built_in">start</span> keepalived.service<br>设置开机启动<br><span class="hljs-variable">$</span> systemctl enable keepalived.service<br><span class="hljs-comment"># 查看启动状态</span><br><span class="hljs-variable">$</span> systemctl status keepalived.service<br></code></pre></td></tr></tbody></table></figure>
 
 <p>启动后查看master1的网卡信息</p>
-<pre class="line-numbers language-none"><code class="language-none">ip a s ens33<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">ip <span class="hljs-selector-tag">a</span> s ens33<br></code></pre></td></tr></tbody></table></figure>
 
 
 
-<h2 id="4-部署haproxy"><a href="#4-部署haproxy" class="headerlink" title="4. 部署haproxy"></a>4. 部署haproxy</h2><h3 id="4-1-安装"><a href="#4-1-安装" class="headerlink" title="4.1 安装"></a>4.1 安装</h3><pre class="line-numbers language-none"><code class="language-none">yum install -y haproxy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="4-部署haproxy"><a href="#4-部署haproxy" class="headerlink" title="4. 部署haproxy"></a>4. 部署haproxy</h2><h3 id="4-1-安装"><a href="#4-1-安装" class="headerlink" title="4.1 安装"></a>4.1 安装</h3><figure class="highlight cmake"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">yum <span class="hljs-keyword">install</span> -y haproxy<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="4-2-配置"><a href="#4-2-配置" class="headerlink" title="4.2 配置"></a>4.2 配置</h3><p>两台master节点的配置均相同，配置中声明了后端代理的两个master节点服务器，指定了haproxy运行的端口为16443等，因此16443端口为集群的入口</p>
-<pre class="line-numbers language-none"><code class="language-none">cat &gt; /etc/haproxy/haproxy.cfg &lt;&lt; EOF
-#---------------------------------------------------------------------
-# Global settings
-#---------------------------------------------------------------------
-global
-    # to have these messages end up in /var/log/haproxy.log you will
-    # need to:
-    # 1) configure syslog to accept network log events.  This is done
-    #    by adding the '-r' option to the SYSLOGD_OPTIONS in
-    #    /etc/sysconfig/syslog
-    # 2) configure local2 events to go to the /var/log/haproxy.log
-    #   file. A line like the following can be added to
-    #   /etc/sysconfig/syslog
-    #
-    #    local2.*                       /var/log/haproxy.log
-    #
-    log         127.0.0.1 local2
-    
-    chroot      /var/lib/haproxy
-    pidfile     /var/run/haproxy.pid
-    maxconn     4000
-    user        haproxy
-    group       haproxy
-    daemon 
-       
-    # turn on stats unix socket
-    stats socket /var/lib/haproxy/stats
-#---------------------------------------------------------------------
-# common defaults that all the 'listen' and 'backend' sections will
-# use if not designated in their block
-#---------------------------------------------------------------------  
-defaults
-    mode                    http
-    log                     global
-    option                  httplog
-    option                  dontlognull
-    option http-server-close
-    option forwardfor       except 127.0.0.0/8
-    option                  redispatch
-    retries                 3
-    timeout http-request    10s
-    timeout queue           1m
-    timeout connect         10s
-    timeout client          1m
-    timeout server          1m
-    timeout http-keep-alive 10s
-    timeout check           10s
-    maxconn                 3000
-#---------------------------------------------------------------------
-# kubernetes apiserver frontend which proxys to the backends
-#--------------------------------------------------------------------- 
-frontend kubernetes-apiserver
-    mode                 tcp
-    bind                 *:16443
-    option               tcplog
-    default_backend      kubernetes-apiserver    
-#---------------------------------------------------------------------
-# round robin balancing between the various backends
-#---------------------------------------------------------------------
-backend kubernetes-apiserver
-    mode        tcp
-    balance     roundrobin
-    server      master01.k8s.io   192.168.44.155:6443 check
-    server      master02.k8s.io   192.168.44.156:6443 check
-#---------------------------------------------------------------------
-# collection haproxy statistics message
-#---------------------------------------------------------------------
-listen stats
-    bind                 *:1080
-    stats auth           admin:awesomePassword
-    stats refresh        5s
-    stats realm          HAProxy\ Statistics
-    stats uri            /admin?stats
-EOF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight apache"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">cat</span> &gt; /etc/haproxy/haproxy.cfg &lt;&lt; EOF<br><span class="hljs-comment">#---------------------------------------------------------------------</span><br><span class="hljs-comment"># Global settings</span><br><span class="hljs-comment">#---------------------------------------------------------------------</span><br><span class="hljs-attribute">global</span><br>    <span class="hljs-comment"># to have these messages end up in /var/log/haproxy.log you will</span><br>    <span class="hljs-comment"># need to:</span><br>    <span class="hljs-comment"># 1) configure syslog to accept network log events.  This is done</span><br>    <span class="hljs-comment">#    by adding the '-r' option to the SYSLOGD_OPTIONS in</span><br>    <span class="hljs-comment">#    /etc/sysconfig/syslog</span><br>    <span class="hljs-comment"># 2) configure local2 events to go to the /var/log/haproxy.log</span><br>    <span class="hljs-comment">#   file. A line like the following can be added to</span><br>    <span class="hljs-comment">#   /etc/sysconfig/syslog</span><br>    <span class="hljs-comment">#</span><br>    <span class="hljs-comment">#    local2.*                       /var/log/haproxy.log</span><br>    <span class="hljs-comment">#</span><br>    <span class="hljs-attribute">log</span>         <span class="hljs-number">127.0.0.1</span> local2<br>    <br>    <span class="hljs-attribute">chroot</span>      /var/lib/haproxy<br>    <span class="hljs-attribute">pidfile</span>     /var/run/haproxy.pid<br>    <span class="hljs-attribute">maxconn</span>     <span class="hljs-number">4000</span><br>    <span class="hljs-attribute">user</span>        haproxy<br>    <span class="hljs-attribute">group</span>       haproxy<br>    <span class="hljs-attribute">daemon</span> <br>       <br>    <span class="hljs-comment"># turn on stats unix socket</span><br>    <span class="hljs-attribute">stats</span> socket /var/lib/haproxy/stats<br><span class="hljs-comment">#---------------------------------------------------------------------</span><br><span class="hljs-comment"># common defaults that all the 'listen' and 'backend' sections will</span><br><span class="hljs-comment"># use if not designated in their block</span><br><span class="hljs-comment">#---------------------------------------------------------------------  </span><br><span class="hljs-attribute">defaults</span><br>    <span class="hljs-attribute">mode</span>                    http<br>    <span class="hljs-attribute">log</span>                     global<br>    <span class="hljs-attribute">option</span>                  httplog<br>    <span class="hljs-attribute">option</span>                  dontlognull<br>    <span class="hljs-attribute">option</span> http-server-close<br>    <span class="hljs-attribute">option</span> forwardfor       except <span class="hljs-number">127.0.0.0</span>/<span class="hljs-number">8</span><br>    <span class="hljs-attribute">option</span>                  redispatch<br>    <span class="hljs-attribute">retries</span>                 <span class="hljs-number">3</span><br>    <span class="hljs-attribute">timeout</span> http-request    <span class="hljs-number">10</span>s<br>    <span class="hljs-attribute">timeout</span> queue           <span class="hljs-number">1</span>m<br>    <span class="hljs-attribute">timeout</span> connect         <span class="hljs-number">10</span>s<br>    <span class="hljs-attribute">timeout</span> client          <span class="hljs-number">1</span>m<br>    <span class="hljs-attribute">timeout</span> server          <span class="hljs-number">1</span>m<br>    <span class="hljs-attribute">timeout</span> http-keep-alive <span class="hljs-number">10</span>s<br>    <span class="hljs-attribute">timeout</span> check           <span class="hljs-number">10</span>s<br>    <span class="hljs-attribute">maxconn</span>                 <span class="hljs-number">3000</span><br><span class="hljs-comment">#---------------------------------------------------------------------</span><br><span class="hljs-comment"># kubernetes apiserver frontend which proxys to the backends</span><br><span class="hljs-comment">#--------------------------------------------------------------------- </span><br><span class="hljs-attribute">frontend</span> kubernetes-apiserver<br>    <span class="hljs-attribute">mode</span>                 tcp<br>    <span class="hljs-attribute">bind</span>                 *:<span class="hljs-number">16443</span><br>    <span class="hljs-attribute">option</span>               tcplog<br>    <span class="hljs-attribute">default_backend</span>      kubernetes-apiserver    <br><span class="hljs-comment">#---------------------------------------------------------------------</span><br><span class="hljs-comment"># round robin balancing between the various backends</span><br><span class="hljs-comment">#---------------------------------------------------------------------</span><br><span class="hljs-attribute">backend</span> kubernetes-apiserver<br>    <span class="hljs-attribute">mode</span>        tcp<br>    <span class="hljs-attribute">balance</span>     roundrobin<br>    <span class="hljs-attribute">server</span>      master01.k8s.io   <span class="hljs-number">192.168.44.155:6443</span> check<br>    <span class="hljs-attribute">server</span>      master02.k8s.io   <span class="hljs-number">192.168.44.156:6443</span> check<br><span class="hljs-comment">#---------------------------------------------------------------------</span><br><span class="hljs-comment"># collection haproxy statistics message</span><br><span class="hljs-comment">#---------------------------------------------------------------------</span><br><span class="hljs-attribute">listen</span> stats<br>    <span class="hljs-attribute">bind</span>                 *:<span class="hljs-number">1080</span><br>    <span class="hljs-attribute">stats</span> auth           admin:awesomePassword<br>    <span class="hljs-attribute">stats</span> refresh        <span class="hljs-number">5</span>s<br>    <span class="hljs-attribute">stats</span> realm          HAProxy\ Statistics<br>    <span class="hljs-attribute">stats</span> uri            /admin?stats<br><span class="hljs-attribute">EOF</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="4-3-启动和检查"><a href="#4-3-启动和检查" class="headerlink" title="4.3 启动和检查"></a>4.3 启动和检查</h3><p>两台master都启动</p>
-<pre class="line-numbers language-none"><code class="language-none"># 设置开机启动
-$ systemctl enable haproxy
-# 开启haproxy
-$ systemctl start haproxy
-# 查看启动状态
-$ systemctl status haproxy<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight powershell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 设置开机启动</span><br><span class="hljs-variable">$</span> systemctl enable haproxy<br><span class="hljs-comment"># 开启haproxy</span><br><span class="hljs-variable">$</span> systemctl <span class="hljs-built_in">start</span> haproxy<br><span class="hljs-comment"># 查看启动状态</span><br><span class="hljs-variable">$</span> systemctl status haproxy<br></code></pre></td></tr></tbody></table></figure>
 
 <p>检查端口</p>
-<pre class="line-numbers language-none"><code class="language-none">netstat -lntup|grep haproxy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight 1c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">netstat -lntup<span class="hljs-string">|grep haproxy</span><br></code></pre></td></tr></tbody></table></figure>
 
 
 
 <h2 id="5-所有节点安装Docker-x2F-kubeadm-x2F-kubelet"><a href="#5-所有节点安装Docker-x2F-kubeadm-x2F-kubelet" class="headerlink" title="5. 所有节点安装Docker/kubeadm/kubelet"></a>5. 所有节点安装Docker/kubeadm/kubelet</h2><p>Kubernetes默认CRI（容器运行时）为Docker，因此先安装Docker。</p>
-<h3 id="5-1-安装Docker"><a href="#5-1-安装Docker" class="headerlink" title="5.1 安装Docker"></a>5.1 安装Docker</h3><pre class="line-numbers language-none"><code class="language-none">$ wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo -O /etc/yum.repos.d/docker-ce.repo
-$ yum -y install docker-ce-18.06.1.ce-3.el7
-$ systemctl enable docker &amp;&amp; systemctl start docker
-$ docker --version
-Docker version 18.06.1-ce, build e68fc7a<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5-1-安装Docker"><a href="#5-1-安装Docker" class="headerlink" title="5.1 安装Docker"></a>5.1 安装Docker</h3><figure class="highlight vim"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs vim">$ wget https://mirrors.aliyun.<span class="hljs-keyword">com</span>/docker-<span class="hljs-keyword">ce</span>/linux/centos/docker-<span class="hljs-keyword">ce</span>.repo -O /etc/yum.repos.d/docker-<span class="hljs-keyword">ce</span>.repo<br>$ yum -<span class="hljs-keyword">y</span> install docker-<span class="hljs-keyword">ce</span>-<span class="hljs-number">18.06</span>.<span class="hljs-number">1</span>.<span class="hljs-keyword">ce</span>-<span class="hljs-number">3</span>.el7<br>$ systemctl enable docker &amp;&amp; systemctl start docker<br>$ docker --<span class="hljs-keyword">version</span><br>Docker <span class="hljs-keyword">version</span> <span class="hljs-number">18.06</span>.<span class="hljs-number">1</span>-<span class="hljs-keyword">ce</span>, build e68fc7a<br></code></pre></td></tr></tbody></table></figure>
 
-<pre class="line-numbers language-none"><code class="language-none">$ cat &gt; /etc/docker/daemon.json &lt;&lt; EOF
-{
-  "registry-mirrors": ["https://b9pmyelo.mirror.aliyuncs.com"]
-}
-EOF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">cat</span> &gt; /etc/docker/daemon.json &lt;&lt; <span class="hljs-string">EOF</span><br><span class="hljs-string">{</span><br><span class="hljs-string">  "registry-mirrors": ["https://b9pmyelo.mirror.aliyuncs.com"]</span><br><span class="hljs-string">}</span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></tbody></table></figure>
 
-<h3 id="5-2-添加阿里云YUM软件源"><a href="#5-2-添加阿里云YUM软件源" class="headerlink" title="5.2 添加阿里云YUM软件源"></a>5.2 添加阿里云YUM软件源</h3><pre class="line-numbers language-none"><code class="language-none">$ cat &gt; /etc/yum.repos.d/kubernetes.repo &lt;&lt; EOF
-[kubernetes]
-name=Kubernetes
-baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
-enabled=1
-gpgcheck=0
-repo_gpgcheck=0
-gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
-EOF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5-2-添加阿里云YUM软件源"><a href="#5-2-添加阿里云YUM软件源" class="headerlink" title="5.2 添加阿里云YUM软件源"></a>5.2 添加阿里云YUM软件源</h3><figure class="highlight awk"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs awk">$ cat &gt; <span class="hljs-regexp">/etc/yum</span>.repos.d/kubernetes.repo &lt;&lt; EOF<br>[kubernetes]<br>name=Kubernetes<br>baseurl=https:<span class="hljs-regexp">//mi</span>rrors.aliyun.com<span class="hljs-regexp">/kubernetes/yum</span><span class="hljs-regexp">/repos/</span>kubernetes-el7-x86_64<br>enabled=<span class="hljs-number">1</span><br>gpgcheck=<span class="hljs-number">0</span><br>repo_gpgcheck=<span class="hljs-number">0</span><br>gpgkey=https:<span class="hljs-regexp">//mi</span>rrors.aliyun.com<span class="hljs-regexp">/kubernetes/yum</span><span class="hljs-regexp">/doc/yum</span>-key.gpg https:<span class="hljs-regexp">//mi</span>rrors.aliyun.com<span class="hljs-regexp">/kubernetes/yum</span><span class="hljs-regexp">/doc/</span>rpm-package-key.gpg<br>EOF<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="5-3-安装kubeadm，kubelet和kubectl"><a href="#5-3-安装kubeadm，kubelet和kubectl" class="headerlink" title="5.3 安装kubeadm，kubelet和kubectl"></a>5.3 安装kubeadm，kubelet和kubectl</h3><p>由于版本更新频繁，这里指定版本号部署：</p>
-<pre class="line-numbers language-none"><code class="language-none">$ yum install -y kubelet-1.16.3 kubeadm-1.16.3 kubectl-1.16.3
-$ systemctl enable kubelet<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">yum install -y kubelet-1.16.3 kubeadm-1.16.3 kubectl-1.16.3</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">systemctl <span class="hljs-built_in">enable</span> kubelet</span><br></code></pre></td></tr></tbody></table></figure>
 
 
 
 <h2 id="6-部署Kubernetes-Master"><a href="#6-部署Kubernetes-Master" class="headerlink" title="6. 部署Kubernetes Master"></a>6. 部署Kubernetes Master</h2><h3 id="6-1-创建kubeadm配置文件"><a href="#6-1-创建kubeadm配置文件" class="headerlink" title="6.1 创建kubeadm配置文件"></a>6.1 创建kubeadm配置文件</h3><p>在具有vip的master上操作，这里为master1</p>
-<pre class="line-numbers language-none"><code class="language-none">$ mkdir /usr/local/kubernetes/manifests -p
-
-$ cd /usr/local/kubernetes/manifests/
-
-$ vi kubeadm-config.yaml
-
-apiServer:
-  certSANs:
-    - master1
-    - master2
-    - master.k8s.io
-    - 192.168.44.158
-    - 192.168.44.155
-    - 192.168.44.156
-    - 127.0.0.1
-  extraArgs:
-    authorization-mode: Node,RBAC
-  timeoutForControlPlane: 4m0s
-apiVersion: kubeadm.k8s.io/v1beta1
-certificatesDir: /etc/kubernetes/pki
-clusterName: kubernetes
-controlPlaneEndpoint: "master.k8s.io:16443"
-controllerManager: {}
-dns: 
-  type: CoreDNS
-etcd:
-  local:    
-    dataDir: /var/lib/etcd
-imageRepository: registry.aliyuncs.com/google_containers
-kind: ClusterConfiguration
-kubernetesVersion: v1.16.3
-networking: 
-  dnsDomain: cluster.local  
-  podSubnet: 10.244.0.0/16
-  serviceSubnet: 10.1.0.0/16
-scheduler: {}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight nestedtext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs nestedtext"><span class="hljs-attribute">$ mkdir /usr/local/kubernetes/manifests -p</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">$ cd /usr/local/kubernetes/manifests/</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">$ vi kubeadm-config.yaml</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">apiServer</span><span class="hljs-punctuation">:</span><br>  <span class="hljs-attribute">certSANs</span><span class="hljs-punctuation">:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">master1</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">master2</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">master.k8s.io</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">192.168.44.158</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">192.168.44.155</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">192.168.44.156</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">127.0.0.1</span><br>  <span class="hljs-attribute">extraArgs</span><span class="hljs-punctuation">:</span><br>    <span class="hljs-attribute">authorization-mode</span><span class="hljs-punctuation">:</span> <span class="hljs-string">Node,RBAC</span><br>  <span class="hljs-attribute">timeoutForControlPlane</span><span class="hljs-punctuation">:</span> <span class="hljs-string">4m0s</span><br><span class="hljs-attribute">apiVersion</span><span class="hljs-punctuation">:</span> <span class="hljs-string">kubeadm.k8s.io/v1beta1</span><br><span class="hljs-attribute">certificatesDir</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/etc/kubernetes/pki</span><br><span class="hljs-attribute">clusterName</span><span class="hljs-punctuation">:</span> <span class="hljs-string">kubernetes</span><br><span class="hljs-attribute">controlPlaneEndpoint</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"master.k8s.io:16443"</span><br><span class="hljs-attribute">controllerManager</span><span class="hljs-punctuation">:</span> <span class="hljs-string">{}</span><br><span class="hljs-attribute">dns</span><span class="hljs-punctuation">: </span><br>  <span class="hljs-attribute">type</span><span class="hljs-punctuation">:</span> <span class="hljs-string">CoreDNS</span><br><span class="hljs-attribute">etcd</span><span class="hljs-punctuation">:</span><br>  <span class="hljs-attribute">local</span><span class="hljs-punctuation">:    </span><br>    <span class="hljs-attribute">dataDir</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/var/lib/etcd</span><br><span class="hljs-attribute">imageRepository</span><span class="hljs-punctuation">:</span> <span class="hljs-string">registry.aliyuncs.com/google_containers</span><br><span class="hljs-attribute">kind</span><span class="hljs-punctuation">:</span> <span class="hljs-string">ClusterConfiguration</span><br><span class="hljs-attribute">kubernetesVersion</span><span class="hljs-punctuation">:</span> <span class="hljs-string">v1.16.3</span><br><span class="hljs-attribute">networking</span><span class="hljs-punctuation">: </span><br>  <span class="hljs-attribute">dnsDomain</span><span class="hljs-punctuation">:</span> <span class="hljs-string">cluster.local  </span><br>  <span class="hljs-attribute">podSubnet</span><span class="hljs-punctuation">:</span> <span class="hljs-string">10.244.0.0/16</span><br>  <span class="hljs-attribute">serviceSubnet</span><span class="hljs-punctuation">:</span> <span class="hljs-string">10.1.0.0/16</span><br><span class="hljs-attribute">scheduler</span><span class="hljs-punctuation">:</span> <span class="hljs-string">{}</span><br></code></pre></td></tr></tbody></table></figure>
 
 
 
-<h3 id="6-2-在master1节点执行"><a href="#6-2-在master1节点执行" class="headerlink" title="6.2 在master1节点执行"></a>6.2 在master1节点执行</h3><pre class="line-numbers language-none"><code class="language-none">$ kubeadm init --config kubeadm-config.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="6-2-在master1节点执行"><a href="#6-2-在master1节点执行" class="headerlink" title="6.2 在master1节点执行"></a>6.2 在master1节点执行</h3><figure class="highlight arduino"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arduino">$ kubeadm init --config kubeadm-config.yaml<br></code></pre></td></tr></tbody></table></figure>
 
 
 
 <p>按照提示配置环境变量，使用kubectl工具：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> -p <span class="token environment constant">$HOME</span>/.kube
-<span class="token function">sudo</span> <span class="token function">cp</span> -i /etc/kubernetes/admin.conf <span class="token environment constant">$HOME</span>/.kube/config
-<span class="token function">sudo</span> <span class="token function">chown</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">id</span> -u<span class="token variable">)</span></span><span class="token builtin class-name">:</span><span class="token variable"><span class="token variable">$(</span><span class="token function">id</span> -g<span class="token variable">)</span></span> <span class="token environment constant">$HOME</span>/.kube/config
-$ kubectl get nodes
-$ kubectl get pods -n kube-system<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> -p <span class="hljs-variable">$HOME</span>/.kube<br>sudo <span class="hljs-built_in">cp</span> -i /etc/kubernetes/admin.conf <span class="hljs-variable">$HOME</span>/.kube/config<br>sudo <span class="hljs-built_in">chown</span> $(<span class="hljs-built_in">id</span> -u):$(<span class="hljs-built_in">id</span> -g) <span class="hljs-variable">$HOME</span>/.kube/config<br>$ kubectl get nodes<br>$ kubectl get pods -n kube-system<br></code></pre></td></tr></tbody></table></figure>
 
 
 
 <p><strong>按照提示保存以下内容，一会要使用：</strong></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubeadm <span class="token function">join</span> master.k8s.io:16443 --token jv5z7n.3y1zi95p952y9p65 <span class="token punctuation">\</span>
-    --discovery-token-ca-cert-hash sha256:403bca185c2f3a4791685013499e7ce58f9848e2213e27194b75a2e3293d8812 <span class="token punctuation">\</span>
-    --control-plane <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubeadm <span class="hljs-built_in">join</span> master.k8s.io:16443 --token jv5z7n.3y1zi95p952y9p65 \<br>    --discovery-token-ca-cert-hash sha256:403bca185c2f3a4791685013499e7ce58f9848e2213e27194b75a2e3293d8812 \<br>    --control-plane <br></code></pre></td></tr></tbody></table></figure>
 
 <p>查看集群状态</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl get cs
-
-kubectl get pods -n kube-system<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl get cs<br><br>kubectl get pods -n kube-system<br></code></pre></td></tr></tbody></table></figure>
 
 
 
 <h2 id="7-安装集群网络"><a href="#7-安装集群网络" class="headerlink" title="7.安装集群网络"></a>7.安装集群网络</h2><p>从官方地址获取到flannel的yaml，在master1上执行</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> flannel
-<span class="token builtin class-name">cd</span> flannel
-<span class="token function">wget</span> -c https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> flannel<br><span class="hljs-built_in">cd</span> flannel<br>wget -c https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml<br></code></pre></td></tr></tbody></table></figure>
 
 
 
 <p>安装flannel网络</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl apply -f kube-flannel.yml <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl apply -f kube-flannel.yml <br></code></pre></td></tr></tbody></table></figure>
 
 <p>检查</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kubectl get pods -n kube-system<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl get pods -n kube-system<br></code></pre></td></tr></tbody></table></figure>
 
 
 
 <h2 id="8、master2节点加入集群"><a href="#8、master2节点加入集群" class="headerlink" title="8、master2节点加入集群"></a>8、master2节点加入集群</h2><h3 id="8-1-复制密钥及相关文件"><a href="#8-1-复制密钥及相关文件" class="headerlink" title="8.1 复制密钥及相关文件"></a>8.1 复制密钥及相关文件</h3><p>从master1复制密钥及相关文件到master2</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># ssh root@192.168.44.156 mkdir -p /etc/kubernetes/pki/etcd</span>
-
-<span class="token comment"># scp /etc/kubernetes/admin.conf root@192.168.44.156:/etc/kubernetes</span>
-   
-<span class="token comment"># scp /etc/kubernetes/pki/{ca.*,sa.*,front-proxy-ca.*} root@192.168.44.156:/etc/kubernetes/pki</span>
-   
-<span class="token comment"># scp /etc/kubernetes/pki/etcd/ca.* root@192.168.44.156:/etc/kubernetes/pki/etcd</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ssh root@192.168.44.156 mkdir -p /etc/kubernetes/pki/etcd</span><br><br><span class="hljs-comment"># scp /etc/kubernetes/admin.conf root@192.168.44.156:/etc/kubernetes</span><br>   <br><span class="hljs-comment"># scp /etc/kubernetes/pki/{ca.*,sa.*,front-proxy-ca.*} root@192.168.44.156:/etc/kubernetes/pki</span><br>   <br><span class="hljs-comment"># scp /etc/kubernetes/pki/etcd/ca.* root@192.168.44.156:/etc/kubernetes/pki/etcd</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="8-2-master2加入集群"><a href="#8-2-master2加入集群" class="headerlink" title="8.2 master2加入集群"></a>8.2 master2加入集群</h3><p>执行在master1上init后输出的join命令,需要带上参数<code>--control-plane</code>表示把master控制节点加入集群</p>
-<pre class="line-numbers language-none"><code class="language-none">kubeadm join master.k8s.io:16443 --token ckf7bs.30576l0okocepg8b     --discovery-token-ca-cert-hash sha256:19afac8b11182f61073e254fb57b9f19ab4d798b70501036fc69ebef46094aba --control-plane<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight stylus"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">kubeadm join master<span class="hljs-selector-class">.k8s</span><span class="hljs-selector-class">.io</span>:<span class="hljs-number">16443</span> <span class="hljs-attr">--token</span> ckf7bs.<span class="hljs-number">30576</span>l0okocepg8b     <span class="hljs-attr">--discovery-token-ca-cert-hash</span> sha256:<span class="hljs-number">19</span>afac8b11182f61073e254fb57b9f19ab4d798b70501036fc69ebef46094aba <span class="hljs-attr">--control-plane</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>检查状态</p>
-<pre class="line-numbers language-none"><code class="language-none">kubectl get node
-
-kubectl get pods --all-namespaces<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight routeros"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">kubectl <span class="hljs-built_in">get</span> node<br><br>kubectl <span class="hljs-built_in">get</span> pods --all-namespaces<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="5-加入Kubernetes-Node"><a href="#5-加入Kubernetes-Node" class="headerlink" title="5. 加入Kubernetes Node"></a>5. 加入Kubernetes Node</h2><p>在node1上执行</p>
 <p>向集群添加新节点，执行在kubeadm init输出的kubeadm join命令：</p>
-<pre class="line-numbers language-none"><code class="language-none">kubeadm join master.k8s.io:16443 --token ckf7bs.30576l0okocepg8b     --discovery-token-ca-cert-hash sha256:19afac8b11182f61073e254fb57b9f19ab4d798b70501036fc69ebef46094aba<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight stylus"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">kubeadm join master<span class="hljs-selector-class">.k8s</span><span class="hljs-selector-class">.io</span>:<span class="hljs-number">16443</span> <span class="hljs-attr">--token</span> ckf7bs.<span class="hljs-number">30576</span>l0okocepg8b     <span class="hljs-attr">--discovery-token-ca-cert-hash</span> sha256:<span class="hljs-number">19</span>afac8b11182f61073e254fb57b9f19ab4d798b70501036fc69ebef46094aba<br></code></pre></td></tr></tbody></table></figure>
 
 <p><strong>集群网络重新安装，因为添加了新的node节点</strong></p>
 <p>检查状态</p>
-<pre class="line-numbers language-none"><code class="language-none">kubectl get node
-
-kubectl get pods --all-namespaces<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight routeros"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">kubectl <span class="hljs-built_in">get</span> node<br><br>kubectl <span class="hljs-built_in">get</span> pods --all-namespaces<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="-1"><a href="#-1" class="headerlink" title=""></a></h2><h2 id="7-测试kubernetes集群"><a href="#7-测试kubernetes集群" class="headerlink" title="7. 测试kubernetes集群"></a>7. 测试kubernetes集群</h2><p>在Kubernetes集群中创建一个pod，验证是否正常运行：</p>
-<pre class="line-numbers language-none"><code class="language-none">$ kubectl create deployment nginx --image=nginx
-$ kubectl expose deployment nginx --port=80 --type=NodePort
-$ kubectl get pod,svc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight routeros"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">$ kubectl create deployment nginx <span class="hljs-attribute">--image</span>=nginx<br>$ kubectl expose deployment nginx <span class="hljs-attribute">--port</span>=80 <span class="hljs-attribute">--type</span>=NodePort<br>$ kubectl <span class="hljs-built_in">get</span> pod,svc<br></code></pre></td></tr></tbody></table></figure>
 
 <p>访问地址：<a href="http://NodeIP:Port">http://NodeIP:Port</a>  </p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Alexander Liu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/08/26/shi-yong-kubeadm-da-jian-gao-ke-yong-de-k8s-ji-qun/">http://example.com/2021/08/26/shi-yong-kubeadm-da-jian-gao-ke-yong-de-k8s-ji-qun/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">兔の博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%90%8E%E7%AB%AF/">后端</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174644.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/08/26/shi-yong-kubeadm-kuai-su-bu-shu-yi-ge-k8s-ji-qun/"><img class="prev-cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174644.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">使用kubeadm快速部署一个K8s集群</div></div></a></div><div class="next-post pull-right"><a href="/2021/08/25/elasticsearch-xue-xi/"><img class="next-cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825185001.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">ElasticSearch学习</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/08/19/docker-jin-jie/" title="Docker进阶"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210819205713.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-19</div><div class="title">Docker进阶</div></div></a></div><div><a href="/2021/05/19/docker-xue-xi/" title="Docker学习"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210819205713.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-19</div><div class="title">Docker学习</div></div></a></div><div><a href="/2021/08/25/elasticsearch-xue-xi/" title="ElasticSearch学习"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825185001.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-25</div><div class="title">ElasticSearch学习</div></div></a></div><div><a href="/2021/03/16/jdbc-xue-xi/" title="JDBC学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-16</div><div class="title">JDBC学习</div></div></a></div><div><a href="/2021/04/21/jsp-xue-xi/" title="JSP学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-21</div><div class="title">JSP学习</div></div></a></div><div><a href="/2021/02/20/java-fu-xi/" title="Java大二上所学内容"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-02-20</div><div class="title">Java大二上所学内容</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Alexander Liu</div><div class="author-info__description">欢迎来到兔子的小窝，这里是兔子的一些笔记分享</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%99%E6%98%AF%E5%B0%9A%E7%A1%85%E8%B0%B7K8s%E9%83%A8%E5%88%86%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E7%9A%84%E8%AF%BE%E4%BB%B6%EF%BC%8C%E6%90%AD%E5%BB%BA%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84K8s%E9%9B%86%E7%BE%A4%EF%BC%81%EF%BC%81%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">这是尚硅谷K8s部分环境配置的课件，搭建高可用的K8s集群！！！</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85%E8%A6%81%E6%B1%82"><span class="toc-number">1.1.</span> <span class="toc-text">1. 安装要求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%87%86%E5%A4%87%E7%8E%AF%E5%A2%83"><span class="toc-number">1.2.</span> <span class="toc-text">2. 准备环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%89%80%E6%9C%89master%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2keepalived"><span class="toc-number">1.3.</span> <span class="toc-text">3. 所有master节点部署keepalived</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%AE%89%E8%A3%85%E7%9B%B8%E5%85%B3%E5%8C%85%E5%92%8Ckeepalived"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 安装相关包和keepalived</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2%E9%85%8D%E7%BD%AEmaster%E8%8A%82%E7%82%B9"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2配置master节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%90%AF%E5%8A%A8%E5%92%8C%E6%A3%80%E6%9F%A5"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.3 启动和检查</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E9%83%A8%E7%BD%B2haproxy"><span class="toc-number">1.4.</span> <span class="toc-text">4. 部署haproxy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%AE%89%E8%A3%85"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%90%AF%E5%8A%A8%E5%92%8C%E6%A3%80%E6%9F%A5"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 启动和检查</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%89%80%E6%9C%89%E8%8A%82%E7%82%B9%E5%AE%89%E8%A3%85Docker-x2F-kubeadm-x2F-kubelet"><span class="toc-number">1.5.</span> <span class="toc-text">5. 所有节点安装Docker&#x2F;kubeadm&#x2F;kubelet</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%AE%89%E8%A3%85Docker"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 安装Docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E6%B7%BB%E5%8A%A0%E9%98%BF%E9%87%8C%E4%BA%91YUM%E8%BD%AF%E4%BB%B6%E6%BA%90"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 添加阿里云YUM软件源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E5%AE%89%E8%A3%85kubeadm%EF%BC%8Ckubelet%E5%92%8Ckubectl"><span class="toc-number">1.5.3.</span> <span class="toc-text">5.3 安装kubeadm，kubelet和kubectl</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E9%83%A8%E7%BD%B2Kubernetes-Master"><span class="toc-number">1.6.</span> <span class="toc-text">6. 部署Kubernetes Master</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E5%88%9B%E5%BB%BAkubeadm%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.6.1.</span> <span class="toc-text">6.1 创建kubeadm配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E5%9C%A8master1%E8%8A%82%E7%82%B9%E6%89%A7%E8%A1%8C"><span class="toc-number">1.6.2.</span> <span class="toc-text">6.2 在master1节点执行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%AE%89%E8%A3%85%E9%9B%86%E7%BE%A4%E7%BD%91%E7%BB%9C"><span class="toc-number">1.7.</span> <span class="toc-text">7.安装集群网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8%E3%80%81master2%E8%8A%82%E7%82%B9%E5%8A%A0%E5%85%A5%E9%9B%86%E7%BE%A4"><span class="toc-number">1.8.</span> <span class="toc-text">8、master2节点加入集群</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E5%A4%8D%E5%88%B6%E5%AF%86%E9%92%A5%E5%8F%8A%E7%9B%B8%E5%85%B3%E6%96%87%E4%BB%B6"><span class="toc-number">1.8.1.</span> <span class="toc-text">8.1 复制密钥及相关文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-master2%E5%8A%A0%E5%85%A5%E9%9B%86%E7%BE%A4"><span class="toc-number">1.8.2.</span> <span class="toc-text">8.2 master2加入集群</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.9.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%8A%A0%E5%85%A5Kubernetes-Node"><span class="toc-number">1.10.</span> <span class="toc-text">5. 加入Kubernetes Node</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#-1"><span class="toc-number">1.11.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%B5%8B%E8%AF%95kubernetes%E9%9B%86%E7%BE%A4"><span class="toc-number">1.12.</span> <span class="toc-text">7. 测试kubernetes集群</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071136497.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="1. 南京大学操作系统概述"/></a><div class="content"><a class="title" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述">1. 南京大学操作系统概述</a><time datetime="2022-12-07T03:35:42.000Z" title="发表于 2022-12-07 11:35:42">2022-12-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212051319709.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CPU Cache 学习"/></a><div class="content"><a class="title" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习">CPU Cache 学习</a><time datetime="2022-12-05T04:14:46.000Z" title="发表于 2022-12-05 12:14:46">2022-12-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/16/ml-ru-men/" title="ML入门"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ML入门"/></a><div class="content"><a class="title" href="/2022/01/16/ml-ru-men/" title="ML入门">ML入门</a><time datetime="2022-01-16T11:11:14.000Z" title="发表于 2022-01-16 19:11:14">2022-01-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习3"/></a><div class="content"><a class="title" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3">大数据分析与智能计算期末复习3</a><time datetime="2021-12-28T14:05:22.000Z" title="发表于 2021-12-28 22:05:22">2021-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习2"/></a><div class="content"><a class="title" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2">大数据分析与智能计算期末复习2</a><time datetime="2021-12-24T07:59:54.000Z" title="发表于 2021-12-24 15:59:54">2021-12-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Alexander Liu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%90%8E%E7%AB%AF/">#后端</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用kubeadm搭建高可用的K8s集群</div>
+      <div>http://example.com/2021/08/26/shi-yong-kubeadm-da-jian-gao-ke-yong-de-k8s-ji-qun/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/26/shi-yong-kubeadm-kuai-su-bu-shu-yi-ge-k8s-ji-qun/" title="使用kubeadm快速部署一个K8s集群">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用kubeadm快速部署一个K8s集群</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/25/elasticsearch-xue-xi/" title="ElasticSearch学习">
+                        <span class="hidden-mobile">ElasticSearch学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

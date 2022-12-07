@@ -1,151 +1,542 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>哈工大操作系统 | 兔の博客</title><meta name="author" content="Alexander Liu"><meta name="copyright" content="Alexander Liu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）第一章(启动)：什么是操作系统：  操作系统就是在计算机硬件上包了一层软件，方便我们使用硬件的！！！  管理哪些硬件：  CPU 内存 终端 磁盘 文件 网络 电源 多核   学习什么？  掌握计算机关键技术的工程师    揭开钢琴的盖子： 冯诺依曼提出的存储程序的思想   非常基本的尝试，将程序放入存储器，用指针指向代码，通过代码来执行">
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）第一章(启动)：什么是操作系统：  操作系统就是在计算机硬件上包了一层软件，方便我们使用硬件的！！！  管理哪些硬件：  CPU 内存 终端 磁盘 文件 网络 电源 多核   学习什么？  掌握计算机关键技术的工程师    揭开钢琴的盖子： 冯诺依曼提出的存储程序的思想   非常基本的尝试，将程序放入存储器，用指针指向代码，通过代码来执行">
 <meta property="og:type" content="article">
 <meta property="og:title" content="哈工大操作系统">
 <meta property="og:url" content="http://example.com/2021/08/31/shen-ru-xue-xi-cao-zuo-xi-tong/index.html">
 <meta property="og:site_name" content="兔の博客">
 <meta property="og:description" content="这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）第一章(启动)：什么是操作系统：  操作系统就是在计算机硬件上包了一层软件，方便我们使用硬件的！！！  管理哪些硬件：  CPU 内存 终端 磁盘 文件 网络 电源 多核   学习什么？  掌握计算机关键技术的工程师    揭开钢琴的盖子： 冯诺依曼提出的存储程序的思想   非常基本的尝试，将程序放入存储器，用指针指向代码，通过代码来执行">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103114.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831153205.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831155455.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831155752.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831160117.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831160823.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831160912.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831162103.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831162631.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831163048.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901192015.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901192355.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901194203.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901194335.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901194419.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901195144.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901195901.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200040.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200505.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200604.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200823.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200928.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901201254.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902144041.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902144610.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902144856.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902150024.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902151100.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902151817.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902153853.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902154509.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902155329.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902155841.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902160110.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902160552.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210903152639.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210903153206.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904114430.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904114816.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904115302.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904120322.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904120720.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904141914.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904142805.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904143010.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904143320.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904144929.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904145510.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904145653.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904150210.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904151417.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905150331.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905150907.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905151158.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905151512.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152031.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152404.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152701.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152859.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905153118.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905153734.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906101359.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906101803.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906102523.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906102856.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906104927.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906142526.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906214948.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906215326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906215737.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210907215731.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210907220043.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210907220157.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908090252.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908090300.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908090920.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091018.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091048.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091156.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091222.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091436.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091714.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091823.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091906.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091940.png">
+<meta property="og:image" content="c:/Users/Alexander/AppData/Roaming/Typora/typora-user-images/image-20210908092014611.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908202232.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909190203.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909190631.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909190808.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909191359.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909192947.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909193326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909193658.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909194958.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909202625.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911214538.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911215321.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911215551.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911215610.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220010.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220110.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220324.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220226.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220703.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911221902.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912145346.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912145723.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912150404.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912150857.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151217.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151340.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151507.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151627.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912152644.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912154048.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912154426.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912154739.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913091557.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092127.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092350.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092554.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092710.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913093039.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913093815.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913093848.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913095333.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913100344.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913100544.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913163242.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913170522.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914151647.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914152222.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914152901.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153333.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153504.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153730.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153809.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915091146.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915091810.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915092544.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915093011.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915093647.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916152341.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916152642.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916152948.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916153134.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916153242.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916153934.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917150500.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917150754.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917151042.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917152901.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917152916.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153212.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153411.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153434.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153703.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153737.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153921.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917183841.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184043.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184230.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184609.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184729.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917185041.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917185253.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917190122.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917190724.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917191114.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092318.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092427.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092701.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092855.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918093414.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918093618.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918094136.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918094527.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918094823.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095058.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095527.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095644.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095815.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125018.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125339.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125411.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125851.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125952.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130046.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130243.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130717.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130811.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920134317.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920134957.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920135843.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140455.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140750.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140815.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140940.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920141013.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920141655.png">
+<meta property="og:image" content="c:/Users/Alexander/AppData/Roaming/Typora/typora-user-images/image-20210920142210196.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922185434.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922191436.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922191807.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922192023.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922192108.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922193052.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922193501.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922193821.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922194517.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922194820.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922195225.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923094314.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923102116.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923095951.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923100557.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923101615.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923162706.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163012.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163348.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163840.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163940.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923164021.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923165011.png">
 <meta property="article:published_time" content="2021-08-31T07:01:12.000Z">
-<meta property="article:modified_time" content="2022-12-07T08:23:02.706Z">
+<meta property="article:modified_time" content="2022-12-07T09:50:57.469Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="大三自学">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103114.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/08/31/shen-ru-xue-xi-cao-zuo-xi-tong/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
-  root: '/',
-  algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
-  noticeOutdate: undefined,
-  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
-  copy: {
-    success: '复制成功',
-    error: '复制错误',
-    noSupport: '浏览器不支持'
-  },
-  relativeDate: {
-    homepage: false,
-    post: false
-  },
-  runtime: '',
-  date_suffix: {
-    just: '刚刚',
-    min: '分钟前',
-    hour: '小时前',
-    day: '天前',
-    month: '个月前'
-  },
-  copyright: undefined,
-  lightbox: 'fancybox',
-  Snackbar: undefined,
-  source: {
-    justifiedGallery: {
-      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
-      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
-    }
-  },
-  isPhotoFigcaption: false,
-  islazyload: false,
-  isAnchor: false
-}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: '哈工大操作系统',
-  isPost: true,
-  isHome: false,
-  isHighlightShrink: false,
-  isToc: true,
-  postUpdate: '2022-12-07 16:23:02'
-}</script><noscript><style type="text/css">
-  #nav {
-    opacity: 1
-  }
-  .justified-gallery img {
-    opacity: 1
-  }
-
-  #recent-posts time,
-  #post-meta time {
-    display: inline !important
-  }
-</style></noscript><script>(win=>{
-    win.saveToLocal = {
-      set: function setWithExpiry(key, value, ttl) {
-        if (ttl === 0) return
-        const now = new Date()
-        const expiryDay = ttl * 86400000
-        const item = {
-          value: value,
-          expiry: now.getTime() + expiryDay,
-        }
-        localStorage.setItem(key, JSON.stringify(item))
-      },
-
-      get: function getWithExpiry(key) {
-        const itemStr = localStorage.getItem(key)
-
-        if (!itemStr) {
-          return undefined
-        }
-        const item = JSON.parse(itemStr)
-        const now = new Date()
-
-        if (now.getTime() > item.expiry) {
-          localStorage.removeItem(key)
-          return undefined
-        }
-        return item.value
-      }
-    }
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831153205.png">
   
-    win.getScript = url => new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      script.onerror = reject
-      script.onload = script.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        script.onload = script.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(script)
-    })
   
-      win.activateDarkMode = function () {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = function () {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
-        
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-    const detectApple = () => {
-      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-        document.documentElement.classList.add('apple')
-      }
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>哈工大操作系统 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
     }
-    detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.2.0">
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
-</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103114.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">兔の博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">哈工大操作系统</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-31T07:01:12.000Z" title="发表于 2021-08-31 15:01:12">2021-08-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-12-07T08:23:02.706Z" title="更新于 2022-12-07 16:23:02">2022-12-07</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="哈工大操作系统"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）"><a href="#这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）" class="headerlink" title="这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）"></a>这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）</h1><h1 id="第一章-启动-："><a href="#第一章-启动-：" class="headerlink" title="第一章(启动)："></a>第一章(启动)：</h1><h2 id="什么是操作系统："><a href="#什么是操作系统：" class="headerlink" title="什么是操作系统："></a>什么是操作系统：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831153205.png" alt="image-20210831153204926"></p>
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="哈工大操作系统"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-31 15:01" pubdate>
+          2021年8月31日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          16k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          131 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">哈工大操作系统</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月7日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）"><a href="#这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）" class="headerlink" title="这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）"></a>这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）</h1><h1 id="第一章-启动-："><a href="#第一章-启动-：" class="headerlink" title="第一章(启动)："></a>第一章(启动)：</h1><h2 id="什么是操作系统："><a href="#什么是操作系统：" class="headerlink" title="什么是操作系统："></a>什么是操作系统：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831153205.png" srcset="/img/loading.gif" lazyload alt="image-20210831153204926"></p>
 <ul>
 <li><p>操作系统就是在计算机硬件上包了一层软件，方便我们使用硬件的！！！</p>
 </li>
@@ -170,7 +561,7 @@
 <h2 id="揭开钢琴的盖子："><a href="#揭开钢琴的盖子：" class="headerlink" title="揭开钢琴的盖子："></a>揭开钢琴的盖子：</h2><ul>
 <li>冯诺依曼提出的存储程序的思想</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831155455.png" alt="image-20210831155455611"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831155455.png" srcset="/img/loading.gif" lazyload alt="image-20210831155455611"></p>
 <p>非常基本的尝试，将程序放入存储器，用指针指向代码，通过代码来执行。</p>
 <ul>
 <li><p><strong>取指执行</strong></p>
@@ -179,12 +570,12 @@
 <ul>
 <li>ROM BIOS是固化的！！！（Base Input Output System就是固化的）</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831155752.png" alt="image-20210831155752116"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831155752.png" srcset="/img/loading.gif" lazyload alt="image-20210831155752116"></p>
 <ul>
 <li>固化的这部分的内容，在电脑开机的时候，就会自动执行嗷！！！</li>
 <li>0磁道0扇区，就是操作系统的引导扇区嗷！！！这是操作系统的第一段代码。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831160117.png" alt="image-20210831160117500"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831160117.png" srcset="/img/loading.gif" lazyload alt="image-20210831160117500"></p>
 </li>
 <li><p>汇编：</p>
 <ul>
@@ -192,57 +583,57 @@
 </ul>
 </li>
 </ul>
-<h3 id="启动过程汇编代码解析："><a href="#启动过程汇编代码解析：" class="headerlink" title="启动过程汇编代码解析："></a>启动过程汇编代码解析：</h3><p>  <img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831160823.png" alt="image-20210831160822348"></p>
+<h3 id="启动过程汇编代码解析："><a href="#启动过程汇编代码解析：" class="headerlink" title="启动过程汇编代码解析："></a>启动过程汇编代码解析：</h3><p>  <img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831160823.png" srcset="/img/loading.gif" lazyload alt="image-20210831160822348"></p>
 <p>  jmpi</p>
-<p>  <img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831160912.png" alt="image-20210831160912641"></p>
+<p>  <img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831160912.png" srcset="/img/loading.gif" lazyload alt="image-20210831160912641"></p>
 <ul>
 <li>BootSect上半部分的代码把自己挪动了一下，腾出了空间嗷！！！上面的jmpi本质上就是跳到了一下段代码go，本质上还是顺序执行嗷！！！</li>
 </ul>
-<p>  <img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831162103.png" alt="image-20210831162103355"></p>
+<p>  <img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831162103.png" srcset="/img/loading.gif" lazyload alt="image-20210831162103355"></p>
 <p>  因为一个传统的硬盘扇区的大小就是512个字节嗷！！！</p>
 <ul>
 <li>下面打印出了图标嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831162631.png" alt="image-20210831162631606"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831162631.png" srcset="/img/loading.gif" lazyload alt="image-20210831162631606"></p>
 <ul>
 <li>下面就是跳转到了read_it部分的代码嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831163048.png" alt="image-20210831163048114"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210831163048.png" srcset="/img/loading.gif" lazyload alt="image-20210831163048114"></p>
 <h2 id="操作系统启动："><a href="#操作系统启动：" class="headerlink" title="操作系统启动："></a>操作系统启动：</h2><ul>
 <li>Setup读入OS的相关设置：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901192015.png" alt="image-20210901192015617"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901192015.png" srcset="/img/loading.gif" lazyload alt="image-20210901192015617"></p>
 <ul>
 <li>Setup将操作系统代码移动到0地址嗷！！！：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901192355.png" alt="image-20210901192355791"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901192355.png" srcset="/img/loading.gif" lazyload alt="image-20210901192355791"></p>
 <ul>
 <li>保护模式：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901194203.png" alt="image-20210901194203165"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901194203.png" srcset="/img/loading.gif" lazyload alt="image-20210901194203165"></p>
 <ul>
 <li>上面引入了GDT的概念：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901194335.png" alt="image-20210901194335159"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901194335.png" srcset="/img/loading.gif" lazyload alt="image-20210901194335159"></p>
 <ul>
 <li>地址翻译和中断处理：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901194419.png" alt="image-20210901194419779"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901194419.png" srcset="/img/loading.gif" lazyload alt="image-20210901194419779"></p>
 <ul>
 <li>下面就是8这个位置对应的东西，硬件是如何解释的：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901195144.png" alt="image-20210901195144516"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901195144.png" srcset="/img/loading.gif" lazyload alt="image-20210901195144516"></p>
 <p>本质上还是跳转到了0000这个位置嗷！！！回到了操作系统代码的初始位置，开始执行操作系统的代码，启动过程到这里就结束了嗷！！！</p>
 <h3 id="跳转到System模块执行："><a href="#跳转到System模块执行：" class="headerlink" title="跳转到System模块执行："></a>跳转到System模块执行：</h3><ul>
 <li>Bootsect   —&gt;   Setup   —&gt;   System，我们必须严格限制它们位于内存中的位置，一切的事情都要由我们自己控制。Linux/Makefile , Makefile十分重要嗷！！！每一个细节都要我们自己来做嗷！！！</li>
 <li>操作系统被Makefile编译为了Image，这个Image通过对应的操作可以写入0磁道，0扇区的位置。然后再用Image进行操作系统的引导程序，这样才能成功嗷！！！</li>
 </ul>
 <h3 id="Head-s："><a href="#Head-s：" class="headerlink" title="Head.s："></a>Head.s：</h3><p>为啥叫head，因为是System第一个.s文件嗷！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901195901.png" alt="image-20210901195901302"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901195901.png" srcset="/img/loading.gif" lazyload alt="image-20210901195901302"></p>
 <ul>
 <li>setup是进入保护模式，head是进入系统之后的初始化：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200040.png" alt="image-20210901200039982"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200040.png" srcset="/img/loading.gif" lazyload alt="image-20210901200039982"></p>
 <p>上面是建立临时的gdt表之类的，这里是正式的建立这些表格嗷！！！</p>
 <p>使用了16位汇编，32位汇编，内嵌汇编等嗷！！！</p>
 <ul>
@@ -255,17 +646,17 @@
 <li>c -&gt; c，本质上也是编译成了汇编，底层发生了对应地址的调用的嘛！！！</li>
 <li>汇编 -&gt; c，和上面没啥区别嗷！！！本质底层都是汇编嘛！！！本质上都是通过栈来实现的嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200505.png" alt="image-20210901200505479"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200505.png" srcset="/img/loading.gif" lazyload alt="image-20210901200505479"></p>
 <ul>
 <li>本质上，也是压入对应的参数，然后压入c语言函数对应的位置嘛！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200604.png" alt="image-20210901200604520"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200823.png" alt="image-20210901200823117"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200604.png" srcset="/img/loading.gif" lazyload alt="image-20210901200604520"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200823.png" srcset="/img/loading.gif" lazyload alt="image-20210901200823117"></p>
 <p>上面就是把参数压入栈，然后把main返回地址压入栈嗷！！！</p>
 </li>
 </ul>
-<h3 id="main-c和mem-init："><a href="#main-c和mem-init：" class="headerlink" title="main.c和mem_init："></a>main.c和mem_init：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200928.png" alt="image-20210901200928608"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901201254.png" alt="image-20210901201253845"></p>
+<h3 id="main-c和mem-init："><a href="#main-c和mem-init：" class="headerlink" title="main.c和mem_init："></a>main.c和mem_init：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901200928.png" srcset="/img/loading.gif" lazyload alt="image-20210901200928608"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210901201254.png" srcset="/img/loading.gif" lazyload alt="image-20210901201253845"></p>
 <ul>
 <li>summary：<ul>
 <li>将操作系统从硬盘读取内存！！！（这样我们才能取指执行嗷！！！）</li>
@@ -282,23 +673,23 @@
 </li>
 <li>shell也是一段程序，/bin/sh。系统在初始化的最后一句就是启动/bin/sh。开启shell程序。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902144041.png" alt="image-20210902144040576"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902144041.png" srcset="/img/loading.gif" lazyload alt="image-20210902144040576"></p>
 <p>所以shell本质上就是一个无限循环的程序嗷！！！</p>
 <ul>
 <li>图形化界面的原理：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902144610.png" alt="image-20210902144609652"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902144610.png" srcset="/img/loading.gif" lazyload alt="image-20210902144609652"></p>
 <p>插座：C语言 + 重要函数（这个就是操作系统提供的接口嗷！！！）</p>
 <ul>
 <li>系统调用：<code>system_call</code>，就是与操作系统交互的接口嗷！！！</li>
 <li>系统调用例子：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902144856.png" alt="image-20210902144855322"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902144856.png" srcset="/img/loading.gif" lazyload alt="image-20210902144855322"></p>
 <p>POSIX就是IEEE定义的一个标准族，如果对于系统是否提供特定功能有疑惑，直接上POSIX官方文档查找即可。</p>
 <ul>
 <li>总结：操作系统接口就是一堆系统调用函数嗷！！！</li>
 </ul>
-<h2 id="系统调用的实现："><a href="#系统调用的实现：" class="headerlink" title="系统调用的实现："></a>系统调用的实现：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902150024.png" alt="image-20210902150023509"></p>
+<h2 id="系统调用的实现："><a href="#系统调用的实现：" class="headerlink" title="系统调用的实现："></a>系统调用的实现：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902150024.png" srcset="/img/loading.gif" lazyload alt="image-20210902150023509"></p>
 <ul>
 <li><p>这里不让jump，咋不让他进去的？</p>
 <ul>
@@ -308,7 +699,7 @@
 <li><p>那么硬件到底干了啥呢？</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902151100.png" alt="image-20210902151059692"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902151100.png" srcset="/img/loading.gif" lazyload alt="image-20210902151059692"></p>
 <p>硬件判断是否符合优先级要求，只有符合要求的才能进得去嗷！！！</p>
 <p>当OS启动Shell给用户执行的时候，CS中的CPL就是3，gdt表中对应的DPL对应的表项为0。当执行系统调用的时候变为0，回到用户态的时候又变成了3嗷！！！</p>
 <ul>
@@ -318,24 +709,24 @@
 </li>
 <li>中断！！！：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902151817.png" alt="image-20210902151816782"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902151817.png" srcset="/img/loading.gif" lazyload alt="image-20210902151816782"></p>
 <ul>
 <li>从printf到最终调用操作系统经历了什么？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902153853.png" alt="image-20210902153853244"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902153853.png" srcset="/img/loading.gif" lazyload alt="image-20210902153853244"></p>
 <ul>
 <li><p>实现细节：</p>
 <ul>
 <li>通过宏来实现的嗷！！！</li>
 <li>上面那个右下方就是定义了一个系统调用的宏嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902154509.png" alt="image-20210902154509512"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902154509.png" srcset="/img/loading.gif" lazyload alt="image-20210902154509512"></p>
 </li>
 <li><p><code>INT 0x80</code>如何执行？</p>
 </li>
 </ul>
 <p>从<code>int 0x80</code>进入执行，执行完成之后再跳出来，之后继续执行嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902155329.png" alt="image-20210902155329163"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902155329.png" srcset="/img/loading.gif" lazyload alt="image-20210902155329163"></p>
 <p>本质就是把后面那张表给填好了</p>
 <p>CS设置为8，addr设置为system_call</p>
 <p>这里的8很熟悉啊，<code>jmpi 0 ,8</code>， CS=8的时候刚好是写系统代码段嗷！！！</p>
@@ -343,13 +734,13 @@
 <ul>
 <li>system_call又干了什么呢？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902155841.png" alt="image-20210902155840557"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902155841.png" srcset="/img/loading.gif" lazyload alt="image-20210902155840557"></p>
 <p>这里就从中断表中，找到了对应的中断函数的地址，转去执行中断函数了嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902160110.png" alt="image-20210902160110392"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902160110.png" srcset="/img/loading.gif" lazyload alt="image-20210902160110392"></p>
 <ul>
 <li>总结：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902160552.png" alt="image-20210902160551953"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210902160552.png" srcset="/img/loading.gif" lazyload alt="image-20210902160551953"></p>
 <h2 id="操作系统的历史："><a href="#操作系统的历史：" class="headerlink" title="操作系统的历史："></a>操作系统的历史：</h2><ul>
 <li><p>批处理系统嗷！！！（一个作业完成，自动读入下一个作业嗷！！！）。</p>
 </li>
@@ -393,7 +784,7 @@
 <li>最直观想法：<ul>
 <li>你把PC初值设置好了之后，让其自动执行就可以了嘛！！！CPU就会自动取值执行嗷！！！</li>
 <li>有问题吗？<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210903152639.png" alt="image-20210903152638769"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210903152639.png" srcset="/img/loading.gif" lazyload alt="image-20210903152638769"></li>
 <li>I/O太慢了，CPU又要等I/O。如果执行10^6的计算指令，一条I/O指令，CPU利用率采用50%的利用率orz，所以I/O没有管理好哇！！！</li>
 </ul>
 </li>
@@ -406,7 +797,7 @@
 </li>
 <li>多道程序交替执行，好东西啊！！！哈哈哈哈哈！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210903153206.png" alt="image-20210903153205603"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210903153206.png" srcset="/img/loading.gif" lazyload alt="image-20210903153205603"></p>
 <ul>
 <li>CPU上交替的执行多个程序被称为并发嗷！！！</li>
 <li>怎么做到并发呢？<ul>
@@ -431,18 +822,18 @@
 <ul>
 <li><code>if(!fork()){init();}</code>，这是main.c中的最后一个调用，init执行了shell</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904114430.png" alt="image-20210904114415503"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904114430.png" srcset="/img/loading.gif" lazyload alt="image-20210904114415503"></p>
 </li>
 <li><p>操作系统就是通过管理进程来管理用户对于计算机的使用的嗷！！！</p>
 </li>
 <li><p>多进程如何组织和存放？</p>
 </li>
 <li><p>感知和组织进程全靠PCB嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904114816.png" alt="image-20210904114815939"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904114816.png" srcset="/img/loading.gif" lazyload alt="image-20210904114815939"></p>
 </li>
 <li><p>多进程如何交替？</p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904115302.png" alt="image-20210904115302384"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904115302.png" srcset="/img/loading.gif" lazyload alt="image-20210904115302384"></li>
 </ul>
 </li>
 <li><p>操作系统常见的进程调度算法：</p>
@@ -463,14 +854,14 @@
 <li><p>要用汇编进行控制嗷，C语言的控制不够精细，要用汇编实现精细的控制嗷！！！</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904120322.png" alt="image-20210904120321875"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904120322.png" srcset="/img/loading.gif" lazyload alt="image-20210904120321875"></p>
 <ul>
 <li><p>多个进程相互操作的时候，可能会产生相互影响嗷！！！如果进程1，修改了进程2的东西，不就会导致出现问题吗？</p>
 <ul>
 <li>DPL和CPL可以吗？不可以，这些东西设计出来是为了保护操作系统的，不是用在这种场合的嗷！！！对于用户进程来说，DPL都是等于3啊…</li>
 <li>如何限制进程之间的相互访问和修改？通过映射表实现多进程的地址的分离嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904120720.png" alt="image-20210904120719467"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904120720.png" srcset="/img/loading.gif" lazyload alt="image-20210904120719467"></p>
 </li>
 <li><p>多进程如何合作？</p>
 <ul>
@@ -494,7 +885,7 @@
 <h3 id="Yield（线程切换）："><a href="#Yield（线程切换）：" class="headerlink" title="Yield（线程切换）："></a>Yield（线程切换）：</h3><ul>
 <li><p>线程切换的骨干代码：</p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904141914.png" alt="image-20210904141914123"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904141914.png" srcset="/img/loading.gif" lazyload alt="image-20210904141914123"></li>
 </ul>
 </li>
 <li><p>两个执行序列和一个栈：</p>
@@ -503,7 +894,7 @@
 <li>return会弹栈，然后跳转到弹栈的栈顶，开始继续执行嗷！！！</li>
 <li>Yield才允许跨栈，ret是不允许跨栈的嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904142805.png" alt="image-20210904142804408"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904142805.png" srcset="/img/loading.gif" lazyload alt="image-20210904142804408"></p>
 <ul>
 <li>这里的逻辑是，A调用了B，B执行完了，应该回到A。但是这里的B执行完了之后却跳转到了D中执行，人傻了orz。</li>
 </ul>
@@ -516,7 +907,7 @@
 </li>
 </ul>
 <p>100 -&gt; 200 -&gt; 300 -&gt; 400 -&gt; 400执行完成之后，还是执行100中的内容：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904143010.png" alt="image-20210904143010418"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904143010.png" srcset="/img/loading.gif" lazyload alt="image-20210904143010418"></p>
 <ul>
 <li>上面哪个Yield，本质上就对于内存中的寄存器，进行了切换栈的操作嗷！！！T<strong>CB和栈相互配合，这是核心的部分嗷</strong>！！！</li>
 </ul>
@@ -525,28 +916,28 @@
 <ul>
 <li>核心代码解决这个问题：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904143320.png" alt="image-20210904143319802"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904143320.png" srcset="/img/loading.gif" lazyload alt="image-20210904143319802"></p>
 <p>jmp 204这个语句，导致<code>}</code>不执行，栈内保存的204这个地址始终没有弹出来orz，咱把它去掉，那么栈中的204就会弹出来啦！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904144929.png" alt="image-20210904144929062"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904144929.png" srcset="/img/loading.gif" lazyload alt="image-20210904144929062"></p>
 <p>说白了，这里的Yield函数，本质上就是把寄存器中的栈切换为了1000而已，进程的跳转，本质上是通过1000的204栈顶元素和Yield函数的<code>}</code>实现的嗷！！！</p>
 <p>204弹出来执行之后，再次遇到<code>}</code>。再次ret弹出来104，跳转到了A中的方法继续执行，这样就实现了我们的目的嗷！！！</p>
 <ul>
 <li>Yield实现线程的切换 -&gt; 进程独立的栈（TCB和栈相互对应嗷！！！）加上寄存器的切换（栈的切换），实质上就实现了进程切换和顺序执行协调的功能嗷！！</li>
 </ul>
-<h3 id="Create（线程初始化）："><a href="#Create（线程初始化）：" class="headerlink" title="Create（线程初始化）："></a>Create（线程初始化）：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904145510.png" alt="image-20210904145509613"></p>
+<h3 id="Create（线程初始化）："><a href="#Create（线程初始化）：" class="headerlink" title="Create（线程初始化）："></a>Create（线程初始化）：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904145510.png" srcset="/img/loading.gif" lazyload alt="image-20210904145509613"></p>
 <ul>
 <li>初始化无非就是完成了线程对应的栈的初始化而已嘛！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904145653.png" alt="image-20210904145653128"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904145653.png" srcset="/img/loading.gif" lazyload alt="image-20210904145653128"></p>
 <ul>
 <li>用户级线程切换就可以这样实现嗷！！！</li>
 </ul>
-<h3 id="用户级别线程："><a href="#用户级别线程：" class="headerlink" title="用户级别线程："></a>用户级别线程：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904150210.png" alt="image-20210904150210341"></p>
+<h3 id="用户级别线程："><a href="#用户级别线程：" class="headerlink" title="用户级别线程："></a>用户级别线程：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904150210.png" srcset="/img/loading.gif" lazyload alt="image-20210904150210341"></p>
 <p>上面这种模式的问题就是：虽然有非常多的用户级线程，但是对应的只有一个内核级进程，内核无法感知到用户级线程的存在。比如两个线程分别为下载和显示，对应的内核进程的下载阻塞了，但是进程１无法感知到显示进程的存在。这个阻塞，就会导致内核的进程切换，切换到了进程２，这样浏览器下载的内容还是显示不出来啊orz，导致用户体验极差orz。这就是上面这种模式的缺点嗷！！！如果系统中没有其他线程，甚至会导致CPU空转。</p>
 <h3 id="内核级别线程："><a href="#内核级别线程：" class="headerlink" title="内核级别线程："></a>内核级别线程：</h3><ul>
 <li>创建线程的时候，就在内核中创建，TCB存在于内核之中，内存可以感受到TCB的存在嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904151417.png" alt="image-20210904151417158"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210904151417.png" srcset="/img/loading.gif" lazyload alt="image-20210904151417158"></p>
 <p>内核感知到一个进程中某个线程阻塞，就可以及时切换到别的线程执行嗷！！！就解决了上述的问题嗷！！！</p>
 <ul>
 <li>系统级别的线程的系统调用所通过的Yield方法，是用户不可见的，调度点由系统决定嗷！！！Yield如果在内核中被称为Schedule，比用户级别的线程要复杂嗷！！！</li>
@@ -564,7 +955,7 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905150331.png" alt="image-20210905150322412"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905150331.png" srcset="/img/loading.gif" lazyload alt="image-20210905150322412"></p>
 <p>可以看出来，所谓的多核是在同一个MMU和Cache的基础上，并行运行的多个CPU。这就保证了，在进程所分配的资源，例如MMU不变的基础上，能够同时运行多个进程，榨干多核的处理能力嗷！！！</p>
 <p>看到左图中的核心级线程，只有核心级线程能够被操作系统中的多核感知，被多核调度，并发并行执行，这也是内核级线程的优点嗷！！！多进程，用户级线程都做不到，但是核心级线程做的到嗷！！！</p>
 <ul>
@@ -574,51 +965,51 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905150907.png" alt="image-20210905150907086"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905150907.png" srcset="/img/loading.gif" lazyload alt="image-20210905150907086"></p>
 <p>内核级别的TCB切换的时候，用户栈和内核栈，这一套栈都要切换嗷！！！</p>
 <ul>
 <li>用户栈和内核栈之间的关联：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905151158.png" alt="image-20210905151157318"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905151158.png" srcset="/img/loading.gif" lazyload alt="image-20210905151157318"></p>
 <ul>
 <li>带着中断进入到核心级线程的例子：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905151512.png" alt="image-20210905151511366"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152031.png" alt="image-20210905152031266"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905151512.png" srcset="/img/loading.gif" lazyload alt="image-20210905151511366"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152031.png" srcset="/img/loading.gif" lazyload alt="image-20210905152031266"></p>
 <p>以前用户栈的切换就是切换用户栈，现在是切换内核栈，由于内核栈和用户栈紧紧绑定，就实现了用户栈线程之间的切换嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152404.png" alt="image-20210905152404310"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152404.png" srcset="/img/loading.gif" lazyload alt="image-20210905152404310"></p>
 <p>上面就是内核态线程切换的核心代码嗷！！！通过中断进入内核就是通过INT 0x80来实现的嗷！！！</p>
 <ul>
 <li>内核switch_to五段论：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152701.png" alt="image-20210905152700656"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152701.png" srcset="/img/loading.gif" lazyload alt="image-20210905152700656"></p>
 <p>上面这个过程就是switch_to的整个流程嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152859.png" alt="image-20210905152858760"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905152859.png" srcset="/img/loading.gif" lazyload alt="image-20210905152858760"></p>
 <ul>
 <li>手动创建内核级别线程：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905153118.png" alt="image-20210905153117905"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905153118.png" srcset="/img/loading.gif" lazyload alt="image-20210905153117905"></p>
 <p>可以看出来，这里的Thread线程的创建，无非是在模拟我们的。</p>
 <ul>
 <li>对比图嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905153734.png" alt="image-20210905153734361"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210905153734.png" srcset="/img/loading.gif" lazyload alt="image-20210905153734361"></p>
 <h2 id="内核级别的代码实现："><a href="#内核级别的代码实现：" class="headerlink" title="内核级别的代码实现："></a>内核级别的代码实现：</h2><ul>
 <li>回顾：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906101359.png" alt="image-20210906101344913"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906101359.png" srcset="/img/loading.gif" lazyload alt="image-20210906101344913"></p>
 <p>上图就是我们常说的五段论，用户只能看到内核之上的用户线程的切换。但是实际上，加起来一共进行了五次大的切换嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906101803.png" alt="image-20210906101801961"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906101803.png" srcset="/img/loading.gif" lazyload alt="image-20210906101801961"></p>
 <p>fork本质上引起了0x80这个中断，在0x80执行完成之后，才成功进入到内核。在执行0x80的时候，PC还是指向mov这条指令的。就在这个时候，ret被设置好，并且硬件帮助我们自动把SS和SP和用户栈建立了关联嗷！！！</p>
 <p>ret下面就是system_call，执行中断处理函数，因此接着执行system_call函数嗷！！！</p>
 <ul>
 <li>sys_fork和类似于sys_write这种：</li>
 </ul>
 <p>不一定能够正常执行，有可能被其他的线程阻塞，这个时候，就应该重新调度嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906102523.png" alt="image-20210906102522309"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906102523.png" srcset="/img/loading.gif" lazyload alt="image-20210906102522309"></p>
 <p>下面那个cmp1和counter的计算，是时间片的判断，如果时间片用光了，也要触发重新调度的嗷！！！</p>
 <p>接下来，ret_from_sys_call就会执行中断返回函数嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906102856.png" alt="image-20210906102855660"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906102856.png" srcset="/img/loading.gif" lazyload alt="image-20210906102855660"></p>
 <ul>
 <li><p>可以看到reschedule本质上就是将ret那个函数的地址压栈，jmp _schedule是调用了一个schedule的c函数。在C函数的最后，有一个<code>}</code>。默认就是将栈中的ret_from_sys_call弹出来，执行这一段函数。本质上就是在执行完成schedule之后，执行系统调用返回函数嗷！！！</p>
 </li>
@@ -627,7 +1018,7 @@
 <li><p>五段论中的schedule和中断出口：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906104927.png" alt="image-20210906104926599"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906104927.png" srcset="/img/loading.gif" lazyload alt="image-20210906104926599"></p>
 <ul>
 <li>schedule中的switch_to函数：</li>
 </ul>
@@ -643,35 +1034,35 @@
 </ol>
 <p>INT —&gt; Switch_to(Long_Jump) —&gt; IRET（完成用户栈的切换嗷！！！）</p>
 <p>只要做好TSS和TCB，就能够非常方便的进程切换嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906142526.png" alt="image-20210906142525274"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906142526.png" srcset="/img/loading.gif" lazyload alt="image-20210906142525274"></p>
 <p>TSS实质上就是TCB中的一个子段嗷！！！</p>
 <h3 id="ThreadCreate："><a href="#ThreadCreate：" class="headerlink" title="ThreadCreate："></a>ThreadCreate：</h3><ul>
 <li>TCB要有，然后再把TSS做好，就能够成功嗷！！！</li>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906214948.png" alt="image-20210906214948408"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906214948.png" srcset="/img/loading.gif" lazyload alt="image-20210906214948408"></li>
 <li>copy_process的细节：创建栈：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906215326.png" alt="image-20210906215326381"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906215326.png" srcset="/img/loading.gif" lazyload alt="image-20210906215326381"></p>
 <p>不能用malloc，malloc是用户级代码，get_free_page才是内核级代码嗷！！！</p>
 <p>创建TCB，创建用户栈，创建内核栈，关联两个栈：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906215737.png" alt="image-20210906215736884"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210906215737.png" srcset="/img/loading.gif" lazyload alt="image-20210906215736884"></p>
 <p>注意，子进程创建的时候，eax寄存器中的值被置为0了。mov的过程中，就会把res的值赋予为0，这就有了我们经典<code>if(!fork())</code>中那个0的由来嗷！！！</p>
 <p>父进程为啥不是0呢？可以看看代码嗷！！！</p>
 <ul>
 <li>如何执行我们想要的代码？</li>
 </ul>
 <p>也就是子进程在exec(cmd)后，如何跳转并执行我们规定子进程执行的代码：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210907215731.png" alt="image-20210907215724479"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210907220043.png" alt="image-20210907220042879"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210907215731.png" srcset="/img/loading.gif" lazyload alt="image-20210907215724479"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210907220043.png" srcset="/img/loading.gif" lazyload alt="image-20210907220042879"></p>
 <ul>
 <li>summary：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210907220157.png" alt="image-20210907220157298"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210907220157.png" srcset="/img/loading.gif" lazyload alt="image-20210907220157298"></p>
 <h2 id="操作系统的那颗“树”："><a href="#操作系统的那颗“树”：" class="headerlink" title="操作系统的那颗“树”："></a>操作系统的那颗“树”：</h2><ul>
 <li><p>CPU -&gt; 要让CPU好好运转嗷！！！ -&gt; 跳转 -&gt; 如何跳转？</p>
 </li>
-<li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908090252.png" alt="image-20210908090148849"></p>
+<li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908090252.png" srcset="/img/loading.gif" lazyload alt="image-20210908090148849"></p>
 </li>
-<li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908090300.png" alt="image-20210908090210570"></p>
+<li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908090300.png" srcset="/img/loading.gif" lazyload alt="image-20210908090210570"></p>
 </li>
 <li><p>一直用户态怎么办？</p>
 <ul>
@@ -679,31 +1070,31 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908090920.png" alt="image-20210908090919731"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091018.png" alt="image-20210908091017731"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091048.png" alt="image-20210908091048526"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908090920.png" srcset="/img/loading.gif" lazyload alt="image-20210908090919731"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091018.png" srcset="/img/loading.gif" lazyload alt="image-20210908091017731"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091048.png" srcset="/img/loading.gif" lazyload alt="image-20210908091048526"></p>
 <ul>
 <li>switch_to的切换：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091156.png" alt="image-20210908091155977"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091222.png" alt="image-20210908091221950"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091156.png" srcset="/img/loading.gif" lazyload alt="image-20210908091155977"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091222.png" srcset="/img/loading.gif" lazyload alt="image-20210908091221950"></p>
 <ul>
 <li>如何打出B？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091436.png" alt="image-20210908091435950"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091436.png" srcset="/img/loading.gif" lazyload alt="image-20210908091435950"></p>
 <p>那就要中断才能进入内核，如何调用schedule函数来进入内核呢？才能够切换到B哇！！！</p>
 <p>这个中断怎么整？？？ -&gt; INT 0x80，如何引发这个中断呢？ -&gt; 时钟中断！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091714.png" alt="image-20210908091713455"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091714.png" srcset="/img/loading.gif" lazyload alt="image-20210908091713455"></p>
 <ul>
 <li>接下来？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091823.png" alt="image-20210908091822636"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091906.png" alt="image-20210908091905855"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091823.png" srcset="/img/loading.gif" lazyload alt="image-20210908091822636"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091906.png" srcset="/img/loading.gif" lazyload alt="image-20210908091905855"></p>
 <ul>
 <li>是不是还要中断才能打A哇？？？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091940.png" alt="image-20210908091939670"></p>
-<p><img src="C:\Users\Alexander\AppData\Roaming\Typora\typora-user-images\image-20210908092014611.png" alt="image-20210908092014611"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908091940.png" srcset="/img/loading.gif" lazyload alt="image-20210908091939670"></p>
+<p><img src="C:\Users\Alexander\AppData\Roaming\Typora\typora-user-images\image-20210908092014611.png" srcset="/img/loading.gif" lazyload alt="image-20210908092014611"></p>
 <h2 id="CPU调度策略："><a href="#CPU调度策略：" class="headerlink" title="CPU调度策略："></a>CPU调度策略：</h2><ul>
 <li>基本方法：<ul>
 <li>FIFO</li>
@@ -723,7 +1114,7 @@
 </li>
 <li>总原则：专注于任务执行，合理分配任务</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908202232.png" alt="image-20210908202225064"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210908202232.png" srcset="/img/loading.gif" lazyload alt="image-20210908202225064"></p>
 <p>比如下面两个，I/O的优先级就会比CPU要高嗷！！！I/O尽早调度运行，使用一段时间后启动I/O。这个时候，I/O和CPU就可以充分并行，充分利用各种资源嗷！！！</p>
 <p>折中和综合让操作系统复杂，但是有效的系统又要求尽量的简单orz。。。。。</p>
 <ul>
@@ -738,7 +1129,7 @@
 <h2 id="一个实际的schedule函数："><a href="#一个实际的schedule函数：" class="headerlink" title="一个实际的schedule函数："></a>一个实际的schedule函数：</h2><ul>
 <li>实际的schedule函数是怎么做的？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909190203.png" alt="image-20210909190147738"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909190203.png" srcset="/img/loading.gif" lazyload alt="image-20210909190147738"></p>
 <p>基于counter的优先级和时间片嗷！！！</p>
 <ul>
 <li>counter如何修改：<ul>
@@ -748,42 +1139,36 @@
 </li>
 <li>counter是个多面派：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909190631.png" alt="image-20210909190631165"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909190631.png" srcset="/img/loading.gif" lazyload alt="image-20210909190631165"></p>
 <p>当counter（时间片）的值减少到了0，就自动引发schedule函数嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909190808.png" alt="image-20210909190807897"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909190808.png" srcset="/img/loading.gif" lazyload alt="image-20210909190807897"></p>
 <p>I/O就是前台进程的特征，优先级也比只用CPU的线程的优先级要高嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909191359.png" alt="image-20210909191358546"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909191359.png" srcset="/img/loading.gif" lazyload alt="image-20210909191358546"></p>
 <h2 id="进程同步和信号量："><a href="#进程同步和信号量：" class="headerlink" title="进程同步和信号量："></a>进程同步和信号量：</h2><ul>
 <li>信号 —&gt; 信号量（生产者消费者进程的合作嗷！！！）</li>
 <li>信号能够表达的信息太少了，因此引入了信号量来记录整体的信息嗷！！！</li>
 <li>例如只有唤醒信号，那我是唤醒呢？还是别的咋整呢？？？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909192947.png" alt="image-20210909192946248"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909192947.png" srcset="/img/loading.gif" lazyload alt="image-20210909192946248"></p>
 <ul>
 <li>信号量如何工作？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909193326.png" alt="image-20210909193325787"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909193326.png" srcset="/img/loading.gif" lazyload alt="image-20210909193325787"></p>
 <p>信号量成功记录了系统中的资源数，在信号量的基础上，信号得以正常的发送和沟通，信号量yyds！！！</p>
 <ul>
 <li>习题：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909193658.png" alt="image-20210909193658295"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909193658.png" srcset="/img/loading.gif" lazyload alt="image-20210909193658295"></p>
 <ul>
 <li>信号量定义：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909194958.png" alt="image-20210909194958376"></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">V<span class="token punctuation">(</span>semaphore s<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-	s.value++<span class="token punctuation">;</span>
-	if<span class="token punctuation">(</span>s.value <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-		wakeup<span class="token punctuation">(</span>s.queue<span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909194958.png" srcset="/img/loading.gif" lazyload alt="image-20210909194958376"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">V(semaphore s)<br>{<br>	s.value++;<br>	if(s.value &lt;= 0){<br>		wakeup(s.queue);<br>	}<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>解决生产者-消费者问题（你电特色）：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909202625.png" alt="image-20210909202624172"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210909202625.png" srcset="/img/loading.gif" lazyload alt="image-20210909202624172"></p>
 <p>什么时候会停下来？特别有意思</p>
 <p>mutex为互斥信号量，一次只能有一个人进去。</p>
 <p>empty为缓冲区信号量，用于记录系统资源。</p>
@@ -791,7 +1176,7 @@
 <h2 id="信号量临界区保护："><a href="#信号量临界区保护：" class="headerlink" title="信号量临界区保护："></a>信号量临界区保护：</h2><ul>
 <li>不好保护出现的问题：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911214538.png" alt="image-20210911214530293"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911214538.png" srcset="/img/loading.gif" lazyload alt="image-20210911214530293"></p>
 <p>并不是变成造成的错误，而是多个进程并发操作共享数据引起。</p>
 <p>错误和调度顺序有关，难于发现和调试</p>
 <ul>
@@ -805,53 +1190,53 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911215321.png" alt="image-20210911215321150"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911215321.png" srcset="/img/loading.gif" lazyload alt="image-20210911215321150"></p>
 <ul>
 <li>进入区和退出区才是核心代码嗷！！！怎么写这些代码是个大问题！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911215551.png" alt="image-20210911215550597"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911215551.png" srcset="/img/loading.gif" lazyload alt="image-20210911215550597"></p>
 <ul>
 <li>轮换法：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911215610.png" alt="image-20210911215610501"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911215610.png" srcset="/img/loading.gif" lazyload alt="image-20210911215610501"></p>
 <p>可以实现，但是不满足空闲让进和有限等待的原则嗷！！！</p>
 <ul>
 <li>标记法：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220010.png" alt="image-20210911220009925"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220010.png" srcset="/img/loading.gif" lazyload alt="image-20210911220009925"></p>
 <p>但是这个可能有问题，互斥可能会出问题嗷！！！</p>
 <ul>
 <li>非对称标记：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220110.png" alt="image-20210911220110172"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220110.png" srcset="/img/loading.gif" lazyload alt="image-20210911220110172"></p>
 <ul>
 <li>Peterson算法：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220324.png" alt="image-20210911220324123"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220324.png" srcset="/img/loading.gif" lazyload alt="image-20210911220324123"></p>
 <p>满足互斥条件（可以通过反证法来证明，特别好用！！！）</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220226.png" alt="image-20210911220226407"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220226.png" srcset="/img/loading.gif" lazyload alt="image-20210911220226407"></p>
 <p>三个条件都满足嗷，特别有意思嗷！！！</p>
 <ul>
 <li>多个进程咋办捏？</li>
 </ul>
 <p>仍然可以<strong>标记+轮转</strong>进行结合来解决这个问题嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220703.png" alt="image-20210911220702911"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911220703.png" srcset="/img/loading.gif" lazyload alt="image-20210911220702911"></p>
 <p>就有点像排队取号考驾照，里面的人出来了，你手上有号，并且考场是空的，你才能进去考试嗷！！！</p>
 <ul>
 <li>太复杂了，有没有简单的方法？硬件yyds，硬件和软件相互合作，协同设计，能够更加有效哦！</li>
 </ul>
 <p>从硬件角度来看，软件通过schedule，调用中断，才能够实现线程或者进程的切换。老子直接从硬件上不让你中断，你能咋地？？？因此先从硬件上把中断关了，让程序正常执行，执行完成之后再开中断，这就是硬件的做法嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911221902.png" alt="image-20210911221901996"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210911221902.png" srcset="/img/loading.gif" lazyload alt="image-20210911221901996"></p>
 <p>单个CPU是这样，但是如果是多CPU的，a在A的CPU上，b在B的CPU上。A关中断了，但是管不到B，那还是gg，会造成中断。多核情况下会不好使哦！！！</p>
 <ul>
 <li>硬件的原子指令：</li>
 </ul>
 <p>锁就是一个信号量嗷！！！！（信号量的保护套娃了orz）</p>
 <p>硬件能不能内部就直接完成信号量的保护呢？</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912145346.png" alt="image-20210912145345681"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912145346.png" srcset="/img/loading.gif" lazyload alt="image-20210912145345681"></p>
 <p>多CPU可以吗？？？</p>
 <p>个人思考：可以，上面的关中断那种方式是针对于CPU来说的。但是多个CPU可以修改同一个存储单元地址，导致了问题的发生。这里原子指令，无论是哪一个CPU去执行这条指令，只有一个原子指令可以执行成功。确实，不可以被打断，但是没有说不可以等待呀！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912145723.png" alt="image-20210912145723225"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912145723.png" srcset="/img/loading.gif" lazyload alt="image-20210912145723225"></p>
 <p>说白了就是硬件这部分处理的地方不一样，一个是单独的CPU上，会有冲突，还有一个是作用在总线上，抢夺资源，因此可以实现多CPU的原子性操作的功能嗷！！！</p>
 <ul>
 <li>summary：</li>
@@ -860,34 +1245,34 @@
 <h2 id="信号量的代码实现："><a href="#信号量的代码实现：" class="headerlink" title="信号量的代码实现："></a>信号量的代码实现：</h2><ul>
 <li>sem_open和sem_wait：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912150404.png" alt="image-20210912150403560"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912150404.png" srcset="/img/loading.gif" lazyload alt="image-20210912150403560"></p>
 <ul>
 <li>lock_buffer：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912150857.png" alt="image-20210912150856837"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912150857.png" srcset="/img/loading.gif" lazyload alt="image-20210912150856837"></p>
 <ul>
 <li>世界上最隐蔽的队列嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151217.png" alt="image-20210912151216707"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151217.png" srcset="/img/loading.gif" lazyload alt="image-20210912151216707"></p>
 <ul>
 <li>唤醒这个队列中的东西</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151340.png" alt="image-20210912151340234"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151340.png" srcset="/img/loading.gif" lazyload alt="image-20210912151340234"></p>
 <p>和上面就是对应的，将进程的状态改为就绪态（0），就可以了嗷！</p>
 <ul>
 <li>唤醒之后会从刚刚停下的地方往后执行，也就是刚刚上面schedule()方法之后往后执行：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151507.png" alt="image-20210912151507441"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151507.png" srcset="/img/loading.gif" lazyload alt="image-20210912151507441"></p>
 <p>通过这种队列不断套娃往前唤醒的机制，实质上把队列中的每一个元素全部都唤醒了嗷！！！</p>
 <p>这又解释了，上面为啥是while嗷！！！</p>
 <ul>
 <li>为啥while？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151627.png" alt="image-20210912151626890"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912151627.png" srcset="/img/loading.gif" lazyload alt="image-20210912151626890"></p>
 <p>所有进程全部唤醒，然后由schedule()来决定谁来执行嗷（优先级高的进程先执行），其他的进程再次判断资源（while），再次进行阻塞哦！！！</p>
 <p>所有进程唤醒之后先抢一下资源，再去睡眠，这是一个循环往复的过程。因此这里使用的是while而不是if嗷！！！</p>
 <p>特点：信号量不需要有负数，因为不需要记录有多少个进程在等待，我有个队列嘛，反正每次全部唤醒。队列中没人自然就不用唤醒了呀！！！while这个东西就弥补了没有记录数量的缺陷嗷！！！</p>
-<h2 id="死锁处理："><a href="#死锁处理：" class="headerlink" title="死锁处理："></a>死锁处理：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912152644.png" alt="image-20210912152644422"></p>
+<h2 id="死锁处理："><a href="#死锁处理：" class="headerlink" title="死锁处理："></a>死锁处理：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912152644.png" srcset="/img/loading.gif" lazyload alt="image-20210912152644422"></p>
 <ul>
 <li><p>原因：</p>
 <ul>
@@ -928,12 +1313,12 @@
 <ol>
 <li>银行家算法</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912154048.png" alt="image-20210912154048285"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912154048.png" srcset="/img/loading.gif" lazyload alt="image-20210912154048285"></p>
 <p>效率太低了orz，可以考虑采用先发现问题再处理的方式进行处理嗷！！！</p>
 <ul>
 <li>定时检测或者是发现资源利用率低的时候检测嗷！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912154426.png" alt="image-20210912154426529"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912154426.png" srcset="/img/loading.gif" lazyload alt="image-20210912154426529"></p>
 </li>
 <li><p>死锁检测+恢复：</p>
 <ul>
@@ -943,25 +1328,25 @@
 <li><p>死锁忽略：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912154739.png" alt="image-20210912154738893"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210912154739.png" srcset="/img/loading.gif" lazyload alt="image-20210912154738893"></p>
 <p>死锁忽略代价小，对于Windows和Linux来说，重启就解决了，很方便。而且编程也很困难，因此这种方式的适用性还是非常好的嗷！！！！</p>
 <p>实际的开发过程中使用这种偏多嗷！！！</p>
 <h1 id="第四章（内存管理）："><a href="#第四章（内存管理）：" class="headerlink" title="第四章（内存管理）："></a>第四章（内存管理）：</h1><h2 id="内存使用和分段："><a href="#内存使用和分段：" class="headerlink" title="内存使用和分段："></a>内存使用和分段：</h2><ul>
 <li>如何让内存用起来：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913091557.png" alt="image-20210913091557376"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913091557.png" srcset="/img/loading.gif" lazyload alt="image-20210913091557376"></p>
 <p>将程序放入内存中跑起来，内存就用起来了嘛！！！</p>
 <ul>
 <li>相对地址需要转换：</li>
 </ul>
 <p>注意哈：指令<code>call 40</code>本质上是直接往地址总线上发40，访问40地址的这个东西，是行不通的嗷！！！（把40赋值给IP了嗷！！！）</p>
 <p>不能仅仅把程序搬过来！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092127.png" alt="image-20210913092127305"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092127.png" srcset="/img/loading.gif" lazyload alt="image-20210913092127305"></p>
 <p>如果这样的话，就算搬到1000位置，还是废的，执行call之后还是跳转到40，这个地址空间去执行了嗷！！！</p>
 <ul>
 <li>逻辑地址（逻辑地址） -&gt; 物理地址：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092350.png" alt="image-20210913092349265"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092350.png" srcset="/img/loading.gif" lazyload alt="image-20210913092349265"></p>
 <ul>
 <li>什么时候完成重定位：<ul>
 <li>编译时：除非能够确定嗷！！！不然编译的时候一般是不能确定位置的，因为系统是动态的而不是静态的嗷！！！</li>
@@ -969,23 +1354,23 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092554.png" alt="image-20210913092554092"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092554.png" srcset="/img/loading.gif" lazyload alt="image-20210913092554092"></p>
 <ul>
 <li><p>载入的时候还要移动咋办orz：</p>
 <ul>
 <li>交换的概念：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092710.png" alt="image-20210913092709743"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913092710.png" srcset="/img/loading.gif" lazyload alt="image-20210913092709743"></p>
 <p>内存宝贵，内外交换</p>
 <ul>
 <li>运行时重定位！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913093039.png" alt="image-20210913093038625"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913093039.png" srcset="/img/loading.gif" lazyload alt="image-20210913093038625"></p>
 <ul>
 <li>这种情况下，编译不用动任何内容，找到内存中的空位，把起始地址赋予PCB，然后就可以把程序放进去，就可以跑了嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913093815.png" alt="image-20210913093815025"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913093848.png" alt="image-20210913093848069"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913093815.png" srcset="/img/loading.gif" lazyload alt="image-20210913093815025"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913093848.png" srcset="/img/loading.gif" lazyload alt="image-20210913093848069"></p>
 </li>
 <li><p>引入分段：</p>
 <ul>
@@ -994,9 +1379,9 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913095333.png" alt="image-20210913095332604"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913100344.png" alt="image-20210913100343750"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913100544.png" alt="image-20210913100543730"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913095333.png" srcset="/img/loading.gif" lazyload alt="image-20210913095332604"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913100344.png" srcset="/img/loading.gif" lazyload alt="image-20210913100343750"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913100544.png" srcset="/img/loading.gif" lazyload alt="image-20210913100543730"></p>
 <ul>
 <li>每个PCB中都有一个LDT，LDT结合GDT就能够正确重定位到跳转指令的位置嗷！！！</li>
 <li>GDT就是段表寄存器</li>
@@ -1004,7 +1389,7 @@
 <h2 id="内存分区与分页："><a href="#内存分区与分页：" class="headerlink" title="内存分区与分页："></a>内存分区与分页：</h2><ul>
 <li>可变分区的管理过程：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913163242.png" alt="image-20210913163241803"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913163242.png" srcset="/img/loading.gif" lazyload alt="image-20210913163241803"></p>
 <p>内存可以分配和回收嗷！！！这个东西我比较清楚，就不写了嗷！！！</p>
 <ul>
 <li><p>适配算法：</p>
@@ -1023,7 +1408,7 @@
 </li>
 <li><p>CR3就是页表寄存器</p>
 </li>
-<li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913170522.png" alt="image-20210913170521878"></p>
+<li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210913170522.png" srcset="/img/loading.gif" lazyload alt="image-20210913170521878"></p>
 </li>
 </ul>
 <p>实际上这个操作都是MMU这个硬件做的嗷！！！自动帮助我们完成从偏移地址到对应页的地址转换嗷！！！</p>
@@ -1034,7 +1419,7 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914151647.png" alt="image-20210914151646894"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914151647.png" srcset="/img/loading.gif" lazyload alt="image-20210914151646894"></p>
 <ul>
 <li>尝试：只存放用的页！！！内存中只存用到的页嗷！！！页表目的：根据页号找到物理页框号。</li>
 <li>页表查找：</li>
@@ -1044,7 +1429,7 @@
 <p>页号连续，查到第一个之后，之后根据每一行的大小进行偏移，可以很快找到嗷！！！</p>
 <p>但是问题：页表连续，即使没有用到的，也要占住内存中的位置才能方便我们查找，how？</p>
 <p><strong>既要连续又要让页表占用内存少？？？</strong></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914152222.png" alt="image-20210914152222406"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914152222.png" srcset="/img/loading.gif" lazyload alt="image-20210914152222406"></p>
 <ul>
 <li><p>多级页表的诞生：</p>
 <ul>
@@ -1053,19 +1438,19 @@
 <p>把中间分成大段，然后根据不同的章节，再去</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914152901.png" alt="image-20210914152900721"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914152901.png" srcset="/img/loading.gif" lazyload alt="image-20210914152900721"></p>
 <p>只用看章，不用看其中的很多节，只看我对应要看的节。因此省了很多内存嗷！！！（专门拿了一个4K的页面出来作为目录嗷！！！）</p>
 <p>空间上高效，时间上呢？会有损耗！！！会增加一级，就会多访问一次内存嗷！！！时间上就会有所损耗嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153333.png" alt="image-20210914153333303"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153333.png" srcset="/img/loading.gif" lazyload alt="image-20210914153333303"></p>
 <p>引入了快表这个概念嗷！！！</p>
 <ul>
 <li>快表：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153504.png" alt="image-20210914153503684"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153504.png" srcset="/img/loading.gif" lazyload alt="image-20210914153503684"></p>
 <p>快表+多级页表的结构：既节省了时间，又节省了空间嗷！！！</p>
 <p>TCB存在寄存器中嗷！！！速度特别快嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153730.png" alt="image-20210914153729928"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153809.png" alt="image-20210914153808364"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153730.png" srcset="/img/loading.gif" lazyload alt="image-20210914153729928"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210914153809.png" srcset="/img/loading.gif" lazyload alt="image-20210914153808364"></p>
 <p>正因为程序具有这种局部性，所以这种方式才能够生效嗷！！！</p>
 <h2 id="段页结合的实际内存管理："><a href="#段页结合的实际内存管理：" class="headerlink" title="段页结合的实际内存管理："></a>段页结合的实际内存管理：</h2><ul>
 <li>程序员用段 ， 物理内存（硬件）需要用页 ， 因此产生了段页结合的方法嗷！！！</li>
@@ -1075,47 +1460,47 @@
 <ul>
 <li>段页同时存在：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915091146.png" alt="image-20210915091138167"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915091146.png" srcset="/img/loading.gif" lazyload alt="image-20210915091138167"></p>
 <h3 id="虚拟地址："><a href="#虚拟地址：" class="headerlink" title="虚拟地址："></a>虚拟地址：</h3><ul>
 <li>这个概念是在段和页揉在一起的情况下引出的，隐藏了物理地址上页的分配，从而为用户提供段的服务嗷！！！</li>
 <li>透明的那一层映射，干了什么？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915091810.png" alt="image-20210915091809748"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915091810.png" srcset="/img/loading.gif" lazyload alt="image-20210915091809748"></p>
 <ul>
 <li>内存管理的核心就是内存分配，所以将程序放入内存</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915092544.png" alt="image-20210915092542861"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915092544.png" srcset="/img/loading.gif" lazyload alt="image-20210915092542861"></p>
 <h3 id="内存故事："><a href="#内存故事：" class="headerlink" title="内存故事："></a>内存故事：</h3><ul>
 <li>从fork进程开始探究整个过程：</li>
 </ul>
 <p>分配虚存，建段表</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915093011.png" alt="image-20210915093009849"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915093011.png" srcset="/img/loading.gif" lazyload alt="image-20210915093009849"></p>
 <ul>
 <li>虚存简化：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915093647.png" alt="image-20210915093646415"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210915093647.png" srcset="/img/loading.gif" lazyload alt="image-20210915093646415"></p>
 <ul>
 <li>分配内存，建页表：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916152341.png" alt="image-20210916152340071"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916152341.png" srcset="/img/loading.gif" lazyload alt="image-20210916152340071"></p>
 <p>from是父进程的页表的地址</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916152642.png" alt="image-20210916152640781"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916152642.png" srcset="/img/loading.gif" lazyload alt="image-20210916152640781"></p>
 <p>上面这里只是找到了哪一章，接下来要找是哪一节（段页式），因此还需要一次转换嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916152948.png" alt="image-20210916152947493"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916152948.png" srcset="/img/loading.gif" lazyload alt="image-20210916152947493"></p>
 <ul>
 <li>操作拷贝：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916153134.png" alt="image-20210916153133419"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916153134.png" srcset="/img/loading.gif" lazyload alt="image-20210916153133419"></p>
 <p>注意这里，写时复制！！！</p>
 <ul>
 <li>复制完之后，整体架构：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916153242.png" alt="image-20210916153241784"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916153242.png" srcset="/img/loading.gif" lazyload alt="image-20210916153241784"></p>
 <p>可以看出来，这里fork之后，创建了进程的LDT，并且分配了虚拟内存和页表给进程，指向了父进程实际的内存空间，至少能跑了orz</p>
 <h4 id="写时复制："><a href="#写时复制：" class="headerlink" title="写时复制："></a>写时复制：</h4><ul>
 <li>写时复制！！！子进程如何体现？？？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916153934.png" alt="image-20210916153933436"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210916153934.png" srcset="/img/loading.gif" lazyload alt="image-20210916153933436"></p>
 <p>还记得前面子进程和父进程指向一样的地方吗？为啥设置为只读，就是为了这里的写时复制，多个进程在内存中的时候。写时复制就能够帮助我们消除多个进程fork的影响！！！就能够独立运行嗷！！！</p>
 <h2 id="内存换入-请求调页："><a href="#内存换入-请求调页：" class="headerlink" title="内存换入-请求调页："></a>内存换入-请求调页：</h2><ul>
 <li>虚拟内存！！！<ul>
@@ -1123,58 +1508,58 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917150500.png" alt="image-20210917150500015"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917150500.png" srcset="/img/loading.gif" lazyload alt="image-20210917150500015"></p>
 <p>用户不知道后面的细节，由操作系统完成映射，为用户提供“假象”</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917150754.png" alt="image-20210917150753439"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917150754.png" srcset="/img/loading.gif" lazyload alt="image-20210917150753439"></p>
 <p>通过换入来实现展现给用户的假象嗷！！！</p>
 <ul>
 <li>请求调页：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917151042.png" alt="image-20210917151042058"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917151042.png" srcset="/img/loading.gif" lazyload alt="image-20210917151042058"></p>
 <p>虚拟地址和虚拟内存有啥关系呢？虚拟地址的取值范围就是虚拟内存的范围，给用户的感受就是这些虚拟内存（虚拟地址）我可以随意使用。至于虚拟地址映射到哪个真正的物理地址上，不需要咱操心嗷！！！</p>
 <p>上面告诉了我们页表可以映射到物理内存上，这里告诉了我们，当页表和物理内存不是一一对应的时候，操作系统是如何实现的（通过请求调页实现的嗷！！！）</p>
 <ul>
 <li>发现缺页了怎么办？？？</li>
 </ul>
 <p>中断！！！转去执行页错误处理程序嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917152901.png" alt="image-20210917152900875"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917152901.png" srcset="/img/loading.gif" lazyload alt="image-20210917152900875"></p>
 <ul>
 <li>问题：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917152916.png" alt="image-20210917152916071"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917152916.png" srcset="/img/loading.gif" lazyload alt="image-20210917152916071"></p>
 <p>答案肯定是C哇！！！整个段也太浪费了叭呜呜，又不一定都用的上orz！！！</p>
 <h3 id="请求调页故事："><a href="#请求调页故事：" class="headerlink" title="请求调页故事："></a>请求调页故事：</h3><ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153212.png" alt="image-20210917153211895"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153212.png" srcset="/img/loading.gif" lazyload alt="image-20210917153211895"></li>
 </ul>
 <p>这里的14中断号就代表着请求调页嗷！！！</p>
 <ul>
 <li>处理中断page fault：</li>
 </ul>
 <p>将当前栈中的内容保存：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153411.png" alt="image-20210917153411393"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153434.png" alt="image-20210917153434299"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153411.png" srcset="/img/loading.gif" lazyload alt="image-20210917153411393"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153434.png" srcset="/img/loading.gif" lazyload alt="image-20210917153434299"></p>
 <ul>
 <li>这里的_do_no_page干了什么？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153703.png" alt="image-20210917153703336"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153737.png" alt="image-20210917153737196"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153703.png" srcset="/img/loading.gif" lazyload alt="image-20210917153703336"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153737.png" srcset="/img/loading.gif" lazyload alt="image-20210917153737196"></p>
 <ul>
 <li>建立虚拟页与物理页的映射：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153921.png" alt="image-20210917153920679"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917153921.png" srcset="/img/loading.gif" lazyload alt="image-20210917153920679"></p>
 <ul>
 <li>这些都做完了，给用户的感觉就是：你访问0-4G的内存都有东西嗷！！！我一个人拥有了4G的内存呢！！！</li>
 </ul>
 <h2 id="内存换出："><a href="#内存换出：" class="headerlink" title="内存换出："></a>内存换出：</h2><ul>
 <li>上面的get_free_page有问题，不一定总是能够获得新的空闲页嗷！！！：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917183841.png" alt="image-20210917183840758"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917183841.png" srcset="/img/loading.gif" lazyload alt="image-20210917183840758"></p>
 <ul>
 <li><p>换出算法：</p>
 <ol>
 <li>FIFO：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184043.png" alt="image-20210917184043015"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184043.png" srcset="/img/loading.gif" lazyload alt="image-20210917184043015"></p>
 </li>
 <li><p>评价准则：缺页次数！！！</p>
 </li>
@@ -1183,7 +1568,7 @@
 <li>MIN页面置换：</li>
 </ol>
 <p>最优的情况！！！最好情况的置换！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184230.png" alt="image-20210917184229666"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184230.png" srcset="/img/loading.gif" lazyload alt="image-20210917184229666"></p>
 <p>可惜，预测未来很困难，MIN不现实啊orz</p>
 </li>
 <li><p>换出算法：</p>
@@ -1193,7 +1578,7 @@
 <p>用过去来预测未来，用到了程序的局部性嗷！！！</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184609.png" alt="image-20210917184608578"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184609.png" srcset="/img/loading.gif" lazyload alt="image-20210917184608578"></p>
 <p>效果非常不错嗷！！！</p>
 <ul>
 <li>如何实现？<ul>
@@ -1201,17 +1586,17 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184729.png" alt="image-20210917184728632"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917184729.png" srcset="/img/loading.gif" lazyload alt="image-20210917184728632"></p>
 <p>但是这个算法放入实际的操作系统中，是非常困难的嗷！！！维护一张大表，还有可能出现溢出的情况，计算机负担非常重orz。玩一玩可以，不可行！！！</p>
 <p>另外的想法：页码栈：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917185041.png" alt="image-20210917185041378"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917185041.png" srcset="/img/loading.gif" lazyload alt="image-20210917185041378"></p>
 <p>也是和上面一样，多次修改，实现代价非常大嗷！！！</p>
 <p>LRU准确实现用的少嗷！！！</p>
 <ul>
 <li>LRU的近似实现（最近没有使用） - 将时间计数变为是与否：</li>
 </ul>
 <p>就是我们上课讲的CLOCK算法嗷！！！（Clock Algorithm）</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917185253.png" alt="image-20210917185252603"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917185253.png" srcset="/img/loading.gif" lazyload alt="image-20210917185252603"></p>
 <p>SCR算法：Second Chance Replacement，这个R标志位甚至可以给MMU，让MMU查页表的时候就自动对于其进行修改嗷！！！</p>
 <ul>
 <li>Clock算法的分析和改造：</li>
@@ -1219,13 +1604,13 @@
 <p>如果缺页很少？？？如果缺页少，慢慢的从０变为１，一次全清为０，然后接下来不就是遍历换出，那就退化成了FIFO算法了嗷！！！</p>
 <p>原因：指针转的太慢了，记录了太长时间的历史信息</p>
 <p>解决方法：定时清除R位置。再来一个扫描指针清除为0，这样就可以表达：从清除为0到现在这一段时间都没有使用嗷！！！（最近最少使用！！！<code>准确来说是最近没有使用orz</code>）</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917190122.png" alt="image-20210917190121968"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917190122.png" srcset="/img/loading.gif" lazyload alt="image-20210917190121968"></p>
 <ul>
 <li>策略有了，还需要解决问题，给进程分配多少个页框呢？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917190724.png" alt="image-20210917190724580"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917190724.png" srcset="/img/loading.gif" lazyload alt="image-20210917190724580"></p>
 <p><code>工作集</code>的概念嗷！！！也可以动态分配嘛！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917191114.png" alt="image-20210917191112964"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210917191114.png" srcset="/img/loading.gif" lazyload alt="image-20210917191112964"></p>
 <p>虚拟 -&gt; 段页 -&gt; 程序 -&gt; 进程</p>
 <h1 id="第五章（IO）："><a href="#第五章（IO）：" class="headerlink" title="第五章（IO）："></a>第五章（IO）：</h1><h2 id="IO与显示器："><a href="#IO与显示器：" class="headerlink" title="IO与显示器："></a>IO与显示器：</h2><ul>
 <li>外设是如何工作的？</li>
@@ -1239,53 +1624,53 @@
 <ul>
 <li>实际操作外设的形式：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092318.png" alt="image-20210918092318137"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092427.png" alt="image-20210918092426061"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092318.png" srcset="/img/loading.gif" lazyload alt="image-20210918092318137"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092427.png" srcset="/img/loading.gif" lazyload alt="image-20210918092426061"></p>
 <h3 id="printf的故事："><a href="#printf的故事：" class="headerlink" title="printf的故事："></a>printf的故事：</h3><ul>
 <li>从printf开始嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092701.png" alt="image-20210918092700718"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092701.png" srcset="/img/loading.gif" lazyload alt="image-20210918092700718"></p>
 <p>这里就获取到了打印机所对应的文件，并且得到了这个文件的inode结点嗷！！！</p>
 <ul>
 <li>filp从哪里来？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092855.png" alt="image-20210918092855167"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918092855.png" srcset="/img/loading.gif" lazyload alt="image-20210918092855167"></p>
 <p>很显然，这里是从fork中所创建的嗷！！！</p>
 <p>所有进程的PCB都是从父进程拷贝而来的，这里为了探究一开始这个文件是谁创建的，显然要从shell进行分析嗷</p>
 <ul>
 <li>open系统调用完成了什么？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918093414.png" alt="image-20210918093413035"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918093414.png" srcset="/img/loading.gif" lazyload alt="image-20210918093413035"></p>
 <ul>
 <li>open完成，真正向屏幕输出！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918093618.png" alt="image-20210918093617488"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918093618.png" srcset="/img/loading.gif" lazyload alt="image-20210918093617488"></p>
 <p>注意哈，<code>rw_char</code>中传入的第一个参数是Write嗷，这代表着这是一个写操作嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918094136.png" alt="image-20210918094135721"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918094136.png" srcset="/img/loading.gif" lazyload alt="image-20210918094135721"></p>
 <ul>
 <li>tty_write：</li>
 </ul>
 <p>真正准备往设备里面写了，tty -&gt; write_q，本质上就是往输出队列中写入相应的信息。如果队列满了，就应该sleep嗷，<code>sleep_if_full</code>。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918094527.png" alt="image-20210918094526951"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918094527.png" srcset="/img/loading.gif" lazyload alt="image-20210918094526951"></p>
 <ul>
 <li>tty-&gt;write真的向屏幕输出啦！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918094823.png" alt="image-20210918094822511"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918094823.png" srcset="/img/loading.gif" lazyload alt="image-20210918094822511"></p>
 <p>下面这里实际写入屏幕实际上将数据放入了al，将数据属性放入ah，然后将构造好的ax放入pos，这个pos就是显卡的寄存器嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095058.png" alt="image-20210918095057880"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095058.png" srcset="/img/loading.gif" lazyload alt="image-20210918095057880"></p>
 <p>说白了这个out就是这里的内嵌汇编mov嗷！！！</p>
 <p>这里是一个循环嗷！！！不断把数据写出到屏幕上嗷！！！</p>
 <ul>
 <li>设备驱动怎么写？</li>
 </ul>
 <p>写出核心的Out指令，注册在表上，创建对应的dev文件，也和表对应起来，就完成了设备驱动的编写嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095527.png" alt="image-20210918095526522"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095527.png" srcset="/img/loading.gif" lazyload alt="image-20210918095526522"></p>
 <p>操作系统初始化的时候起始我们见过这个90000，初始化鼠标的时候，其实我们都见过这个90000嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095644.png" alt="image-20210918095643381"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095644.png" srcset="/img/loading.gif" lazyload alt="image-20210918095643381"></p>
 <ul>
 <li>整个流程整理：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095815.png" alt="image-20210918095814599"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210918095815.png" srcset="/img/loading.gif" lazyload alt="image-20210918095814599"></p>
 <h2 id="键盘："><a href="#键盘：" class="headerlink" title="键盘："></a>键盘：</h2><ul>
 <li>键盘的故事从哪里开始？<ul>
 <li>按下键盘就会触发系统中断嗷！！！</li>
@@ -1293,40 +1678,40 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125018.png" alt="image-20210920125002102"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125018.png" srcset="/img/loading.gif" lazyload alt="image-20210920125002102"></p>
 <p>根据系统码查表，进行不同的操作嗷！！！</p>
 <ul>
 <li>处理扫描码<code>key_table + eax*4</code></li>
 </ul>
 <p>key_table是一个函数数组，根据读取的标号去寻找并使用对应的函数嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125339.png" alt="image-20210920125338937"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125339.png" srcset="/img/loading.gif" lazyload alt="image-20210920125338937"></p>
 <p>注意这里，我们将读取出来的数据放在了key_map中嗷！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125411.png" alt="image-20210920125411076"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125411.png" srcset="/img/loading.gif" lazyload alt="image-20210920125411076"></p>
 <p>注意一下这里哦，这里读取到了对应的ascii码之后，就放到了对应的队列中，就是缓冲区嘛，和之前一样的嗷！！！<code>call put_queue</code>就是将其放入缓冲区中嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125851.png" alt="image-20210920125851517"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125851.png" srcset="/img/loading.gif" lazyload alt="image-20210920125851517"></p>
 <ul>
 <li>目前还差什么呀？</li>
 </ul>
 <p>回显！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125952.png" alt="image-20210920125951682"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920125952.png" srcset="/img/loading.gif" lazyload alt="image-20210920125951682"></p>
 <ul>
 <li>键盘处理流程：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130046.png" alt="image-20210920130046661"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130046.png" srcset="/img/loading.gif" lazyload alt="image-20210920130046661"></p>
 <p>read_q到secondary无非就是对于读入的字符进行一些类似于转义之类的处理哇，供计算机方便使用嘛，比如转成ascii码嗷！！！</p>
 <ul>
 <li>统一的文件视图：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130243.png" alt="image-20210920130243604"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130243.png" srcset="/img/loading.gif" lazyload alt="image-20210920130243604"></p>
 <p>问题：按下<code>F12</code>，让ls的输出为*，怎么办？调用的处理函数改成我们自己的函数就行嗷！！！</p>
 <h1 id="磁盘管理："><a href="#磁盘管理：" class="headerlink" title="磁盘管理："></a>磁盘管理：</h1><h2 id="生磁盘的使用："><a href="#生磁盘的使用：" class="headerlink" title="生磁盘的使用："></a>生磁盘的使用：</h2><ul>
 <li>磁盘结构：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130717.png" alt="image-20210920130716491"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130717.png" srcset="/img/loading.gif" lazyload alt="image-20210920130716491"></p>
 <ul>
 <li>基本工作过程：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130811.png" alt="image-20210920130810735"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920130811.png" srcset="/img/loading.gif" lazyload alt="image-20210920130810735"></p>
 <ul>
 <li>核心就是算出寻道，旋转和传输的距离（三个参数）然后搭配OUT和IN就完成了整个过程嗷！！！</li>
 <li>太复杂了orz，所以引出了第一层抽象：<ul>
@@ -1337,49 +1722,49 @@
 <li>下面的一些知识：</li>
 </ul>
 <p>注意，这里程序传入的是block盘块号，经过磁盘驱动，转换为了对应的磁道，扇区和位置嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920134317.png" alt="image-20210920134316877"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920134317.png" srcset="/img/loading.gif" lazyload alt="image-20210920134316877"></p>
 <p>加快速度：一条磁道读完了，怎样最快读下一条磁道呢？</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920134957.png" alt="image-20210920134956272"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920134957.png" srcset="/img/loading.gif" lazyload alt="image-20210920134956272"></p>
 <ul>
 <li>程序输出block：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920135843.png" alt="image-20210920135842490"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920135843.png" srcset="/img/loading.gif" lazyload alt="image-20210920135842490"></p>
 <p><code>req-&gt;sector = bh-&gt;b_blocknr &lt;&lt; 1;</code></p>
 <p>这个东西左移越多读取越快，一次读的越多，干的活越多，虽然浪费可能越多，但是效率就越高嗷！！！</p>
 <ul>
 <li>第二层抽象（多个进程通过队列使用磁盘）：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140455.png" alt="image-20210920140454986"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140455.png" srcset="/img/loading.gif" lazyload alt="image-20210920140454986"></p>
 <p>寻道时间是主要矛盾，让寻道时间越短越好嗷！！！</p>
 <ul>
 <li><p>算法：</p>
 <ul>
 <li>FCFS磁盘调度算法：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140750.png" alt="image-20210920140750552"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140750.png" srcset="/img/loading.gif" lazyload alt="image-20210920140750552"></p>
 <ul>
 <li>SSTF磁盘调度：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140815.png" alt="image-20210920140815143"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140815.png" srcset="/img/loading.gif" lazyload alt="image-20210920140815143"></p>
 <p>存在饥饿现象</p>
 <ul>
 <li>SCAN磁盘调度：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140940.png" alt="image-20210920140940047"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920140940.png" srcset="/img/loading.gif" lazyload alt="image-20210920140940047"></p>
 <ul>
 <li>C-SCAN算法：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920141013.png" alt="image-20210920141013498"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920141013.png" srcset="/img/loading.gif" lazyload alt="image-20210920141013498"></p>
 <p>磁头复位非常快嗷！！！这种方法就十分公平嗷！！！</p>
 </li>
 <li><p>多个磁盘共同使用磁盘要产生请求放在请求队列中，然后在磁盘中断的时候，从请求中取出内容，换算为CHS，再发给磁盘控制器嗷！！！</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920141655.png" alt="image-20210920141653795"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210920141655.png" srcset="/img/loading.gif" lazyload alt="image-20210920141653795"></p>
 <ul>
 <li>使用整理：</li>
 </ul>
-<p><img src="C:\Users\Alexander\AppData\Roaming\Typora\typora-user-images\image-20210920142210196.png" alt="image-20210920142210196"></p>
+<p><img src="C:\Users\Alexander\AppData\Roaming\Typora\typora-user-images\image-20210920142210196.png" srcset="/img/loading.gif" lazyload alt="image-20210920142210196"></p>
 <h2 id="从生磁盘到文件："><a href="#从生磁盘到文件：" class="headerlink" title="从生磁盘到文件："></a>从生磁盘到文件：</h2><ul>
 <li>对于磁盘使用的第三层抽象：<ul>
 <li>文件</li>
@@ -1392,7 +1777,7 @@
 </li>
 <li>示意图：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922185434.png" alt="image-20210922185433812"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922185434.png" srcset="/img/loading.gif" lazyload alt="image-20210922185433812"></p>
 <p>操作系统会从200-212帮助我们找到对应的盘块，然后修改其中的内容，再写回盘块中嗷！！！</p>
 <p>连续结构存放文件需要存放什么？第一块儿的块号，存在FCB中，File Control Block。这个东西只要给了计算机，计算机根据你修改的位置，除以每一个盘块的默认大小，就知道具体的偏移量，这个时候我们只要直到起始位置，就能定位到磁盘上的对应位置！！！因此FCB中只要提供初始盘块号就行嗷！！！</p>
 <ul>
@@ -1409,7 +1794,7 @@
 <ul>
 <li>索引结构下的映射表：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922191436.png" alt="image-20210922191435725"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922191436.png" srcset="/img/loading.gif" lazyload alt="image-20210922191435725"></p>
 <ul>
 <li>把索引放一起，就很方便嗷！！！</li>
 <li>把inode中的文件对应的索引块填入FCB中，非常方便嗷！！！</li>
@@ -1419,45 +1804,45 @@
 </li>
 </ul>
 <p>Inode结点嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922191807.png" alt="image-20210922191807071"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922191807.png" srcset="/img/loading.gif" lazyload alt="image-20210922191807071"></p>
 <p>注意一下，这个Inode结点指向的黄色的都是实际上的盘块号嗷！！！</p>
 <p>非常机智的做法，非常灵活嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922192023.png" alt="image-20210922192023308"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922192023.png" srcset="/img/loading.gif" lazyload alt="image-20210922192023308"></p>
 <ul>
 <li>题目：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922192108.png" alt="image-20210922192108088"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922192108.png" srcset="/img/loading.gif" lazyload alt="image-20210922192108088"></p>
 <p>由于词霸中的内容固定的，如果采用索引，还需要用额外的空间来存储索引，索引还需要时间，肯定没有顺序快啊！！！顺序其实是最快的，链式是顺序失效的情况下，较为有效的管理方法嗷，索引，inode都是为了提高索引的效率，减少索引的次数，但是本质上，顺序就访问了一次内存，还不需要多余的空间，当然是最好的嗷！！！！！</p>
 <h2 id="文件使用磁盘的实现："><a href="#文件使用磁盘的实现：" class="headerlink" title="文件使用磁盘的实现："></a>文件使用磁盘的实现：</h2><ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922193052.png" alt="image-20210922193052237"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922193052.png" srcset="/img/loading.gif" lazyload alt="image-20210922193052237"></li>
 </ul>
 <p>fd文件描述符 -&gt; file_write到inode中嗷！！！</p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922193501.png" alt="image-20210922193500937"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922193501.png" srcset="/img/loading.gif" lazyload alt="image-20210922193500937"></li>
 <li>file_write的实现：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922193821.png" alt="image-20210922193819996"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922193821.png" srcset="/img/loading.gif" lazyload alt="image-20210922193819996"></p>
 <ul>
 <li>算出盘块号：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922194517.png" alt="image-20210922194516339"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922194517.png" srcset="/img/loading.gif" lazyload alt="image-20210922194516339"></p>
 <p>找到了对应的盘块号之后，就返回block，再对于block进行读写嗷！！！</p>
 <ul>
 <li>不同的i_mode：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922194820.png" alt="image-20210922194820457"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922194820.png" srcset="/img/loading.gif" lazyload alt="image-20210922194820457"></p>
 <p>如果是磁盘对应的话，我们就会拿磁盘进行操作。如果是其他的话，就会有不同的文件处理方式嗷！！！</p>
 <ul>
 <li>整个故事：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922195225.png" alt="image-20210922195223794"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210922195225.png" srcset="/img/loading.gif" lazyload alt="image-20210922195223794"></p>
 <h1 id="第六章（文件系统）："><a href="#第六章（文件系统）：" class="headerlink" title="第六章（文件系统）："></a>第六章（文件系统）：</h1><h2 id="目录与文件系统："><a href="#目录与文件系统：" class="headerlink" title="目录与文件系统："></a>目录与文件系统：</h2><ul>
 <li><p>第四层的抽象（抽象整个磁盘为文件系统）</p>
 </li>
 <li><p>故事的开始：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923094314.png" alt="image-20210923094313860"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923094314.png" srcset="/img/loading.gif" lazyload alt="image-20210923094313860"></p>
 <p>目录树是典型的分治，如果K次划分，每个集合中的文件数为<code>O(logkN)</code>嗷！！！树状结构拓展性好，非常清晰，最常用嗷！！！</p>
 <ul>
 <li><p>目录：文件结合，实现目录成为了关键问题！！！</p>
@@ -1470,44 +1855,44 @@
 <li>目录中存放其中所有文件的FCB信息，这不就找到了所有的文件吗？可以吗？可以！高效吗？不高效，一一匹配效率高吗？？？！！！</li>
 <li>目录中实际上应该存放文件的名字（用于匹配文件），匹配上之后，我要能够找到FCB（存放FCB的指针呗！！！，这里的指针本质上是对应的磁盘中的某个盘块嗷！！！）</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923102116.png" alt="image-20210923102116052"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923102116.png" srcset="/img/loading.gif" lazyload alt="image-20210923102116052"></p>
 </li>
 <li><p>存放模型：</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923095951.png" alt="image-20210923095951161"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923095951.png" srcset="/img/loading.gif" lazyload alt="image-20210923095951161"></p>
 <p>可以看出来，粉红色的就是根目录，根目录中存放的就是默认第一层下的一些数据信息嗷！！！</p>
 <ul>
 <li>那文件系统的根目录存在哪里呢？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923100557.png" alt="image-20210923100555795"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923100557.png" srcset="/img/loading.gif" lazyload alt="image-20210923100555795"></p>
 <p>磁盘的mount实际上就是把超级块读进来，把根目录mount进来嗷！！！根据根目录，就能够读取到下一层的目录，并且继续向下索引到我们需要的文件嗷！！！</p>
 <ul>
 <li>整体流程：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923101615.png" alt="image-20210923101614946"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923101615.png" srcset="/img/loading.gif" lazyload alt="image-20210923101614946"></p>
 <h2 id="目录解析代码实现："><a href="#目录解析代码实现：" class="headerlink" title="目录解析代码实现："></a>目录解析代码实现：</h2><ul>
 <li>将open弄明白嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923162706.png" alt="image-20210923162706107"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923162706.png" srcset="/img/loading.gif" lazyload alt="image-20210923162706107"></p>
 <ul>
 <li>get_dir</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163012.png" alt="image-20210923163011522"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163012.png" srcset="/img/loading.gif" lazyload alt="image-20210923163011522"></p>
 <p>current -&gt; root是从前面自举的过程中就初始话好了的嗷！！！</p>
 <ul>
 <li>目录解析 – 从根目录开始</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163348.png" alt="image-20210923163347456"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163348.png" srcset="/img/loading.gif" lazyload alt="image-20210923163347456"></p>
 <ul>
 <li>iget函数：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163840.png" alt="image-20210923163840241"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163840.png" srcset="/img/loading.gif" lazyload alt="image-20210923163840241"></p>
 <ul>
 <li>find_entry：找到目录项</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163940.png" alt="image-20210923163939450"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923164021.png" alt="image-20210923164020944"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923163940.png" srcset="/img/loading.gif" lazyload alt="image-20210923163939450"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923164021.png" srcset="/img/loading.gif" lazyload alt="image-20210923164020944"></p>
 <ul>
 <li><p>过程：</p>
 <ol>
@@ -1523,5 +1908,459 @@
 <li>外设管理</li>
 <li>磁盘管理 -&gt; 文件系统</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923165011.png" alt="image-20210923165010125"></p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Alexander Liu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/08/31/shen-ru-xue-xi-cao-zuo-xi-tong/">http://example.com/2021/08/31/shen-ru-xue-xi-cao-zuo-xi-tong/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">兔の博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/">大三自学</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103114.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/09/14/da-shu-ju-fen-xi-ke-cheng/"><img class="prev-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">大数据分析课程</div></div></a></div><div class="next-post pull-right"><a href="/2021/08/30/springboot-gao-ji/"><img class="next-cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830192215.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SpringBoot高级</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/08/05/java-da-han-chang-wen-mian-shi-ti/" title="Java常问面试题总结与提高"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103611.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-05</div><div class="title">Java常问面试题总结与提高</div></div></a></div><div><a href="/2021/09/27/java-da-han-chang-wen-mian-shi-ti-2/" title="Java常问面试题总结与提高2"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20211012103611.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-09-27</div><div class="title">Java常问面试题总结与提高2</div></div></a></div><div><a href="/2022/01/16/ml-ru-men/" title="ML入门"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-16</div><div class="title">ML入门</div></div></a></div><div><a href="/2021/10/12/chu-shi-go-yu-yan/" title="初识Go语言"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-10-12</div><div class="title">初识Go语言</div></div></a></div><div><a href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-28</div><div class="title">大数据分析与智能计算期末复习3</div></div></a></div><div><a href="/2021/09/14/da-shu-ju-fen-xi-ke-cheng/" title="大数据分析课程"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-09-14</div><div class="title">大数据分析课程</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Alexander Liu</div><div class="author-info__description">欢迎来到兔子的小窝，这里是兔子的一些笔记分享</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%99%E9%87%8C%E5%AF%B9%E4%BA%8E%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E5%86%85%E5%AE%B9%E7%9A%84%E5%87%86%E5%A4%87%E8%AF%BE%E7%A8%8B%E5%97%B7%EF%BC%81%EF%BC%88%E6%9D%A5%E8%87%AA%E4%BA%8E%E5%93%88%E5%B7%A5%E5%A4%A7%EF%BC%81%EF%BC%81%EF%BC%81%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">这里对于操作系统面试内容的准备课程嗷！（来自于哈工大！！！）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E5%90%AF%E5%8A%A8-%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">第一章(启动)：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">什么是操作系统：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%AD%E5%BC%80%E9%92%A2%E7%90%B4%E7%9A%84%E7%9B%96%E5%AD%90%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">揭开钢琴的盖子：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">启动过程汇编代码解析：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">操作系统启动：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%B3%E8%BD%AC%E5%88%B0System%E6%A8%A1%E5%9D%97%E6%89%A7%E8%A1%8C%EF%BC%9A"><span class="toc-number">2.3.1.</span> <span class="toc-text">跳转到System模块执行：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Head-s%EF%BC%9A"><span class="toc-number">2.3.2.</span> <span class="toc-text">Head.s：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#main-c%E5%92%8Cmem-init%EF%BC%9A"><span class="toc-number">2.3.3.</span> <span class="toc-text">main.c和mem_init：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%88%E6%8E%A5%E5%8F%A3%EF%BC%89%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">第二章（接口）：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%8F%A3%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">操作系统接口：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B%EF%BC%9A"><span class="toc-number">3.1.1.</span> <span class="toc-text">简介：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">系统调用的实现：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8E%86%E5%8F%B2%EF%BC%9A"><span class="toc-number">3.3.</span> <span class="toc-text">操作系统的历史：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E7%9A%84%E5%AD%A6%E4%B9%A0%E4%BB%BB%E5%8A%A1%EF%BC%9A"><span class="toc-number">3.4.</span> <span class="toc-text">我们的学习任务：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%88%E8%BF%9B%E7%A8%8B%EF%BC%89%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">第三章（进程）：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU%E7%AE%A1%E7%90%86%E7%9A%84%E7%9B%B4%E8%A7%82%E6%83%B3%E6%B3%95%EF%BC%9A"><span class="toc-number">4.1.</span> <span class="toc-text">CPU管理的直观想法：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E8%BF%9B%E7%A8%8B%E5%9B%BE%E5%83%8F%EF%BC%9A"><span class="toc-number">4.2.</span> <span class="toc-text">多进程图像：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%BA%A7%E7%BA%BF%E7%A8%8B%EF%BC%9A"><span class="toc-number">4.3.</span> <span class="toc-text">用户级线程：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Yield%EF%BC%88%E7%BA%BF%E7%A8%8B%E5%88%87%E6%8D%A2%EF%BC%89%EF%BC%9A"><span class="toc-number">4.3.1.</span> <span class="toc-text">Yield（线程切换）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Create%EF%BC%88%E7%BA%BF%E7%A8%8B%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%89%EF%BC%9A"><span class="toc-number">4.3.2.</span> <span class="toc-text">Create（线程初始化）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%BA%A7%E5%88%AB%E7%BA%BF%E7%A8%8B%EF%BC%9A"><span class="toc-number">4.3.3.</span> <span class="toc-text">用户级别线程：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E7%BA%A7%E5%88%AB%E7%BA%BF%E7%A8%8B%EF%BC%9A"><span class="toc-number">4.3.4.</span> <span class="toc-text">内核级别线程：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E7%BA%A7%E7%BA%BF%E7%A8%8B%EF%BC%9A"><span class="toc-number">4.4.</span> <span class="toc-text">内核级线程：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E7%BA%A7%E5%88%AB%E7%9A%84%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%EF%BC%9A"><span class="toc-number">4.5.</span> <span class="toc-text">内核级别的代码实现：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadCreate%EF%BC%9A"><span class="toc-number">4.5.1.</span> <span class="toc-text">ThreadCreate：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E9%82%A3%E9%A2%97%E2%80%9C%E6%A0%91%E2%80%9D%EF%BC%9A"><span class="toc-number">4.6.</span> <span class="toc-text">操作系统的那颗“树”：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="toc-number">4.7.</span> <span class="toc-text">CPU调度策略：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%AE%9E%E9%99%85%E7%9A%84schedule%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="toc-number">4.8.</span> <span class="toc-text">一个实际的schedule函数：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E5%90%8C%E6%AD%A5%E5%92%8C%E4%BF%A1%E5%8F%B7%E9%87%8F%EF%BC%9A"><span class="toc-number">4.9.</span> <span class="toc-text">进程同步和信号量：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E4%B8%B4%E7%95%8C%E5%8C%BA%E4%BF%9D%E6%8A%A4%EF%BC%9A"><span class="toc-number">4.10.</span> <span class="toc-text">信号量临界区保护：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%EF%BC%9A"><span class="toc-number">4.11.</span> <span class="toc-text">信号量的代码实现：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%BB%E9%94%81%E5%A4%84%E7%90%86%EF%BC%9A"><span class="toc-number">4.12.</span> <span class="toc-text">死锁处理：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%88%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%89%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">第四章（内存管理）：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E5%92%8C%E5%88%86%E6%AE%B5%EF%BC%9A"><span class="toc-number">5.1.</span> <span class="toc-text">内存使用和分段：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E5%8C%BA%E4%B8%8E%E5%88%86%E9%A1%B5%EF%BC%9A"><span class="toc-number">5.2.</span> <span class="toc-text">内存分区与分页：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E7%BA%A7%E9%A1%B5%E8%A1%A8%E4%B8%8E%E5%BF%AB%E8%A1%A8%EF%BC%9A"><span class="toc-number">5.3.</span> <span class="toc-text">多级页表与快表：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AE%B5%E9%A1%B5%E7%BB%93%E5%90%88%E7%9A%84%E5%AE%9E%E9%99%85%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A"><span class="toc-number">5.4.</span> <span class="toc-text">段页结合的实际内存管理：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%EF%BC%9A"><span class="toc-number">5.4.1.</span> <span class="toc-text">虚拟地址：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%95%85%E4%BA%8B%EF%BC%9A"><span class="toc-number">5.4.2.</span> <span class="toc-text">内存故事：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%99%E6%97%B6%E5%A4%8D%E5%88%B6%EF%BC%9A"><span class="toc-number">5.4.2.1.</span> <span class="toc-text">写时复制：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%8D%A2%E5%85%A5-%E8%AF%B7%E6%B1%82%E8%B0%83%E9%A1%B5%EF%BC%9A"><span class="toc-number">5.5.</span> <span class="toc-text">内存换入-请求调页：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E8%B0%83%E9%A1%B5%E6%95%85%E4%BA%8B%EF%BC%9A"><span class="toc-number">5.5.1.</span> <span class="toc-text">请求调页故事：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%8D%A2%E5%87%BA%EF%BC%9A"><span class="toc-number">5.6.</span> <span class="toc-text">内存换出：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%88IO%EF%BC%89%EF%BC%9A"><span class="toc-number">6.</span> <span class="toc-text">第五章（IO）：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#IO%E4%B8%8E%E6%98%BE%E7%A4%BA%E5%99%A8%EF%BC%9A"><span class="toc-number">6.1.</span> <span class="toc-text">IO与显示器：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#printf%E7%9A%84%E6%95%85%E4%BA%8B%EF%BC%9A"><span class="toc-number">6.1.1.</span> <span class="toc-text">printf的故事：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%AE%E7%9B%98%EF%BC%9A"><span class="toc-number">6.2.</span> <span class="toc-text">键盘：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86%EF%BC%9A"><span class="toc-number">7.</span> <span class="toc-text">磁盘管理：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E7%A3%81%E7%9B%98%E7%9A%84%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="toc-number">7.1.</span> <span class="toc-text">生磁盘的使用：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E%E7%94%9F%E7%A3%81%E7%9B%98%E5%88%B0%E6%96%87%E4%BB%B6%EF%BC%9A"><span class="toc-number">7.2.</span> <span class="toc-text">从生磁盘到文件：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%BD%BF%E7%94%A8%E7%A3%81%E7%9B%98%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%9A"><span class="toc-number">7.3.</span> <span class="toc-text">文件使用磁盘的实现：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%88%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%EF%BC%89%EF%BC%9A"><span class="toc-number">8.</span> <span class="toc-text">第六章（文件系统）：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E4%B8%8E%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%EF%BC%9A"><span class="toc-number">8.1.</span> <span class="toc-text">目录与文件系统：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E8%A7%A3%E6%9E%90%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%EF%BC%9A"><span class="toc-number">8.2.</span> <span class="toc-text">目录解析代码实现：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%95%B4%E4%BD%93%E8%BD%AE%E5%BB%93%EF%BC%9A"><span class="toc-number">9.</span> <span class="toc-text">操作系统整体轮廓：</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071136497.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="1. 南京大学操作系统概述"/></a><div class="content"><a class="title" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述">1. 南京大学操作系统概述</a><time datetime="2022-12-07T03:35:42.000Z" title="发表于 2022-12-07 11:35:42">2022-12-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212051319709.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CPU Cache 学习"/></a><div class="content"><a class="title" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习">CPU Cache 学习</a><time datetime="2022-12-05T04:14:46.000Z" title="发表于 2022-12-05 12:14:46">2022-12-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/16/ml-ru-men/" title="ML入门"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ML入门"/></a><div class="content"><a class="title" href="/2022/01/16/ml-ru-men/" title="ML入门">ML入门</a><time datetime="2022-01-16T11:11:14.000Z" title="发表于 2022-01-16 19:11:14">2022-01-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习3"/></a><div class="content"><a class="title" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3">大数据分析与智能计算期末复习3</a><time datetime="2021-12-28T14:05:22.000Z" title="发表于 2021-12-28 22:05:22">2021-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习2"/></a><div class="content"><a class="title" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2">大数据分析与智能计算期末复习2</a><time datetime="2021-12-24T07:59:54.000Z" title="发表于 2021-12-24 15:59:54">2021-12-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Alexander Liu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210923165011.png" srcset="/img/loading.gif" lazyload alt="image-20210923165010125"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%93%88%E5%B7%A5%E5%A4%A7%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">哈工大操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%A4%A7%E4%B8%89%E8%87%AA%E5%AD%A6/">#大三自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>哈工大操作系统</div>
+      <div>http://example.com/2021/08/31/shen-ru-xue-xi-cao-zuo-xi-tong/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月31日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/14/da-shu-ju-fen-xi-ke-cheng/" title="UESTC大数据分析课程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">UESTC大数据分析课程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/30/springboot-gao-ji/" title="SpringBoot高级">
+                        <span class="hidden-mobile">SpringBoot高级</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

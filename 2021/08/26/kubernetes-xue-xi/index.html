@@ -1,154 +1,419 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Kubernetes学习 | 兔の博客</title><meta name="author" content="Alexander Liu"><meta name="copyright" content="Alexander Liu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="终于来到了K8S这个部分相应知识的讲解嗷！！！ 课程介绍：   K8S基本概念：K8S概述和特性 概述：  容器化集群管理系统，是Google开源的一个容器编排引擎，支持自动化的部署。 使用k8s进行容器化应用部署 使用k8s利于应用拓展 目标：让容器化应用更加简洁和高效   特性：  自动装箱： 基于容器对应用运行环境的资源配置要求自动部署应用容器。   自我修复： 容器失败会自动重启 部署的结">
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="终于来到了K8S这个部分相应知识的讲解嗷！！！ 课程介绍：   K8S基本概念：K8S概述和特性 概述：  容器化集群管理系统，是Google开源的一个容器编排引擎，支持自动化的部署。 使用k8s进行容器化应用部署 使用k8s利于应用拓展 目标：让容器化应用更加简洁和高效   特性：  自动装箱： 基于容器对应用运行环境的资源配置要求自动部署应用容器。   自我修复： 容器失败会自动重启 部署的结">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes学习">
 <meta property="og:url" content="http://example.com/2021/08/26/kubernetes-xue-xi/index.html">
 <meta property="og:site_name" content="兔の博客">
 <meta property="og:description" content="终于来到了K8S这个部分相应知识的讲解嗷！！！ 课程介绍：   K8S基本概念：K8S概述和特性 概述：  容器化集群管理系统，是Google开源的一个容器编排引擎，支持自动化的部署。 使用k8s进行容器化应用部署 使用k8s利于应用拓展 目标：让容器化应用更加简洁和高效   特性：  自动装箱： 基于容器对应用运行环境的资源配置要求自动部署应用容器。   自我修复： 容器失败会自动重启 部署的结">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174644.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826152922.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826155416.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826165740.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826170053.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173042.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173437.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173502.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173658.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173911.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174032.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174157.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174237.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174933.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826175034.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827085448.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173042.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090246.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090344.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090530.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090530.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827095917.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102816.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102844.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102908.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102922.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827103832.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827104019.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827104619.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174309.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174351.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174621.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827185620.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827185641.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827194459.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827194830.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827200341.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827202855.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827203258.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204211.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204320.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204507.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204648.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204824.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205152.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205301.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205354.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827210104.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211222.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211310.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211418.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211718.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827212055.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827214725.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829091637.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829091655.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829092242.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102134.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102200.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102240.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102340.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102405.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102530.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102611.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102842.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829103956.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829103903.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104149.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104332.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104512.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104605.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104712.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104831.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104919.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105124.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105542.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105811.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110142.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110248.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110333.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829111121.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829112954.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113123.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113025.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113539.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113627.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113842.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113858.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830164410.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830164929.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165206.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165642.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165735.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170012.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170303.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170523.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170623.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170754.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830171206.png">
 <meta property="article:published_time" content="2021-08-26T07:23:44.000Z">
 <meta property="article:modified_time" content="2021-08-30T09:16:29.000Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="后端">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174644.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/08/26/kubernetes-xue-xi/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
-  root: '/',
-  algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
-  noticeOutdate: undefined,
-  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
-  copy: {
-    success: '复制成功',
-    error: '复制错误',
-    noSupport: '浏览器不支持'
-  },
-  relativeDate: {
-    homepage: false,
-    post: false
-  },
-  runtime: '',
-  date_suffix: {
-    just: '刚刚',
-    min: '分钟前',
-    hour: '小时前',
-    day: '天前',
-    month: '个月前'
-  },
-  copyright: undefined,
-  lightbox: 'fancybox',
-  Snackbar: undefined,
-  source: {
-    justifiedGallery: {
-      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
-      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
-    }
-  },
-  isPhotoFigcaption: false,
-  islazyload: false,
-  isAnchor: false
-}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: 'Kubernetes学习',
-  isPost: true,
-  isHome: false,
-  isHighlightShrink: false,
-  isToc: true,
-  postUpdate: '2021-08-30 17:16:29'
-}</script><noscript><style type="text/css">
-  #nav {
-    opacity: 1
-  }
-  .justified-gallery img {
-    opacity: 1
-  }
-
-  #recent-posts time,
-  #post-meta time {
-    display: inline !important
-  }
-</style></noscript><script>(win=>{
-    win.saveToLocal = {
-      set: function setWithExpiry(key, value, ttl) {
-        if (ttl === 0) return
-        const now = new Date()
-        const expiryDay = ttl * 86400000
-        const item = {
-          value: value,
-          expiry: now.getTime() + expiryDay,
-        }
-        localStorage.setItem(key, JSON.stringify(item))
-      },
-
-      get: function getWithExpiry(key) {
-        const itemStr = localStorage.getItem(key)
-
-        if (!itemStr) {
-          return undefined
-        }
-        const item = JSON.parse(itemStr)
-        const now = new Date()
-
-        if (now.getTime() > item.expiry) {
-          localStorage.removeItem(key)
-          return undefined
-        }
-        return item.value
-      }
-    }
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826152922.png">
   
-    win.getScript = url => new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      script.onerror = reject
-      script.onload = script.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        script.onload = script.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(script)
-    })
   
-      win.activateDarkMode = function () {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = function () {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
-        
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-    const detectApple = () => {
-      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-        document.documentElement.classList.add('apple')
-      }
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Kubernetes学习 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
     }
-    detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.2.0">
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
-</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174644.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">兔の博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Kubernetes学习</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-26T07:23:44.000Z" title="发表于 2021-08-26 15:23:44">2021-08-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-08-30T09:16:29.000Z" title="更新于 2021-08-30 17:16:29">2021-08-30</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Kubernetes学习"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="终于来到了K8S这个部分相应知识的讲解嗷！！！"><a href="#终于来到了K8S这个部分相应知识的讲解嗷！！！" class="headerlink" title="终于来到了K8S这个部分相应知识的讲解嗷！！！"></a>终于来到了K8S这个部分相应知识的讲解嗷！！！</h1><ul>
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Kubernetes学习"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-26 15:23" pubdate>
+          2021年8月26日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          41 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Kubernetes学习</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2021年8月30日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="终于来到了K8S这个部分相应知识的讲解嗷！！！"><a href="#终于来到了K8S这个部分相应知识的讲解嗷！！！" class="headerlink" title="终于来到了K8S这个部分相应知识的讲解嗷！！！"></a>终于来到了K8S这个部分相应知识的讲解嗷！！！</h1><ul>
 <li>课程介绍：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826152922.png" alt="image-20210826152922417"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826152922.png" srcset="/img/loading.gif" lazyload alt="image-20210826152922417"></p>
 <h1 id="K8S基本概念："><a href="#K8S基本概念：" class="headerlink" title="K8S基本概念："></a>K8S基本概念：</h1><h2 id="K8S概述和特性"><a href="#K8S概述和特性" class="headerlink" title="K8S概述和特性"></a>K8S概述和特性</h2><ul>
 <li><p>概述：</p>
 <ul>
@@ -202,7 +467,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="K8S架构组件"><a href="#K8S架构组件" class="headerlink" title="K8S架构组件"></a>K8S架构组件</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826155416.png" alt="image-20210826155221671"></p>
+<h2 id="K8S架构组件"><a href="#K8S架构组件" class="headerlink" title="K8S架构组件"></a>K8S架构组件</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826155416.png" srcset="/img/loading.gif" lazyload alt="image-20210826155221671"></p>
 <ol>
 <li>Master和Worker：</li>
 </ol>
@@ -259,11 +524,11 @@
 <h1 id="搭建K8S集群："><a href="#搭建K8S集群：" class="headerlink" title="搭建K8S集群："></a>搭建K8S集群：</h1><h2 id="K8S环境平台规划"><a href="#K8S环境平台规划" class="headerlink" title="K8S环境平台规划"></a>K8S环境平台规划</h2><ul>
 <li>单Master集群：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826165740.png" alt="image-20210826165740642"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826165740.png" srcset="/img/loading.gif" lazyload alt="image-20210826165740642"></p>
 <ul>
 <li>多Master集群：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826170053.png" alt="image-20210826170053372"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826170053.png" srcset="/img/loading.gif" lazyload alt="image-20210826170053372"></p>
 <h2 id="服务器硬件配置要求"><a href="#服务器硬件配置要求" class="headerlink" title="服务器硬件配置要求"></a>服务器硬件配置要求</h2><p>master：2核 , 4G , 20G</p>
 <p>worker：4核 , 8G , 40G</p>
 <p>生产环境：要求更高嗷！！！</p>
@@ -284,49 +549,49 @@
 <h2 id="实操："><a href="#实操：" class="headerlink" title="实操："></a>实操：</h2><h3 id="Kubeadm集群搭建："><a href="#Kubeadm集群搭建：" class="headerlink" title="Kubeadm集群搭建："></a>Kubeadm集群搭建：</h3><ul>
 <li>基本要求：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173042.png" alt="image-20210826173026783"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173042.png" srcset="/img/loading.gif" lazyload alt="image-20210826173026783"></p>
 <ol>
 <li>安装三台虚拟机，安装CentOS7。</li>
 </ol>
 <p>下面的操作可以发送到所有会话，直接在所有会话中操作嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173437.png" alt="image-20210826173437046"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173502.png" alt="image-20210826173501669"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173658.png" alt="image-20210826173657885"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173437.png" srcset="/img/loading.gif" lazyload alt="image-20210826173437046"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173502.png" srcset="/img/loading.gif" lazyload alt="image-20210826173501669"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173658.png" srcset="/img/loading.gif" lazyload alt="image-20210826173657885"></p>
 <ol start="2">
 <li>所有结点安装Docker / Kubeadm / Kubelet</li>
 </ol>
 <ul>
 <li>docker：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173911.png" alt="image-20210826173911308"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173911.png" srcset="/img/loading.gif" lazyload alt="image-20210826173911308"></p>
 <ul>
 <li>阿里云yum软件源：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174032.png" alt="image-20210826174031806"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174032.png" srcset="/img/loading.gif" lazyload alt="image-20210826174031806"></p>
 <ul>
 <li>安装对应的东西：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174157.png" alt="image-20210826174157323"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174157.png" srcset="/img/loading.gif" lazyload alt="image-20210826174157323"></p>
 <ul>
 <li>Master部署：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174237.png" alt="image-20210826174237619"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174237.png" srcset="/img/loading.gif" lazyload alt="image-20210826174237619"></p>
 <ul>
 <li>加入Node：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174933.png" alt="image-20210826174933351"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826175034.png" alt="image-20210826175034332"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174933.png" srcset="/img/loading.gif" lazyload alt="image-20210826174933351"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826175034.png" srcset="/img/loading.gif" lazyload alt="image-20210826175034332"></p>
 <ul>
 <li>上面那一段是初始化主结点！！！</li>
 <li>下面这一段是在Worker中运行，将Worker添加注册到主节点中用到的嗷！！！</li>
 <li>后面还有网络配置等一大堆的，建议看视频加课件嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827085448.png" alt="image-20210827085447881"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827085448.png" srcset="/img/loading.gif" lazyload alt="image-20210827085447881"></p>
 <h3 id="二进制集群搭建："><a href="#二进制集群搭建：" class="headerlink" title="二进制集群搭建："></a>二进制集群搭建：</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1GT4y1A756?p=10&amp;spm_id_from=pageDriver">二进制集群搭建相关知识嗷！！！</a></p>
 <ul>
 <li>基本要求：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173042.png" alt="image-20210826173026783"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826173042.png" srcset="/img/loading.gif" lazyload alt="image-20210826173026783"></p>
 <ol>
 <li>创建多台虚拟机，安装Linux操作系统</li>
 <li>操作系统初始化</li>
@@ -334,7 +599,7 @@
 </ol>
 <ul>
 <li>自签证书：<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090246.png" alt="image-20210827090245778"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090246.png" srcset="/img/loading.gif" lazyload alt="image-20210827090245778"></li>
 </ul>
 </li>
 </ul>
@@ -342,18 +607,18 @@
 <ul>
 <li>cfssl证书生成工具</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090344.png" alt="image-20210827090344670"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090344.png" srcset="/img/loading.gif" lazyload alt="image-20210827090344670"></p>
 <ol start="4">
 <li><p>部署etcd集群</p>
 </li>
 <li><p>部署master组件</p>
 </li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090530.png" alt="image-20210827090521462"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090530.png" srcset="/img/loading.gif" lazyload alt="image-20210827090521462"></p>
 <ol start="6">
 <li>部署Node组件</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090530.png" alt="image-20210827090522956"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827090530.png" srcset="/img/loading.gif" lazyload alt="image-20210827090522956"></p>
 <ol start="7">
 <li>部署集群网络</li>
 </ol>
@@ -364,14 +629,14 @@
 <li>集群管理的命令行工具嗷！！！</li>
 <li>语法格式：<code>kubectl [command] [type] [name] [flags]</code></li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827095917.png" alt="image-20210827095917745"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827095917.png" srcset="/img/loading.gif" lazyload alt="image-20210827095917745"></p>
 <ul>
 <li><code>kubectl + --help</code>可以查看所有的命令嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102816.png" alt="image-20210827102816349"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102844.png" alt="image-20210827102843999"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102908.png" alt="image-20210827102908370"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102922.png" alt="image-20210827102922364"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102816.png" srcset="/img/loading.gif" lazyload alt="image-20210827102816349"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102844.png" srcset="/img/loading.gif" lazyload alt="image-20210827102843999"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102908.png" srcset="/img/loading.gif" lazyload alt="image-20210827102908370"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827102922.png" srcset="/img/loading.gif" lazyload alt="image-20210827102922364"></p>
 <h2 id="目前用到的命令："><a href="#目前用到的命令：" class="headerlink" title="目前用到的命令："></a>目前用到的命令：</h2><ol>
 <li><code>kubectl create deployment nginx --image=nginx</code></li>
 <li><code>kubectl expose deployment nginx --port=80 --type=NodePort</code></li>
@@ -394,11 +659,11 @@
 <li>实际开发的过程中，会把相应的配置记录在配置文件yaml中。叫做资源清单文件或资源编排文件。</li>
 <li>Yaml文件：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827103832.png" alt="image-20210827103832789"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827103832.png" srcset="/img/loading.gif" lazyload alt="image-20210827103832789"></p>
 <ul>
 <li>Yaml文件详解：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827104019.png" alt="image-20210827104018767"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827104019.png" srcset="/img/loading.gif" lazyload alt="image-20210827104018767"></p>
 <p>Yaml文件的组成部分：</p>
 <ul>
 <li>控制器定义</li>
@@ -406,7 +671,7 @@
 </ul>
 <p>常用字段含义：</p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827104619.png" alt="image-20210827104619431"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827104619.png" srcset="/img/loading.gif" lazyload alt="image-20210827104619431"></li>
 <li>如何快速编写yaml文件：<ol>
 <li>使用kubectl create生成yaml文件</li>
 <li>使用kubectl get命令导出yaml文件</li>
@@ -416,16 +681,16 @@
 <ol>
 <li>kubectl create：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174309.png" alt="image-20210827174309484"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174309.png" srcset="/img/loading.gif" lazyload alt="image-20210827174309484"></p>
 <p>直接输出到yaml文件中：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174351.png" alt="image-20210827174351326"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174351.png" srcset="/img/loading.gif" lazyload alt="image-20210827174351326"></p>
 <ol start="2">
 <li>kubectl get：</li>
 </ol>
 <ul>
 <li>适用于已经部署好的项目，将配置文件导出出来嗷！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174621.png" alt="image-20210827174620867"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827174621.png" srcset="/img/loading.gif" lazyload alt="image-20210827174620867"></p>
 <p>系版本的–export已经弃用了嗷！！！</p>
 <p><code>-o yaml &gt; 1.yaml</code>就可以，–export可以不用了嗷！！！</p>
 <h1 id="Pod："><a href="#Pod：" class="headerlink" title="Pod："></a>Pod：</h1><h2 id="概述和存在意义："><a href="#概述和存在意义：" class="headerlink" title="概述和存在意义："></a>概述和存在意义：</h2><ul>
@@ -438,8 +703,8 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827185620.png" alt="image-20210827185620421"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827185641.png" alt="image-20210827185641059"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827185620.png" srcset="/img/loading.gif" lazyload alt="image-20210827185620421"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827185641.png" srcset="/img/loading.gif" lazyload alt="image-20210827185641059"></p>
 <ul>
 <li>存在意义：</li>
 </ul>
@@ -471,11 +736,11 @@
 <li>创建一个默认的根容器（Pause容器），又被称为info容器</li>
 <li>后面创建的docker容器会逐个加入到info容器中嗷！！！</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827194459.png" alt="image-20210827194459456"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827194459.png" srcset="/img/loading.gif" lazyload alt="image-20210827194459456"></p>
 <ul>
 <li>通过Pause容器，把其他业务容器加入到Pause容器中，让所有容器业务在同一个名称空间中，可以实现网络共享。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827194830.png" alt="image-20210827194829852"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827194830.png" srcset="/img/loading.gif" lazyload alt="image-20210827194829852"></p>
 <ul>
 <li><p>共享存储：</p>
 <ul>
@@ -484,36 +749,36 @@
 <li>业务数据</li>
 </ul>
 </li>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827200341.png" alt="image-20210827200341170"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827200341.png" srcset="/img/loading.gif" lazyload alt="image-20210827200341170"></li>
 </ul>
 <p>Volume数据卷的概念，使用数据卷进行持久化存储。</p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827202855.png" alt="image-20210827202855285"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827202855.png" srcset="/img/loading.gif" lazyload alt="image-20210827202855285"></li>
 </ul>
 </li>
 </ul>
-<h2 id="镜像拉取策略："><a href="#镜像拉取策略：" class="headerlink" title="镜像拉取策略："></a>镜像拉取策略：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827203258.png" alt="image-20210827203258176"></p>
-<h2 id="资源限制："><a href="#资源限制：" class="headerlink" title="资源限制："></a>资源限制：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204211.png" alt="image-20210827204211428"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204320.png" alt="image-20210827204320259"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204507.png" alt="image-20210827204506927"></p>
+<h2 id="镜像拉取策略："><a href="#镜像拉取策略：" class="headerlink" title="镜像拉取策略："></a>镜像拉取策略：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827203258.png" srcset="/img/loading.gif" lazyload alt="image-20210827203258176"></p>
+<h2 id="资源限制："><a href="#资源限制：" class="headerlink" title="资源限制："></a>资源限制：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204211.png" srcset="/img/loading.gif" lazyload alt="image-20210827204211428"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204320.png" srcset="/img/loading.gif" lazyload alt="image-20210827204320259"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204507.png" srcset="/img/loading.gif" lazyload alt="image-20210827204506927"></p>
 <h2 id="Pod重启机制："><a href="#Pod重启机制：" class="headerlink" title="Pod重启机制："></a>Pod重启机制：</h2><ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204648.png" alt="image-20210827204648137"></li>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204824.png" alt="image-20210827204824567"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204648.png" srcset="/img/loading.gif" lazyload alt="image-20210827204648137"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827204824.png" srcset="/img/loading.gif" lazyload alt="image-20210827204824567"></li>
 </ul>
 <p>批量任务就可以用Never等，有不同的用法嗷！！！</p>
 <h2 id="健康检查："><a href="#健康检查：" class="headerlink" title="健康检查："></a>健康检查：</h2><ul>
 <li>通过容器检查 —&gt; 应用层健康检查</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205152.png" alt="image-20210827205152089"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205152.png" srcset="/img/loading.gif" lazyload alt="image-20210827205152089"></p>
 <ul>
 <li>健康检查的策略：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205301.png" alt="image-20210827205301480"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205354.png" alt="image-20210827205354611"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205301.png" srcset="/img/loading.gif" lazyload alt="image-20210827205301480"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827205354.png" srcset="/img/loading.gif" lazyload alt="image-20210827205354611"></p>
 <h2 id="调度策略："><a href="#调度策略：" class="headerlink" title="调度策略："></a>调度策略：</h2><ul>
 <li>时序图：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827210104.png" alt="image-20210827210104034"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827210104.png" srcset="/img/loading.gif" lazyload alt="image-20210827210104034"></p>
 <ul>
 <li><p>每一步都要经过API Server，每一步的数据都写入到etcd，通过监控的方式，完成一步接一步的执行嗷！！！</p>
 </li>
@@ -521,19 +786,19 @@
 <ol>
 <li>Pod资源限制对于Pod调用产生影响</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211222.png" alt="image-20210827211222380"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211222.png" srcset="/img/loading.gif" lazyload alt="image-20210827211222380"></p>
 <ol start="2">
 <li>结点选择器标签影响Pod调度</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211310.png" alt="image-20210827211310247"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211418.png" alt="image-20210827211417955"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211310.png" srcset="/img/loading.gif" lazyload alt="image-20210827211310247"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211418.png" srcset="/img/loading.gif" lazyload alt="image-20210827211417955"></p>
 <p>要采用上面这种措施，首先要对于结点创建标签<code>kubectl label node node1 env_role=dev</code></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211718.png" alt="image-20210827211718172"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827211718.png" srcset="/img/loading.gif" lazyload alt="image-20210827211718172"></p>
 <ol start="3">
 <li>结点的亲和性影响Pod调度</li>
 </ol>
 <p>nodeAffinity和之前nodeSelector基本一样的，根据节点上标签约束来决定将Pod调度到某些节点上嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827212055.png" alt="image-20210827212055187"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827212055.png" srcset="/img/loading.gif" lazyload alt="image-20210827212055187"></p>
 <p>支持的常用的操作符号：</p>
 <ul>
 <li>In NotIn Exists Gt Lt DoesNotExists</li>
@@ -547,16 +812,16 @@
 <li>Taint污点：节点不做普通分配调度，是节点属性嗷！</li>
 <li>应用场景：专用节点，配置特点硬件节点，基于Taint驱逐</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827214725.png" alt="image-20210827214725188"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210827214725.png" srcset="/img/loading.gif" lazyload alt="image-20210827214725188"></p>
 <p>这里的Key的名字没有特殊的要求嗷，可以随便取嗷！！！</p>
 <ul>
 <li>删除污点：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829091637.png" alt="image-20210829091432792"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829091637.png" srcset="/img/loading.gif" lazyload alt="image-20210829091432792"></p>
 <ul>
 <li>污点容忍：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829091655.png" alt="image-20210829091655646"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829091655.png" srcset="/img/loading.gif" lazyload alt="image-20210829091655646"></p>
 <p>容忍污点，使得某个节点即使有污点也有可能被调度嗷！！！</p>
 </li>
 </ul>
@@ -570,9 +835,9 @@
 <li>控制器也可被称为工作负载（WorkLoad）嗷。</li>
 <li>两者之间的运维管理：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829092242.png" alt="image-20210829092242059"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829092242.png" srcset="/img/loading.gif" lazyload alt="image-20210829092242059"></p>
 <p>Selector嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102134.png" alt="image-20210829102134436"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102134.png" srcset="/img/loading.gif" lazyload alt="image-20210829102134436"></p>
 <h2 id="Deployment控制器应用场景"><a href="#Deployment控制器应用场景" class="headerlink" title="Deployment控制器应用场景"></a>Deployment控制器应用场景</h2><ul>
 <li>部署无状态应用嗷！！！</li>
 <li>管理Pod和RepliccaSet</li>
@@ -585,55 +850,55 @@
 </ul>
 <h2 id="yaml文件字段说明"><a href="#yaml文件字段说明" class="headerlink" title="yaml文件字段说明"></a>yaml文件字段说明</h2><ul>
 <li>命令行不可复现 -&gt; 命令行变为Yaml</li>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102200.png" alt="image-20210829102200400"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102200.png" srcset="/img/loading.gif" lazyload alt="image-20210829102200400"></li>
 <li>使用yaml文件进行部署：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102240.png" alt="image-20210829102240319"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102240.png" srcset="/img/loading.gif" lazyload alt="image-20210829102240319"></p>
 <h2 id="Deployment控制器部署应用"><a href="#Deployment控制器部署应用" class="headerlink" title="Deployment控制器部署应用"></a>Deployment控制器部署应用</h2><ul>
 <li><p>步骤：</p>
 <ol>
 <li>导出Yaml文件：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102340.png" alt="image-20210829102340153"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102340.png" srcset="/img/loading.gif" lazyload alt="image-20210829102340153"></p>
 <ol start="2">
 <li>使用Yaml进行部署：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102405.png" alt="image-20210829102405236"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102405.png" srcset="/img/loading.gif" lazyload alt="image-20210829102405236"></p>
 <ol start="3">
 <li>对外暴露端口（发布）：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102530.png" alt="image-20210829102530630"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102611.png" alt="image-20210829102611292"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102530.png" srcset="/img/loading.gif" lazyload alt="image-20210829102530630"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102611.png" srcset="/img/loading.gif" lazyload alt="image-20210829102611292"></p>
 <p>本质上这里还是通过Yaml来部署的，熟悉了之后，可以直接编写Yaml中的参数，对其进行操作和部署嗷！！！执行第二个步骤，就可以实现我们的部署工作了嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102842.png" alt="image-20210829102841918"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829102842.png" srcset="/img/loading.gif" lazyload alt="image-20210829102841918"></p>
 <p>80是容器内暴露的端口，30048是所有的结点，对外暴露的端口。就是相当于Docker中的端口映射的概念嘛！！！</p>
 </li>
 </ul>
 <h2 id="升级回滚"><a href="#升级回滚" class="headerlink" title="升级回滚"></a>升级回滚</h2><ul>
 <li>指定版本的配置：</li>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829103956.png" alt="image-20210829103956299"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829103956.png" srcset="/img/loading.gif" lazyload alt="image-20210829103956299"></li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829103903.png" alt="image-20210829103902899"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829103903.png" srcset="/img/loading.gif" lazyload alt="image-20210829103902899"></p>
 <ul>
 <li>如果我要升级Nginx的版本呢？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104149.png" alt="image-20210829104149578"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104149.png" srcset="/img/loading.gif" lazyload alt="image-20210829104149578"></p>
 <ul>
 <li>升级的原理和过程：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104332.png" alt="image-20210829104332318"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104332.png" srcset="/img/loading.gif" lazyload alt="image-20210829104332318"></p>
 <p>1.14正常运行，同时去下载1.15，下载完成并且成功运行之后，再去把1.14给替换掉。这就是升级的整个流程嗷！！！保证升级过程中，五福不会终端嗷！！！</p>
 <ul>
 <li>查看升级是否成功：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104512.png" alt="image-20210829104511926"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104512.png" srcset="/img/loading.gif" lazyload alt="image-20210829104511926"></p>
 <ul>
 <li>回滚版本如何操作呢？</li>
 </ul>
 <ol>
 <li>查看历史版本：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104605.png" alt="image-20210829104605072"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104605.png" srcset="/img/loading.gif" lazyload alt="image-20210829104605072"></p>
 <p>第一个是1.14，第二个就是1.15</p>
 <ol start="2">
 <li>还原（回滚）版本：</li>
@@ -641,12 +906,12 @@
 <ul>
 <li>回滚到上一个版本：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104712.png" alt="image-20210829104712466"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104712.png" srcset="/img/loading.gif" lazyload alt="image-20210829104712466"></p>
 <ul>
 <li>回滚到指定版本：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104831.png" alt="image-20210829104830670"></p>
-<h2 id="弹性伸缩"><a href="#弹性伸缩" class="headerlink" title="弹性伸缩"></a>弹性伸缩</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104919.png" alt="image-20210829104919152"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104831.png" srcset="/img/loading.gif" lazyload alt="image-20210829104830670"></p>
+<h2 id="弹性伸缩"><a href="#弹性伸缩" class="headerlink" title="弹性伸缩"></a>弹性伸缩</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829104919.png" srcset="/img/loading.gif" lazyload alt="image-20210829104919152"></p>
 <h1 id="Service："><a href="#Service：" class="headerlink" title="Service："></a>Service：</h1><h2 id="概述："><a href="#概述：" class="headerlink" title="概述："></a>概述：</h2><ul>
 <li>定义一组Pod的访问规则嗷！！！</li>
 </ul>
@@ -656,7 +921,7 @@
 <ul>
 <li>防止Pod失联（服务发现）</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105124.png" alt="image-20210829105124253"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105124.png" srcset="/img/loading.gif" lazyload alt="image-20210829105124253"></p>
 <p>Pod每次重启，IP都会变化的，所以Pod的生命周期是短暂的嗷！！！因此虽然通过Ip可以相互调用，由于Ip不可靠，不予以采用嗷！！！</p>
 <ul>
 <li>说白了就是Nacos！！！服务注册中心嘛！！！</li>
@@ -667,11 +932,11 @@
 <ul>
 <li>负载均衡！！！</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105542.png" alt="image-20210829105541773"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105542.png" srcset="/img/loading.gif" lazyload alt="image-20210829105541773"></p>
 <h2 id="Pod和Service的关系："><a href="#Pod和Service的关系：" class="headerlink" title="Pod和Service的关系："></a>Pod和Service的关系：</h2><ul>
 <li>如何建立关系？</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105811.png" alt="image-20210829105810639"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829105811.png" srcset="/img/loading.gif" lazyload alt="image-20210829105810639"></p>
 <h2 id="Service的三种类型："><a href="#Service的三种类型：" class="headerlink" title="Service的三种类型："></a>Service的三种类型：</h2><ul>
 <li><p>类型：</p>
 <ol>
@@ -683,17 +948,17 @@
 <li><p><code>kubectl get svc</code>：svc是对外暴露端口，这里就是查询每个端口的暴露情况orz。</p>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110142.png" alt="image-20210829110142408"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110248.png" alt="image-20210829110247676"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110142.png" srcset="/img/loading.gif" lazyload alt="image-20210829110142408"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110248.png" srcset="/img/loading.gif" lazyload alt="image-20210829110247676"></p>
 <ul>
 <li>跑起来之后的结果：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110333.png" alt="image-20210829110332924"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829110333.png" srcset="/img/loading.gif" lazyload alt="image-20210829110332924"></p>
 <p>注意字母的大小写哈！！！、</p>
 <ul>
 <li>Node一般内网部署应用，外网一般不能够访问到。</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829111121.png" alt="image-20210829111120898"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829111121.png" srcset="/img/loading.gif" lazyload alt="image-20210829111120898"></p>
 <h1 id="Controller补充："><a href="#Controller补充：" class="headerlink" title="Controller补充："></a>Controller补充：</h1><h2 id="部署无状态应用："><a href="#部署无状态应用：" class="headerlink" title="部署无状态应用："></a>部署无状态应用：</h2><ul>
 <li>无状态特点：<ul>
 <li>其实认为Pod都是一样的，因为没有状态嘛</li>
@@ -713,42 +978,42 @@
 <h2 id="部署有状态应用："><a href="#部署有状态应用：" class="headerlink" title="部署有状态应用："></a>部署有状态应用：</h2><ul>
 <li>无头service</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829112954.png" alt="image-20210829112954170"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829112954.png" srcset="/img/loading.gif" lazyload alt="image-20210829112954170"></p>
 <ul>
 <li>ClusterIP：None</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113123.png" alt="image-20210829113123442"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113123.png" srcset="/img/loading.gif" lazyload alt="image-20210829113123442"></p>
 <p>下面这个Kind，里面是StatefulSet嗷，注意一下嗷！</p>
 <ul>
-<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113025.png" alt="image-20210829113024879"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113025.png" srcset="/img/loading.gif" lazyload alt="image-20210829113024879"></li>
 <li>查看Pod：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113539.png" alt="image-20210829113538783"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113539.png" srcset="/img/loading.gif" lazyload alt="image-20210829113538783"></p>
 <p>每个都是唯一的名称嗷！！！</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113627.png" alt="image-20210829113626795"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113627.png" srcset="/img/loading.gif" lazyload alt="image-20210829113626795"></p>
 <p>None就代表这是一个无头的服务嗷！！！</p>
 <ul>
 <li>summary：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113842.png" alt="image-20210829113841918"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113858.png" alt="image-20210829113857427"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113842.png" srcset="/img/loading.gif" lazyload alt="image-20210829113841918"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210829113858.png" srcset="/img/loading.gif" lazyload alt="image-20210829113857427"></p>
 <h2 id="所有Node运行同一个Pod："><a href="#所有Node运行同一个Pod：" class="headerlink" title="所有Node运行同一个Pod："></a>所有Node运行同一个Pod：</h2><ul>
 <li>部署守护进程DaemonSet</li>
 </ul>
 <p>每个node上面运行一个pod，新加入的node也同样运行在一个pod里面嗷！！！</p>
 <p>例子：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830164410.png" alt="image-20210830164403320"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830164410.png" srcset="/img/loading.gif" lazyload alt="image-20210830164403320"></p>
 <p>Yaml文件：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830164929.png" alt="image-20210830164928922"></p>
-<h2 id="Job（一次性任务）："><a href="#Job（一次性任务）：" class="headerlink" title="Job（一次性任务）："></a>Job（一次性任务）：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165206.png" alt="image-20210830165205933"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830164929.png" srcset="/img/loading.gif" lazyload alt="image-20210830164928922"></p>
+<h2 id="Job（一次性任务）："><a href="#Job（一次性任务）：" class="headerlink" title="Job（一次性任务）："></a>Job（一次性任务）：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165206.png" srcset="/img/loading.gif" lazyload alt="image-20210830165205933"></p>
 <p>这里的Kind为Job嗷，是Job才为一次性任务。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165642.png" alt="image-20210830165641957"></p>
-<h2 id="CronJob（定时任务）："><a href="#CronJob（定时任务）：" class="headerlink" title="CronJob（定时任务）："></a>CronJob（定时任务）：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165735.png" alt="image-20210830165735467"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165642.png" srcset="/img/loading.gif" lazyload alt="image-20210830165641957"></p>
+<h2 id="CronJob（定时任务）："><a href="#CronJob（定时任务）：" class="headerlink" title="CronJob（定时任务）："></a>CronJob（定时任务）：</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830165735.png" srcset="/img/loading.gif" lazyload alt="image-20210830165735467"></p>
 <ul>
 <li>每隔一分钟重启一次嗷！！！</li>
 <li>启动定时任务：<code>kubectl apply -f cronjob.yaml</code></li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170012.png" alt="image-20210830170012503"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170012.png" srcset="/img/loading.gif" lazyload alt="image-20210830170012503"></p>
 <h1 id="配置管理："><a href="#配置管理：" class="headerlink" title="配置管理："></a>配置管理：</h1><h2 id="Secret"><a href="#Secret" class="headerlink" title="Secret"></a>Secret</h2><ul>
 <li><p>作用：加密数据加载到etcd里面，让Pod容器以挂载Volume方式进行访问。</p>
 </li>
@@ -758,19 +1023,19 @@
 <ol>
 <li>创建secret加密数据（以Base64编码为例子）：</li>
 </ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170303.png" alt="image-20210830170303052"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170303.png" srcset="/img/loading.gif" lazyload alt="image-20210830170303052"></p>
 <ol start="2">
 <li><p>挂载数据卷：</p>
 <ul>
 <li>以变量形式挂载：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170523.png" alt="image-20210830170523737"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170623.png" alt="image-20210830170623197"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170754.png" alt="image-20210830170754577"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170523.png" srcset="/img/loading.gif" lazyload alt="image-20210830170523737"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170623.png" srcset="/img/loading.gif" lazyload alt="image-20210830170623197"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830170754.png" srcset="/img/loading.gif" lazyload alt="image-20210830170754577"></p>
 <ul>
 <li>以Volume的形式挂载到Pod中：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830171206.png" alt="image-20210830171206721"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830171206.png" srcset="/img/loading.gif" lazyload alt="image-20210830171206721"></p>
 </li>
 </ol>
 </li>
@@ -789,4 +1054,437 @@
 </ol>
 </li>
 </ul>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Alexander Liu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/08/26/kubernetes-xue-xi/">http://example.com/2021/08/26/kubernetes-xue-xi/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">兔の博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%90%8E%E7%AB%AF/">后端</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174644.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/08/30/springboot-gao-ji/"><img class="prev-cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210830192215.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">SpringBoot高级</div></div></a></div><div class="next-post pull-right"><a href="/2021/08/26/shi-yong-kubeadm-kuai-su-bu-shu-yi-ge-k8s-ji-qun/"><img class="next-cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210826174644.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">使用kubeadm快速部署一个K8s集群</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/08/19/docker-jin-jie/" title="Docker进阶"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210819205713.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-19</div><div class="title">Docker进阶</div></div></a></div><div><a href="/2021/05/19/docker-xue-xi/" title="Docker学习"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210819205713.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-19</div><div class="title">Docker学习</div></div></a></div><div><a href="/2021/08/25/elasticsearch-xue-xi/" title="ElasticSearch学习"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825185001.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-25</div><div class="title">ElasticSearch学习</div></div></a></div><div><a href="/2021/03/16/jdbc-xue-xi/" title="JDBC学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-16</div><div class="title">JDBC学习</div></div></a></div><div><a href="/2021/04/21/jsp-xue-xi/" title="JSP学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-21</div><div class="title">JSP学习</div></div></a></div><div><a href="/2021/02/20/java-fu-xi/" title="Java大二上所学内容"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-02-20</div><div class="title">Java大二上所学内容</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Alexander Liu</div><div class="author-info__description">欢迎来到兔子的小窝，这里是兔子的一些笔记分享</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">75</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%88%E4%BA%8E%E6%9D%A5%E5%88%B0%E4%BA%86K8S%E8%BF%99%E4%B8%AA%E9%83%A8%E5%88%86%E7%9B%B8%E5%BA%94%E7%9F%A5%E8%AF%86%E7%9A%84%E8%AE%B2%E8%A7%A3%E5%97%B7%EF%BC%81%EF%BC%81%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">终于来到了K8S这个部分相应知识的讲解嗷！！！</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#K8S%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">K8S基本概念：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#K8S%E6%A6%82%E8%BF%B0%E5%92%8C%E7%89%B9%E6%80%A7"><span class="toc-number">2.1.</span> <span class="toc-text">K8S概述和特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#K8S%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6"><span class="toc-number">2.2.</span> <span class="toc-text">K8S架构组件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#K8S%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">2.3.</span> <span class="toc-text">K8S核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Pod"><span class="toc-number">2.3.1.</span> <span class="toc-text">Pod</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Controller"><span class="toc-number">2.3.2.</span> <span class="toc-text">Controller</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Service"><span class="toc-number">2.3.3.</span> <span class="toc-text">Service</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%90%AD%E5%BB%BAK8S%E9%9B%86%E7%BE%A4%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">搭建K8S集群：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#K8S%E7%8E%AF%E5%A2%83%E5%B9%B3%E5%8F%B0%E8%A7%84%E5%88%92"><span class="toc-number">3.1.</span> <span class="toc-text">K8S环境平台规划</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A1%AC%E4%BB%B6%E9%85%8D%E7%BD%AE%E8%A6%81%E6%B1%82"><span class="toc-number">3.2.</span> <span class="toc-text">服务器硬件配置要求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E5%BB%BAK8S%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2%E6%96%B9%E5%BC%8F"><span class="toc-number">3.3.</span> <span class="toc-text">搭建K8S集群部署方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%93%8D%EF%BC%9A"><span class="toc-number">3.4.</span> <span class="toc-text">实操：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Kubeadm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%EF%BC%9A"><span class="toc-number">3.4.1.</span> <span class="toc-text">Kubeadm集群搭建：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%EF%BC%9A"><span class="toc-number">3.4.2.</span> <span class="toc-text">二进制集群搭建：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Kubectl%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">Kubectl：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%89%8D%E7%94%A8%E5%88%B0%E7%9A%84%E5%91%BD%E4%BB%A4%EF%BC%9A"><span class="toc-number">4.1.</span> <span class="toc-text">目前用到的命令：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E7%BC%96%E6%8E%92%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">资源编排：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Pod%EF%BC%9A"><span class="toc-number">6.</span> <span class="toc-text">Pod：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0%E5%92%8C%E5%AD%98%E5%9C%A8%E6%84%8F%E4%B9%89%EF%BC%9A"><span class="toc-number">6.1.</span> <span class="toc-text">概述和存在意义：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6%EF%BC%9A"><span class="toc-number">6.2.</span> <span class="toc-text">实现机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%95%9C%E5%83%8F%E6%8B%89%E5%8F%96%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="toc-number">6.3.</span> <span class="toc-text">镜像拉取策略：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6%EF%BC%9A"><span class="toc-number">6.4.</span> <span class="toc-text">资源限制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pod%E9%87%8D%E5%90%AF%E6%9C%BA%E5%88%B6%EF%BC%9A"><span class="toc-number">6.5.</span> <span class="toc-text">Pod重启机制：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5%EF%BC%9A"><span class="toc-number">6.6.</span> <span class="toc-text">健康检查：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="toc-number">6.7.</span> <span class="toc-text">调度策略：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Controller%EF%BC%9A"><span class="toc-number">7.</span> <span class="toc-text">Controller：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFController"><span class="toc-number">7.1.</span> <span class="toc-text">什么是Controller</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pod%E5%92%8CController%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">7.2.</span> <span class="toc-text">Pod和Controller之间的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deployment%E6%8E%A7%E5%88%B6%E5%99%A8%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">7.3.</span> <span class="toc-text">Deployment控制器应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#yaml%E6%96%87%E4%BB%B6%E5%AD%97%E6%AE%B5%E8%AF%B4%E6%98%8E"><span class="toc-number">7.4.</span> <span class="toc-text">yaml文件字段说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deployment%E6%8E%A7%E5%88%B6%E5%99%A8%E9%83%A8%E7%BD%B2%E5%BA%94%E7%94%A8"><span class="toc-number">7.5.</span> <span class="toc-text">Deployment控制器部署应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%87%E7%BA%A7%E5%9B%9E%E6%BB%9A"><span class="toc-number">7.6.</span> <span class="toc-text">升级回滚</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%B9%E6%80%A7%E4%BC%B8%E7%BC%A9"><span class="toc-number">7.7.</span> <span class="toc-text">弹性伸缩</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Service%EF%BC%9A"><span class="toc-number">8.</span> <span class="toc-text">Service：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0%EF%BC%9A"><span class="toc-number">8.1.</span> <span class="toc-text">概述：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pod%E5%92%8CService%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%9A"><span class="toc-number">8.2.</span> <span class="toc-text">Pod和Service的关系：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Service%E7%9A%84%E4%B8%89%E7%A7%8D%E7%B1%BB%E5%9E%8B%EF%BC%9A"><span class="toc-number">8.3.</span> <span class="toc-text">Service的三种类型：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Controller%E8%A1%A5%E5%85%85%EF%BC%9A"><span class="toc-number">9.</span> <span class="toc-text">Controller补充：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E6%97%A0%E7%8A%B6%E6%80%81%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="toc-number">9.1.</span> <span class="toc-text">部署无状态应用：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E6%9C%89%E7%8A%B6%E6%80%81%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="toc-number">9.2.</span> <span class="toc-text">部署有状态应用：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%80%E6%9C%89Node%E8%BF%90%E8%A1%8C%E5%90%8C%E4%B8%80%E4%B8%AAPod%EF%BC%9A"><span class="toc-number">9.3.</span> <span class="toc-text">所有Node运行同一个Pod：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Job%EF%BC%88%E4%B8%80%E6%AC%A1%E6%80%A7%E4%BB%BB%E5%8A%A1%EF%BC%89%EF%BC%9A"><span class="toc-number">9.4.</span> <span class="toc-text">Job（一次性任务）：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CronJob%EF%BC%88%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%EF%BC%89%EF%BC%9A"><span class="toc-number">9.5.</span> <span class="toc-text">CronJob（定时任务）：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%9A"><span class="toc-number">10.</span> <span class="toc-text">配置管理：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Secret"><span class="toc-number">10.1.</span> <span class="toc-text">Secret</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ConfigMap%EF%BC%9A"><span class="toc-number">10.2.</span> <span class="toc-text">ConfigMap：</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071136497.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="1. 南京大学操作系统概述"/></a><div class="content"><a class="title" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 南京大学操作系统概述">1. 南京大学操作系统概述</a><time datetime="2022-12-07T03:35:42.000Z" title="发表于 2022-12-07 11:35:42">2022-12-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212051319709.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CPU Cache 学习"/></a><div class="content"><a class="title" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习">CPU Cache 学习</a><time datetime="2022-12-05T04:14:46.000Z" title="发表于 2022-12-05 12:14:46">2022-12-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/16/ml-ru-men/" title="ML入门"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ML入门"/></a><div class="content"><a class="title" href="/2022/01/16/ml-ru-men/" title="ML入门">ML入门</a><time datetime="2022-01-16T11:11:14.000Z" title="发表于 2022-01-16 19:11:14">2022-01-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习3"/></a><div class="content"><a class="title" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3">大数据分析与智能计算期末复习3</a><time datetime="2021-12-28T14:05:22.000Z" title="发表于 2021-12-28 22:05:22">2021-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习2"/></a><div class="content"><a class="title" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2">大数据分析与智能计算期末复习2</a><time datetime="2021-12-24T07:59:54.000Z" title="发表于 2021-12-24 15:59:54">2021-12-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Alexander Liu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%90%8E%E7%AB%AF/">#后端</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Kubernetes学习</div>
+      <div>http://example.com/2021/08/26/kubernetes-xue-xi/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/30/springboot-gao-ji/" title="SpringBoot高级">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SpringBoot高级</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/26/shi-yong-kubeadm-kuai-su-bu-shu-yi-ge-k8s-ji-qun/" title="使用kubeadm快速部署一个K8s集群">
+                        <span class="hidden-mobile">使用kubeadm快速部署一个K8s集群</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
