@@ -1,424 +1,151 @@
-<!DOCTYPE HTML>
-<html lang="zh-CN">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>SpringBoot2-x | 兔の博客</title><meta name="author" content="Alexander Liu"><meta name="copyright" content="Alexander Liu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！基础使用篇：Boot的升级： 响应式编程：    接口中方法有默认实现，就不用把接口中的所有方法都写出来了，都有默认实现的，只用覆写我们要覆写的方法即可。（Java底层语法的升级，导致Adapter失效了，每个接口类中的抽象方法现在都是自带默认实现的嗷！！！我们直接对于需要覆写的方法进行覆写">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot2-x">
+<meta property="og:url" content="http://example.com/2021/07/13/springboot2-x/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！基础使用篇：Boot的升级： 响应式编程：    接口中方法有默认实现，就不用把接口中的所有方法都写出来了，都有默认实现的，只用覆写我们要覆写的方法即可。（Java底层语法的升级，导致Adapter失效了，每个接口类中的抽象方法现在都是自带默认实现的嗷！！！我们直接对于需要覆写的方法进行覆写">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210721174421.png">
+<meta property="article:published_time" content="2021-07-13T01:32:16.000Z">
+<meta property="article:modified_time" content="2021-07-24T08:18:05.000Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210721174421.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/07/13/springboot2-x/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SpringBoot2-x',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-07-24 16:18:05'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-
-<head>
-    <meta charset="utf-8">
-    <meta name="keywords" content="SpringBoot2-x, 分布式系统,后端研发,数据协同">
-    <meta name="description" content="针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！基础使用篇：Boot的升级：
-响应式编程：
-
-
-
-接口中方法有默认实现，就不用把接口中的所有方法都写出来了，都有默认实现的，只用覆写">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="renderer" content="webkit|ie-stand|ie-comp">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="referrer" content="no-referrer-when-downgrade">
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-
-
-    <title>SpringBoot2-x | 兔の博客</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
-    
-    <style>
-        body{
-            background-image: url(https://cdn.jsdelivr.net/gh/Tokisaki-Galaxy/res/site/medias/background.jpg);
-            background-repeat:no-repeat;
-            background-size: 100% 100%;
-            background-attachment:fixed;
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
         }
-    </style>
+        localStorage.setItem(key, JSON.stringify(item))
+      },
 
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
 
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
 
-    <!-- bg-cover style     -->
-
-
-
-<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
-<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
-<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
-<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
-<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
-<link rel="stylesheet" type="text/css" href="/css/matery.css">
-<link rel="stylesheet" type="text/css" href="/css/my.css">
-<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
-
-
-
-
-    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
-    <link rel="stylesheet" href="/css/post.css">
-
-
-
-
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
     
-        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
     
-
-
-
-    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
-
-<meta name="generator" content="Hexo 6.2.0">
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
-</head>
-
-
-<body>
-    <header class="navbar-fixed">
-    <nav id="headNav" class="bg-color nav-transparent">
-        <div id="navContainer" class="nav-wrapper container">
-            <div class="brand-logo">
-                <a href="/" class="waves-effect waves-light">
-                    
-                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
-                    
-                    <span class="logo-span">兔の博客</span>
-                </a>
-            </div>
-            
-
-<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
-<ul class="right nav-menu">
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/" class="waves-effect waves-light">
-      
-      <i class="fas fa-home" style="zoom: 0.6;"></i>
-      
-      <span>首页</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/tags" class="waves-effect waves-light">
-      
-      <i class="fas fa-tags" style="zoom: 0.6;"></i>
-      
-      <span>标签</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/categories" class="waves-effect waves-light">
-      
-      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
-      
-      <span>分类</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/archives" class="waves-effect waves-light">
-      
-      <i class="fas fa-archive" style="zoom: 0.6;"></i>
-      
-      <span>归档</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/about" class="waves-effect waves-light">
-      
-      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
-      
-      <span>关于</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/friends" class="waves-effect waves-light">
-      
-      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
-      
-      <span>友情链接</span>
-    </a>
-    
-  </li>
-  
-  <li>
-    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
-      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
-    </a>
-  </li>
-  <li>
-    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
-      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
-    </a>
-  </li>
-</ul>
-
-
-<div id="mobile-nav" class="side-nav sidenav">
-
-    <div class="mobile-head bg-color">
-        
-        <img src="/medias/logo.png" class="logo-img circle responsive-img">
-        
-        <div class="logo-name">兔の博客</div>
-        <div class="logo-desc">
-            
-            欢迎来到兔子的小窝，这里是兔子的一些笔记分享
-            
-        </div>
-    </div>
-
-    <ul class="menu-list mobile-menu-list">
-        
-        <li class="m-nav-item">
-	  
-		<a href="/" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-home"></i>
-			
-			首页
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/tags" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-tags"></i>
-			
-			标签
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/categories" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-bookmark"></i>
-			
-			分类
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/archives" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-archive"></i>
-			
-			归档
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/about" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-user-circle"></i>
-			
-			关于
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/friends" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-address-book"></i>
-			
-			友情链接
-		</a>
-          
-        </li>
-        
-        
-        <li><div class="divider"></div></li>
-        <li>
-            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
-                <i class="fab fa-github-square fa-fw"></i>Fork Me
-            </a>
-        </li>
-        
-    </ul>
-</div>
-
-
-        </div>
-
-        
-            <style>
-    .nav-transparent .github-corner {
-        display: none !important;
-    }
-
-    .github-corner {
-        position: absolute;
-        z-index: 10;
-        top: 0;
-        right: 0;
-        border: 0;
-        transform: scale(1.1);
-    }
-
-    .github-corner svg {
-        color: #0f9d58;
-        fill: #fff;
-        height: 64px;
-        width: 64px;
-    }
-
-    .github-corner:hover .octo-arm {
-        animation: a 0.56s ease-in-out;
-    }
-
-    .github-corner .octo-arm {
-        animation: none;
-    }
-
-    @keyframes a {
-        0%,
-        to {
-            transform: rotate(0);
-        }
-        20%,
-        60% {
-            transform: rotate(-25deg);
-        }
-        40%,
-        80% {
-            transform: rotate(10deg);
-        }
-    }
-</style>
-
-<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
-   data-tooltip="Fork Me" data-position="left" data-delay="50">
-    <svg viewBox="0 0 250 250" aria-hidden="true">
-        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
-              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
-              fill="currentColor" class="octo-body"></path>
-    </svg>
-</a>
-        
-    </nav>
-
-</header>
-
-    
-
-
-
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/6.jpg')">
-    <div class="container" style="right: 0px;left: 0px;">
-        <div class="row">
-            <div class="col s12 m12 l12">
-                <div class="brand">
-                    <h1 class="description center-align post-title">SpringBoot2-x</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-<main class="post-container content">
-
-    
-    <div class="row">
-    <div id="main-content" class="col s12 m12 l9">
-        <!-- 文章内容详情 -->
-<div id="artDetail">
-    <div class="card">
-        <div class="card-content article-info">
-            <div class="row tag-cate">
-                <div class="col s7">
-                    
-                    <div class="article-tag">
-                        
-                            <a href="/tags/%E5%90%8E%E7%AB%AF/">
-                                <span class="chip bg-color">后端</span>
-                            </a>
-                        
-                    </div>
-                    
-                </div>
-                <div class="col s5 right-align">
-                    
-                </div>
-            </div>
-
-            <div class="post-info">
-                
-                <div class="post-date info-break-policy">
-                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-07-13
-                </div>
-                
-
-                
-                <div class="post-date info-break-policy">
-                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-07-24
-                </div>
-                
-
-                
-                <div class="info-break-policy">
-                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    28.1k
-                </div>
-                
-
-                
-                <div class="info-break-policy">
-                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    124 分
-                </div>
-                
-
-                
-                    <div id="busuanzi_container_page_pv" class="info-break-policy">
-                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
-                        <span id="busuanzi_value_page_pv"></span>
-                    </div>
-				
-            </div>
-        </div>
-        <hr class="clearfix">
-
-        
-        <!-- 是否加载使用自带的 prismjs. -->
-        <link rel="stylesheet" href="/libs/prism/prism.min.css">
-        
-
-        
-
-        <div class="card-content article-card-content">
-            <div id="articleContent">
-                <h1 id="针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！"><a href="#针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！" class="headerlink" title="针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！"></a>针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！</h1><h1 id="基础使用篇："><a href="#基础使用篇：" class="headerlink" title="基础使用篇："></a>基础使用篇：</h1><h2 id="Boot的升级："><a href="#Boot的升级：" class="headerlink" title="Boot的升级："></a>Boot的升级：</h2><ul>
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">134</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210721174421.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">兔の博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SpringBoot2-x</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-07-13T01:32:16.000Z" title="发表于 2021-07-13 09:32:16">2021-07-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-24T08:18:05.000Z" title="更新于 2021-07-24 16:18:05">2021-07-24</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SpringBoot2-x"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！"><a href="#针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！" class="headerlink" title="针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！"></a>针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！</h1><h1 id="基础使用篇："><a href="#基础使用篇：" class="headerlink" title="基础使用篇："></a>基础使用篇：</h1><h2 id="Boot的升级："><a href="#Boot的升级：" class="headerlink" title="Boot的升级："></a>Boot的升级：</h2><ul>
 <li>响应式编程：</li>
 </ul>
 <p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210713090303.png" alt="image-20210713090303630"></p>
@@ -5095,697 +4822,4 @@ management<span class="token operator">:</span>
 <li><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210724161802.png" alt="image-20210724161802363"></p>
 </li>
 </ul>
-
-                
-            </div>
-            <hr/>
-
-            
-
-    <div class="reprint" id="reprint-statement">
-        
-            <div class="reprint__author">
-                <span class="reprint-meta" style="font-weight: bold;">
-                    <i class="fas fa-user">
-                        文章作者:
-                    </i>
-                </span>
-                <span class="reprint-info">
-                    <a href="/about" rel="external nofollow noreferrer">Alexander Liu</a>
-                </span>
-            </div>
-            <div class="reprint__type">
-                <span class="reprint-meta" style="font-weight: bold;">
-                    <i class="fas fa-link">
-                        文章链接:
-                    </i>
-                </span>
-                <span class="reprint-info">
-                    <a href="http://example.com/2021/07/13/springboot2-x/">http://example.com/2021/07/13/springboot2-x/</a>
-                </span>
-            </div>
-            <div class="reprint__notice">
-                <span class="reprint-meta" style="font-weight: bold;">
-                    <i class="fas fa-copyright">
-                        版权声明:
-                    </i>
-                </span>
-                <span class="reprint-info">
-                    本博客所有文章除特別声明外，均采用
-                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
-                    许可协议。转载请注明来源
-                    <a href="/about" target="_blank">Alexander Liu</a>
-                    !
-                </span>
-            </div>
-        
-    </div>
-
-    <script async defer>
-      document.addEventListener("copy", function (e) {
-        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
-        M.toast({html: toastHTML})
-      });
-
-      function navToReprintStatement() {
-        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
-      }
-    </script>
-
-
-
-            <div class="tag_share" style="display: block;">
-                <div class="post-meta__tag-list" style="display: inline-block;">
-                    
-                        <div class="article-tag">
-                            
-                                <a href="/tags/%E5%90%8E%E7%AB%AF/">
-                                    <span class="chip bg-color">后端</span>
-                                </a>
-                            
-                        </div>
-                    
-                </div>
-                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
-                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
-<div id="article-share">
-
-    
-    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
-    <script src="/libs/share/js/social-share.min.js"></script>
-    
-
-    
-
-</div>
-
-                </div>
-            </div>
-            
-                <div id="reward">
-    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
-
-    <!-- Modal Structure -->
-    <div id="rewardModal" class="modal">
-        <div class="modal-content">
-            <a class="close modal-close"><i class="fas fa-times"></i></a>
-            <h4 class="reward-title">你的赏识是我前进的动力</h4>
-            <div class="reward-content">
-                <div class="reward-tabs">
-                    <ul class="tabs row">
-                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
-                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
-                    </ul>
-                    <div id="alipay">
-                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
-                    </div>
-                    <div id="wechat">
-                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    $(function () {
-        $('.tabs').tabs();
-    });
-</script>
-
-            
-        </div>
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-<article id="prenext-posts" class="prev-next articles">
-    <div class="row article-row">
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
-            <div class="card">
-                <a href="/2021/07/24/spring-cloud-spring-cloud-alibaba/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="Spring Cloud + Spring Cloud Alibaba">
-                        
-                        <span class="card-title">Spring Cloud + Spring Cloud Alibaba</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-07-24
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Alexander Liu
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/%E5%90%8E%E7%AB%AF/">
-                        <span class="chip bg-color">后端</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/07/03/springboot-an-lai-la/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="SpringBoot俺来啦">
-                        
-                        <span class="card-title">SpringBoot俺来啦</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            狂神的SpringBoot教程属实感觉一般，尚硅谷的老师讲的还是不错的，看尚硅谷的嗷！！！
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-03
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Alexander Liu
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/%E5%90%8E%E7%AB%AF/">
-                        <span class="chip bg-color">后端</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-    </div>
-</article>
-
-</div>
-
-
-
-<!-- 代码块功能依赖 -->
-<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
-
-
-  <!-- 是否加载使用自带的 prismjs. -->
-  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
-
-
-<!-- 代码语言 -->
-
-<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
-
-
-<!-- 代码块复制 -->
-
-<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
-
-
-<!-- 代码块收缩 -->
-
-<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
-
-
-
-    </div>
-    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
-        <div class="toc-widget card" style="background-color: white;">
-            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
-            <div id="toc-content"></div>
-        </div>
-    </div>
-</div>
-
-<!-- TOC 悬浮按钮. -->
-
-<div id="floating-toc-btn" class="hide-on-med-and-down">
-    <a class="btn-floating btn-large bg-color">
-        <i class="fas fa-list-ul"></i>
-    </a>
-</div>
-
-
-<script src="/libs/tocbot/tocbot.min.js"></script>
-<script>
-    $(function () {
-        tocbot.init({
-            tocSelector: '#toc-content',
-            contentSelector: '#articleContent',
-            headingsOffset: -($(window).height() * 0.4 - 45),
-            collapseDepth: Number('0'),
-            headingSelector: 'h2, h3, h4'
-        });
-
-        // Set scroll toc fixed.
-        let tocHeight = parseInt($(window).height() * 0.4 - 64);
-        let $tocWidget = $('.toc-widget');
-        $(window).scroll(function () {
-            let scroll = $(window).scrollTop();
-            /* add post toc fixed. */
-            if (scroll > tocHeight) {
-                $tocWidget.addClass('toc-fixed');
-            } else {
-                $tocWidget.removeClass('toc-fixed');
-            }
-        });
-
-        
-        /* 修复文章卡片 div 的宽度. */
-        let fixPostCardWidth = function (srcId, targetId) {
-            let srcDiv = $('#' + srcId);
-            if (srcDiv.length === 0) {
-                return;
-            }
-
-            let w = srcDiv.width();
-            if (w >= 450) {
-                w = w + 21;
-            } else if (w >= 350 && w < 450) {
-                w = w + 18;
-            } else if (w >= 300 && w < 350) {
-                w = w + 16;
-            } else {
-                w = w + 14;
-            }
-            $('#' + targetId).width(w);
-        };
-
-        // 切换TOC目录展开收缩的相关操作.
-        const expandedClass = 'expanded';
-        let $tocAside = $('#toc-aside');
-        let $mainContent = $('#main-content');
-        $('#floating-toc-btn .btn-floating').click(function () {
-            if ($tocAside.hasClass(expandedClass)) {
-                $tocAside.removeClass(expandedClass).hide();
-                $mainContent.removeClass('l9');
-            } else {
-                $tocAside.addClass(expandedClass).show();
-                $mainContent.addClass('l9');
-            }
-            fixPostCardWidth('artDetail', 'prenext-posts');
-        });
-        
-    });
-</script>
-
-    
-
-</main>
-
-
-
-
-    <footer class="page-footer bg-color">
-    
-        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
-<style>
-    .aplayer .aplayer-lrc p {
-        
-        display: none;
-        
-        font-size: 12px;
-        font-weight: 700;
-        line-height: 16px !important;
-    }
-
-    .aplayer .aplayer-lrc p.aplayer-lrc-current {
-        
-        display: none;
-        
-        font-size: 15px;
-        color: #42b983;
-    }
-
-    
-    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
-        left: -66px !important;
-    }
-
-    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
-        left: 0px !important;
-    }
-
-    
-</style>
-<div class="">
-    
-    <div class="row">
-        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
-                   server="netease"
-                   type="playlist"
-                   id="421696726"
-                   fixed='true'
-                   autoplay='false'
-                   theme='#42b983'
-                   loop='all'
-                   order='random'
-                   preload='auto'
-                   volume='0.7'
-                   list-folded='true'
-        >
-        </meting-js>
-    </div>
-</div>
-
-<script src="/libs/aplayer/APlayer.min.js"></script>
-<script src="/libs/aplayer/Meting.min.js"></script>
-
-    
-
-    <div class="container row center-align"
-         style="margin-bottom: 0px !important;">
-        <div class="col s12 m8 l8 copy-right">
-            Copyright&nbsp;&copy;
-            
-                <span id="year">2019-2022</span>
-            
-            <a href="/about" target="_blank">Alexander Liu</a>
-            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
-            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
-            <br>
-            
-                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">500.3k</span>
-            
-            
-            
-                
-            
-            
-                <span id="busuanzi_container_site_pv">
-                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
-                    <span id="busuanzi_value_site_pv" class="white-color"></span>
-            </span>
-            
-            
-                <span id="busuanzi_container_site_uv">
-                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
-                    <span id="busuanzi_value_site_uv" class="white-color"></span>
-            </span>
-            
-            <br>
-
-            <!-- 运行天数提醒. -->
-            
-            <br>
-            
-        </div>
-        <div class="col s12 m4 l4 social-link social-statis">
-    <a href="https://github.com/alexanderliu-creator" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
-
-
-
-    <a href="mailto:haoeliu@foxmail.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fas fa-envelope-open"></i>
-    </a>
-
-
-
-
-
-
-
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=2632746476" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 2632746476" data-position="top" data-delay="50">
-        <i class="fab fa-qq"></i>
-    </a>
-
-
-
-
-
-
-
-    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
-        <i class="fas fa-rss"></i>
-    </a>
-
-</div>
-    </div>
-</footer>
-
-<div class="progress-bar"></div>
-
-
-    <!-- 搜索遮罩框 -->
-<div id="searchModal" class="modal">
-    <div class="modal-content">
-        <div class="search-header">
-            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
-            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
-                   class="search-input">
-        </div>
-        <div id="searchResult"></div>
-    </div>
-</div>
-
-<script type="text/javascript">
-$(function () {
-    var searchFunc = function (path, search_id, content_id) {
-        'use strict';
-        $.ajax({
-            url: path,
-            dataType: "xml",
-            success: function (xmlResponse) {
-                // get the contents from search data
-                var datas = $("entry", xmlResponse).map(function () {
-                    return {
-                        title: $("title", this).text(),
-                        content: $("content", this).text(),
-                        url: $("url", this).text()
-                    };
-                }).get();
-                var $input = document.getElementById(search_id);
-                var $resultContent = document.getElementById(content_id);
-                $input.addEventListener('input', function () {
-                    var str = '<ul class=\"search-result-list\">';
-                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                    $resultContent.innerHTML = "";
-                    if (this.value.trim().length <= 0) {
-                        return;
-                    }
-                    // perform local searching
-                    datas.forEach(function (data) {
-                        var isMatch = true;
-                        var data_title = data.title.trim().toLowerCase();
-                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-                        var data_url = data.url;
-                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
-                        var index_title = -1;
-                        var index_content = -1;
-                        var first_occur = -1;
-                        // only match artiles with not empty titles and contents
-                        if (data_title !== '' && data_content !== '') {
-                            keywords.forEach(function (keyword, i) {
-                                index_title = data_title.indexOf(keyword);
-                                index_content = data_content.indexOf(keyword);
-                                if (index_title < 0 && index_content < 0) {
-                                    isMatch = false;
-                                } else {
-                                    if (index_content < 0) {
-                                        index_content = 0;
-                                    }
-                                    if (i === 0) {
-                                        first_occur = index_content;
-                                    }
-                                }
-                            });
-                        }
-                        // show search results
-                        if (isMatch) {
-                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-                            var content = data.content.trim().replace(/<[^>]+>/g, "");
-                            if (first_occur >= 0) {
-                                // cut out 100 characters
-                                var start = first_occur - 20;
-                                var end = first_occur + 80;
-                                if (start < 0) {
-                                    start = 0;
-                                }
-                                if (start === 0) {
-                                    end = 100;
-                                }
-                                if (end > content.length) {
-                                    end = content.length;
-                                }
-                                var match_content = content.substr(start, end);
-                                // highlight all keywords
-                                keywords.forEach(function (keyword) {
-                                    var regS = new RegExp(keyword, "gi");
-                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
-                                });
-
-                                str += "<p class=\"search-result\">" + match_content + "...</p>"
-                            }
-                            str += "</li>";
-                        }
-                    });
-                    str += "</ul>";
-                    $resultContent.innerHTML = str;
-                });
-            }
-        });
-    };
-
-    searchFunc('/search.xml', 'searchInput', 'searchResult');
-});
-</script>
-
-    <!-- 白天和黑夜主题 -->
-<div class="stars-con">
-    <div id="stars"></div>
-    <div id="stars2"></div>
-    <div id="stars3"></div>  
-</div>
-
-<script>
-    function switchNightMode() {
-        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
-        setTimeout(function () {
-            $('body').hasClass('DarkMode') 
-            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
-            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
-            
-            setTimeout(function () {
-            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
-                $(this).remove()
-            })
-            }, 2e3)
-        })
-    }
-</script>
-
-    <!-- 回到顶部按钮 -->
-<div id="backTop" class="top-scroll">
-    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-</div>
-
-
-    <script src="/libs/materialize/materialize.min.js"></script>
-    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
-    <script src="/libs/aos/aos.js"></script>
-    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
-    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
-    <script src="/js/matery.js"></script>
-
-    
-
-    
-
-    <!-- 雪花特效 -->
-    
-
-    <!-- 鼠标星星特效 -->
-    
-
-     
-        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
-        <script src="/libs/others/TencentCaptcha.js"></script>
-        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
-    
-
-    <!-- Baidu Analytics -->
-
-    <!-- Baidu Push -->
-
-<script>
-    (function () {
-        var bp = document.createElement('script');
-        var curProtocol = window.location.protocol.split(':')[0];
-        if (curProtocol === 'https') {
-            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-        } else {
-            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-        }
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(bp, s);
-    })();
-</script>
-
-    
-    <script src="/libs/others/clicklove.js" async="async"></script>
-    
-    
-    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
-    
-
-    
-
-    
-
-    <!--腾讯兔小巢-->
-    
-    
-    <script type="text/javascript" color="0,0,255"
-        pointColor="0,0,255" opacity='0.7'
-        zIndex="-1" count="99"
-        src="/libs/background/canvas-nest.js"></script>
-    
-
-    
-
-    
-
-    
-    <script src="/libs/instantpage/instantpage.js" type="module"></script>
-    
-
-</body>
-
-</html>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Alexander Liu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/07/13/springboot2-x/">http://example.com/2021/07/13/springboot2-x/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">兔の博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%90%8E%E7%AB%AF/">后端</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210721174421.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/07/24/spring-cloud-spring-cloud-alibaba/"><img class="prev-cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210724162539.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Spring Cloud + Spring Cloud Alibaba</div></div></a></div><div class="next-post pull-right"><a href="/2021/07/03/springboot-an-lai-la/"><img class="next-cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210721211129.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SpringBoot俺来啦</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/05/19/docker-xue-xi/" title="Docker学习"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210819205713.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-19</div><div class="title">Docker学习</div></div></a></div><div><a href="/2021/08/19/docker-jin-jie/" title="Docker进阶"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210819205713.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-19</div><div class="title">Docker进阶</div></div></a></div><div><a href="/2021/08/25/elasticsearch-xue-xi/" title="ElasticSearch学习"><img class="cover" src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/cloudimg/img/20210825185001.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-25</div><div class="title">ElasticSearch学习</div></div></a></div><div><a href="/2021/03/16/jdbc-xue-xi/" title="JDBC学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-16</div><div class="title">JDBC学习</div></div></a></div><div><a href="/2021/04/21/jsp-xue-xi/" title="JSP学习"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-21</div><div class="title">JSP学习</div></div></a></div><div><a href="/2021/02/20/java-fu-xi/" title="Java大二上所学内容"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-02-20</div><div class="title">Java大二上所学内容</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Alexander Liu</div><div class="author-info__description">欢迎来到兔子的小窝，这里是兔子的一些笔记分享</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">134</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%92%88%E5%AF%B9%E4%BA%8EBoot2%E7%9A%84%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%8C%E6%9C%89%E4%BA%86%E8%BF%99%E4%B8%80%E6%9C%9F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E8%BF%9E%E7%9D%80%E4%B8%A4%E6%AC%A1%E5%AD%A6%E4%B9%A0boot%EF%BC%8C%E5%88%9A%E5%A5%BD%E5%B7%A9%E5%9B%BA%E5%9F%BA%E7%A1%80%E4%BA%86%E5%97%B7%EF%BC%81%EF%BC%81%EF%BC%81%E5%B0%9A%E7%A1%85%E8%B0%B7%E8%BF%98%E6%98%AF%E9%A6%99%E5%93%87%EF%BC%81%EF%BC%81%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">针对于Boot2的新特性，有了这一期的学习，连着两次学习boot，刚好巩固基础了嗷！！！尚硅谷还是香哇！！！</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E7%AF%87%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">基础使用篇：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Boot%E7%9A%84%E5%8D%87%E7%BA%A7%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">Boot的升级：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E8%A1%A5%E5%85%85%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">一些补充：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">注解使用：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Configuration"><span class="toc-number">2.3.1.</span> <span class="toc-text">@Configuration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Import"><span class="toc-number">2.3.2.</span> <span class="toc-text">@Import</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conditional"><span class="toc-number">2.3.3.</span> <span class="toc-text">@Conditional</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ImportResource"><span class="toc-number">2.3.4.</span> <span class="toc-text">@ImportResource</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%EF%BC%88-ComfigurationProperties%EF%BC%89%EF%BC%9A"><span class="toc-number">2.3.5.</span> <span class="toc-text">属性自动配置（@ComfigurationProperties）：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Component-ConfigurationProperties"><span class="toc-number">2.3.5.1.</span> <span class="toc-text">@Component + @ConfigurationProperties</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#EnableConfigurationProperties-ConfigurationProperties"><span class="toc-number">2.3.5.2.</span> <span class="toc-text">@EnableConfigurationProperties + @ConfigurationProperties</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-number">2.4.</span> <span class="toc-text">自动配置原理：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringBootConfiguration"><span class="toc-number">2.4.1.</span> <span class="toc-text">@SpringBootConfiguration:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EnableAutoConfiguration-%E6%9C%80%E9%87%8D%E8%A6%81"><span class="toc-number">2.4.2.</span> <span class="toc-text">@EnableAutoConfiguration(最重要)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ComponentScan-%E2%80%9Ccom-tuzi-boot%E2%80%9D"><span class="toc-number">2.4.3.</span> <span class="toc-text">@ComponentScan(“com.tuzi.boot”)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Skills%EF%BC%9A"><span class="toc-number">2.4.4.</span> <span class="toc-text">Skills：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%BD%BB%E5%A4%A7%E6%82%9F%EF%BC%81%EF%BC%81%EF%BC%81%E4%B8%8A%E9%9D%A2%E8%AE%B2%E7%9A%84%E8%BF%99%E4%B8%80%E4%B8%B2%E5%A4%AA%E5%A5%BD%E4%BA%86%EF%BC%81%EF%BC%81%EF%BC%81"><span class="toc-number">2.5.</span> <span class="toc-text">大彻大悟！！！上面讲的这一串太好了！！！</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A"><span class="toc-number">2.6.</span> <span class="toc-text">最佳实践：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E5%B0%8F%E6%8A%80%E5%B7%A7%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">开发小技巧：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lombok%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">Lombok：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dev-tools%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">dev-tools：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Initializer%EF%BC%9A"><span class="toc-number">3.3.</span> <span class="toc-text">Spring Initializer：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E7%AF%87%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">核心功能篇：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Yaml%EF%BC%9A"><span class="toc-number">4.1.</span> <span class="toc-text">Yaml：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-3%E3%80%81%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">4.1.1.</span> <span class="toc-text">1.2.3、数据类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E9%87%8A%E5%A4%84%E7%90%86%E5%99%A8%EF%BC%9A"><span class="toc-number">4.2.</span> <span class="toc-text">注释处理器：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web%E5%BC%80%E5%8F%91%EF%BC%9A"><span class="toc-number">4.3.</span> <span class="toc-text">Web开发：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81SpringMVC%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E6%A6%82%E8%A7%88"><span class="toc-number">4.3.1.</span> <span class="toc-text">1、SpringMVC自动配置概览</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Boot%E6%8F%90%E4%BE%9B%E7%9A%84%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">4.3.1.1.</span> <span class="toc-text">Boot提供的自动配置方法：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E7%AE%80%E5%8D%95%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90"><span class="toc-number">4.3.2.</span> <span class="toc-text">2、简单功能分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1%E3%80%81%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE"><span class="toc-number">4.3.2.1.</span> <span class="toc-text">2.1、静态资源访问</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E7%9B%AE%E5%BD%95"><span class="toc-number">4.3.2.1.1.</span> <span class="toc-text">1、静态资源目录</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE%E5%89%8D%E7%BC%80"><span class="toc-number">4.3.2.1.2.</span> <span class="toc-text">2、静态资源访问前缀</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE%E4%BD%8D%E7%BD%AE%E4%BF%AE%E6%94%B9"><span class="toc-number">4.3.2.1.3.</span> <span class="toc-text">3、静态资源访问位置修改</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4%E3%80%81webjar%EF%BC%88%E4%BD%BF%E7%94%A8%E4%BD%8D%E7%BD%AE%EF%BC%89"><span class="toc-number">4.3.2.1.4.</span> <span class="toc-text">4、webjar（使用位置）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2%E3%80%81%E6%AC%A2%E8%BF%8E%E9%A1%B5%E6%94%AF%E6%8C%81"><span class="toc-number">4.3.2.2.</span> <span class="toc-text">2.2、欢迎页支持</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89-Favicon"><span class="toc-number">4.3.2.3.</span> <span class="toc-text">2.3、自定义 Favicon</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4%E3%80%81%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.2.4.</span> <span class="toc-text">2.4、静态资源配置原理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E9%85%8D%E7%BD%AE%E7%B1%BB%E5%8F%AA%E6%9C%89%E4%B8%80%E4%B8%AA%E6%9C%89%E5%8F%82%E6%9E%84%E9%80%A0%E5%99%A8"><span class="toc-number">4.3.2.4.1.</span> <span class="toc-text">1、配置类只有一个有参构造器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E8%B5%84%E6%BA%90%E5%A4%84%E7%90%86%E7%9A%84%E9%BB%98%E8%AE%A4%E8%A7%84%E5%88%99"><span class="toc-number">4.3.2.4.2.</span> <span class="toc-text">2、资源处理的默认规则</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81%E6%AC%A2%E8%BF%8E%E9%A1%B5%E7%9A%84%E5%A4%84%E7%90%86%E8%A7%84%E5%88%99"><span class="toc-number">4.3.2.4.3.</span> <span class="toc-text">3、欢迎页的处理规则</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4%E3%80%81favicon"><span class="toc-number">4.3.2.4.4.</span> <span class="toc-text">4、favicon</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E5%A4%84%E7%90%86"><span class="toc-number">4.3.3.</span> <span class="toc-text">3、请求参数处理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0%E3%80%81%E8%AF%B7%E6%B1%82%E6%98%A0%E5%B0%84"><span class="toc-number">4.3.3.1.</span> <span class="toc-text">0、请求映射</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#0-1%E3%80%81rest%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.3.1.1.</span> <span class="toc-text">0.1、rest使用与原理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#0-2%E3%80%81%E8%AF%B7%E6%B1%82%E6%98%A0%E5%B0%84%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.3.1.2.</span> <span class="toc-text">0.2、请求映射原理</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E6%99%AE%E9%80%9A%E5%8F%82%E6%95%B0%E4%B8%8E%E5%9F%BA%E6%9C%AC%E6%B3%A8%E8%A7%A3"><span class="toc-number">4.3.3.2.</span> <span class="toc-text">1、普通参数与基本注解</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-1%E3%80%81%E6%B3%A8%E8%A7%A3%EF%BC%9A"><span class="toc-number">4.3.3.2.1.</span> <span class="toc-text">1.1、注解：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2%E3%80%81Servlet-API%EF%BC%9A"><span class="toc-number">4.3.3.2.2.</span> <span class="toc-text">1.2、Servlet API：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-3%E3%80%81%E5%A4%8D%E6%9D%82%E5%8F%82%E6%95%B0%EF%BC%9A"><span class="toc-number">4.3.3.2.3.</span> <span class="toc-text">1.3、复杂参数：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-4%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AF%B9%E8%B1%A1%E5%8F%82%E6%95%B0%EF%BC%9A"><span class="toc-number">4.3.3.2.4.</span> <span class="toc-text">1.4、自定义对象参数：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81POJO%E5%B0%81%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="toc-number">4.3.3.3.</span> <span class="toc-text">2、POJO封装过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E5%8F%82%E6%95%B0%E5%A4%84%E7%90%86%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.3.4.</span> <span class="toc-text">3、参数处理原理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1%E3%80%81HandlerAdapter"><span class="toc-number">4.3.3.4.1.</span> <span class="toc-text">3.1、HandlerAdapter</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2%E3%80%81%E6%89%A7%E8%A1%8C%E7%9B%AE%E6%A0%87%E6%96%B9%E6%B3%95"><span class="toc-number">4.3.3.4.2.</span> <span class="toc-text">3.2、执行目标方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-3%E3%80%81%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90%E5%99%A8-HandlerMethodArgumentResolver"><span class="toc-number">4.3.3.4.3.</span> <span class="toc-text">3.3、参数解析器-HandlerMethodArgumentResolver</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4%E3%80%81%E8%BF%94%E5%9B%9E%E5%80%BC%E5%A4%84%E7%90%86%E5%99%A8"><span class="toc-number">4.3.3.4.4.</span> <span class="toc-text">3.4、返回值处理器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-5%E3%80%81%E5%A6%82%E4%BD%95%E7%A1%AE%E5%AE%9A%E7%9B%AE%E6%A0%87%E6%96%B9%E6%B3%95%E6%AF%8F%E4%B8%80%E4%B8%AA%E5%8F%82%E6%95%B0%E7%9A%84%E5%80%BC"><span class="toc-number">4.3.3.4.5.</span> <span class="toc-text">3.5、如何确定目标方法每一个参数的值</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#3-5-1%E3%80%81%E6%8C%A8%E4%B8%AA%E5%88%A4%E6%96%AD%E6%89%80%E6%9C%89%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90%E5%99%A8%E9%82%A3%E4%B8%AA%E6%94%AF%E6%8C%81%E8%A7%A3%E6%9E%90%E8%BF%99%E4%B8%AA%E5%8F%82%E6%95%B0"><span class="toc-number">4.3.3.4.5.1.</span> <span class="toc-text">3.5.1、挨个判断所有参数解析器那个支持解析这个参数</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-5-2%E3%80%81%E8%A7%A3%E6%9E%90%E8%BF%99%E4%B8%AA%E5%8F%82%E6%95%B0%E7%9A%84%E5%80%BC"><span class="toc-number">4.3.3.4.5.2.</span> <span class="toc-text">3.5.2、解析这个参数的值</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-5-3%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E5%8F%82%E6%95%B0-%E5%B0%81%E8%A3%85POJO"><span class="toc-number">4.3.3.4.5.3.</span> <span class="toc-text">3.5.3、自定义类型参数 封装POJO</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-6%E3%80%81%E7%9B%AE%E6%A0%87%E6%96%B9%E6%B3%95%E6%89%A7%E8%A1%8C%E5%AE%8C%E6%88%90"><span class="toc-number">4.3.3.4.6.</span> <span class="toc-text">3.6、目标方法执行完成</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-7%E3%80%81%E5%A4%84%E7%90%86%E6%B4%BE%E5%8F%91%E7%BB%93%E6%9E%9C"><span class="toc-number">4.3.3.4.7.</span> <span class="toc-text">3.7、处理派发结果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E6%95%B0%E6%8D%AE%E5%93%8D%E5%BA%94%E4%B8%8E%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86"><span class="toc-number">4.3.4.</span> <span class="toc-text">4、数据响应与内容协商</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E5%93%8D%E5%BA%94JSON"><span class="toc-number">4.3.4.1.</span> <span class="toc-text">1、响应JSON</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-1%E3%80%81jackson-jar-ResponseBody"><span class="toc-number">4.3.4.1.1.</span> <span class="toc-text">1.1、jackson.jar+@ResponseBody</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-1-1%E3%80%81%E8%BF%94%E5%9B%9E%E5%80%BC%E8%A7%A3%E6%9E%90%E5%99%A8"><span class="toc-number">4.3.4.1.1.1.</span> <span class="toc-text">1.1.1、返回值解析器</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#1-1-2%E3%80%81%E8%BF%94%E5%9B%9E%E5%80%BC%E8%A7%A3%E6%9E%90%E5%99%A8%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.4.1.1.2.</span> <span class="toc-text">1.1.2、返回值解析器原理</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2%E3%80%81SpringMVC%E5%88%B0%E5%BA%95%E6%94%AF%E6%8C%81%E5%93%AA%E4%BA%9B%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="toc-number">4.3.4.1.2.</span> <span class="toc-text">1.2、SpringMVC到底支持哪些返回值</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-3%E3%80%81HTTPMessageConverter%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.4.1.3.</span> <span class="toc-text">1.3、HTTPMessageConverter原理</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-3-1%E3%80%81MessageConverter%E8%A7%84%E8%8C%83"><span class="toc-number">4.3.4.1.3.1.</span> <span class="toc-text">1.3.1、MessageConverter规范</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#1-3-2%E3%80%81%E9%BB%98%E8%AE%A4%E7%9A%84MessageConverter"><span class="toc-number">4.3.4.1.3.2.</span> <span class="toc-text">1.3.2、默认的MessageConverter</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86"><span class="toc-number">4.3.4.2.</span> <span class="toc-text">2、内容协商</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1%E3%80%81%E5%BC%95%E5%85%A5xml%E4%BE%9D%E8%B5%96"><span class="toc-number">4.3.4.2.1.</span> <span class="toc-text">2.1、引入xml依赖</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2%E3%80%81postman%E5%88%86%E5%88%AB%E6%B5%8B%E8%AF%95%E8%BF%94%E5%9B%9Ejson%E5%92%8Cxml"><span class="toc-number">4.3.4.2.2.</span> <span class="toc-text">2.2、postman分别测试返回json和xml</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3%E3%80%81%E5%BC%80%E5%90%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8F%82%E6%95%B0%E6%96%B9%E5%BC%8F%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86%E5%8A%9F%E8%83%BD"><span class="toc-number">4.3.4.2.3.</span> <span class="toc-text">2.3、开启浏览器参数方式内容协商功能</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-4%E3%80%81%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.4.2.4.</span> <span class="toc-text">2.4、内容协商原理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-5%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89-MessageConverter"><span class="toc-number">4.3.4.2.5.</span> <span class="toc-text">2.5、自定义 MessageConverter</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%E3%80%81%E8%A7%86%E5%9B%BE%E8%A7%A3%E6%9E%90%E4%B8%8E%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E"><span class="toc-number">4.3.5.</span> <span class="toc-text">5、视图解析与模板引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E8%A7%86%E5%9B%BE%E8%A7%A3%E6%9E%90"><span class="toc-number">4.3.5.1.</span> <span class="toc-text">1、视图解析</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E8%A7%86%E5%9B%BE%E8%A7%A3%E6%9E%90%E5%8E%9F%E7%90%86%E6%B5%81%E7%A8%8B"><span class="toc-number">4.3.5.1.1.</span> <span class="toc-text">1、视图解析原理流程</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E-Thymeleaf"><span class="toc-number">4.3.5.2.</span> <span class="toc-text">2、模板引擎-Thymeleaf</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81thymeleaf%E7%AE%80%E4%BB%8B"><span class="toc-number">4.3.5.2.1.</span> <span class="toc-text">1、thymeleaf简介</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="toc-number">4.3.5.2.2.</span> <span class="toc-text">2、基本语法</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1%E3%80%81%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">4.3.5.2.2.1.</span> <span class="toc-text">1、表达式</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2%E3%80%81%E5%AD%97%E9%9D%A2%E9%87%8F"><span class="toc-number">4.3.5.2.2.2.</span> <span class="toc-text">2、字面量</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3%E3%80%81%E6%96%87%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="toc-number">4.3.5.2.2.3.</span> <span class="toc-text">3、文本操作</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4%E3%80%81%E6%95%B0%E5%AD%A6%E8%BF%90%E7%AE%97"><span class="toc-number">4.3.5.2.2.4.</span> <span class="toc-text">4、数学运算</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#5%E3%80%81%E5%B8%83%E5%B0%94%E8%BF%90%E7%AE%97"><span class="toc-number">4.3.5.2.2.5.</span> <span class="toc-text">5、布尔运算</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#6%E3%80%81%E6%AF%94%E8%BE%83%E8%BF%90%E7%AE%97"><span class="toc-number">4.3.5.2.2.6.</span> <span class="toc-text">6、比较运算</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#7%E3%80%81%E6%9D%A1%E4%BB%B6%E8%BF%90%E7%AE%97"><span class="toc-number">4.3.5.2.2.7.</span> <span class="toc-text">7、条件运算</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#8%E3%80%81%E7%89%B9%E6%AE%8A%E6%93%8D%E4%BD%9C"><span class="toc-number">4.3.5.2.2.8.</span> <span class="toc-text">8、特殊操作</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81%E8%AE%BE%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%80%BC-th-attr"><span class="toc-number">4.3.5.2.3.</span> <span class="toc-text">3、设置属性值-th:attr</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4%E3%80%81%E8%BF%AD%E4%BB%A3"><span class="toc-number">4.3.5.2.4.</span> <span class="toc-text">4、迭代</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5%E3%80%81%E6%9D%A1%E4%BB%B6%E8%BF%90%E7%AE%97"><span class="toc-number">4.3.5.2.5.</span> <span class="toc-text">5、条件运算</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6%E3%80%81%E5%B1%9E%E6%80%A7%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">4.3.5.2.6.</span> <span class="toc-text">6、属性优先级</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81thymeleaf%E4%BD%BF%E7%94%A8"><span class="toc-number">4.3.5.3.</span> <span class="toc-text">3、thymeleaf使用</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E5%BC%95%E5%85%A5Starter"><span class="toc-number">4.3.5.3.1.</span> <span class="toc-text">1、引入Starter</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%A5%BD%E4%BA%86thymeleaf"><span class="toc-number">4.3.5.3.2.</span> <span class="toc-text">2、自动配置好了thymeleaf</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81%E9%A1%B5%E9%9D%A2%E5%BC%80%E5%8F%91"><span class="toc-number">4.3.5.3.3.</span> <span class="toc-text">3、页面开发</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E6%9E%84%E5%BB%BA%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F"><span class="toc-number">4.3.5.4.</span> <span class="toc-text">4、构建后台管理系统</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E9%A1%B9%E7%9B%AE%E5%88%9B%E5%BB%BA"><span class="toc-number">4.3.5.4.1.</span> <span class="toc-text">1、项目创建</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E5%A4%84%E7%90%86"><span class="toc-number">4.3.5.4.2.</span> <span class="toc-text">2、静态资源处理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81%E8%B7%AF%E5%BE%84%E6%9E%84%E5%BB%BA"><span class="toc-number">4.3.5.4.3.</span> <span class="toc-text">3、路径构建</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4%E3%80%81%E6%A8%A1%E6%9D%BF%E6%8A%BD%E5%8F%96"><span class="toc-number">4.3.5.4.4.</span> <span class="toc-text">4、模板抽取</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5%E3%80%81%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC"><span class="toc-number">4.3.5.4.5.</span> <span class="toc-text">5、页面跳转</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6%E3%80%81%E6%95%B0%E6%8D%AE%E6%B8%B2%E6%9F%93"><span class="toc-number">4.3.5.4.6.</span> <span class="toc-text">6、数据渲染</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7%E3%80%81%E5%B7%A5%E7%A8%8B%E9%97%AE%E9%A2%98"><span class="toc-number">4.3.5.4.7.</span> <span class="toc-text">7、工程问题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%E3%80%81%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">4.3.6.</span> <span class="toc-text">6、拦截器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81HandlerInterceptor-%E6%8E%A5%E5%8F%A3"><span class="toc-number">4.3.6.1.</span> <span class="toc-text">1、HandlerInterceptor 接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E9%85%8D%E7%BD%AE%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">4.3.6.2.</span> <span class="toc-text">2、配置拦截器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E6%8B%A6%E6%88%AA%E5%99%A8%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.6.3.</span> <span class="toc-text">3、拦截器原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7%E3%80%81%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-number">4.3.7.</span> <span class="toc-text">7、文件上传</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E9%A1%B5%E9%9D%A2%E8%A1%A8%E5%8D%95"><span class="toc-number">4.3.7.1.</span> <span class="toc-text">1、页面表单</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%BB%A3%E7%A0%81"><span class="toc-number">4.3.7.2.</span> <span class="toc-text">2、文件上传代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.7.3.</span> <span class="toc-text">3、自动配置原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8%E3%80%81%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-number">4.3.8.</span> <span class="toc-text">8、异常处理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="toc-number">4.3.8.1.</span> <span class="toc-text">1、错误处理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E9%BB%98%E8%AE%A4%E8%A7%84%E5%88%99"><span class="toc-number">4.3.8.1.1.</span> <span class="toc-text">1、默认规则</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E5%AE%9A%E5%88%B6%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E9%80%BB%E8%BE%91"><span class="toc-number">4.3.8.2.</span> <span class="toc-text">2、定制错误处理逻辑</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E4%BD%BF%E7%94%A8RegistrationBean"><span class="toc-number">4.3.8.3.</span> <span class="toc-text">2、使用RegistrationBean</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10%E3%80%81%E5%B5%8C%E5%85%A5%E5%BC%8FServlet%E5%AE%B9%E5%99%A8"><span class="toc-number">4.3.9.</span> <span class="toc-text">10、嵌入式Servlet容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E5%88%87%E6%8D%A2%E5%B5%8C%E5%85%A5%E5%BC%8FServlet%E5%AE%B9%E5%99%A8"><span class="toc-number">4.3.9.1.</span> <span class="toc-text">1、切换嵌入式Servlet容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E5%AE%9A%E5%88%B6Servlet%E5%AE%B9%E5%99%A8"><span class="toc-number">4.3.9.2.</span> <span class="toc-text">2、定制Servlet容器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11%E3%80%81%E5%AE%9A%E5%88%B6%E5%8C%96%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.10.</span> <span class="toc-text">11、定制化原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E5%AE%9A%E5%88%B6%E5%8C%96%E7%9A%84%E5%B8%B8%E8%A7%81%E6%96%B9%E5%BC%8F"><span class="toc-number">4.3.10.1.</span> <span class="toc-text">1、定制化的常见方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E5%A5%97%E8%B7%AF"><span class="toc-number">4.3.10.2.</span> <span class="toc-text">2、原理分析套路</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE%EF%BC%9A"><span class="toc-number">4.4.</span> <span class="toc-text">数据访问：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81SQL"><span class="toc-number">4.4.1.</span> <span class="toc-text">1、SQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E6%95%B0%E6%8D%AE%E6%BA%90%E7%9A%84%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE-HikariDataSource"><span class="toc-number">4.4.1.1.</span> <span class="toc-text">1、数据源的自动配置-HikariDataSource</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E5%AF%BC%E5%85%A5JDBC%E5%9C%BA%E6%99%AF"><span class="toc-number">4.4.1.1.1.</span> <span class="toc-text">1、导入JDBC场景</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E5%88%86%E6%9E%90%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">4.4.1.2.</span> <span class="toc-text">2、分析自动配置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E7%9A%84%E7%B1%BB"><span class="toc-number">4.4.1.2.1.</span> <span class="toc-text">1、自动配置的类</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="toc-number">4.4.1.3.</span> <span class="toc-text">3、修改配置项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E6%B5%8B%E8%AF%95"><span class="toc-number">4.4.1.4.</span> <span class="toc-text">4、测试</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E4%BD%BF%E7%94%A8Druid%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="toc-number">4.4.2.</span> <span class="toc-text">2、使用Druid数据源</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81druid%E5%AE%98%E6%96%B9github%E5%9C%B0%E5%9D%80"><span class="toc-number">4.4.2.1.</span> <span class="toc-text">1、druid官方github地址</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E5%BC%8F"><span class="toc-number">4.4.2.2.</span> <span class="toc-text">2、自定义方式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="toc-number">4.4.2.2.1.</span> <span class="toc-text">1、创建数据源</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81StatViewServlet"><span class="toc-number">4.4.2.2.2.</span> <span class="toc-text">2、StatViewServlet</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81StatFilter"><span class="toc-number">4.4.2.2.3.</span> <span class="toc-text">3、StatFilter</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E4%BD%BF%E7%94%A8%E5%AE%98%E6%96%B9starter%E6%96%B9%E5%BC%8F"><span class="toc-number">4.4.2.3.</span> <span class="toc-text">3、使用官方starter方式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E5%BC%95%E5%85%A5druid-starter"><span class="toc-number">4.4.2.3.1.</span> <span class="toc-text">1、引入druid-starter</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E5%88%86%E6%9E%90%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE-1"><span class="toc-number">4.4.2.3.2.</span> <span class="toc-text">2、分析自动配置</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="toc-number">4.4.2.3.3.</span> <span class="toc-text">3、配置示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E6%95%B4%E5%90%88MyBatis%E6%93%8D%E4%BD%9C"><span class="toc-number">4.4.3.</span> <span class="toc-text">3、整合MyBatis操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E9%85%8D%E7%BD%AE%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.4.3.1.</span> <span class="toc-text">1、配置模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E7%BA%AF%E6%B3%A8%E8%A7%A3%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.4.3.2.</span> <span class="toc-text">2、纯注解模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E6%B7%B7%E5%90%88%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.4.3.3.</span> <span class="toc-text">3、混合模式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E6%95%B4%E5%90%88-MyBatis-Plus-%E5%AE%8C%E6%88%90CRUD"><span class="toc-number">4.4.4.</span> <span class="toc-text">4、整合 MyBatis-Plus 完成CRUD</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFMyBatis-Plus"><span class="toc-number">4.4.4.1.</span> <span class="toc-text">1、什么是MyBatis-Plus</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E6%95%B4%E5%90%88MyBatis-Plus"><span class="toc-number">4.4.4.2.</span> <span class="toc-text">2、整合MyBatis-Plus</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81CRUD%E5%8A%9F%E8%83%BD"><span class="toc-number">4.4.4.3.</span> <span class="toc-text">3、CRUD功能</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E5%B7%A5%E7%A8%8B%E9%97%AE%E9%A2%98"><span class="toc-number">4.4.4.4.</span> <span class="toc-text">4、工程问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5%E3%80%81%E5%B8%A6%E7%BF%BB%E9%A1%B5%E7%9A%84%E5%88%97%E8%A1%A8%E5%B1%95%E7%A4%BA%E5%8A%9F%E8%83%BD"><span class="toc-number">4.4.4.5.</span> <span class="toc-text">5、带翻页的列表展示功能</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%E3%80%81NoSQL"><span class="toc-number">4.4.5.</span> <span class="toc-text">5、NoSQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81Redis%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">4.4.5.1.</span> <span class="toc-text">1、Redis自动配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81RedisTemplate%E4%B8%8ELettuce"><span class="toc-number">4.4.5.2.</span> <span class="toc-text">2、RedisTemplate与Lettuce</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E5%88%87%E6%8D%A2%E8%87%B3jedis"><span class="toc-number">4.4.5.3.</span> <span class="toc-text">3、切换至jedis</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%9A"><span class="toc-number">4.5.</span> <span class="toc-text">单元测试：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81JUnit5-%E7%9A%84%E5%8F%98%E5%8C%96"><span class="toc-number">4.5.1.</span> <span class="toc-text">1、JUnit5 的变化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81JUnit5%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="toc-number">4.5.2.</span> <span class="toc-text">2、JUnit5常用注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E6%96%AD%E8%A8%80%EF%BC%88assertions%EF%BC%89"><span class="toc-number">4.5.3.</span> <span class="toc-text">3、断言（assertions）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1%E3%80%81%E7%AE%80%E5%8D%95%E6%96%AD%E8%A8%80"><span class="toc-number">4.5.3.1.</span> <span class="toc-text">3.1、简单断言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2%E3%80%81%E6%95%B0%E7%BB%84%E6%96%AD%E8%A8%80"><span class="toc-number">4.5.3.2.</span> <span class="toc-text">3.2、数组断言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3%E3%80%81%E7%BB%84%E5%90%88%E6%96%AD%E8%A8%80"><span class="toc-number">4.5.3.3.</span> <span class="toc-text">3.3、组合断言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4%E3%80%81%E5%BC%82%E5%B8%B8%E6%96%AD%E8%A8%80"><span class="toc-number">4.5.3.4.</span> <span class="toc-text">3.4、异常断言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5%E3%80%81%E8%B6%85%E6%97%B6%E6%96%AD%E8%A8%80"><span class="toc-number">4.5.3.5.</span> <span class="toc-text">3.5、超时断言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-6%E3%80%81%E5%BF%AB%E9%80%9F%E5%A4%B1%E8%B4%A5"><span class="toc-number">4.5.3.6.</span> <span class="toc-text">3.6、快速失败</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E5%89%8D%E7%BD%AE%E6%9D%A1%E4%BB%B6%EF%BC%88assumptions%EF%BC%89"><span class="toc-number">4.5.4.</span> <span class="toc-text">4、前置条件（assumptions）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%E3%80%81%E5%B5%8C%E5%A5%97%E6%B5%8B%E8%AF%95"><span class="toc-number">4.5.5.</span> <span class="toc-text">5、嵌套测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%E3%80%81%E5%8F%82%E6%95%B0%E5%8C%96%E6%B5%8B%E8%AF%95"><span class="toc-number">4.5.6.</span> <span class="toc-text">6、参数化测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7%E3%80%81%E8%BF%81%E7%A7%BB%E6%8C%87%E5%8D%97"><span class="toc-number">4.5.7.</span> <span class="toc-text">7、迁移指南</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%EF%BC%9A"><span class="toc-number">4.6.</span> <span class="toc-text">指标监控：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81SpringBoot-Actuator"><span class="toc-number">4.6.1.</span> <span class="toc-text">1、SpringBoot Actuator</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E7%AE%80%E4%BB%8B"><span class="toc-number">4.6.1.1.</span> <span class="toc-text">1、简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%811-x%E4%B8%8E2-x%E7%9A%84%E4%B8%8D%E5%90%8C"><span class="toc-number">4.6.1.2.</span> <span class="toc-text">2、1.x与2.x的不同</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8"><span class="toc-number">4.6.1.3.</span> <span class="toc-text">3、如何使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-number">4.6.1.4.</span> <span class="toc-text">4、可视化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81Actuator-Endpoint"><span class="toc-number">4.6.2.</span> <span class="toc-text">2、Actuator Endpoint</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E6%9C%80%E5%B8%B8%E4%BD%BF%E7%94%A8%E7%9A%84%E7%AB%AF%E7%82%B9"><span class="toc-number">4.6.2.1.</span> <span class="toc-text">1、最常使用的端点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81Health-Endpoint"><span class="toc-number">4.6.2.2.</span> <span class="toc-text">2、Health Endpoint</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81Metrics-Endpoint"><span class="toc-number">4.6.2.3.</span> <span class="toc-text">3、Metrics Endpoint</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E7%AE%A1%E7%90%86Endpoints"><span class="toc-number">4.6.2.4.</span> <span class="toc-text">4、管理Endpoints</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E5%BC%80%E5%90%AF%E4%B8%8E%E7%A6%81%E7%94%A8Endpoints"><span class="toc-number">4.6.2.4.1.</span> <span class="toc-text">1、开启与禁用Endpoints</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E6%9A%B4%E9%9C%B2Endpoints"><span class="toc-number">4.6.2.4.2.</span> <span class="toc-text">2、暴露Endpoints</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E5%AE%9A%E5%88%B6-Endpoint"><span class="toc-number">4.6.3.</span> <span class="toc-text">3、定制 Endpoint</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E5%AE%9A%E5%88%B6-Health-%E4%BF%A1%E6%81%AF"><span class="toc-number">4.6.3.1.</span> <span class="toc-text">1、定制 Health 信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E5%AE%9A%E5%88%B6info%E4%BF%A1%E6%81%AF"><span class="toc-number">4.6.3.2.</span> <span class="toc-text">2、定制info信息</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">4.6.3.2.1.</span> <span class="toc-text">1、编写配置文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E7%BC%96%E5%86%99InfoContributor"><span class="toc-number">4.6.3.2.2.</span> <span class="toc-text">2、编写InfoContributor</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E5%AE%9A%E5%88%B6Metrics%E4%BF%A1%E6%81%AF"><span class="toc-number">4.6.3.3.</span> <span class="toc-text">3、定制Metrics信息</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81SpringBoot%E6%94%AF%E6%8C%81%E8%87%AA%E5%8A%A8%E9%80%82%E9%85%8D%E7%9A%84Metrics"><span class="toc-number">4.6.3.3.1.</span> <span class="toc-text">1、SpringBoot支持自动适配的Metrics</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81%E5%A2%9E%E5%8A%A0%E5%AE%9A%E5%88%B6Metrics"><span class="toc-number">4.6.3.3.2.</span> <span class="toc-text">2、增加定制Metrics</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E5%AE%9A%E5%88%B6Endpoint"><span class="toc-number">4.6.3.4.</span> <span class="toc-text">4、定制Endpoint</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90"><span class="toc-number">4.7.</span> <span class="toc-text">原理解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81Profile%E5%8A%9F%E8%83%BD"><span class="toc-number">4.7.1.</span> <span class="toc-text">1、Profile功能</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81application-profile%E5%8A%9F%E8%83%BD"><span class="toc-number">4.7.1.1.</span> <span class="toc-text">1、application-profile功能</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81-Profile%E6%9D%A1%E4%BB%B6%E8%A3%85%E9%85%8D%E5%8A%9F%E8%83%BD"><span class="toc-number">4.7.1.2.</span> <span class="toc-text">2、@Profile条件装配功能</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81profile%E5%88%86%E7%BB%84"><span class="toc-number">4.7.1.3.</span> <span class="toc-text">3、profile分组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E5%B0%8F%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="toc-number">4.7.1.4.</span> <span class="toc-text">4、小例子：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%A4%96%E9%83%A8%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="toc-number">4.7.2.</span> <span class="toc-text">2、外部化配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E5%A4%96%E9%83%A8%E9%85%8D%E7%BD%AE%E6%BA%90"><span class="toc-number">4.7.2.1.</span> <span class="toc-text">1、外部配置源</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%9F%A5%E6%89%BE%E4%BD%8D%E7%BD%AE"><span class="toc-number">4.7.2.2.</span> <span class="toc-text">2、配置文件查找位置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E8%BD%BD%E9%A1%BA%E5%BA%8F%EF%BC%9A"><span class="toc-number">4.7.2.3.</span> <span class="toc-text">3、配置文件加载顺序：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E6%8C%87%E5%AE%9A%E7%8E%AF%E5%A2%83%E4%BC%98%E5%85%88%EF%BC%8C%E5%A4%96%E9%83%A8%E4%BC%98%E5%85%88%EF%BC%8C%E5%90%8E%E9%9D%A2%E7%9A%84%E5%8F%AF%E4%BB%A5%E8%A6%86%E7%9B%96%E5%89%8D%E9%9D%A2%E7%9A%84%E5%90%8C%E5%90%8D%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="toc-number">4.7.2.4.</span> <span class="toc-text">4、指定环境优先，外部优先，后面的可以覆盖前面的同名配置项</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89starter"><span class="toc-number">4.7.3.</span> <span class="toc-text">3、自定义starter</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81starter%E5%90%AF%E5%8A%A8%E5%8E%9F%E7%90%86"><span class="toc-number">4.7.3.1.</span> <span class="toc-text">1、starter启动原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E8%87%AA%E5%AE%9A%E4%B9%89starter"><span class="toc-number">4.7.3.2.</span> <span class="toc-text">2、自定义starter</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81SpringBoot%E5%8E%9F%E7%90%86"><span class="toc-number">4.7.4.</span> <span class="toc-text">4、SpringBoot原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81SpringBoot%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B"><span class="toc-number">4.7.4.1.</span> <span class="toc-text">1、SpringBoot启动过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81Application-Events-and-Listeners"><span class="toc-number">4.7.4.2.</span> <span class="toc-text">2、Application Events and Listeners</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81ApplicationRunner-%E4%B8%8E-CommandLineRunner"><span class="toc-number">4.7.4.3.</span> <span class="toc-text">3、ApplicationRunner 与 CommandLineRunner</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 操作系统概述"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071136497.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="1. 操作系统概述"/></a><div class="content"><a class="title" href="/2022/12/07/cao-zuo-xi-tong-gai-shu/" title="1. 操作系统概述">1. 操作系统概述</a><time datetime="2022-12-07T03:35:42.000Z" title="发表于 2022-12-07 11:35:42">2022-12-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CPU Cache 学习"/></a><div class="content"><a class="title" href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习">CPU Cache 学习</a><time datetime="2022-12-05T04:14:46.000Z" title="发表于 2022-12-05 12:14:46">2022-12-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/16/ml-ru-men/" title="ML入门"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ML入门"/></a><div class="content"><a class="title" href="/2022/01/16/ml-ru-men/" title="ML入门">ML入门</a><time datetime="2022-01-16T11:11:14.000Z" title="发表于 2022-01-16 19:11:14">2022-01-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习3"/></a><div class="content"><a class="title" href="/2021/12/28/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-3/" title="大数据分析与智能计算期末复习3">大数据分析与智能计算期末复习3</a><time datetime="2021-12-28T14:05:22.000Z" title="发表于 2021-12-28 22:05:22">2021-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据分析与智能计算期末复习2"/></a><div class="content"><a class="title" href="/2021/12/24/da-shu-ju-fen-xi-yu-zhi-neng-ji-suan-qi-mo-fu-xi-2/" title="大数据分析与智能计算期末复习2">大数据分析与智能计算期末复习2</a><time datetime="2021-12-24T07:59:54.000Z" title="发表于 2021-12-24 15:59:54">2021-12-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Alexander Liu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
