@@ -1,0 +1,996 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="JYY第四课：理解并发程序执行，承接上一话多处理器编程的内容。让我们对于程序并发执行有更加深入的理解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4. 理解并发程序执行">
+<meta property="og:url" content="http://example.com/2022/12/11/njuos-4-li-jie-bing-fa-cheng-xu-zhi-xing/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="JYY第四课：理解并发程序执行，承接上一话多处理器编程的内容。让我们对于程序并发执行有更加深入的理解。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212111624263.png">
+<meta property="article:published_time" content="2022-12-11T08:23:37.000Z">
+<meta property="article:modified_time" content="2022-12-11T13:22:10.735Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212111624263.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>4. 理解并发程序执行 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="4. 理解并发程序执行"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-11 16:23" pubdate>
+          2022年12月11日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          68 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">4. 理解并发程序执行</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月11日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>JYY第四课：理解并发程序执行，承接上一话多处理器编程的内容。让我们对于程序并发执行有更加深入的理解。</p>
+<span id="more"></span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1 id="自学内容补充"><a href="#自学内容补充" class="headerlink" title="自学内容补充"></a>自学内容补充</h1><h2 id="MESI协议-amp-缓存体系结构"><a href="#MESI协议-amp-缓存体系结构" class="headerlink" title="MESI协议 &amp; 缓存体系结构"></a>MESI协议 &amp; 缓存体系结构</h2><blockquote>
+<p>参考：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://xiaolincoding.com/os/1_hardware/cpu_mesi.html#cpu-cache-%E7%9A%84%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5">https://xiaolincoding.com/os/1_hardware/cpu_mesi.html#cpu-cache-%E7%9A%84%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/-uhAhBD2zGl_h19E4fNJzQ">https://mp.weixin.qq.com/s/-uhAhBD2zGl_h19E4fNJzQ</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&amp;mid=2247485960&amp;idx=1&amp;sn=476d40b3e272149ba6c7370340e9768f&amp;scene=21#wechat_redirect">https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&amp;mid=2247485960&amp;idx=1&amp;sn=476d40b3e272149ba6c7370340e9768f&amp;scene=21#wechat_redirect</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&amp;mid=2247485918&amp;idx=1&amp;sn=f7fa3aa2a7cc362eeebad09d4d6fa03a&amp;scene=21#wechat_redirect">https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&amp;mid=2247485918&amp;idx=1&amp;sn=f7fa3aa2a7cc362eeebad09d4d6fa03a&amp;scene=21#wechat_redirect</a></li>
+<li><a target="_blank" rel="noopener" href="https://alexanderliu-creator.github.io/2022/12/05/cpu-cache-xue-xi/">https://alexanderliu-creator.github.io/2022/12/05/cpu-cache-xue-xi/</a></li>
+</ol>
+<p>小林coding相关内容如上</p>
+</blockquote>
+<h3 id="缓存体系结构："><a href="#缓存体系结构：" class="headerlink" title="缓存体系结构："></a>缓存体系结构：</h3><h4 id="架构介绍"><a href="#架构介绍" class="headerlink" title="架构介绍"></a>架构介绍</h4><ul>
+<li>CPU Cache 就是上面这一整块儿，通常分为三级缓存：L1 Cache、L2 Cache、L3 Cache，级别越低的离 CPU 核心越近，访问速度也快，但是存储容量相对就会越小。其中，在多核心的 CPU 里，每个核心都有各自的 L1/L2 Cache，而 L3 Cache 是所有核心共享使用的。L1 Cache又可以分为L1数据缓存和L1指令缓存，整体架构如下图所示：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212111650975.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212111720166.png" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<blockquote>
+<p>L1 Cache比内存快了100多倍orz</p>
+</blockquote>
+<h4 id="Cache-Line介绍"><a href="#Cache-Line介绍" class="headerlink" title="Cache Line介绍"></a>Cache Line介绍</h4><ul>
+<li>CPU Cache 是由很多个 Cache Line 组成的，CPU Line 是 CPU 从内存读取数据的基本单位，而 CPU Line 是由各种标志（Tag）+ 数据块（Data Block）组成。换句话说，Cache Line就是CPU Cache到<strong>基本单位</strong>，由多个Cache Line组成，Cache Line的结构：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212111650508.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>那Cache Line的大小怎么查看？Cache Line的工作原理呢？</li>
+</ul>
+<blockquote>
+<p>Linux中可以通过sys/devices等方式查看缓存大小，缓存行的大小coherency_line_size，可以康康这个指标昂！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212111722459.png" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<blockquote>
+<p>上面这台机器，我们就看到，缓存行（缓存基本单位）的大小是64个字节。有一个 <code>int array[100]</code> 的数组，当载入 <code>array[0]</code> 时，由于这个数组元素的大小在内存只占 4 字节，不足 64 字节，CPU 就会<strong>顺序加载</strong>数组元素到 <code>array[15]</code>，意味着 <code>array[0]~array[15]</code> 数组元素都会被缓存在 CPU Cache 中了，因此当下次访问这些数组元素时，会直接从 CPU Cache 读取，而不用再从内存中读取，大大提高了 CPU 读取数据的性能。</p>
+</blockquote>
+<h4 id="Cache-Line和内存的映射"><a href="#Cache-Line和内存的映射" class="headerlink" title="Cache Line和内存的映射"></a>Cache Line和内存的映射</h4><ul>
+<li>CPU的Cache小，而内存非常大，怎样映射的呢？</li>
+</ul>
+<h5 id="直接映射"><a href="#直接映射" class="headerlink" title="直接映射"></a>直接映射</h5><ul>
+<li>最简单、基础的<strong>直接映射 Cache（Direct Mapped Cache）</strong> 说起，来看看整个 CPU Cache 的数据结构和访问逻辑。前面，我们提到 CPU 访问内存数据时，是一小块一小块数据读取的，具体这一小块数据的大小，取决于 <strong>coherency_line_size的值，一般 64 字节。在内存中，这一块的数据我们称为内存块（Bock）</strong>，读取的时候我们要拿到数据所在内存块的地址。</li>
+</ul>
+<blockquote>
+<p>直接映射 Cache 采用的策略，就是把内存块的地址始终「映射」在一个 CPU Line（缓存块） 的地址，至于映射关系实现方式，则是使用「取模运算」，取模运算的结果就是内存块地址对应的 CPU Line（缓存块） 的地址。</p>
+</blockquote>
+<ul>
+<li>举个例子，内存共被划分为 32 个内存块，CPU Cache 共有 8 个 CPU Line，假设 CPU 想要访问第 15 号内存块，如果 15 号内存块中的数据已经缓存在 CPU Line 中的话，则是一定映射在 7 号 CPU Line 中，因为 <code>15 % 8</code> 的值是 7。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212111746804.png" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h5 id="全相连"><a href="#全相连" class="headerlink" title="全相连"></a>全相连</h5><h5 id="组相连"><a href="#组相连" class="headerlink" title="组相连"></a>组相连</h5><h5 id="Cache-Line的非数据部分组成"><a href="#Cache-Line的非数据部分组成" class="headerlink" title="Cache Line的非数据部分组成"></a>Cache Line的非数据部分组成</h5><blockquote>
+<p>但是问题也来了，映射进来之后，如何标记是哪里映射的呢？以及如何标记数据过期啊之类的？</p>
+</blockquote>
+<ul>
+<li><p>Cache Line的非数据部分组成：</p>
+<ul>
+<li>为了区别不同的内存块，在对应的 CPU Line 中我们还会存储一个<strong>组标记（Tag）</strong>。这个组标记会记录当前 CPU Line 中存储的数据对应的内存块，我们可以用这个组标记来区分不同的内存块：</li>
+<li>一个是，从内存加载过来的实际存放<strong>数据（Data）</strong>。</li>
+<li>另一个是，<strong>有效位（Valid bit）</strong>，它是用来标记对应的 CPU Line 中的数据是否是有效的，如果有效位是 0，无论 CPU Line 中是否有数据，CPU 都会直接访问内存，重新加载数据。</li>
+</ul>
+</li>
+<li><p>CPU从CPU Cache中读取数据规则：CPU 在从 CPU Cache 读取数据的时候，并不是读取 CPU Line 中的整个数据块，而是读取 CPU 所需要的一个数据片段，这样的数据统称为一个<strong>字（Word）</strong>。那怎么在对应的 CPU Line 中数据块中找到所需的字呢？答案是，需要一个<strong>偏移量（Offset）</strong>。CPU从CPU Cache中读取数据规则：</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212111755083.png" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h5 id="CPU访问缓存步骤"><a href="#CPU访问缓存步骤" class="headerlink" title="CPU访问缓存步骤"></a>CPU访问缓存步骤</h5><ol>
+<li>根据内存地址中索引信息，计算在 CPU Cahe 中的索引，也就是找出对应的 CPU Line 的地址；</li>
+<li>找到对应 CPU Line 后，判断 CPU Line 中的有效位，确认 CPU Line 中数据是否是有效的，如果是无效的，CPU 就会直接访问内存，并重新加载数据，如果数据有效，则往下执行；</li>
+<li>找到对应 CPU Line 后，判断 CPU Line 中的有效位，确认 CPU Line 中数据是否是有效的，如果是无效的，CPU 就会直接访问内存，并重新加载数据，如果数据有效，则往下执行；</li>
+<li>根据内存地址中偏移量信息，从 CPU Line 的数据块中，读取对应的字。</li>
+</ol>
+<h4 id="CPUs-run-faster"><a href="#CPUs-run-faster" class="headerlink" title="CPUs run faster"></a>CPUs run faster</h4><blockquote>
+<p>CPU 访问内存的速度，比访问 CPU Cache 的速度慢了 100 多倍，所以如果 CPU 所要操作的数据在 CPU Cache 中的话，这样将会带来很大的性能提升。访问的数据在 CPU Cache 中的话，意味着<strong>缓存命中</strong>，缓存命中率越高的话，代码的性能就会越好，CPU 也就跑的越快。</p>
+</blockquote>
+<p>如何写出让 CPU 跑得更快的代码？ -&gt; 如何写出 CPU 缓存命中率高的代码？</p>
+<ul>
+<li>L1 Cache 通常分为「数据缓存」和「指令缓存」，这是因为 CPU 会别处理数据和指令，比如 <code>1+1=2</code> 这个运算，<code>+</code> 就是指令，会被放在「指令缓存」中，而输入数字 <code>1</code> 则会被放在「数据缓存」里。因此，<strong>我们要分开来看「数据缓存」和「指令缓存」的缓存命中率</strong>。</li>
+</ul>
+<h5 id="经典例子"><a href="#经典例子" class="headerlink" title="经典例子"></a>经典例子</h5><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span> ; i &lt; N ; i++) {<br>  <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j = <span class="hljs-number">0</span> ; j &lt; N ; j++) {<br>    <span class="hljs-built_in">array</span>[i][j] = <span class="hljs-number">0</span>;<br>  }<br>}<br><br><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span> ; i &lt; N ; i++) {<br>  <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j = <span class="hljs-number">0</span> ; j &lt; N ; j++) {<br>    <span class="hljs-built_in">array</span>[j][i] = <span class="hljs-number">0</span>;<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>第一种比第二种快好几倍。假设N=2，因为在内存中，数据的存储是array[0][0], array[0][1], array[1][0], array[1][1]。</p>
+<ul>
+<li>用 <code>array[i][j]</code> 访问数组元素的顺序，正是和内存中数组元素存放的顺序一致。当 CPU 访问 <code>array[0][0]</code> 时，由于该数据不在 Cache 中，于是会「顺序」把跟随其后的 3 个元素从内存中加载到 CPU Cache，这样当 CPU 访问后面的 3 个数组元素时，就能在 CPU Cache 中成功地找到数据，这意味着缓存命中率很高，缓存命中的数据不需要访问内存，这便大大提高了代码的性能。</li>
+<li>用<code>array[j][i]</code>方式跳跃式的，而不是顺序的，那么如果 N 的数值很大，那么操作 <code>array[j][i]</code> 时，是没办法把 <code>array[j+1][i]</code> 也读入到 CPU Cache 中的，既然 <code>array[j+1][i]</code> 没有读取到 CPU Cache，那么就需要从内存读取该数据元素了。很明显，这种不连续性、跳跃式访问数据元素的方式，可能不能充分利用到了 CPU Cache 的特性，从而代码的性能不高。</li>
+</ul>
+</blockquote>
+<ul>
+<li><code>array[0][0]</code> 元素时，CPU 具体会一次从内存中加载多少元素到 CPU Cache 呢？这个问题，在前面我们也提到过，这跟 CPU Cache Line 有关，它表示 <strong>CPU Cache 一次性能加载数据的大小</strong>，可以在 Linux 里通过 <code>coherency_line_size</code> 配置查看 它的大小，通常是 64 个字节。-&gt; int 就是说，会一次取16个，当访问 <code>array[0][0]</code> 时，由于该元素不足 64 字节，于是就会往后<strong>顺序</strong>读取 <code>array[0][0]~array[0][15]</code> 到 CPU Cache 中。顺序访问的 <code>array[i][j]</code> 因为利用了这一特点，所以就会比跳跃式访问的 <code>array[j][i]</code> 要快。</li>
+</ul>
+<blockquote>
+<p> 因此，遇到这种遍历数组的情况时，按照内存布局顺序访问，将可以有效的利用 CPU Cache 带来的好处，这样我们代码的性能就会得到很大的提升。</p>
+</blockquote>
+<h5 id="如何提升指令缓存的命中率"><a href="#如何提升指令缓存的命中率" class="headerlink" title="如何提升指令缓存的命中率"></a>如何提升指令缓存的命中率</h5><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">int</span> <span class="hljs-built_in">array</span>[N];<br><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span> ; i &lt; N ; i++) {<br>  <span class="hljs-built_in">array</span>[i] = rand() % <span class="hljs-number">100</span>;<br>}<br><br><span class="hljs-comment">// 操作一</span><br><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span> ; i &lt; N ; i++) {<br>  <span class="hljs-keyword">if</span>(<span class="hljs-built_in">array</span>[i] &lt; <span class="hljs-number">50</span>) <span class="hljs-built_in">array</span>[i] = <span class="hljs-number">0</span>;<br>}<br><br><span class="hljs-comment">// 操作二</span><br>sort(<span class="hljs-built_in">array</span>, <span class="hljs-built_in">array</span> + N);<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>先遍历再排序速度快，还是先排序再遍历速度快呢？</li>
+</ul>
+<blockquote>
+<p>我们先了解 CPU 的<strong>分支预测器</strong>。对于 if 条件语句，意味着此时至少可以选择跳转到两段不同的指令执行，也就是 if 还是 else 中的指令。那么，<strong>如果分支预测可以预测到接下来要执行 if 里的指令，还是 else 指令的话，就可以「提前」把这些指令放在指令缓存中，这样 CPU 可以直接从 Cache 读取到指令，于是执行速度就会很快</strong>。</p>
+<p>当数组中的元素是随机的，分支预测就无法有效工作，而当数组元素都是顺序的，分支预测器会动态地根据历史命中数据对未来进行预测，这样命中率就会很高。</p>
+</blockquote>
+<ul>
+<li><p>因此，先排序再遍历速度会更快，这是因为排序之后，数字是从小到大的，那么前几次循环命中 <code>if &lt; 50</code> 的次数会比较多，于是分支预测就会缓存 <code>if</code> 里的 <code>array[i] = 0</code> 指令到 Cache 中，后续 CPU 执行该指令就只需要从 Cache 读取就好了。</p>
+<p>如果你肯定代码中的 <code>if</code> 中的表达式判断为 <code>true</code> 的概率比较高，我们可以使用显示分支预测工具，比如在 C/C++ 语言中编译器提供了 <code>likely</code> 和 <code>unlikely</code> 这两种宏，如果 <code>if</code> 条件为 <code>ture</code> 的概率大，则可以用 <code>likely</code> 宏把 <code>if</code> 里的表达式包裹起来，反之用 <code>unlikely</code> 宏。</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212111939588.png" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<blockquote>
+<p>CPU 自身的动态分支预测已经是比较准的了，所以只有当非常确信 CPU 预测的不准，且能够知道实际的概率情况时，才建议使用这两种宏。</p>
+</blockquote>
+<h5 id="提升多核CPU的缓存命中率"><a href="#提升多核CPU的缓存命中率" class="headerlink" title="提升多核CPU的缓存命中率"></a>提升多核CPU的缓存命中率</h5><ul>
+<li>在单核 CPU，虽然只能执行一个进程，但是操作系统给每个进程分配了一个时间片，时间片用完了，就调度下一个进程，于是各个进程就按时间片交替地占用 CPU，从宏观上看起来各个进程同时在执行。而现代 CPU 都是多核心的，进程可能在不同 CPU 核心来回切换执行，这对 CPU Cache 不是有利的，虽然 L3 Cache 是多核心之间共享的，但是 L1 和 L2 Cache 都是每个核心独有的，<strong>如果一个进程在不同核心来回切换，各个核心的缓存命中率就会受到影响</strong>，相反如果进程都在同一个核心上执行，那么其数据的 L1 和 L2 Cache 的缓存命中率可以得到有效提高，缓存命中率高就意味着 CPU 可以减少访问内存的频率。</li>
+<li>当有多个同时执行「计算密集型」的线程，为了防止因为切换到不同的核心，而导致缓存命中率下降的问题，我们可以把<strong>线程绑定在某一个 CPU 核心上</strong>，这样性能可以得到非常可观的提升。在 Linux 上提供了 <code>sched_setaffinity</code> 方法，来实现将线程绑定到某个 CPU 核心这一功能。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212111940570.png" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h3 id="MESI协议："><a href="#MESI协议：" class="headerlink" title="MESI协议："></a>MESI协议：</h3><blockquote>
+<p>数据不光是只有读操作，还有写操作，那么如果数据写入 Cache 之后，内存与 Cache 相对应的数据将会不同，这种情况下 Cache 和内存数据都不一致了，于是我们肯定是要把 Cache 中的数据同步到内存里的。什么时机才把 Cache 中的数据写回到内存呢？为了应对这个问题，下面介绍两种针对写入数据的方法：</p>
+<ul>
+<li>写直达（<em>Write Through</em>）</li>
+<li>写回（<em>Write Back</em>）</li>
+</ul>
+</blockquote>
+<h4 id="写直达"><a href="#写直达" class="headerlink" title="写直达"></a>写直达</h4><blockquote>
+<p>保持内存与 Cache 一致性最简单的方式是，<strong>把数据同时写入内存和 Cache 中</strong>，这种方法称为<strong>写直达</strong></p>
+</blockquote>
+<p>写入前会先判断数据是否已经在 CPU Cache 里面了：</p>
+<ul>
+<li>如果数据已经在 Cache 里面，先将数据更新到 Cache 里面，再写入到内存里面；</li>
+<li>如果数据没有在 Cache 里面，就直接把数据更新到内存里面。</li>
+</ul>
+<p>写直达法很直观，也很简单，但是问题明显，无论数据在不在 Cache 里面，每次写操作都会写回到内存，这样写操作将会花费大量的时间，无疑性能会受到很大的影响。</p>
+<h4 id="写回"><a href="#写回" class="headerlink" title="写回"></a>写回</h4><blockquote>
+<p>写直达由于每次写操作都会把数据写回到内存，而导致影响性能，于是为了要减少数据写回内存的频率，就出现了<strong>写回（Write Back）的方法</strong>。写回机制中，<strong>当发生写操作时，新的数据仅仅被写入 Cache Block 里，只有当修改过的 Cache Block「被替换」时才需要写到内存中</strong>，减少了数据写回内存的频率，这样便可以提高系统的性能。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212112045363.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li><p>如果当发生写操作时，数据已经在 CPU Cache 里的话，则把数据更新到 CPU Cache 里，同时标记 CPU Cache 里的这个 Cache Block 为脏（Dirty）的，这个脏的标记代表这个时候，我们 CPU Cache 里面的这个 Cache Block 的数据和内存是不一致的，这种情况是不用把数据写到内存里的；</p>
+</li>
+<li><p>如果当发生写操作时，数据所对应的 Cache Block 里存放的是「别的内存地址的数据」的话，就要检查这个 Cache Block 里的数据有没有被标记为脏的：</p>
+<ul>
+<li>如果是脏的话，我们就要把这个 Cache Block 里的数据写回到内存，然后再把当前要写入的数据，先从内存读入到 Cache Block 里（注意，这一步不是没用的，具体为什么要这一步，可以看这个「<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/26672661/for-write-back-cache-policy-why-data-should-first-be-read-from-memory-before-w">回答</a>」），然后再把当前要写入的数据写入到 Cache Block，最后也把它标记为脏的；</li>
+<li>如果不是脏的话，把当前要写入的数据先从内存读入到 Cache Block 里，接着将数据写入到这个 Cache Block 里，然后再把这个 Cache Block 标记为脏的就好了。</li>
+</ul>
+</li>
+<li><p>写回在把数据写入到 Cache 的时候，只有在缓存不命中，同时数据对应的 Cache 中的 Cache Block 为脏标记的情况下，才会将数据写到内存中，而在缓存命中的情况下，则在写入后 Cache 后，只需把该数据对应的 Cache Block 标记为脏即可，而不用写到内存里。 -&gt; 这样的好处是，如果我们大量的操作都能够命中缓存，那么大部分时间里 CPU 都不需要读写内存，自然性能相比写直达会高很多。</p>
+</li>
+</ul>
+<blockquote>
+<p> 为什么缓存没命中时，还要定位 Cache Block？这是因为此时是要判断数据即将写入到 cache block 里的位置，是否被「其他数据」占用了此位置，如果这个「其他数据」是脏数据，那么就要帮忙把它写回到内存。</p>
+</blockquote>
+<ul>
+<li>整体流程图：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212112053528.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h4 id="缓存一致性"><a href="#缓存一致性" class="headerlink" title="缓存一致性"></a>缓存一致性</h4><blockquote>
+<p>CPU 都是多核的，由于 L1/L2 Cache 是多个核心各自独有的，那么会带来多核心的<strong>缓存一致性（Cache Coherence）</strong> 的问题，如果不能保证缓存一致性的问题，就可能造成结果错误。</p>
+</blockquote>
+<ul>
+<li>类似于上面这里，我们使用写回操作（类似于惰性修改），会导致不同CPU中，某一时刻，同一个变量的数据可能不一致：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212112058417.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>需要一种机制，来同步两个不同核心里面的缓存数据。要实现的这个机制的话，要保证做到下面这 2 点：<ul>
+<li>第一点，某个 CPU 核心里的 Cache 数据更新时，必须要传播到其他核心的 Cache，这个称为<strong>写传播（Write Propagation）</strong>；</li>
+<li>第二点，某个 CPU 核心里对数据的操作顺序，必须在其他核心看起来顺序是一样的，这个称为<strong>事务的串行化（Transaction Serialization）</strong>。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>上面的第二点这里，举个例子：</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212112100395.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<blockquote>
+<p>A和B可能都Propogation了，但是明显，看到的A, B操作的顺序不一致，就不符合第二条规则了。</p>
+</blockquote>
+<ul>
+<li>事物的串行化的实现：<ul>
+<li>CPU 核心对于 Cache 中数据的操作，需要同步给其他 CPU 核心；</li>
+<li>要引入「锁」的概念，如果两个 CPU 核心里有相同数据的 Cache，那么对于这个 Cache 数据的更新，只有拿到了「锁」，才能进行对应的数据更新。</li>
+</ul>
+</li>
+</ul>
+<h5 id="缓存一致性的保证"><a href="#缓存一致性的保证" class="headerlink" title="缓存一致性的保证"></a>缓存一致性的保证</h5><h6 id="总线嗅探-Bus-Snooping"><a href="#总线嗅探-Bus-Snooping" class="headerlink" title="总线嗅探(Bus Snooping)"></a>总线嗅探(Bus Snooping)</h6><blockquote>
+<p>当 A 号 CPU 核心修改了 L1 Cache 中 i 变量的值，通过总线把这个事件广播通知给其他所有的核心，然后每个 CPU 核心都会监听总线上的广播事件，并检查是否有相同的数据在自己的 L1 Cache 里面，如果 B 号 CPU 核心的 L1 Cache 中有该数据，那么也需要把该数据更新到自己的 L1 Cache。</p>
+</blockquote>
+<ul>
+<li>总线嗅探方法很简单， CPU 需要每时每刻监听总线上的一切活动，但是不管别的核心的 Cache 是否缓存相同的数据，都需要发出一个广播事件，这无疑会加重总线的负载。</li>
+<li>总线嗅探只是保证了某个 CPU 核心的 Cache 更新数据这个事件能被其他 CPU 核心知道，但是并不能保证事务串行化。 -&gt; MESI</li>
+</ul>
+<h6 id="MESI协议"><a href="#MESI协议" class="headerlink" title="MESI协议"></a>MESI协议</h6><ul>
+<li><p>MESI 协议其实是 4 个状态单词的开头字母缩写，分别是：</p>
+<ul>
+<li><p><em>Modified</em>，已修改：我们前面提到的脏标记，代表该 Cache Block 上的数据已经被更新过，但是还没有写到内存里。</p>
+</li>
+<li><p><em>Exclusive</em>，独占：Cache Block 里的数据是干净的（和内存一致），数据只存储在一个 CPU 核心的 Cache 里。写回的时候很自由，不需要通知其他 CPU 核心。如果有其他核心从内存读取了相同的数据到各自的 Cache ，那么这个时候，独占状态下的数据就会变成共享状态。</p>
+</li>
+<li><p><em>Shared</em>，共享：Cache Block 里的数据是干净的（和内存一致），相同的数据在多个 CPU 核心的 Cache 里都有，所以当我们要更新 Cache 里面的数据的时候，不能直接修改，而是要先向所有的其他 CPU 核心广播一个请求，要求先把其他核心的 Cache 中对应的 Cache Line 标记为「无效」状态，然后再更新当前 Cache 里面的数据。</p>
+</li>
+<li><p><em>Invalidated</em>，已失效：这个 Cache Block 里的数据已经失效了，不可以读取该状态的数据。</p>
+</li>
+</ul>
+</li>
+<li><p>具体例子：</p>
+<ul>
+<li>当 A 号 CPU 核心从内存读取变量 i 的值，数据被缓存在 A 号 CPU 核心自己的 Cache 里面，此时其他 CPU 核心的 Cache 没有缓存该数据，于是标记 Cache Line 状态为「独占」，此时其 Cache 中的数据与内存是一致的；</li>
+<li>然后 B 号 CPU 核心也从内存读取了变量 i 的值，此时会发送消息给其他 CPU 核心，由于 A 号 CPU 核心已经缓存了该数据，所以会把数据返回给 B 号 CPU 核心。在这个时候， A 和 B 核心缓存了相同的数据，Cache Line 的状态就会变成「共享」，并且其 Cache 中的数据与内存也是一致的；</li>
+<li>当 A 号 CPU 核心要修改 Cache 中 i 变量的值，发现数据对应的 Cache Line 的状态是共享状态，则要向所有的其他 CPU 核心广播一个请求，要求先把其他核心的 Cache 中对应的 Cache Line 标记为「无效」状态，然后 A 号 CPU 核心才更新 Cache 里面的数据，同时标记 Cache Line 为「已修改」状态，此时 Cache 中的数据就与内存不一致了。</li>
+<li>如果 A 号 CPU 核心「继续」修改 Cache 中 i 变量的值，由于此时的 Cache Line 是「已修改」状态，因此不需要给其他 CPU 核心发送消息，直接更新数据即可。</li>
+<li>如果 A 号 CPU 核心的 Cache 里的 i 变量对应的 Cache Line 要被「替换」，发现 Cache Line 状态是「已修改」状态，就会在替换前先把数据同步到内存。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>可以发现当 Cache Line 状态是「已修改」或者「独占」状态时，修改更新其数据不需要发送广播给其他 CPU 核心，这在一定程度上减少了总线带宽压力。</p>
+</blockquote>
+<ul>
+<li>状态机 &amp; 状态汇总：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212112115083.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212112120484.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>4. 理解并发程序执行</div>
+      <div>http://example.com/2022/12/11/njuos-4-li-jie-bing-fa-cheng-xu-zhi-xing/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/09/njuos-3-duo-chu-li-qi-bian-cheng/" title="3. 多处理器编程">
+                        <span class="hidden-mobile">3. 多处理器编程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
