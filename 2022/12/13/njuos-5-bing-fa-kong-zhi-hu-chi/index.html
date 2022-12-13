@@ -1,0 +1,940 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="JYY第五课，并发+互斥，保证多线程正确性昂！！！好多锁，自旋锁啊之类的，好好学学！！！ -&gt; 多处理器互斥">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5. 并发控制:互斥">
+<meta property="og:url" content="http://example.com/2022/12/13/njuos-5-bing-fa-kong-zhi-hu-chi/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="JYY第五课，并发+互斥，保证多线程正确性昂！！！好多锁，自旋锁啊之类的，好好学学！！！ -&gt; 多处理器互斥">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131040825.png">
+<meta property="article:published_time" content="2022-12-13T02:39:37.000Z">
+<meta property="article:modified_time" content="2022-12-13T07:54:11.608Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131040825.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>5. 并发控制:互斥 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="5. 并发控制:互斥"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-13 10:39" pubdate>
+          2022年12月13日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          33 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">5. 并发控制:互斥</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月13日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>JYY第五课，并发+互斥，保证多线程正确性昂！！！好多锁，自旋锁啊之类的，好好学学！！！ -&gt; 多处理器互斥</p>
+<span id="more"></span>
+
+<h1 id="共享内存上的互斥"><a href="#共享内存上的互斥" class="headerlink" title="共享内存上的互斥"></a>共享内存上的互斥</h1><ul>
+<li>思考模式：<ul>
+<li>上一个Peterson：<ul>
+<li>假设先贴字条后举旗子，会不会有问题。</li>
+<li>假设先看字条，再看旗子，会不会有问题。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131057148.png" srcset="/img/loading.gif" lazyload alt="image-20221213105750120"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131058494.png" srcset="/img/loading.gif" lazyload alt="image-20221213105806466"></p>
+<blockquote>
+<ul>
+<li>这个Load和Store的形容非常形象！！！相当于另外世界的生存法则？？？</li>
+</ul>
+</blockquote>
+<h1 id="互斥问题解决"><a href="#互斥问题解决" class="headerlink" title="互斥问题解决"></a>互斥问题解决</h1><blockquote>
+<p> 硬件是否可以为我们提供一条“瞬间完成”的读+写的指令 -&gt; 所看即所得（软件不够，硬件来凑！）</p>
+</blockquote>
+<ul>
+<li>厕所门口有个锁，<strong>原子的</strong>，一次只有一个人能去拿到厕所的钥匙！！！</li>
+</ul>
+<blockquote>
+<p>硬件就是yyds！！！</p>
+</blockquote>
+<h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131115885.png" srcset="/img/loading.gif" lazyload alt="image-20221213111159533"></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> table = YES;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">lock</span><span class="hljs-params">()</span> {<br>retry:<br>  <span class="hljs-type">int</span> got = xchg(&amp;table, NOPE);<br>  <span class="hljs-keyword">if</span>(got == NOPE)<br>    <span class="hljs-keyword">goto</span> retry;<br>  assert(got == YES);<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">unlock</span><span class="hljs-params">()</span>{<br>  xchg(&amp;table, YES);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> locked = <span class="hljs-number">0</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">lock</span><span class="hljs-params">()</span>{<span class="hljs-keyword">while</span>(xchg(&amp;locked, <span class="hljs-number">1</span>));}<br><span class="hljs-type">void</span> <span class="hljs-title function_">unlock</span><span class="hljs-params">()</span>{xchg(&amp;locked, <span class="hljs-number">0</span>);}<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131119768.png" srcset="/img/loading.gif" lazyload alt="image-20221213111908729"></p>
+<blockquote>
+<p>处理器的Lock指令会保证：</p>
+<ol>
+<li>无论多少个线程，所有lock，也就是临界区，一定能排出一个先后顺序。</li>
+<li>所有前面的Lock已经发生的事情，在当前这个Lock中，是一定能看到结果的！！！</li>
+</ol>
+</blockquote>
+<ul>
+<li>原子指令的模型：<ul>
+<li>保证之前的store都写入内存</li>
+<li>保证load/store不与原子指令乱序</li>
+</ul>
+</li>
+</ul>
+<h3 id="计算机系统硬件实现缓存一致性"><a href="#计算机系统硬件实现缓存一致性" class="headerlink" title="计算机系统硬件实现缓存一致性"></a>计算机系统硬件实现缓存一致性</h3><h4 id="486时代"><a href="#486时代" class="headerlink" title="486时代"></a>486时代</h4><blockquote>
+<p>两核共享一个Memory，给内存加个锁。多核竞争，由总线判定锁给谁。 -&gt; 实现锁的方式，就是硬件来保证的</p>
+</blockquote>
+<h4 id="现代处理器时代"><a href="#现代处理器时代" class="headerlink" title="现代处理器时代"></a>现代处理器时代</h4><h5 id="X86"><a href="#X86" class="headerlink" title="X86:"></a>X86:</h5><blockquote>
+<p>多核共享一个Memory，同时每个核还有自己的Cache -&gt; how to guarantee cache coherence?</p>
+</blockquote>
+<ul>
+<li>如果同一个变量同时出现在两个CPU缓存中，怎么办？Lock如何实现呢？把缓存从另外一个CPU里面踢掉！！！</li>
+</ul>
+<blockquote>
+<p> <strong>所有CPU的L1 Cache都是用一根总线连起来的</strong>！！！-&gt; Intel x86还有很大的包袱 -&gt; L1-Cache能和别的L1-Cache连起来，导致MESI协议其实方便实现的昂！！！不用走内存总线，再去判断某些状态啦，和内存并行的应该是，CPU之间通过MESI就保证了缓存的一致性昂！！！（我猜想就是这样设计的昂！！！）</p>
+</blockquote>
+<ul>
+<li><strong>硬件上的锁就是用总线来保证的昂！！！</strong></li>
+</ul>
+<h5 id="RISC-V"><a href="#RISC-V" class="headerlink" title="RISC-V:"></a>RISC-V:</h5><ul>
+<li>另外一种原子设计：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131144284.png" srcset="/img/loading.gif" lazyload alt="image-20221213114435239"></p>
+<blockquote>
+<p>本质就是三步：load -&gt; exec -&gt; store</p>
+</blockquote>
+<ul>
+<li>Load-Reserved/Store-Conditional(LR/SC)</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131147370.png" srcset="/img/loading.gif" lazyload alt="image-20221213114729328"></p>
+<blockquote>
+<p>类似于CAS！！！这个像是乐观锁了！！！就是自旋锁昂！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131149762.png" srcset="/img/loading.gif" lazyload alt="image-20221213114942718"></p>
+<blockquote>
+<p>Store-conditional是有失败的可能性的昂！！！</p>
+<p>我看到了等于我的版本号，我才能存进去，中间这个版本好是不能变动的。不能做“瞎子”，因此这里，Compare-And-Swap应该是原子操作昂！！！</p>
+</blockquote>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><ol>
+<li>临界区几乎不“拥堵”（队列？大伙儿不要都抢，抢的少或者排队嘛！！！排队上厕所…）</li>
+<li>持有自旋锁时禁止执行流切换（可别在厕所里面睡着了）</li>
+</ol>
+<blockquote>
+<p>使用场景：<strong>操作系统内核的并发数据结构（短临界区）</strong></p>
+<ul>
+<li>操作系统可以关闭中断和抢占<ul>
+<li>保证锁的持有者在很短的时间内可以释放锁</li>
+</ul>
+</li>
+<li>(如果是虚拟机呢…😂)<ul>
+<li>PAUSE 指令会触发 VM Exit</li>
+</ul>
+</li>
+<li>但依旧很难做好<ul>
+<li><a target="_blank" rel="noopener" href="https://www.usenix.org/conference/osdi10/analysis-linux-scalability-many-cores">An analysis of Linux scalability to many cores</a> (OSDI’10)</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="互斥锁"><a href="#互斥锁" class="headerlink" title="互斥锁"></a>互斥锁</h2><blockquote>
+<p>实现线程 + 长临界区的互斥，如果想要实现长临界区的互斥，加一个系统调用就行。既然没有拿到锁，那我就执行别的呗，C语言能够把CPU让给别人，这个“让”的动作，也是通过操作系统的API来实现的昂！ -&gt; 互斥锁(Mutex)</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131339968.png" srcset="/img/loading.gif" lazyload alt="image-20221213133950937"></p>
+<ul>
+<li>自旋锁缺陷：</li>
+</ul>
+<blockquote>
+<p> 自旋（就是一个原子指令）-&gt; 锁不拥堵的时候，性能比较好，但是如果争抢的话</p>
+<ul>
+<li>（比如两个线程）。只有一个CPU能够正常执行，又一个CPU就一直在自旋（空转），那如果有128个线程呢…一人做事，其他围观。一个人待在厕所里，剩下的127个人不断在敲门……浪费了很多的CPU cycles</li>
+<li>如果只有一个CPU，分时系统导致CPU可以同时运行多个线程。-&gt; 有钥匙的线程在厕所里睡觉…别的线程还在那儿敲门呢…</li>
+</ul>
+</blockquote>
+<ul>
+<li>对不对是一码事 -&gt; 性能好不好是另外一码事</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">"thread.h"</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">"thread-sync.h"</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> N 10000000</span><br><span class="hljs-type">spinlock_t</span> lock = SPIN_INIT();<br><br><span class="hljs-type">long</span> n, sum = <span class="hljs-number">0</span>;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">Tsum</span><span class="hljs-params">()</span> {<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) {<br>    spin_lock(&amp;lock);<br>    sum++;<br>    spin_unlock(&amp;lock);<br>  }<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span> {<br>  assert(argc == <span class="hljs-number">2</span>);<br>  <span class="hljs-type">int</span> nthread = atoi(argv[<span class="hljs-number">1</span>]);<br>  <span class="hljs-comment">// 把N次sum++均分到nthread上</span><br>  n = N / nthread;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; nthread; i++) {<br>    create(Tsum);<br>  }<br>  join();<br>  assert(sum == n * nthread);<br>}<br><br><span class="hljs-comment">// time ./a.out 1</span><br><span class="hljs-comment">// time ./a.out 2</span><br><span class="hljs-comment">// ...</span><br><span class="hljs-comment">// time ./a.out 1000</span><br></code></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;semaphore.h&gt;</span></span><br><br><span class="hljs-comment">// Spinlock</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-type">int</span> <span class="hljs-type">spinlock_t</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">define</span> SPIN_INIT() 0</span><br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title function_">atomic_xchg</span><span class="hljs-params">(<span class="hljs-keyword">volatile</span> <span class="hljs-type">int</span> *addr, <span class="hljs-type">int</span> newval)</span> {<br>    <span class="hljs-type">int</span> result;<br>    <span class="hljs-keyword">asm</span> <span class="hljs-title function_">volatile</span> <span class="hljs-params">(<span class="hljs-string">"lock xchg %0, %1"</span>:</span><br><span class="hljs-params">    <span class="hljs-string">"+m"</span>(*addr), <span class="hljs-string">"=a"</span>(result) : <span class="hljs-string">"1"</span>(newval) : <span class="hljs-string">"memory"</span>)</span>;<br>    <span class="hljs-keyword">return</span> result;<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">spin_lock</span><span class="hljs-params">(<span class="hljs-type">spinlock_t</span> *lk)</span> {<br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) {<br>        <span class="hljs-type">intptr_t</span> value = <span class="hljs-type">atomic_xchg</span>(lk, <span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">if</span> (value == <span class="hljs-number">0</span>) {<br>            <span class="hljs-keyword">break</span>;<br>        }<br>    }<br>}<br><span class="hljs-type">void</span> <span class="hljs-title function_">spin_unlock</span><span class="hljs-params">(<span class="hljs-type">spinlock_t</span> *lk)</span> {<br>    <span class="hljs-type">atomic_xchg</span>(lk, <span class="hljs-number">0</span>);<br>}<br><br><span class="hljs-comment">// Mutex</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-type">pthread_mutex_t</span> <span class="hljs-type">mutex_t</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MUTEX_INIT() PTHREAD_MUTEX_INITIALIZER</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">mutex_lock</span><span class="hljs-params">(<span class="hljs-type">mutex_t</span> *lk)</span>   { pthread_mutex_lock(lk); }<br><span class="hljs-type">void</span> <span class="hljs-title function_">mutex_unlock</span><span class="hljs-params">(<span class="hljs-type">mutex_t</span> *lk)</span> { pthread_mutex_unlock(lk); }<br><br><span class="hljs-comment">// Conditional Variable</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-type">pthread_cond_t</span> <span class="hljs-type">cond_t</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">define</span> COND_INIT() PTHREAD_COND_INITIALIZER</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> cond_wait pthread_cond_wait</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> cond_broadcast pthread_cond_broadcast</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> cond_signal pthread_cond_signal</span><br><br><span class="hljs-comment">// Semaphore</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> P sem_wait</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> V sem_post</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> SEM_INIT(sem, val) sem_init(sem, 0, val)</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>同样多的工作量，线程越多，效率越低：</p>
+<ol>
+<li>自旋回触发缓存同步，延迟增加。</li>
+<li>除了临界区的线程，其他都在空转。争抢锁的处理器增多，利用率降低。</li>
+<li>获得自旋锁的线程可能被OS换出去，因为操作系统不“感知”线程在做什么（但是是可以感知的！！！ -&gt; 例如OS去检查锁的情况）。实现了100%的资源浪费。</li>
+</ol>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131327502.png" srcset="/img/loading.gif" lazyload alt="image-20221213120404014"></p>
+<blockquote>
+<p> 为啥有的时候，第一次试验结果好，后面越来越差。。。 -&gt; 第一次试验的时候，CPU很猛，性能好，后面越来越热，CPU很烫，自然功率就下来了昂！</p>
+</blockquote>
+<ul>
+<li>Benchmarking很重要！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131330665.png" srcset="/img/loading.gif" lazyload alt="image-20221213133011617"></p>
+<blockquote>
+<p>像上面这种情况，在多处理器中就经常发生昂！！！</p>
+</blockquote>
+<h2 id="Futex"><a href="#Futex" class="headerlink" title="Futex"></a>Futex</h2><blockquote>
+<p>Futex = Spin + Mutex</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131343044.png" srcset="/img/loading.gif" lazyload alt="image-20221213134329010"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131347097.png" srcset="/img/loading.gif" lazyload alt="image-20221213134749059"></p>
+<blockquote>
+<p>思想转换：worst case -&gt; average case（二八定律）</p>
+</blockquote>
+<ul>
+<li><p>通过运行时观察，我们发现。Futex(Fast Userspace muTexes)。</p>
+<ul>
+<li>线程库里面的锁，在绝大多数情况下，都<strong>不会触发系统调用，原子指令可以直接解决</strong>。</li>
+<li>少部分争抢的情况下，才会触发系统调用。</li>
+</ul>
+</li>
+<li><p>简答的实现：</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212131353862.png" srcset="/img/loading.gif" lazyload alt="image-20221213135314824"></p>
+<blockquote>
+<p>成功直接进临界区，不成功直接进内核。 -&gt; Spin就是用户态解决，Mutex就是内核态解决。</p>
+</blockquote>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><p>原子指令手册：<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/header/stdatomic.h">https://en.cppreference.com/w/cpp/header/stdatomic.h</a> -&gt; 这里有好多原子指令！！！</p>
+</li>
+<li><p>Benchmarking-crimes: <a target="_blank" rel="noopener" href="https://gernot-heiser.org/benchmarking-crimes.html">https://gernot-heiser.org/benchmarking-crimes.html</a></p>
+</li>
+<li><p>自旋锁的使用有多大：<a target="_blank" rel="noopener" href="https://www.usenix.org/conference/osdi10/analysis-linux-scalability-many-cores">An analysis of Linux scalability to many cores</a> (OSDI’10)</p>
+</li>
+<li><p>Futexes are tricky: <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/manuals/futexes-are-tricky.pdf">http://jyywiki.cn/pages/OS/manuals/futexes-are-tricky.pdf</a></p>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>5. 并发控制:互斥</div>
+      <div>http://example.com/2022/12/13/njuos-5-bing-fa-kong-zhi-hu-chi/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/11/njuos-4-li-jie-bing-fa-cheng-xu-zhi-xing/" title="4. 理解并发程序执行">
+                        <span class="hidden-mobile">4. 理解并发程序执行</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
