@@ -1,0 +1,1162 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="This is a very important lesson which teaches you how to find the bugs in your concurrent program!">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-8-并发bug和应对">
+<meta property="og:url" content="http://example.com/2022/12/18/njuos-8-bing-fa-bug-he-ying-dui/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="This is a very important lesson which teaches you how to find the bugs in your concurrent program!">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181003823.png">
+<meta property="article:published_time" content="2022-12-18T02:02:58.000Z">
+<meta property="article:modified_time" content="2022-12-18T05:40:15.871Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181003823.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-8-并发bug和应对 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-8-并发bug和应对"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-18 10:02" pubdate>
+          2022年12月18日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          67 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-8-并发bug和应对</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月18日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>This is a very important lesson which teaches you how to find the bugs in your concurrent program!</p>
+<span id="more"></span>
+
+
+
+<h1 id="应对Bug的方法"><a href="#应对Bug的方法" class="headerlink" title="应对Bug的方法"></a>应对Bug的方法</h1><blockquote>
+<p> 基本思路：否定你自己。虽然不太愿意承认，但<strong>始终假设自己的代码是错的</strong>。（先假设，自己的程序是错的）</p>
+</blockquote>
+<ul>
+<li><p>然后呢？</p>
+<ul>
+<li><p>做好测试</p>
+</li>
+<li><p>检查哪里错了</p>
+</li>
+<li><p>再检查哪里错了</p>
+</li>
+<li><p>再再检查哪里错了</p>
+<ul>
+<li>(把任何你认为 “不对” 的情况都检查一遍)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Bug多的根本原因：编程语言的缺陷</p>
+<ul>
+<li>编程语言在表达物理世界的时候，是“有损”的，例如金额为负…这就难顶orz…。编译器只管 “翻译” 代码，不管和实际需求 (规约) 是否匹配，程序员匹配就容易出问题噻！</li>
+</ul>
+</li>
+<li><p>三十年后的编程语言和编程方法？</p>
+<ul>
+<li><p>Annotation verifier (<a target="_blank" rel="noopener" href="https://dafny-lang.github.io/dafny/">Dafny</a>)</p>
+</li>
+<li><p>Specification mining (<a target="_blank" rel="noopener" href="http://plse.cs.washington.edu/daikon/">Daikon</a>)</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/113446.113468">Refinement types</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://link.springer.com/article/10.1007/s10009-012-0249-7">Program sketching</a>……</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="更实在的方法：防御性编程"><a href="#更实在的方法：防御性编程" class="headerlink" title="更实在的方法：防御性编程"></a>更实在的方法：防御性编程</h2><blockquote>
+<p>把程序需要满足的条件用 assert 表达出来。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181024643.png" srcset="/img/loading.gif" lazyload alt="image-20221218102422618"></p>
+<ul>
+<li>peterson-barrier.c: 例如在临界区里，对应的逻辑位置，加上assert，进行判断和处理嘛！！！</li>
+<li>二叉树的旋转: 不管代码是什么，可以对旋转后的结果进行验证的昂。e.g. Assert(y.left == x &amp;&amp; y.right == c &amp;&amp; …..)</li>
+</ul>
+<blockquote>
+<p><strong>小技巧，防御性编程，实习面试展现一下这个想法，都很好用昂！！！</strong></p>
+</blockquote>
+<h3 id="防御性编程和规约给我们的启发"><a href="#防御性编程和规约给我们的启发" class="headerlink" title="防御性编程和规约给我们的启发"></a>防御性编程和规约给我们的启发</h3><p>你知道很多变量的含义</p>
+<figure class="highlight reasonml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">#define <span class="hljs-constructor">CHECK_INT(<span class="hljs-params">x</span>, <span class="hljs-params">cond</span>)</span> \<br>  ({ panic<span class="hljs-constructor">_on(!((<span class="hljs-params">x</span>)</span> cond), <span class="hljs-string">"int check fail: "</span> #x <span class="hljs-string">" "</span> #cond); })<br>#define <span class="hljs-constructor">CHECK_HEAP(<span class="hljs-params">ptr</span>)</span> \<br>  ({ panic<span class="hljs-constructor">_on(!IN_RANGE((<span class="hljs-params">ptr</span>)</span>, heap)); })<br></code></pre></td></tr></tbody></table></figure>
+
+<p>变量有 “typed annotation”</p>
+<ul>
+<li><code>CHECK_INT(waitlist-&gt;count, &gt;= 0);</code></li>
+<li><code>CHECK_INT(pid, &lt; MAX_PROCS);</code></li>
+<li><code>CHECK_HEAP(ctx-&gt;rip); CHECK_HEAP(ctx-&gt;cr3);</code></li>
+<li>变量含义改变 → 发生奇怪问题 (overflow, memory error, …)<ul>
+<li><strong>不要小看这些检查</strong>，它们在底层编程 (M2, L1, …) 时非常常见</li>
+<li>在虚拟机神秘重启/卡住/…前发出警报</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>不一定能考虑周全，但是能够帮助我们，快速找到某种类型的bug捏！比如说，在“指针飞了”的情况下，帮助我们及时找到问题昂（CHECK_HEAP）！！！</li>
+</ul>
+</blockquote>
+<h2 id="并发Bug-Deadlock"><a href="#并发Bug-Deadlock" class="headerlink" title="并发Bug: Deadlock"></a>并发Bug: Deadlock</h2><blockquote>
+<p>A deadlock is a state in which each member of a group is waiting for another member, including itself, to take action.</p>
+</blockquote>
+<h3 id="Deadlock-1-AA"><a href="#Deadlock-1-AA" class="headerlink" title="Deadlock 1: AA"></a>Deadlock 1: AA</h3><p>假设你的 spinlock 不小心发生了中断</p>
+<ul>
+<li>在不该打开中断的时候开了中断</li>
+<li>在不该切换的时候执行了 <code>yield()</code></li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">os_run</span><span class="hljs-params">()</span> {<br>  spin_lock(&amp;list_lock);<br>  spin_lock(&amp;xxx);<br>  spin_unlock(&amp;xxx); <span class="hljs-comment">// ---------+</span><br>}                          <span class="hljs-comment">//    |</span><br>                           <span class="hljs-comment">//    |</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">on_interrupt</span><span class="hljs-params">()</span> {      <span class="hljs-comment">//    |</span><br>  spin_lock(&amp;list_lock);   <span class="hljs-comment">// &lt;--+</span><br>  spin_unlock(&amp;list_lock);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>lock的时候关中断，unlock的时候开中断，只有一个线程，出现的问题：</p>
+<ol>
+<li>上了Lock A -&gt; 关中断</li>
+<li>上了Lock B -&gt; 关中断</li>
+<li>释放了Lock B -&gt; 开中断？？？（不行，这里要个计数器，全部释放了才能开，不然手上有锁不释放，就有可能死锁！！！）</li>
+<li>开了中断之后，如果中断处理程序也要这把锁A，才能正常执行。。。不能成功。。。A要释放，就要等中断返回。但是中断程序要继续执行，需要A的释放。自己等自己？？？？？</li>
+</ol>
+</blockquote>
+<ul>
+<li>操作系统内核，甚至一个线程就能把自己锁死。。。</li>
+</ul>
+<h3 id="Deadlock-2-ABBA"><a href="#Deadlock-2-ABBA" class="headerlink" title="Deadlock 2: ABBA"></a>Deadlock 2: ABBA</h3><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">swap</span><span class="hljs-params">(<span class="hljs-type">int</span> i, <span class="hljs-type">int</span> j)</span> {<br>  spin_lock(&amp;lock[i]);<br>  spin_lock(&amp;lock[j]);<br>  arr[i] = <span class="hljs-literal">NULL</span>;<br>  arr[j] = arr[i];<br>  spin_unlock(&amp;lock[j]);<br>  spin_unlock(&amp;lock[i]);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p>上锁的顺序很重要……</p>
+<ul>
+<li><code>swap</code> 本身看起来没有问题: <ul>
+<li><code>swap(1, 2)</code>; <code>swap(2, 3)</code>, <code>swap(3, 1)</code> → 死锁</li>
+<li>上面这个就和哲学家吃饭一样的问题……</li>
+</ul>
+</li>
+</ul>
+<h3 id="避免死锁"><a href="#避免死锁" class="headerlink" title="避免死锁"></a>避免死锁</h3><h4 id="死锁产生的四个必要条件"><a href="#死锁产生的四个必要条件" class="headerlink" title="死锁产生的四个必要条件"></a>死锁产生的四个必要条件</h4><ul>
+<li><p>四个条件：</p>
+<ul>
+<li><p>互斥：一个资源每次只能被一个进程使用</p>
+</li>
+<li><p>请求与保持：一个进程请求资阻塞时，不释放已获得的资源</p>
+</li>
+<li><p>不可剥夺：进程已获得的资源不能强行剥夺</p>
+</li>
+<li><p>循环等待：若干进程之间形成头尾相接的循环等待资源关系</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>“理解了死锁的原因，尤其是产生死锁的四个必要条件，就可以最大可能地避免、预防和解除死锁。所以，在系统设计、进程调度等方面注意如何不让这四个必要条件成立，如何确定资源的合理分配算法，避免进程永久占据系统资源。此外，也要防止进程在处于等待状态的情况下占用资源。因此，对资源的分配要给予合理的规划。” ——Bullshit.</p>
+</blockquote>
+<ul>
+<li>实际上，这四个条件想要破除，是相当困难的orz -&gt; 每个条件破除会有很多影响…</li>
+</ul>
+<h4 id="AA-Deadlock"><a href="#AA-Deadlock" class="headerlink" title="AA-Deadlock"></a>AA-Deadlock</h4><ul>
+<li>AA 型的死锁容易检测，及早报告，及早修复</li>
+<li>spinlock-xv6.c中的各种防御性编程<ul>
+<li><code>if (holding(lk)) panic();</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="ABBA-Deadlock"><a href="#ABBA-Deadlock" class="headerlink" title="ABBA-Deadlock"></a>ABBA-Deadlock</h4><ul>
+<li>任意时刻系统中的锁都是有限的</li>
+<li>严格<strong>按照固定的顺序获得所有锁</strong> (lock ordering; 消除 “<strong>循环等待</strong>”)<ul>
+<li>遇事不决可视化：<a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/lock-ordering.py">lock-ordering.py</a></li>
+<li>进而证明 T1: A -&gt; B -&gt; C; T2: B -&gt; C是安全的<ul>
+<li>在任意时刻，总有获得“最靠后”锁的可以继续执行</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>最常用！！！破除“循环等待”！！！按照同一个顺序来获得锁！！！</p>
+</blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">LockOrdering</span>:<br>    locks = [ <span class="hljs-string">''</span>, <span class="hljs-string">''</span>, <span class="hljs-string">''</span> ]<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">tryacquire</span>(<span class="hljs-params">self, lk</span>):<br>        self.locks[lk], seen = <span class="hljs-string">'🔒'</span>, self.locks[lk]<br>        <span class="hljs-keyword">return</span> seen == <span class="hljs-string">''</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">release</span>(<span class="hljs-params">self, lk</span>):<br>        self.locks[lk] = <span class="hljs-string">''</span><br><br><span class="hljs-meta">    @thread</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">t1</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> self.tryacquire(<span class="hljs-number">0</span>): <span class="hljs-keyword">pass</span><br>            <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> self.tryacquire(<span class="hljs-number">1</span>): <span class="hljs-keyword">pass</span><br>            <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> self.tryacquire(<span class="hljs-number">2</span>): <span class="hljs-keyword">pass</span><br>            self.release(<span class="hljs-number">0</span>), self.release(<span class="hljs-number">1</span>), self.release(<span class="hljs-number">2</span>)<br><br><span class="hljs-meta">    @thread</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">t2</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> self.tryacquire(<span class="hljs-number">1</span>): <span class="hljs-keyword">pass</span><br>            <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> self.tryacquire(<span class="hljs-number">2</span>): <span class="hljs-keyword">pass</span><br>            self.release(<span class="hljs-number">1</span>), self.release(<span class="hljs-number">2</span>)<br><br><span class="hljs-meta">    @marker</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">mark_negative</span>(<span class="hljs-params">self, state</span>):<br>        <span class="hljs-keyword">pass</span><br><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>python3 model-checker.py lock-ordering.py | python3 visualize.py &gt; tmp/a.html</p>
+</blockquote>
+<ul>
+<li>红边和蓝边，如果没有一个指向自己的，就是对的昂！上面这种方式，不会死锁！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181118128.png" srcset="/img/loading.gif" lazyload alt="image-20221218111826091"></p>
+<blockquote>
+<p>visualize.py和model-checker.py的下载方式放在References里面啦。自己配置一下是真的好用和震撼！！！</p>
+</blockquote>
+<ul>
+<li><p>死锁也是并发最容易找到的bug，很显然，程序不会再继续执行下去了，就是死锁了呀！！！</p>
+</li>
+<li><p>Naive</p>
+</li>
+</ul>
+<p>Textbooks will tell you that if you always lock in the same order, you will never get this kind of deadlock. <em>Practice will tell you that this approach doesn’t scale</em>: when I create a new lock, I don’t understand enough of the kernel to figure out where in the 5000 lock hierarchy it will fit.</p>
+<p>The best locks are <strong>encapsulated</strong>: they <em>never get exposed in headers</em>, and are <em>never held around calls to non-trivial functions outside the same file</em>. You can read through this code and see that it will never deadlock, because it never tries to grab another lock while it has that one. People using your code don’t even need to know you are using a lock.</p>
+<h2 id="并发Bug-数据竞争"><a href="#并发Bug-数据竞争" class="headerlink" title="并发Bug: 数据竞争"></a>并发Bug: 数据竞争</h2><blockquote>
+<p>不同的线程同时访问同一段内存，且至少有一个是写。两个内存访问在 “赛跑”，“跑赢” 的操作先执行。（不确定性）</p>
+</blockquote>
+<ul>
+<li><p>Peterson 算法告诉大家：</p>
+<ul>
+<li><p>你们写不对无锁的并发程序</p>
+</li>
+<li><p>所以事情反而简单了</p>
+</li>
+</ul>
+</li>
+<li><p>用互斥锁保护好共享数据，消灭一切数据竞争。</p>
+</li>
+</ul>
+<p>以下代码概括了你们遇到数据竞争的大部分情况</p>
+<ul>
+<li>不要笑，你们的 bug 几乎都是这两种情况的变种</li>
+</ul>
+<hr>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// Case #1: 上错了锁</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">thread1</span><span class="hljs-params">()</span> { spin_lock(&amp;lk1); sum++; spin_unlock(&amp;lk1); }<br><span class="hljs-type">void</span> <span class="hljs-title function_">thread2</span><span class="hljs-params">()</span> { spin_lock(&amp;lk2); sum++; spin_unlock(&amp;lk2); }<br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// Case #2: 忘记上锁</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">thread1</span><span class="hljs-params">()</span> { spin_lock(&amp;lk1); sum++; spin_unlock(&amp;lk1); }<br><span class="hljs-type">void</span> <span class="hljs-title function_">thread2</span><span class="hljs-params">()</span> { sum++; }<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>很多内存访问，每一处内存竞争写的地方，上把锁就行哇！！！ -&gt; 总能消除数据竞争的昂！！！</p>
+<p>但是终极问题没有解决：人的思维还是单线程，而不是多线程！</p>
+</blockquote>
+<h2 id="更多类型的并发Bug"><a href="#更多类型的并发Bug" class="headerlink" title="更多类型的并发Bug"></a>更多类型的并发Bug</h2><p>回顾我们实现并发控制的工具</p>
+<ul>
+<li>互斥锁 (lock/unlock) - 原子性</li>
+<li>条件变量 (wait/signal) - 同步</li>
+</ul>
+<hr>
+<p>忘记上锁——原子性违反 (Atomicity Violation, AV)</p>
+<p>忘记同步——顺序违反 (Order Violation, OV)</p>
+<hr>
+<p>Empirical study: 在 105 个并发 bug 中 (non-deadlock/deadlock)</p>
+<ul>
+<li>MySQL (14/9), Apache (13/4), Mozilla (41/16), OpenOffice (6/2)</li>
+<li>97% 的非死锁并发 bug 都是 AV 或 OV。</li>
+</ul>
+<h3 id="原子性的违反"><a href="#原子性的违反" class="headerlink" title="原子性的违反"></a>原子性的违反</h3><ul>
+<li>“ABA”：我以为一段代码没啥事呢，但被人强势插入了</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181140892.png" srcset="/img/loading.gif" lazyload alt="image-20221218114051867"></p>
+<ul>
+<li>有时候上锁也不解决问题：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181142779.png" srcset="/img/loading.gif" lazyload alt="image-20221218114203751"></p>
+<h3 id="顺序违反"><a href="#顺序违反" class="headerlink" title="顺序违反"></a>顺序违反</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181145123.png" srcset="/img/loading.gif" lazyload alt="image-20221218114502088"></p>
+<h2 id="应对并发Bug的方法"><a href="#应对并发Bug的方法" class="headerlink" title="应对并发Bug的方法"></a>应对并发Bug的方法</h2><blockquote>
+<p>还是得始终假设自己的代码是错的。</p>
+</blockquote>
+<ul>
+<li><p>然后呢？</p>
+<ul>
+<li><p>做好测试</p>
+</li>
+<li><p>检查哪里错了</p>
+</li>
+<li><p>再检查哪里错了</p>
+</li>
+<li><p>再再检查哪里错了</p>
+<ul>
+<li>(把任何你认为 “不对” 的情况都检查一遍)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>例如：用 lock ordering 彻底避免死锁？</p>
+<ul>
+<li>你想多了：并发那么复杂，程序员哪能充分测试啊</li>
+</ul>
+</li>
+</ul>
+<h3 id="Lockdep-运行时的死锁检查"><a href="#Lockdep-运行时的死锁检查" class="headerlink" title="Lockdep: 运行时的死锁检查"></a>Lockdep: 运行时的死锁检查</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181148276.png" srcset="/img/loading.gif" lazyload alt="image-20221218114803248"></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;assert.h&gt;</span></span><br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">lock</span> {</span><br>  <span class="hljs-type">int</span> locked;<br>  <span class="hljs-type">const</span> <span class="hljs-type">char</span> *site;<br>} <span class="hljs-type">lock_t</span>;<br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> STRINGIFY(s) #s</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> TOSTRING(s)  STRINGIFY(s)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LOCK_INIT() \</span><br><span class="hljs-meta">  ( (lock_t) { .locked = 0, .site = __FILE__ <span class="hljs-string">":"</span> TOSTRING(__LINE__), } )</span><br><br><span class="hljs-type">lock_t</span> lk1 = LOCK_INIT();<br><span class="hljs-type">lock_t</span> lk2 = LOCK_INIT();<br><br><span class="hljs-comment">// 把上锁和解锁的顺序打印出来嘛！！！</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">lock</span><span class="hljs-params">(<span class="hljs-type">lock_t</span> *lk)</span> {<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"LOCK   %s\n"</span>, lk-&gt;site);<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">unlock</span><span class="hljs-params">(<span class="hljs-type">lock_t</span> *lk)</span> {<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"UNLOCK %s\n"</span>, lk-&gt;site);<br>}<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">some_object</span> {</span><br>  <span class="hljs-type">lock_t</span> lock;<br>  <span class="hljs-type">int</span> data;<br>};<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">object_init</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> some_object *obj)</span> {<br>  obj-&gt;lock = LOCK_INIT();<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  lock(&amp;lk1);<br>  lock(&amp;lk2);<br>  unlock(&amp;lk1);<br>  unlock(&amp;lk2);<br><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">some_object</span> *<span class="hljs-title">obj</span> =</span> <span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">struct</span> some_object));<br>  assert(obj);<br>  object_init(obj);<br>  lock(&amp;obj-&gt;lock);<br><br>  lock(&amp;lk2);<br>  lock(&amp;lk1);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>把所有可能的上锁和解锁顺序都可以打印出来呀！！！甚至可以对于lock-ordering进行检查！！！必须x -&gt; y -&gt; z，x一定要在y, z左边，我们<strong>实际在动态维护一个图昂</strong>，x -&gt; y -&gt; z，然后再x -&gt; z，就有个这个图，不应该存在环！！！</p>
+</blockquote>
+<h3 id="ThreadSanitizer-运行时的数据竞争检查"><a href="#ThreadSanitizer-运行时的数据竞争检查" class="headerlink" title="ThreadSanitizer: 运行时的数据竞争检查"></a>ThreadSanitizer: 运行时的数据竞争检查</h3><blockquote>
+<p>同一把锁有先后顺序的昂！！！</p>
+</blockquote>
+<ul>
+<li><p>为所有事件建立 happens-before 关系图</p>
+<ul>
+<li><p>Program-order + release-acquire</p>
+</li>
+<li><p>对于发生在不同线程且至少有一个是写的 x,y<em>x</em>,<em>y</em> 检查</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181154902.png" srcset="/img/loading.gif" lazyload alt="image-20221218115433871"></p>
+<blockquote>
+<ul>
+<li>上锁之间的happens-before，可以建立线程之间的happens-before。</li>
+<li>同一个线程内的执行，也有happens-before。</li>
+</ul>
+</blockquote>
+<ul>
+<li>然后整体做一个传递闭包，可以找到事件的顺序先后关系。可以按照图的方式，来解决相关的问题。 -&gt; 一个点到另外一个点之间，是否存在路径：有路径就是没有数据竞争，没有路径就是数据竞争！！！</li>
+</ul>
+<h3 id="更多的检查：动态程序分析"><a href="#更多的检查：动态程序分析" class="headerlink" title="更多的检查：动态程序分析"></a>更多的检查：动态程序分析</h3><blockquote>
+<p>上面两种都是动态程序分析下的工具</p>
+</blockquote>
+<ol>
+<li><p>在事件发生时记录</p>
+<ul>
+<li><p>Lockdep: lock/unlock</p>
+</li>
+<li><p>ThreadSanitizer: 内存访问 + lock/unlock</p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<ol start="2">
+<li>解析记录检查问题</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181158126.png" srcset="/img/loading.gif" lazyload alt="image-20221218115816095"></p>
+<hr>
+<ol start="3">
+<li><p>付出的代价和权衡</p>
+<ul>
+<li><p>程序执行变慢</p>
+</li>
+<li><p>但更容易找到 bug (因此在测试环境中常用)</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="动态分析工具：Santilizers"><a href="#动态分析工具：Santilizers" class="headerlink" title="动态分析工具：Santilizers"></a>动态分析工具：Santilizers</h2><blockquote>
+<p>编译选项，设置成默认，就非常方便我们找到Bug之类的昂！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181205601.png" srcset="/img/loading.gif" lazyload alt="image-20221218120244020"></p>
+<blockquote>
+<p>找到上面这种Bug，就可以加一些默认的编译选项</p>
+</blockquote>
+<p>e.g. <strong>gcc -g uaf.c -fsanitize=address</strong>（可以找到地址的不正常使用） || <strong>gcc -g uaf.c -fsanitize=address</strong>（可以找到date race等）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181205428.png" srcset="/img/loading.gif" lazyload alt="image-20221218120537372"></p>
+<blockquote>
+<p>上面这些工具都很好用！！！可以通过不同的fsanitize，帮助我们找到不同的并发bug。</p>
+</blockquote>
+<p>没用过 lint/sanitizers？</p>
+<ul>
+<li>AddressSanitizer(asan);(paper): 非法内存访问<ul>
+<li>Buffer (heap/stack/global) overflow, use-after-free, use-after-return, double-free, …</li>
+<li>Demo: <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/uaf.c">uaf.c</a>; <a target="_blank" rel="noopener" href="https://www.kernel.org/doc/html/latest/dev-tools/kasan.html">kasan</a></li>
+</ul>
+</li>
+<li>ThreadSanitizer(tsan): 数据竞争<ul>
+<li>Demo: <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/fish.c">fish.c</a>, <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/sum.c">sum.c</a>, <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/peterson-barrier.c">peterson-barrier.c</a>; <a target="_blank" rel="noopener" href="https://github.com/google/ktsan">ktsan</a></li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://clang.llvm.org/docs/MemorySanitizer.html">MemorySanitizer</a> (msan): 未初始化的读取</li>
+<li>UBSanitizer(ubsan): undefined behavior<ul>
+<li>Misaligned pointer, signed integer overflow, …</li>
+<li>Kernel 会带着 <code>-fwrapv</code> 编译</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>很方便的使用哇！！！编译带上选项就好啦！！！本质无非就是：防御性编程，悄悄帮我们把检查都做了昂！！！</p>
+</blockquote>
+<h3 id="DIY-Santilizers"><a href="#DIY-Santilizers" class="headerlink" title="DIY Santilizers"></a>DIY Santilizers</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181215569.png" srcset="/img/loading.gif" lazyload alt="image-20221218121509514"></p>
+<ul>
+<li>田忌赛马？舍一保一是吧。。。Canary的例子：</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAGIC 0x55555555</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> BOTTOM (STK_SZ / sizeof(u32) - 1)</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">stack</span> {</span> <span class="hljs-type">char</span> data[STK_SZ]; };<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">canary_init</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> <span class="hljs-built_in">stack</span> *s)</span> {<br>  u32 *ptr = (u32 *)s;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; CANARY_SZ; i++)<br>    ptr[BOTTOM - i] = ptr[i] = MAGIC;<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">canary_check</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> <span class="hljs-built_in">stack</span> *s)</span> {<br>  u32 *ptr = (u32 *)s;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; CANARY_SZ; i++) {<br>    panic_on(ptr[BOTTOM - i] != MAGIC, <span class="hljs-string">"underflow"</span>);<br>    panic_on(ptr[i] != MAGIC, <span class="hljs-string">"overflow"</span>);<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>手动在栈顶和栈底预留了一些空间，快要发生栈溢出的时候，就能够帮助我们及时报错。（防御性编程）</p>
+</blockquote>
+<ul>
+<li>类似于上面这样的Canary or 防御性编程实际例子：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181321410.png" srcset="/img/loading.gif" lazyload alt="image-20221218132105357"></p>
+<blockquote>
+<p>VSSutdio，如果缓冲区没做好，可能会报烫烫烫烫烫烫之类的。编译器自动会根据堆之类的状态，为其在使用之前 or 使用之后之类的情况，分配一些初始值！方便检查 &amp; 保护！</p>
+</blockquote>
+<ul>
+<li>低配版Lockdep</li>
+</ul>
+<blockquote>
+<p>死锁的特征？一直不停的尝试上锁 -&gt; 上锁给个正常不可能的限制，设置一个边界，超过就报错。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181330047.png" srcset="/img/loading.gif" lazyload alt="image-20221218133043016"></p>
+<blockquote>
+<p>很多种实现方式啊，不一定就一种，找到特点定制化就行。把他们的思想收纳到防御性编程中，而且，收益极大！！！</p>
+</blockquote>
+<ul>
+<li>其他的东西：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181333162.png" srcset="/img/loading.gif" lazyload alt="image-20221218133340130"></p>
+<blockquote>
+<p>往前走一小步，做一点点，就会有巨大的收益。</p>
+<ul>
+<li>Malloc分配的时候，分配的内存可以全部都刷上一个颜色（红色）。free回收的时候，全部刷上另外一个颜色（蓝色）。</li>
+<li>如果在分配的时候，发现了红色，就会出问题。把别人的东西，拿来用了。或者free的时候，已经是蓝色了。 -&gt; 设置了好的边界，方便我们进行防御性编程和bug的找寻。</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212181338319.png" srcset="/img/loading.gif" lazyload alt="image-20221218133807279"></p>
+<blockquote>
+<p>上面这些所有的动态分析工具，我们都可以做出低配版来！！！做简单的检查昂！！！</p>
+</blockquote>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><p>笑死，JYY名言警句：懂System的人的编程，到处都是防御性的代码哈哈哈哈。</p>
+</li>
+<li><p>课件上的文件怎么下载，例如visualization.py<code>以及</code>model-checker.py：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44310435/article/details/125132791">https://blog.csdn.net/weixin_44310435/article/details/125132791</a></p>
+</li>
+<li><pre><code class="shell">wget http://jyywiki.cn/pages/OS/2022/demos/model-checker.py 
+wget http://jyywiki.cn/pages/OS/2022/demos/visualize.py
+wget http://jyywiki.cn/pages/OS/2022/demos/lock-ordering.py
+</code></pre>
+</li>
+<li><p>还要下一些依赖和环境，自己配置好了，是真爽呐～好用好用好用！！！</p>
+</li>
+<li><p>类似的，其他的文件和课件，也可以通过上面这种方式，把最后的文件名改一下，通过wget拉下来昂！！！</p>
+</li>
+</ul>
+</li>
+<li><p>视频链接：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1sR4y1V7T4/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">https://www.bilibili.com/video/BV1sR4y1V7T4/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd</a></li>
+</ul>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-8-并发bug和应对</div>
+      <div>http://example.com/2022/12/18/njuos-8-bing-fa-bug-he-ying-dui/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/17/njuos-7-zhen-shi-shi-jie-de-bing-fa-bian-cheng/" title="7. 真实世界的并发编程">
+                        <span class="hidden-mobile">7. 真实世界的并发编程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

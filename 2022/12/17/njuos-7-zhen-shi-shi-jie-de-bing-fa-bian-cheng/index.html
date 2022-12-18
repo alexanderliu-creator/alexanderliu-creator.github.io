@@ -1,0 +1,1154 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="前面的各种东西都学过了，这里其实我们就可以有写一个完整的并发程序的能力了。真实世界中，并发&amp;并行编程的实现与应用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="7. 真实世界的并发编程">
+<meta property="og:url" content="http://example.com/2022/12/17/njuos-7-zhen-shi-shi-jie-de-bing-fa-bian-cheng/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="前面的各种东西都学过了，这里其实我们就可以有写一个完整的并发程序的能力了。真实世界中，并发&amp;并行编程的实现与应用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212171045898.png">
+<meta property="article:published_time" content="2022-12-17T02:44:26.000Z">
+<meta property="article:modified_time" content="2022-12-17T09:40:07.712Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212171045898.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>7. 真实世界的并发编程 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="7. 真实世界的并发编程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-17 10:44" pubdate>
+          2022年12月17日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          61 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">7. 真实世界的并发编程</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月17日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>前面的各种东西都学过了，这里其实我们就可以有写一个完整的并发程序的能力了。真实世界中，并发&amp;并行编程的实现与应用。</p>
+<span id="more"></span>
+
+
+
+
+
+<h1 id="高性能计算中的并发编程"><a href="#高性能计算中的并发编程" class="headerlink" title="高性能计算中的并发编程"></a>高性能计算中的并发编程</h1><h2 id="什么是高性能计算"><a href="#什么是高性能计算" class="headerlink" title="什么是高性能计算"></a>什么是高性能计算</h2><blockquote>
+<p>“A technology that harnesses the power of supercomputers or computer clusters to solve complex problems requiring massive computation.” (IBM)</p>
+<ul>
+<li>Calculating &amp; Simulating</li>
+</ul>
+</blockquote>
+<ul>
+<li>以计算为中心<ul>
+<li>系统模拟：天气预报，分子、能源生物学。</li>
+<li>人工智能：神经网络训练</li>
+<li>矿场：纯粹的hash计算</li>
+<li><a target="_blank" rel="noopener" href="http://www.hpc100.cn/top100/20/">HPC-China 100</a></li>
+<li>Block Chain</li>
+</ul>
+</li>
+</ul>
+<h2 id="主要挑战"><a href="#主要挑战" class="headerlink" title="主要挑战"></a>主要挑战</h2><blockquote>
+<p>计算任务如何分解</p>
+</blockquote>
+<ul>
+<li>计算图需要容易并行化<ul>
+<li>机器-线程两级任务分解</li>
+</ul>
+</li>
+<li>生产者-消费者解决一切<ul>
+<li><a target="_blank" rel="noopener" href="https://hpc-tutorials.llnl.gov/mpi/">MPI</a> - “a specification for the developers and users of message passing libraries”, <a target="_blank" rel="noopener" href="https://www.openmp.org/">OpenMP</a> - “multi-platform shared-memory parallel programming in C/C++ and Fortran”</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>线程间如何通信：通信不仅发生在节点/线程之间，还发生在任何共享内存访问。</p>
+</blockquote>
+<h2 id="并发直观感受"><a href="#并发直观感受" class="headerlink" title="并发直观感受"></a>并发直观感受</h2><blockquote>
+<p>mandelbrot.c</p>
+</blockquote>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">"thread.h"</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;math.h&gt;</span></span><br><br><span class="hljs-type">int</span> NT;<br><span class="hljs-meta">#<span class="hljs-keyword">define</span> W 6400</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> H 6400</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> IMG_FILE <span class="hljs-string">"mandelbrot.ppm"</span></span><br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title function_">belongs</span><span class="hljs-params">(<span class="hljs-type">int</span> x, <span class="hljs-type">int</span> y, <span class="hljs-type">int</span> t)</span> {<br>  <span class="hljs-keyword">return</span> x / (W / NT) == t;<br>}<br><br><span class="hljs-type">int</span> x[W][H];<br><span class="hljs-type">int</span> <span class="hljs-keyword">volatile</span> done = <span class="hljs-number">0</span>;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">display</span><span class="hljs-params">(FILE *fp, <span class="hljs-type">int</span> step)</span> { <br>  <span class="hljs-type">static</span> <span class="hljs-type">int</span> rnd = <span class="hljs-number">1</span>;<br>  <span class="hljs-type">int</span> w = W / step, h = H / step;<br>  <span class="hljs-comment">// STFW: Portable Pixel Map</span><br>  <span class="hljs-comment">// PPM就是一种基础的图片格式，定义好了大小，rgb直接打印就可以啦昂！！！里面存的内容就是图片大小啊，像素啊之类的。</span><br>  <span class="hljs-comment">// convert mandelbrol.ppm a.jpg -&gt; 把一种格式转换为另外一种昂！！！</span><br>  <span class="hljs-built_in">fprintf</span>(fp, <span class="hljs-string">"P6\n%d %d 255\n"</span>, w, h);<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; H; j += step) {<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; W; i += step) {<br>      <span class="hljs-type">int</span> n = x[i][j];<br>      <span class="hljs-type">int</span> r = <span class="hljs-number">255</span> * <span class="hljs-built_in">pow</span>((n - <span class="hljs-number">80</span>) / <span class="hljs-number">800.0</span>, <span class="hljs-number">3</span>);<br>      <span class="hljs-type">int</span> g = <span class="hljs-number">255</span> * <span class="hljs-built_in">pow</span>((n - <span class="hljs-number">80</span>) / <span class="hljs-number">800.0</span>, <span class="hljs-number">0.7</span>);<br>      <span class="hljs-type">int</span> b = <span class="hljs-number">255</span> * <span class="hljs-built_in">pow</span>((n - <span class="hljs-number">80</span>) / <span class="hljs-number">800.0</span>, <span class="hljs-number">0.5</span>);<br>      fputc(r, fp); fputc(g, fp); fputc(b, fp);<br>    }<br>  }<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">Tworker</span><span class="hljs-params">(<span class="hljs-type">int</span> tid)</span> {<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; W; i++)<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; H; j++)<br>      <span class="hljs-keyword">if</span> (belongs(i, j, tid - <span class="hljs-number">1</span>)) {<br>        <span class="hljs-type">double</span> a = <span class="hljs-number">0</span>, b = <span class="hljs-number">0</span>, c, d;<br>        <span class="hljs-keyword">while</span> ((c = a * a) + (d = b * b) &lt; <span class="hljs-number">4</span> &amp;&amp; x[i][j]++ &lt; <span class="hljs-number">880</span>) {<br>          b = <span class="hljs-number">2</span> * a * b + j * <span class="hljs-number">1024.0</span> / H * <span class="hljs-number">8e-9</span> - <span class="hljs-number">0.645411</span>;<br>          a = c - d + i * <span class="hljs-number">1024.0</span> / W * <span class="hljs-number">8e-9</span> + <span class="hljs-number">0.356888</span>;<br>        }<br>      }<br>  done++;<br>}<br><br><span class="hljs-comment">// 绘图的线程</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">Tdisplay</span><span class="hljs-params">()</span> {<br>  <span class="hljs-type">float</span> ms = <span class="hljs-number">0</span>;<br>  <span class="hljs-comment">// viu这个小工具，可以在命令行里面查看图片昂！（命令行工具昂！！！）</span><br>  <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) {<br>    FILE *fp = popen(<span class="hljs-string">"viu -"</span>, <span class="hljs-string">"w"</span>); assert(fp);<br>    display(fp, W / <span class="hljs-number">256</span>);<br>    pclose(fp);<br>    <span class="hljs-keyword">if</span> (done == NT) <span class="hljs-keyword">break</span>;<br>    usleep(<span class="hljs-number">1000000</span> / <span class="hljs-number">5</span>);<br>    ms += <span class="hljs-number">1000.0</span> / <span class="hljs-number">5</span>;<br>  }<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Approximate render time: %.1lfs\n"</span>, ms / <span class="hljs-number">1000</span>);<br><br>  FILE *fp = fopen(IMG_FILE, <span class="hljs-string">"w"</span>); assert(fp);<br>  display(fp, <span class="hljs-number">2</span>);<br>  fclose(fp);<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span> {<br>  assert(argc == <span class="hljs-number">2</span>);<br>  NT = atoi(argv[<span class="hljs-number">1</span>]);<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; NT; i++) {<br>    create(Tworker);<br>  }<br>  create(Tdisplay);<br>  join();<br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h1 id="数据中心里的并发编程"><a href="#数据中心里的并发编程" class="headerlink" title="数据中心里的并发编程"></a>数据中心里的并发编程</h1><blockquote>
+<p>“A network of computing and storage resources that enable the delivery of shared applications and data.” (CISCO)</p>
+<ul>
+<li>Storing &amp; Analysing</li>
+</ul>
+</blockquote>
+<p>以数据（存储为中心）</p>
+<ul>
+<li><p>以数据 (存储) 为中心</p>
+<ul>
+<li>从互联网搜索 (Google)、社交网络 (Facebook/Twitter) 起家</li>
+<li>支撑各类互联网应用：微信/QQ/支付宝/游戏/网盘/……</li>
+</ul>
+</li>
+<li><p>算法/系统对HPC和数据中心的意义</p>
+<ul>
+<li>你有 1,000,000 台服务器</li>
+<li>如果一个算法/实现能快 1%，就能省 10,000 台服务器<ul>
+<li>参考：对面一套房 ≈ 50 台服务器 (不计运维成本)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="主要挑战-1"><a href="#主要挑战-1" class="headerlink" title="主要挑战"></a>主要挑战</h2><p>多副本情况下的高可靠、低延迟数据访问（CAP）</p>
+<ul>
+<li>在服务海量地理分布请求的前提下<ul>
+<li>数据要保持一致 (Consistency)</li>
+<li>服务时刻保持可用 (Availability)</li>
+<li>容忍机器离线 (Partition tolerance)</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212171119906.png" srcset="/img/loading.gif" lazyload alt="CAP"></p>
+<h1 id="本门课的问题：如何用好一台计算机"><a href="#本门课的问题：如何用好一台计算机" class="headerlink" title="本门课的问题：如何用好一台计算机"></a>本门课的问题：如何用好一台计算机</h1><blockquote>
+<p><strong>如何用一台 (可靠的) 计算机尽可能多地服务并行的请求</strong></p>
+<ul>
+<li>关键指标：QPS, tail latency, …</li>
+</ul>
+</blockquote>
+<p>我们有的工具：</p>
+<ul>
+<li>线程 (threads)</li>
+</ul>
+<figure class="highlight isbl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-function"><span class="hljs-title">thread</span>(<span class="hljs-variable">start</span> = <span class="hljs-variable"><span class="hljs-literal">true</span></span>) {</span><br><span class="hljs-function">  <span class="hljs-title">println</span>(<span class="hljs-string">"${Thread.currentThread()} has run."</span>)</span><br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>线程的切换需要代价的，切换的时候的代价：</p>
+<ul>
+<li>寄存器（ALL）</li>
+<li>CPU重新调度</li>
+<li>新的线程的寄存器装入CPU中</li>
+</ul>
+</blockquote>
+<ul>
+<li>协程 (coroutines)<ul>
+<li>多个可以保存/恢复的执行流 (<a target="_blank" rel="noopener" href="http://jyywiki.cn/OS/2022/labs/M2">M2 - libco</a>)</li>
+<li>比线程更轻量 (完全没有系统调用，也就没有操作系统状态)</li>
+</ul>
+</li>
+</ul>
+<h2 id="黑科技-小实验"><a href="#黑科技-小实验" class="headerlink" title="黑科技(小实验)"></a>黑科技(小实验)</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="http://jyywiki.cn/OS/2022/labs/M2">M2 - libco</a>：可以自己在C语言里面创建多个状态机，并通过co_yield()的方式，主动放弃CPU使用权，让另外的任务使用。</p>
+</blockquote>
+<ul>
+<li><p>为什么协程开销比线程小很多呢？</p>
+<ul>
+<li>协程切换 -&gt; co_yield() …. call co_yield -&gt; 函数调用遵循x86-64的calling conventions</li>
+</ul>
+<blockquote>
+<p>在函数里面，CPU不能随便把寄存器摧毁的，CPU不是切换哈，是通过调用函数的方式，实现切换的！！！这个时候，<strong>不是所有计算器里面的内容，都要保存的。</strong></p>
+</blockquote>
+<ul>
+<li>调用co_yield的时候，该保存的东西，都应该保存好了。</li>
+</ul>
+</li>
+<li><p>co_yield的切换：</p>
+<ul>
+<li>寄存器</li>
+<li>栈</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>不需要进操作系统兜一圈，有很多好处。</p>
+</blockquote>
+<h2 id="协程和线程"><a href="#协程和线程" class="headerlink" title="协程和线程"></a>协程和线程</h2><p>数据中心</p>
+<ul>
+<li>同一时间有数千/数万个请求到达服务器</li>
+<li>计算部分<ul>
+<li>需要利用好多处理器<ul>
+<li>线程 → 这就是我擅长的 (Mandelbrot Set)</li>
+<li>协程 → 一人出力，他人摸鱼</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>I/O 部分<ul>
+<li>会在系统调用上 block (例如请求另一个服务或读磁盘)<ul>
+<li>协程 → 一人干等，他人围观</li>
+<li>线程 → 每个线程都占用可观的操作系统资源</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>(这个问题比你想象的复杂，例如虚拟机)</li>
+</ul>
+<h3 id="线程-amp-协程对比"><a href="#线程-amp-协程对比" class="headerlink" title="线程&amp;协程对比"></a>线程&amp;协程对比</h3><ul>
+<li>线程：每个线程都占用可观的操作系统资源，内存+寄存器，可能就要8KB…，占用资源好大，比协程大的多。</li>
+<li>协程：<ul>
+<li>协程不受操作系统调度，调度逻辑由用户的co_yield()主动进行。<strong>一个线程里面一次只能运行一个协程</strong>。</li>
+<li>如果协程发起了远程RPC调用，协程可能会等RPC结果，从而造成CPU空转。由于操作系统不感知协程，分配给线程对应的时间片就是线程执行任务的，这样导致。如果我们的协程不好好干活，我们的CPU就在公转。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>在我看来，线程是“运行的主体”。由于线程与线程的切换开销很大。我们可能的做法是，减少线程切换的次数，用户不断的，在一个运行的线程上，切换协程（任务序列）。</p>
+</blockquote>
+<ul>
+<li>自己的感受：<ul>
+<li>协程其实就是一个一个用户任务的实体，放在操作系统提供的线程上去进行执行，由用户控制任务的进度和切换。</li>
+<li>还会遇到的问题：协程（当前执行的任务序列），如果执行到了read()指令，那么协程就会把线程阻塞。协程如果等数据，那么CPU就被浪费掉了，其他携程执行不了。</li>
+</ul>
+</li>
+</ul>
+<h3 id="协程解决方案-Go-amp-Goroutine"><a href="#协程解决方案-Go-amp-Goroutine" class="headerlink" title="协程解决方案(Go&amp;Goroutine)"></a>协程解决方案(Go&amp;Goroutine)</h3><p>Go: 小孩子才做选择，多处理器并行和轻量级并发我全都要！</p>
+<ul>
+<li><p>每个 CPU 上有一个 Go Worker，自由调度 goroutines</p>
+</li>
+<li><p>执行到 blocking API 时 (例如 sleep, read)</p>
+<ul>
+<li>Go Worker 偷偷改成 non-blocking 的版本<ul>
+<li>成功 → 立即继续执行</li>
+<li>失败 → 立即 yield 到另一个需要 CPU 的 goroutine<ul>
+<li>太巧妙了！<strong>CPU 和操作系统全部用到 100%</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>例子：<a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/fib.go">fib.go</a>; <a target="_blank" rel="noopener" href="https://books.studygolang.com/gopl-zh/ch9/ch9-08.html"><em>The Go Programming Language</em> (ch 9.8)</a></p>
+</li>
+<li><p>自己的理解：Golang在每个CPU/核心上，绑定一个Go Worker线程 -&gt; 协程在进行操作系统耗时的调用的时候，就会迅速进行切换调度昂！</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212171622436.png" srcset="/img/loading.gif" lazyload alt="image-20221217162231402"></p>
+<blockquote>
+<ol>
+<li>比如现在Go Routine 1现在要执行一个read()，Go Routine 1里面这个，是会阻塞系统的这种系统调用。调用的是</li>
+<li>Go Worker 1偷偷把这个read-blocking()版本的系统调用，改成read-non-blocking()的版本，再去帮我们去进行系统调用。（例如非同步非阻塞版本）</li>
+<li>Go Worker 1发现 Go Routine 1的数据没有到…</li>
+<li>Go Worker 1调度另外的Go Routine 2/Go Routine 3执行。</li>
+<li>Go Routine 1的数据来了，Go Worker 1可能会重新调度Go Routine 1进行执行。</li>
+</ol>
+</blockquote>
+<ul>
+<li>Go能够轻易的调度，创建几百万个Goroutine也就轻轻松松。。。Go的调度器能够帮我们管理好这些Goroutine。 -&gt; 其实最多能够并行执行的数量，也就是核数（如果一个CPU一个核，也就是CPU的数量）</li>
+<li>Go已经把开销降到最低了，操作系统甚至都不会在两个Go线程之间切换。同一个Go Worker管理的，所有的Goroutine，都是挂载在这个Go Worker上执行的。Goroutine概念上是线程，实际上是协程。</li>
+</ul>
+<h3 id="现代编程语言上的系统编程Golang"><a href="#现代编程语言上的系统编程Golang" class="headerlink" title="现代编程语言上的系统编程Golang"></a>现代编程语言上的系统编程Golang</h3><blockquote>
+<p>学的难，但是我们平常写是不用写的昂！！！</p>
+<ul>
+<li>实现汇编最底下的东西，真正要写某些内容的时候 -&gt; 技术选型可能不会采用这些底层的，上层的Java or Golang之类的。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p> <strong>Do not communicate by sharing memory; instead, share memory by communicating. ——<em>Effective Go</em></strong></p>
+</blockquote>
+<p><strong>共享内存 = 万恶之源</strong></p>
+<ul>
+<li>在奇怪调度下发生的各种并发 bugs<ul>
+<li>条件变量：broadcast 性能低，不 broadcast 容易错</li>
+<li>信号量：在管理多种资源时就没那么好用了</li>
+</ul>
+</li>
+</ul>
+<p>既然生产者-消费者能解决绝大部分问题，提供一个 API 不就好了？-&gt; Channel的诞生，对于上面的东西，提供了抽象。不要尝试用<strong>共享内存</strong>（条件变量，信号量）来实现同步，用Golang提供的Channel来实现，简单安全！！！</p>
+<ul>
+<li>producer-consumer.go<ul>
+<li><strong>缓存为 0 的 channel 可以用来同步 (先到者等待)</strong></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span><br><br><span class="hljs-keyword">var</span> stream = <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> <span class="hljs-type">int</span>, <span class="hljs-number">10</span>)<br><span class="hljs-keyword">const</span> n = <span class="hljs-number">4</span><br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">produce</span><span class="hljs-params">()</span></span> {<br>  <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; ; i++ {<br>    fmt.Println(<span class="hljs-string">"produce"</span>, i)<br>    stream &lt;- i<br>  }<br>}<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">consume</span><span class="hljs-params">()</span></span> {<br>  <span class="hljs-keyword">for</span> {<br>    x := &lt;- stream<br>    fmt.Println(<span class="hljs-string">"consume"</span>, x)<br>  }<br>}<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {<br>  <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; n; i++ {<br>    <span class="hljs-keyword">go</span> produce()<br>  }<br>  consume()<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>channel这种东西，本质上就是对于生产者消费者模式的封装。Go底层保证了管道的安全，就很简单实用。</p>
+</blockquote>
+<ul>
+<li>Go解决的两个大问题：<ul>
+<li>Goroutine的模型，线程+协程，解决了高并发IO的问题。</li>
+<li>语言内建的机制，解决了并发编程的问题。</li>
+</ul>
+</li>
+</ul>
+<h1 id="我们身边的编程"><a href="#我们身边的编程" class="headerlink" title="我们身边的编程"></a>我们身边的编程</h1><blockquote>
+<p>2000年之前的互联网：只能看，交互性很弱。</p>
+<p>Web 2.0 时代 (1999)</p>
+</blockquote>
+<ul>
+<li><p>人与人之间联系更加紧密的互联网</p>
+<ul>
+<li><p>“Users were encouraged to provide content, rather than just viewing it.”</p>
+</li>
+<li><p>你甚至可以找到一些 “Web 3.0”/Metaverse/Decentralization 的线索 -&gt; 交互性，互动性进一步增强！！！</p>
+</li>
+</ul>
+</li>
+<li><p>是什么成就了今天的 Web 2.0?</p>
+<ul>
+<li><p><strong>浏览器中的并发编程</strong>：Ajax (Asynchronous JavaScript + XML)</p>
+</li>
+<li><p>HTML (DOM Tree) + CSS 代表了你能看见的一切</p>
+<ul>
+<li>通过 JavaScript 可以改变它</li>
+<li>通过 JavaScript 可以建立连接本地和服务器</li>
+<li>你就拥有了全世界！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="人机交互程序：特点和主要挑战"><a href="#人机交互程序：特点和主要挑战" class="headerlink" title="人机交互程序：特点和主要挑战"></a>人机交互程序：特点和主要挑战</h2><ul>
+<li><p>特点：不太复杂</p>
+<ul>
+<li><p>既没有太多计算（和上面的数据中心和高性能计算相比）</p>
+<ul>
+<li>DOM Tree 也不至于太大 (大了人也看不过来)</li>
+<li>DOM Tree 怎么画浏览器全帮我们搞定了</li>
+</ul>
+</li>
+<li><p>也没有太多 I/O</p>
+<ul>
+<li>就是一些网络请求</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>挑战：程序员多</p>
+<ul>
+<li><p>零基础的人你让他整共享内存上的多线程</p>
+</li>
+<li><p>恐怕我们现在用的到处都是 bug 吧？？？</p>
+</li>
+</ul>
+</li>
+<li><p>解决问题的模型：</p>
+</li>
+</ul>
+<h3 id="单线程-事件模型"><a href="#单线程-事件模型" class="headerlink" title="单线程+事件模型"></a>单线程+事件模型</h3><p>尽可能少但又足够的并发</p>
+<ul>
+<li>一个线程、全局的事件队列、按序执行 (run-to-complete)</li>
+<li>耗时的 API (Timer, Ajax, …) 调用会立即返回<ul>
+<li>条件满足时向队列里增加一个事件</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs js">$.<span class="hljs-title function_">ajax</span>( { <span class="hljs-attr">url</span>: <span class="hljs-string">'https://xxx.yyy.zzz/login'</span>,<br>  <span class="hljs-attr">success</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params">resp</span>) {<br>    $.<span class="hljs-title function_">ajax</span>( { <span class="hljs-attr">url</span>: <span class="hljs-string">'https://xxx.yyy.zzz/cart'</span>,<br>      <span class="hljs-attr">success</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params">resp</span>) {<br>        <span class="hljs-comment">// do something</span><br>      },<br>      <span class="hljs-attr">error</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params">req, status, err</span>) { ... }<br>    }<br>  },<br>  <span class="hljs-attr">error</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params">req, status, err</span>) { ... }<br>);<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>一个事件：一旦开始执行，它就要执行到结束（单线程，避免了并发的bug）</p>
+</blockquote>
+<ul>
+<li>网络请求很久，事件太长了不好！！！因此搭配事件，出现了ajax，发起请求，同时根据异步的不同结果，注册处理的函数。 -&gt; 单线程的模型！！！也就是异步事件模型。</li>
+</ul>
+<h3 id="异步事件模型"><a href="#异步事件模型" class="headerlink" title="异步事件模型"></a>异步事件模型</h3><ul>
+<li><p>好处</p>
+<ul>
+<li><p>并发模型简单了很多</p>
+<ul>
+<li>函数的执行是原子的 (不能并行，减少了并发 bug 的可能性)</li>
+</ul>
+</li>
+<li><p>API 依然可以并行</p>
+<ul>
+<li>适合网页这种 “大部分时间花在渲染和网络请求” 的场景<ul>
+<li>JavaScript 代码只负责 “描述” DOM Tree</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>坏处</p>
+<ul>
+<li><strong>Callback hell (祖传屎山)</strong><ul>
+<li>刚才的代码嵌套 5 层，可维护性已经接近于零了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>异步事件模型，减少了bug的可能性。API依然可以并行，但浏览器会帮我们全部处理好。非常适合网页！！！</p>
+</blockquote>
+<ul>
+<li>解决Callback Hell这种问题，还有更好的模型：异步编程模型</li>
+</ul>
+<h4 id="异步编程：Promise"><a href="#异步编程：Promise" class="headerlink" title="异步编程：Promise"></a>异步编程：Promise</h4><blockquote>
+<p>导致 callback hell 的本质：人类脑袋里想的是 “流程图”，看到的是 “回调”。</p>
+</blockquote>
+<p>The Promise object represents the <em>eventual completion</em> (or failure) of an asynchronous operation and its resulting value.</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212171735304.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Promise: 流程图的构造方法 (Mozilla-MDN Docs)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212171736114.png" srcset="/img/loading.gif" lazyload alt="image-20221217173602068"></p>
+<ul>
+<li>可以用语言来描述上面的流程图关系！</li>
+</ul>
+<h4 id="Async-Await-Even-Better"><a href="#Async-Await-Even-Better" class="headerlink" title="Async-Await: Even Better"></a>Async-Await: Even Better</h4><p>async function</p>
+<ul>
+<li>总是返回一个 <code>Promise</code> object</li>
+<li><code>async_func()</code> - fork</li>
+</ul>
+<hr>
+<p>await promise</p>
+<ul>
+<li><code>await promise</code> - join</li>
+</ul>
+<hr>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js">A = <span class="hljs-keyword">async</span> () =&gt; <span class="hljs-keyword">await</span> $.<span class="hljs-title function_">ajax</span>(<span class="hljs-string">'/hello/a'</span>)<br>B = <span class="hljs-keyword">async</span> () =&gt; <span class="hljs-keyword">await</span> $.<span class="hljs-title function_">ajax</span>(<span class="hljs-string">'/hello/b'</span>)<br>C = <span class="hljs-keyword">async</span> () =&gt; <span class="hljs-keyword">await</span> $.<span class="hljs-title function_">ajax</span>(<span class="hljs-string">'/hello/c'</span>)<br>hello = <span class="hljs-keyword">async</span> () =&gt; <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([<span class="hljs-title function_">A</span>(), <span class="hljs-title function_">B</span>(), <span class="hljs-title function_">C</span>()])<br><span class="hljs-title function_">hello</span>()<br>  .<span class="hljs-title function_">then</span>(<span class="hljs-variable language_">window</span>.<span class="hljs-property">alert</span>)<br>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> { <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'fetch failed!'</span>) } )<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>比上面那种疯狂嵌套，看起来舒服多了…</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212171738331.png" srcset="/img/loading.gif" lazyload alt="image-20221217173834270"></p>
+<h1 id="Golang的GPM模型补充"><a href="#Golang的GPM模型补充" class="headerlink" title="Golang的GPM模型补充"></a>Golang的GPM模型补充</h1><blockquote>
+<p>请见：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/261807834">https://zhuanlan.zhihu.com/p/261807834</a></p>
+</blockquote>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li>video link: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1cS4y1r7gw/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">https://www.bilibili.com/video/BV1cS4y1r7gw/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd</a></li>
+<li>PPT: <a target="_blank" rel="noopener" href="http://jyywiki.cn/OS/2022/slides/7.slides#/">http://jyywiki.cn/OS/2022/slides/7.slides#/</a></li>
+<li>并发编程相关教材，这本读完就够啦：<a target="_blank" rel="noopener" href="https://web.mit.edu/dimitrib/www/pdc.html">Parallel and Distributed Computation: Numerical Methods</a></li>
+<li>M2-libco: <a target="_blank" rel="noopener" href="http://jyywiki.cn/OS/2022/labs/M2">http://jyywiki.cn/OS/2022/labs/M2</a></li>
+<li>go语言GPM模型：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/261807834">https://zhuanlan.zhihu.com/p/261807834</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>7. 真实世界的并发编程</div>
+      <div>http://example.com/2022/12/17/njuos-7-zhen-shi-shi-jie-de-bing-fa-bian-cheng/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/18/njuos-8-bing-fa-bug-he-ying-dui/" title="NJUOS-8-并发bug和应对">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">NJUOS-8-并发bug和应对</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/14/cpu-cache-jin-jie-xue-xi/" title="CPU Cache 进阶学习">
+                        <span class="hidden-mobile">CPU Cache 进阶学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
