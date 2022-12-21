@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212182138312.png">
 <meta property="article:published_time" content="2022-12-18T13:33:49.000Z">
-<meta property="article:modified_time" content="2022-12-20T08:30:56.573Z">
+<meta property="article:modified_time" content="2022-12-21T08:38:17.088Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -86,9 +86,9 @@
 
 
   
-<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
-
+<meta name="generator" content="Hexo 6.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
 </head>
 
 
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.2k 字
+          7.6k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          43 分钟
+          64 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年12月20日 下午
+                    本文最后更新于：2022年12月21日 下午
                   
                 
               </p>
@@ -471,7 +471,7 @@
 <p>JSON比多表模式有更好的局部性（Locality），JSON中相关信息都在一个地方，一个查询足够。</p>
 </blockquote>
 <p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212201602615.png" srcset="/img/loading.gif" lazyload alt="image-20221220160234584"></p>
-<h3 id="多对一和多对多的关系"><a href="#多对一和多对多的关系" class="headerlink" title="多对一和多对多的关系"></a>多对一和多对多的关系</h3><ul>
+<h4 id="多对一和多对多的关系"><a href="#多对一和多对多的关系" class="headerlink" title="多对一和多对多的关系"></a>多对一和多对多的关系</h4><ul>
 <li>存储ID还是文本字符串，这是个副本（duplication）问题。当使用ID时，对人类有意义的信息（比如单词：Philanthropy）只存储在一处，所有引用它的地方使用ID（ID只在数据库中有意义）。当直接存储文本时，对人类有意义的信息会复制在每处使用记录中。</li>
 </ul>
 <blockquote>
@@ -516,9 +516,110 @@
 <li>数据模型也不是一成不变的，一对多，随着数据的添加，可能就变成多对多了orz，所以考虑要周全。</li>
 </ol>
 </blockquote>
+<h4 id="文档模型中的架构灵活性"><a href="#文档模型中的架构灵活性" class="headerlink" title="文档模型中的架构灵活性"></a>文档模型中的架构灵活性</h4><blockquote>
+<p>JSON, XML等不一定保证文档中的特定字段</p>
 <ul>
-<li>P41</li>
+<li>文档数据库有时称为无模式（schemaless），读取数据的代码通常假 定某种结构——即存在隐式模式，但不由数据库强制执行。</li>
+<li>更精确的术语是读时模式（schema-on-read）（数据的结构是隐含的，只有在数据被读取时才被解释），相应的是写时模式（schema-on-write）（传统的关系数据库方法中，模式明确，且数据库确保所有的数据都符合其模式）-&gt; 一个是运行时检查，一个是编译时检查（类似）。</li>
 </ul>
+</blockquote>
+<ul>
+<li><p>在应用程序想要改变其数据格式的情况下，这些方法之间的区别尤其明显：</p>
+<ul>
+<li>文档数据库中，只需开始写入具有新字段的新文档，并在应用程序中使用代码来处理读取旧文档的情 况。</li>
+<li>在“静态类型”数据库模式中，通常会执行以下迁移（migration）操作：</li>
+</ul>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">ALTER TABLE users ADD COLUMN first_name text;<br>UPDATE users <span class="hljs-type">SET</span> <span class="hljs-variable">first_name</span> <span class="hljs-operator">=</span> split_part(name, <span class="hljs-string">' '</span>, <span class="hljs-number">1</span>); -- PostgreSQL<br>UPDATE users <span class="hljs-type">SET</span> <span class="hljs-variable">first_name</span> <span class="hljs-operator">=</span> substring_index(name, <span class="hljs-string">' '</span>, <span class="hljs-number">1</span>); -- MySQL<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>MySQL执行 ALTER TABLE 时会复制整个表。上运行 UPDATE 语句在任何数据库上都可能会很慢，因为每一行都需要重写。</p>
+</blockquote>
+</li>
+<li><p>对象不同，而且可能发生变化 -&gt; 模式的坏处远大于它的帮助，无模式文档可能是一个更加自然的数据模型。 但是，<strong>要是所有记录都具有相同的结构，那么模式是记录并强制这种结构的有效机制。</strong>(无模式自然，有模式规矩)</p>
+</li>
+</ul>
+<h4 id="查询的数据局部性"><a href="#查询的数据局部性" class="headerlink" title="查询的数据局部性"></a>查询的数据局部性</h4><blockquote>
+<p>如果应用程序经常需要访问整个文档（例如，将其渲染至网页），那么存储局部性会带来性能优势。</p>
+<p>数据存在多个表中，则需要进行多次索引查找才能将其全部检索出来，这可能需要更多的磁盘查找并花费更多的时间。</p>
+</blockquote>
+<ul>
+<li><p>局部性仅仅适用于同时需要文档绝大部分内容的情况。数据库通常需要加载整个文档，即使 只访问其中的一小部分，这对于大型文档来说是很浪费的。</p>
+</li>
+<li><p>更新文档时，通常需要整个重写。只有不改变文档大小的修改才可以容易地原地执行。因此，通常建议保持相对小的文 档，并避免增加文档大小的写入。这些性能限制大大减少了文档数据库的实用场景。</p>
+</li>
+</ul>
+<blockquote>
+<p>为了局部性而分组集合相关数据的想法并不局限于文档模型。</p>
+</blockquote>
+<ul>
+<li>文档和关系数据库的融合：<ul>
+<li>大多数关系数据库系统（MySQL除外）都已支持XML。这包括对XML 文档进行本地修改的功能，以及在XML文档中进行索引和查询的功能。</li>
+<li>JSON也逐渐在补充，好事儿 -&gt; 相互补充，实现最符合需求的功能组合。</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据查询语言"><a href="#数据查询语言" class="headerlink" title="数据查询语言"></a>数据查询语言</h3><ul>
+<li>编程语言类型：<ul>
+<li>命令式：命令式语言告诉计算机以特定顺序执行某些操作。可以想象一下，逐行地遍历代码，评估条 件，更新变量，并决定是否再循环一遍。(底层，自己实现)</li>
+<li>声明式：只需指定所需数据的模式 - 结果必须符合哪些 条件，以及如何将数据转换（例如，排序，分组和集合） - 但不是如何实现这一目标。（高层抽象，底层可以灵活调整，动态性强，也可以优化。 -&gt; 程序员对于底层的掌控减少了！！！）</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>声明式查询语言是迷人的，因为它通常比命令式API更加简洁和容易。但更重要的是，它还隐 藏了数据库引擎的实现细节，这使得数据库系统可以在无需对查询做任何更改的情况下进行 性能提升。</p>
+</li>
+<li><p>声明式语言往往适合并行执行。现在，CPU的速度通过内核的增加变得更快，而不是以比以前更高的时钟速度运行。命令代码很难在多个内核和多个机器之间并行化，因 为它指定了指令必须以特定顺序执行。声明式语言更具有并行执行的潜力，因为它们仅指定 结果的模式，而不指定用于确定结果的算法。在适当情况下，数据库可以自由使用查询语言 的并行实现。</p>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>不同的查询：</li>
+<li>Web上的声明式查询</li>
+<li>MapReduce查询</li>
+</ul>
+<h3 id="图数据模型"><a href="#图数据模型" class="headerlink" title="图数据模型"></a>图数据模型</h3><blockquote>
+<p>一个图由两种对象组成：顶点（vertices）（也称为节点（nodes）或实体（entities）），和边（edges）（ 也称为关系（relationships）或弧 （arcs） ）。多种数据可以被建模为一个图形。 -&gt; 图数据结构，相应的算法（如PageRank）</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211629228.png" srcset="/img/loading.gif" lazyload alt="image-20221221162940134"></p>
+<h4 id="属性图"><a href="#属性图" class="headerlink" title="属性图"></a>属性图</h4><ul>
+<li>Vertex: Identifer, outgoing edges, ingoing edges, properties(k:v)</li>
+<li>Edge: Identifier, 边的终点/头部顶点（head vertex） 描述两个顶点之间关系类型的标签 一组属性（键值对）</li>
+</ul>
+<blockquote>
+<p>可以将图存储看作由两个关系表组成：一个存储顶点，另一个存储边。头部和尾部顶点用来存储每条边；如果你想要一组顶点的输入或输出边，你可以分别通过 head_vertex 或 tail_vertex 来查询 edges 表。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211632146.png" srcset="/img/loading.gif" lazyload alt="image-20221221163211114"></p>
+<ul>
+<li><p>模型的重要方面：</p>
+<ul>
+<li>任何顶点之间都可以相连</li>
+<li>任何顶底那都能高效找到Ingoing&amp;Outgoing edges，从而遍历图。</li>
+<li>对不同类型的关系使用不同的标签，可以在一个图中存储集中不同的信息，同时仍然保持一个清晰的数据模型。</li>
+</ul>
+<blockquote>
+<p>为数据建模提供了很大的灵活性！</p>
+</blockquote>
+</li>
+<li><p>对应还有Cypher查询语言进行查询！</p>
+</li>
+<li><p>SQL中的图查询：可以把图数据放入SQL，当然也能够使用SQL的方式对他们进行查询！！！</p>
+</li>
+</ul>
+<h4 id="三元组存储和SPARQL"><a href="#三元组存储和SPARQL" class="headerlink" title="三元组存储和SPARQL"></a>三元组存储和SPARQL</h4><blockquote>
+<p>三元组存储模式大体上与属性图模型相同，用不同的词来描述相同的想法。</p>
+<p>三元组的主语相当于图中的一个顶点。而宾语： </p>
+<ol>
+<li>原始数据类型中的值，例如字符串或数字。在这种情况下，三元组的谓语和宾语相当于主语顶点上的属性的键和值。例如， (lucy, age, 33) 就像属性 {“age”：33} 的顶点 lucy。 </li>
+<li>图中的另一个顶点。在这种情况下，谓语是图中的一条边，主语是其尾部顶点，而宾语 是其头部顶点。例如，在 (lucy, marriedTo, alain) 中主语和宾语 lucy 和 alain 都是顶 点，并且谓语 marriedTo 是连接他们的边的标签。</li>
+</ol>
+</blockquote>
+<ul>
+<li>如果你阅读更多关于三元组存储的信息，你可能会被卷入关于语义网络的文章漩涡中。三元组存储数据模型完全独立于语义网络。</li>
+</ul>
+<blockquote>
+<p>p55</p>
+</blockquote>
 
                 
               </div>

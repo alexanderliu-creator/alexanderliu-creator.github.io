@@ -1,0 +1,1102 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="状态机是一种思维方式，一种视角，一种很重要的工具！通过它，可以看到很多研究后面，最重要的思想！！！所有的东西都是状态机！！！状态机拓展！！！惊人的威力！！！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-10-状态机模型的应用">
+<meta property="og:url" content="http://example.com/2022/12/21/njuos-10-zhuang-tai-ji-mo-xing-de-ying-yong/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="状态机是一种思维方式，一种视角，一种很重要的工具！通过它，可以看到很多研究后面，最重要的思想！！！所有的东西都是状态机！！！状态机拓展！！！惊人的威力！！！">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211025859.png">
+<meta property="article:published_time" content="2022-12-21T02:24:14.000Z">
+<meta property="article:modified_time" content="2022-12-21T05:31:50.129Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211025859.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-10-状态机模型的应用 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-10-状态机模型的应用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-21 10:24" pubdate>
+          2022年12月21日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          42 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-10-状态机模型的应用</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月21日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>状态机是一种思维方式，一种视角，一种很重要的工具！通过它，可以看到很多研究后面，最重要的思想！！！所有的东西都是状态机！！！状态机拓展！！！惊人的威力！！！</p>
+<span id="more"></span>
+
+<h1 id="状态机复习"><a href="#状态机复习" class="headerlink" title="状态机复习"></a>状态机复习</h1><ul>
+<li>状态机：理论<ul>
+<li>数字电路：<a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/logisim.c">logisim.c</a> 和 <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/seven-seg.py">seven-seg.py</a> -&gt; 模拟底层电路，logisim.c的输出，可以作为seven-seg.py的输入，很酷！！！晶体二极管！！！所有底层的硬件，都是状态机！！！ -&gt; Computer就是状态机。</li>
+<li>Model checker: 理解并发程序执行的新方法，模拟状态机的状态，从而推导出不符合逻辑的并发状态 -&gt; 找到Bug</li>
+</ul>
+</li>
+<li>状态机：实践<ul>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/thread-os.c">thread-os.c</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 状态机模型如此有用，还能更有用一点吗？</li>
+</ul>
+<hr>
+<p>本次课主要内容</p>
+<ul>
+<li>终于做完了铺垫，是时候让你感受到 “真正的力量” 了<ul>
+<li>都是没用的内容，当我口胡就行了</li>
+</ul>
+</li>
+</ul>
+<h1 id="状态机：理解我们的世界"><a href="#状态机：理解我们的世界" class="headerlink" title="状态机：理解我们的世界"></a>状态机：理解我们的世界</h1><p>我们的<strong>物理世界</strong>是 “确定规则” 的状态机吗？</p>
+<ul>
+<li>宏观物理世界近似于 deterministic 的状态机 (经典力学)</li>
+<li>微观世界可能是 non-deterministic 的 (量子力学)</li>
+</ul>
+<blockquote>
+<p>物理数据的状态机 &amp; 状态机的状态机</p>
+</blockquote>
+<p>把物理世界建模成基本粒子的运动</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://playgameoflife.com/">Conway’s game of life</a></li>
+</ul>
+<p>可以在这个模型上严肃地定义很多概念：预测未来、时间旅行……</p>
+<ul>
+<li>成为你理解物理 (和计算机) 世界的参考</li>
+</ul>
+<p>例子</p>
+<ul>
+<li>Cellular automata 不支持 “时间旅行”<ul>
+<li>怎么添加一个公理使它可以支持？<ul>
+<li>平行宇宙</li>
+<li>如果世界线需要合并？可以<a target="_blank" rel="noopener" href="https://www.scientificamerican.com/article/time-travel-simulation-resolves-grandfather-paradox/">收敛于某个分布</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211038587.png" srcset="/img/loading.gif" lazyload alt="image-20221221103840559"></p>
+<blockquote>
+<p>公理体系下，是可以严谨的定义，“回到过去”，这种特殊的状态机，造成状态的分叉的。（平行宇宙！）</p>
+</blockquote>
+<ul>
+<li>Cellular automata 不支持 “预测外来”<ul>
+<li>能否添加一个 syscall 使它支持？<ul>
+<li><a target="_blank" rel="noopener" href="https://www.scottaaronson.com/papers/philos.pdf">Why philosophers should care about computational complexity, Ch. 10</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211040602.png" srcset="/img/loading.gif" lazyload alt="image-20221221104044573"></p>
+<blockquote>
+<p>上面这种情况也是，一个时间单位，预测后面很久时间单位后的状态机。把连续的时间 -&gt; 一格一格的帧，进行预测！！！</p>
+</blockquote>
+<h1 id="状态机模型：理解编译器和现代-CPU"><a href="#状态机模型：理解编译器和现代-CPU" class="headerlink" title="状态机模型：理解编译器和现代 CPU"></a>状态机模型：理解编译器和现代 CPU</h1><p>编译器：源代码 S (状态机) → 二进制代码 <em>C</em> (状态机)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211042929.png" srcset="/img/loading.gif" lazyload alt="image-20221221104259904"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211044305.png" srcset="/img/loading.gif" lazyload alt="image-20221221104410271"></p>
+<blockquote>
+<p>编译器无非是对于不同层面的状态机转换！保持转换过程中，语意一致。</p>
+<p>转换过程中，CPU就可以知道，完全可以一个时钟周期之内，执行两条 or 多条可并行的指令。（instruction-level parellism）</p>
+</blockquote>
+<p>编译 (优化) 的正确性 (Soundness):</p>
+<ul>
+<li>S 与 C 的可观测行为严格一致<ul>
+<li>system calls; volatile variable loads/stores; termination</li>
+</ul>
+</li>
+</ul>
+<p>超标量 (superscalar)/乱序执行处理器</p>
+<ul>
+<li>允许在状态机上 “跳跃”</li>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/ilp-demo.c">ilp-demo.c</a></li>
+</ul>
+<blockquote>
+<p>上面这个例子，用执行的指令的数量 / 执行时间，和CPU的时钟周期做对比。发现CPU为4.2GHz，但是执行的指令数量为17GHz左右。也就是说，一个时钟周期内，执行了很多条可以并行的执行昂！（需要绑定到一个CPU来执行，这个结果才有意义昂！！！）</p>
+</blockquote>
+<h1 id="查看状态机的执行"><a href="#查看状态机的执行" class="headerlink" title="查看状态机的执行"></a>查看状态机的执行</h1><h2 id="状态机解释程序-x2F-编译器理解："><a href="#状态机解释程序-x2F-编译器理解：" class="headerlink" title="状态机解释程序/编译器理解："></a>状态机解释程序/编译器理解：</h2><blockquote>
+<p>程序执行（逻辑） = 状态机执行（实际），有点像代码和进程的感觉，比进程还深入，在底层硬件设备和软件环境上，是如何执行的！</p>
+</blockquote>
+<ul>
+<li>我们能不能 “hack” 进这个状态机<ul>
+<li>观察状态机的执行<ul>
+<li>strace/gdb</li>
+</ul>
+</li>
+<li>甚至<strong>记录</strong>和<strong>改变</strong>状态机的执行</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>调试过程本质就是启动了一个状态机啊！！！帮助我们查看一个状态，甚至能够帮助我们，通过指令进行状态间的转换。Debug本身就是在和状态机打交道哇！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211121007.png" srcset="/img/loading.gif" lazyload alt="image-20221221112059979"></p>
+<blockquote>
+<p>以状态机的视角来理解GDB，很多想法，</p>
+<ul>
+<li><p>既然是状态转换，为什么不可以回溯呢？</p>
+</li>
+<li><p>为什么不可以保存状态，后面接着调试呢，反正就是状态+状态流转而已啊。。。</p>
+</li>
+<li><p>为什么不能记录整个状态机的一次执行呢？</p>
+</li>
+</ul>
+<p>状态机上能干的事情，GDB为啥不能干呢？（为啥我每次错过了断点，还要重新开始啊orz呜呜呜，不能回溯，早有疑问了。）</p>
+</blockquote>
+<h3 id="应用一-Time-Travel-Debugging"><a href="#应用一-Time-Travel-Debugging" class="headerlink" title="应用一(Time-Travel Debugging)"></a>应用一(Time-Travel Debugging)</h3><blockquote>
+<ol>
+<li>记录每一个状态（状态机太大了！！！）</li>
+<li>但是每一条指令的作用域有限！</li>
+</ol>
+<p>初始化状态 + 指令对于状态机的改变（？？？有点像MySQL中，数据持久化那一块儿，redo log的设计了）</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211133664.png" srcset="/img/loading.gif" lazyload alt="image-20221221113325641"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211133948.png" srcset="/img/loading.gif" lazyload alt="image-20221221113351918"></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  <span class="hljs-type">uint64_t</span> val;<br>  <span class="hljs-keyword">asm</span> <span class="hljs-title function_">volatile</span> <span class="hljs-params">(<span class="hljs-string">"rdrand %0"</span>: <span class="hljs-string">"=r"</span>(val))</span>;<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"rdrand returns %016lx\n"</span>, val);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>随机数每次不一样，反复执行不一样，可能导致Bug没法复现了呜呜呜！！！有很大的问题！！！GDB的回溯很重要昂！！！</p>
+</blockquote>
+<ul>
+<li>GDB的回溯功能的打开：<ul>
+<li>record full命令：打开记录的模式</li>
+<li>rsi就可以往回执行（因为每一条指令，GDB都记录了diff，就可以回退昂！！！） -&gt; 状态机的威力！！！啥啥都是状态机！！！</li>
+</ul>
+</li>
+</ul>
+<p>gdb 的隐藏功能 (大家读过 gdb 的手册了吗？)</p>
+<ul>
+<li><code>record full</code> - 开始记录</li>
+<li><code>record stop</code> - 结束记录</li>
+<li><code>reverse-step</code>/<code>reverse-stepi</code> - “时间旅行调试”</li>
+</ul>
+<hr>
+<p>例子：调试 <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/rdrand.c">rdrand.c</a></p>
+<ul>
+<li>Reverse execution 不是万能的<ul>
+<li>有些复杂的指令 (<strong>syscall</strong>) 无法保证</li>
+</ul>
+</li>
+</ul>
+<h3 id="应用二-Record-amp-Replay"><a href="#应用二-Record-amp-Replay" class="headerlink" title="应用二(Record &amp; Replay)"></a>应用二(Record &amp; Replay)</h3><p>在程序执行时记录信息，结束后重现程序的行为</p>
+<ul>
+<li><p>确定的程序不需要任何记录</p>
+<ul>
+<li><p>假设s0执行 1,000,000 条确定的指令后得到s‘</p>
+<ul>
+<li><p>那么只要记录 s0和 1,000,000</p>
+</li>
+<li><p>就能通过 “再执行一次” 推导出 s’</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>执行结果确定的指令，不用记录。</p>
+</li>
+<li><p>执行结果非确定的指令，记录下来。</p>
+</li>
+</ul>
+<p>记录（确定结果的指令数+非确定结果的指令的运行结果） -&gt; 得到一个确定的状态机昂！！！</p>
+</blockquote>
+<ul>
+<li>多处理器和并发线程也可以的！！！ -&gt; 只要加下来所有的上锁和解锁的顺序，包括条件变量等同步操作的顺序。 -&gt; 程序的执行，可以完整的重现出来！！！</li>
+</ul>
+<hr>
+<p>Record &amp; Replay: 只需记录 non-deterministic 的指令的效果</p>
+<ul>
+<li><p>(单线程) 应用程序</p>
+<ul>
+<li>syscall, rdrand, rdtsc, …</li>
+<li>rr (Mozilla)<ul>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/OS/2022/slides/10.slides">To catch a failure: The record-and-replay approach to debugging</a> (CACM’20)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>(单处理器) 操作系统</p>
+<ul>
+<li><p>mmio, in, out, rdrand, rdtsc, 中断, …</p>
+</li>
+<li><p>QEMU (-icount shift=auto,rr=record,rrfile=replay.bin)</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/OS/2022/slides/10.slides">ReVirt: Enabling intrusion analysis through virtual-machine logging and replay</a> (OSDI’02, Best Paper 🏅) -&gt; 重放整个虚拟机的执行！！！比如时间啊之类的不确定的值的操作，对于程序中对应的操作（比如读取当前时钟），直接替换成我们记录的结果就可以重放啦！！！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>拓展一步，那不止是重放程序，重放操作系统的执行呢？重放整个操作系统的执行：绝大多数的指令都是确定的，不需要记录的。记录不确定的结果：IO，中断。 -&gt; 自然就可以重放操作系统了嗷，思路和程序都是一致的！！！</p>
+</li>
+<li><p>situation -&gt; determinitic instructions -&gt; uncertain instructions’ results -&gt; determinitic instructions -&gt; uncertain instructions’ results -&gt; …… -&gt; final same results</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="采样状态机执行"><a href="#采样状态机执行" class="headerlink" title="采样状态机执行"></a>采样状态机执行</h2><h3 id="管理性能优化"><a href="#管理性能优化" class="headerlink" title="管理性能优化"></a>管理性能优化</h3><blockquote>
+<p>Premature optimization is the root of all evil. (D. E. Knuth)</p>
+</blockquote>
+<p>那到底怎么样才算 mature 呢？-&gt; 理解真实环境中，状态机的执行。只有知道了哪里有性能瓶颈，才能谈优化。</p>
+<ul>
+<li>状态机的执行需要时间；对象需要占用空间</li>
+<li>需要理解好 “时间花在哪里”、“什么对象占用了空间”</li>
+</ul>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211159122.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>我们需要真实执行的性能摘要！</p>
+<ul>
+<li>本质的回答：“为了做某件事到底花去了多少资源”</li>
+<li>简化的回答：“一段时间内资源的消耗情况”</li>
+</ul>
+<hr>
+<blockquote>
+<p>减少程序的侵入性，不用debug一步一步走，也检测不到具体的性能。（比如某条语句的执行时间）</p>
+</blockquote>
+<p>Profiler和性能摘要：性能摘要需要对程序执行性能影响最小，往往不需要 full trace。</p>
+<p>隔一段时间 “暂停” 程序、观察状态机的执行（利用操作系统的中断！！！）</p>
+<ul>
+<li>中断就可以做到</li>
+<li>将状态<em>s</em>→<em>s</em>′，“记账”：<ul>
+<li>执行的语句</li>
+<li>函数调用栈</li>
+<li>服务的请求</li>
+</ul>
+</li>
+<li>得到统计意义的性能摘要</li>
+</ul>
+<p>例子：Linux Kernel perf (支持硬件 PMU) - <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/ilp-demo.c">ilp-demo.c</a></p>
+<ul>
+<li>perf list, perf stat (-e), perf record, perf report</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>e.g. perf stat ./a.out</p>
+</li>
+<li><p>e.g. perf record ./a.out -&gt; perf report（可以看到具体的报告，点进去具体的报告就可以看到统计信息）。e.g.</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211257796.png" srcset="/img/loading.gif" lazyload alt="image-20221221125747770"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211259122.png" srcset="/img/loading.gif" lazyload alt="image-20221221125935078"></p>
+<blockquote>
+<p>上面红色的就是耗时最长的昂！！！</p>
+<ul>
+<li>perf list可以展现出来，其实我们的perf有很多的功能昂，都可以看看捏！！！</li>
+</ul>
+</blockquote>
+<hr>
+<ul>
+<li>Perf能够告诉你哪里去优化<ul>
+<li>但是优化可能会带来，可读性，可维护性啊，等很多的bugs.</li>
+</ul>
+</li>
+</ul>
+<p>我们遇到的大部分情况</p>
+<ul>
+<li>二八定律：80% 的时间消耗在非常集中的几处代码</li>
+<li>Lab1 (pmm): 小内存分配时的 <strong>lock contention</strong><ul>
+<li>profiler 直接帮你解决问题</li>
+</ul>
+</li>
+</ul>
+<p>工业界遇到的大部分情况</p>
+<ul>
+<li>木桶效应：每个部分都已经 tune 到局部最优了<ul>
+<li>剩下的部分要么 profiler 信息不完整，要么就不好解决</li>
+<li>(工程师整天都对着 profiler 看得头都大了)</li>
+<li><a target="_blank" rel="noopener" href="https://cacm.acm.org/magazines/2016/6/202665-the-flame-graph/fulltext">The flame graph</a> (CACM’16) -&gt; 火焰图，好工具！</li>
+</ul>
+</li>
+</ul>
+<h2 id="Model-Checker-x2F-Verifier"><a href="#Model-Checker-x2F-Verifier" class="headerlink" title="Model Checker/Verifier"></a>Model Checker/Verifier</h2><blockquote>
+<p>帮我们探索整个状态机，寻找程序的运行空间和边界，帮助我们调试。</p>
+</blockquote>
+<p>150 行代码的 <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/model-checker.py">model-checker.py</a></p>
+<ul>
+<li>证完所有《操作系统》课上涉及的并发程序</li>
+<li>复现 OSTEP 教科书上的并发 bug (条件变量错误唤醒)</li>
+</ul>
+<p>一些真正的 model checkers</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://lamport.azurewebsites.net/tla/tla.html">TLA+</a> by Leslie Lamport; -&gt; Amazon用来检验分布式程序的正确性。（分布式程序也是并发程序嘛（但是并发的程序甚至会直接寄））</li>
+<li><a target="_blank" rel="noopener" href="https://ti.arc.nasa.gov/tech/rse/vandv/jpf/">Java PathFinder (JPF)</a> 和 <a target="_blank" rel="noopener" href="http://spinroot.com/">SPIN</a><ul>
+<li>它们都喜欢用 Peterson 算法做 tutorial 😁</li>
+<li>上面的是在实践中可以直接用的，甚至不需要自己对于代码模型进行建模。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>Model Checker: 不仅是并发 </p>
+<p>任何 “non-deterministic” 的状态机都可以检查</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c">u32 x = rdrand();<br>u32 y = rdrand();<br><span class="hljs-keyword">if</span> (x &gt; y)<br>  <span class="hljs-keyword">if</span> (x * x + y * y == <span class="hljs-number">65</span>)<br>    bug();<br>...<br>assert(ptr); <span class="hljs-comment">// 可能空指针吗？</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>上面这种，所有的状态机，太大啦。一层就是2^32个状态，很离谱的！！！状态减少（减枝）</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211326849.png" srcset="/img/loading.gif" lazyload alt="image-20221221132640813"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212211327406.png" srcset="/img/loading.gif" lazyload alt="image-20221221132755376"></p>
+<blockquote>
+<p>求出上面的状态之后，就能够通过约束求解器，找出结果，x = 8, y = 1之类的。</p>
+<p><strong>状态机不仅能够理解程序的执行，还能够证明程序的正确性。</strong> -&gt; 非常重要，比如可以自动生成对应的测试用例！！！ -&gt; 形式化验证？？？</p>
+</blockquote>
+<p>更高效的 Model Checker: “将相似状态合并”</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.5555/1855741.1855756">KLEE: Unassisted and automatic generation of high-coverage tests for complex systems programs</a> (OSDI’08, Best Paper 🏅)</li>
+<li>基于 LLVM bitcode 解释器实现</li>
+</ul>
+<blockquote>
+<p>Model Check不只是并发，可以检查任务程序！！！单线程也可以检查啊，不同类型的Input，本质上就对应了不同的执行空间。</p>
+</blockquote>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><p>视频链接：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1xU4y1Z7xK/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">https://www.bilibili.com/video/BV1xU4y1Z7xK/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd</a></p>
+</li>
+<li><p>gdb调试过程中，layout asm是以底层汇编的形式执行，layout src是以c语言的形式展示，C的执行形式。</p>
+</li>
+<li><p>课件：<a target="_blank" rel="noopener" href="http://jyywiki.cn/OS/2022/slides/10.slides#/2/3">http://jyywiki.cn/OS/2022/slides/10.slides#/2/3</a></p>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-10-状态机模型的应用</div>
+      <div>http://example.com/2022/12/21/njuos-10-zhuang-tai-ji-mo-xing-de-ying-yong/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/19/njuos-9-cao-zuo-xi-tong-de-zhuang-tai-ji-mo-xing/" title="NJUOS-9-操作系统的状态机模型">
+                        <span class="hidden-mobile">NJUOS-9-操作系统的状态机模型</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
