@@ -1,0 +1,1175 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="进程结束啦，状态机专题也结束了。进入虚拟化的部分了，但是状态机用来理解进程也是有非常重要的意义的昂！！！  OS所有的一切都是状态机管理！   本次课的主题： 操作系统启动后到底做了什么 操作系统如何管理程序（进程）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-11-操作系统上的进程">
+<meta property="og:url" content="http://example.com/2022/12/22/njuos-11-cao-zuo-xi-tong-shang-de-jin-cheng/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="进程结束啦，状态机专题也结束了。进入虚拟化的部分了，但是状态机用来理解进程也是有非常重要的意义的昂！！！  OS所有的一切都是状态机管理！   本次课的主题： 操作系统启动后到底做了什么 操作系统如何管理程序（进程）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212220935844.png">
+<meta property="article:published_time" content="2022-12-22T01:34:59.000Z">
+<meta property="article:modified_time" content="2022-12-22T08:19:53.221Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212220935844.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-11-操作系统上的进程 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-11-操作系统上的进程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-22 09:34" pubdate>
+          2022年12月22日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          14k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          116 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-11-操作系统上的进程</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月22日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>进程结束啦，状态机专题也结束了。进入虚拟化的部分了，但是状态机用来理解进程也是有非常重要的意义的昂！！！</p>
+<blockquote>
+<p>OS所有的一切都是状态机管理！</p>
+</blockquote>
+<ul>
+<li>本次课的主题：<ul>
+<li>操作系统启动后到底做了什么</li>
+<li>操作系统如何管理程序（进程）</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+
+
+<h1 id="操作系统启动后到底做了什么？"><a href="#操作系统启动后到底做了什么？" class="headerlink" title="操作系统启动后到底做了什么？"></a>操作系统启动后到底做了什么？</h1><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212220950528.png" srcset="/img/loading.gif" lazyload alt="image-20221222095030416"></p>
+<blockquote>
+<p>真正的操作系统做的事情就是加载系统里面的<strong>第一个程序</strong>，然后把所有控制权都交给这个程序。系统里面就有一个程序在执行，系统里面的进程都是组成一棵树状的结构。实际上树根那个程序，就是操作系统拉起来的。</p>
+</blockquote>
+<ul>
+<li>can can need?</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212220958688.png" srcset="/img/loading.gif" lazyload alt="image-20221222095820651"></p>
+<blockquote>
+<p>可以看到，这里操作系统就是逐个去找可能存在的systemd的进程，就是我们说的第一个程序，也就是树的根。找到了就启动，找不到panic了，操作系统启动不了昂！！！这个根就提供了很多系统调用，比如：创建一个新的程序之类的昂！！！</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">alex ~  $ pstree<br>-+= 00001 root /sbin/launchd<br> |--= 00093 root /usr/libexec/logd<br> |--= 00094 root /usr/libexec/UserEventAgent (System)<br> |--= 00097 root /System/Library/PrivateFrameworks/Uninstall.framework/Resourc<br> |--= 00098 root /System/Library/Frameworks/CoreServices.framework/Versions/A/<br> |--= 00099 root /System/Library/PrivateFrameworks/MediaRemote.framework/Suppo<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>在mac上，其实也能看到结构的嗷，这个根，包括对应的进程所在的位置！</p>
+</blockquote>
+<h2 id="从系统启动到第一个进程"><a href="#从系统启动到第一个进程" class="headerlink" title="从系统启动到第一个进程"></a>从系统启动到第一个进程</h2><h3 id="虚拟机（最小linux的启动与测试使用）"><a href="#虚拟机（最小linux的启动与测试使用）" class="headerlink" title="虚拟机（最小linux的启动与测试使用）"></a>虚拟机（最小linux的启动与测试使用）</h3><p>没有存储设备，只有包含两个文件的 “initramfs”</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://box.nju.edu.cn/f/3f67e092e1ba441187d9/?dl=1">linux-minimal.zip</a></li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">tree .</span><br>.<br>├── bin<br>│   └── busybox (可以在我们的Linux里直接执行)<br>└── init<br></code></pre></td></tr></tbody></table></figure>
+
+<p>加上 vmlinuz (内核镜像) 就可以在 QEMU 里启动了</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221013366.png" srcset="/img/loading.gif" lazyload alt="image-20221222101312335"></p>
+<blockquote>
+<p>上面就是一个最小的Linux，可以不断往里面加文件，尝试去跑！！！</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs shell">alex ~/Desktop  $ cd linux-minimal<br>alex ~/Desktop/linux-minimal  $ make<br>.<br>./init<br>./bin<br>./bin/busybox<br>5873 blocks<br>alex ~/Desktop/linux-minimal  $ tree<br>.<br>├── Makefile<br>├── build<br>│&nbsp;&nbsp; └── initramfs.cpio.gz<br>├── initramfs<br>│&nbsp;&nbsp; ├── bin<br>│&nbsp;&nbsp; │&nbsp;&nbsp; └── busybox<br>│&nbsp;&nbsp; └── init<br>└── vmlinuz<br><br>3 directories, 5 files<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>通过make指令可以成功编译，并且获得一个initramfs.cpio.gz镜像，挂载了就能跑的那种。</p>
+</blockquote>
+<ul>
+<li>直接跑起来：make run</li>
+</ul>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">alex ~/Desktop/linux-minimal  $ make run<br>/bin/sh: qemu-system-x86_64: <span class="hljs-built_in">command</span> not found<br>make: *** [run] Error 127<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>因为我们没有下载qemu嘛，下载了就好昂！brew install qemu</p>
+</blockquote>
+<ul>
+<li>再次make run之后，我们其实就用虚拟机启动了一个最小的状态，通过info registers之类的指令，就可以看到系统当前的状态。</li>
+</ul>
+<blockquote>
+<p>这里建议看看原视频昂！</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><code class="hljs shell">alex ~/Desktop/linux-minimal  $ make run<br>SeaBIOS (version rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org)<br><br><br>iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+07F91100+07EF1100 CA00<br><br><br><br>Booting from ROM..<br>sh: can't access tty; job control turned off<br>/ # /bin/busy box<br>sh: /bin/busy: not found<br>/ # /bin/busybox<br>BusyBox v1.31.1 (2020-03-22 13:22:47 UTC) multi-call binary.<br>BusyBox is copyrighted by many authors between 1998-2015.<br>Licensed under GPLv2. See source distribution for detailed<br>copyright notices.<br><br>Usage: busybox [function [arguments]...]<br>   or: busybox --list[-full]<br>   or: busybox --show SCRIPT<br>   or: busybox --install [-s] [DIR]<br>   or: function [arguments]...<br><br>	BusyBox is a multi-call binary that combines many common Unix<br>	utilities into a single executable.  Most people will create a<br>	link to busybox for each function they wish to use and BusyBox<br>	will act like whatever it was invoked as.<br><br>Currently defined functions:<br>	[, [[, acpid, add-shell, addgroup, adduser, adjtimex, arch, arp,<br>	arping, ash, awk, base64, basename, bc, beep, blkdiscard, blkid,<br>	blockdev, bootchartd, brctl, bunzip2, bzcat, bzip2, cal, cat, chat,<br>	chattr, chgrp, chmod, chown, chpasswd, chpst, chroot, chrt, chvt,<br>	cksum, clear, cmp, comm, conspy, cp, cpio, crond, crontab, cryptpw,<br>	cttyhack, cut, date, dc, dd, deallocvt, delgroup, deluser, depmod,<br>	devmem, df, dhcprelay, diff, dirname, dmesg, dnsd, dnsdomainname,<br>	dos2unix, dpkg, dpkg-deb, du, dumpkmap, dumpleases, echo, ed, egrep,<br>	eject, env, envdir, envuidgid, ether-wake, expand, expr, factor,<br>	fakeidentd, fallocate, false, fatattr, fbset, fbsplash, fdflush,<br>	fdformat, fdisk, fgconsole, fgrep, find, findfs, flock, fold, free,<br>	freeramdisk, fsck, fsck.minix, fsfreeze, fstrim, fsync, ftpd, ftpget,<br>	ftpput, fuser, getopt, getty, grep, groups, gunzip, gzip, halt, hd,<br>	hdparm, head, hexdump, hexedit, hostid, hostname, httpd, hush, hwclock,<br>	i2cdetect, i2cdump, i2cget, i2cset, i2ctransfer, id, ifconfig, ifdown,<br>	ifenslave, ifplugd, ifup, inetd, init, insmod, install, ionice, iostat,<br>	ip, ipaddr, ipcalc, ipcrm, ipcs, iplink, ipneigh, iproute, iprule,<br>	iptunnel, kbd_mode, kill, killall, killall5, klogd, last, less, link,<br>	linux32, linux64, linuxrc, ln, loadfont, loadkmap, logger, login,<br>	logname, logread, losetup, lpd, lpq, lpr, ls, lsattr, lsmod, lsof,<br>	lspci, lsscsi, lsusb, lzcat, lzma, lzop, makedevs, makemime, man,<br>	md5sum, mdev, mesg, microcom, mkdir, mkdosfs, mke2fs, mkfifo,<br>	mkfs.ext2, mkfs.minix, mkfs.vfat, mknod, mkpasswd, mkswap, mktemp,<br>	modinfo, modprobe, more, mount, mountpoint, mpstat, mt, mv, nameif,<br>	nanddump, nandwrite, nbd-client, nc, netstat, nice, nl, nmeter, nohup,<br>	nologin, nproc, nsenter, nslookup, ntpd, nuke, od, openvt, partprobe,<br>	passwd, paste, patch, pgrep, pidof, ping, ping6, pipe_progress,<br>	pivot_root, pkill, pmap, popmaildir, poweroff, powertop, printenv,<br>	printf, ps, pscan, pstree, pwd, pwdx, raidautorun, rdate, rdev,<br>	readahead, readlink, readprofile, realpath, reboot, reformime,<br>	remove-shell, renice, reset, resize, resume, rev, rm, rmdir, rmmod,<br>	route, rpm, rpm2cpio, rtcwake, run-init, run-parts, runlevel, runsv,<br>	runsvdir, rx, script, scriptreplay, sed, sendmail, seq, setarch,<br>	setconsole, setfattr, setfont, setkeycodes, setlogcons, setpriv,<br>	setserial, setsid, setuidgid, sh, sha1sum, sha256sum, sha3sum,<br>	sha512sum, showkey, shred, shuf, slattach, sleep, smemcap, softlimit,<br>	sort, split, ssl_client, start-stop-daemon, stat, strings, stty, su,<br>	sulogin, sum, sv, svc, svlogd, svok, swapoff, swapon, switch_root,<br>	sync, sysctl, syslogd, tac, tail, tar, taskset, tc, tcpsvd, tee,<br>	telnet, telnetd, test, tftp, tftpd, time, timeout, top, touch, tr,<br>	traceroute, traceroute6, true, truncate, ts, tty, ttysize, tunctl,<br>	ubiattach, ubidetach, ubimkvol, ubirename, ubirmvol, ubirsvol,<br>	ubiupdatevol, udhcpc, udhcpc6, udhcpd, udpsvd, uevent, umount, uname,<br>	unexpand, uniq, unix2dos, unlink, unlzma, unshare, unxz, unzip, uptime,<br>	users, usleep, uudecode, uuencode, vconfig, vi, vlock, volname, w,<br>	wall, watch, watchdog, wc, wget, which, who, whoami, whois, xargs, xxd,<br>	xz, xzcat, yes, zcat, zcip<br>/ # /bin/busybox ls<br>bin   dev   init  root<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221033938.png" srcset="/img/loading.gif" lazyload alt="image-20221222103332900"></p>
+<blockquote>
+<p>可以直接在linux运行busybox，其中包含了各种各样我们常用的命令行指令，虚拟机中直接执行命令是用不了的昂，要用里面的Busybox！</p>
+</blockquote>
+<hr>
+<h3 id="魔术来咯"><a href="#魔术来咯" class="headerlink" title="魔术来咯"></a>魔术来咯</h3><blockquote>
+<p>上面的虚拟机里面，命令都用不了orz</p>
+</blockquote>
+<p>BusyBox: The Swiss Army Knife of embedded Linux</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221036669.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">c1="arch ash base64 cat chattr chgrp chmod chown conspy cp cpio cttyhack date dd df dmesg dnsdomainname dumpkmap echo ed egrep false fatattr fdflush fgrep fsync getopt grep gunzip gzip hostname hush ionice iostat ipcalc kbd_mode kill link linux32 linux64 ln login ls lsattr lzop makemime mkdir mknod mktemp more mount mountpoint mpstat mt mv netstat nice nuke pidof ping ping6 pipe_progress printenv ps pwd reformime resume rev rm rmdir rpm run-parts scriptreplay sed setarch setpriv setserial sh sleep stat stty su sync tar touch true umount uname usleep vi watch zcat"<br>c2="[ [[ awk basename bc beep blkdiscard bunzip2 bzcat bzip2 cal chpst chrt chvt cksum clear cmp comm crontab cryptpw cut dc deallocvt diff dirname dos2unix dpkg dpkg-deb du dumpleases eject env envdir envuidgid expand expr factor fallocate fgconsole find flock fold free ftpget ftpput fuser groups hd head hexdump hexedit hostid id install ipcrm ipcs killall last less logger logname lpq lpr lsof lspci lsscsi lsusb lzcat lzma man md5sum mesg microcom mkfifo mkpasswd nc nl nmeter nohup nproc nsenter nslookup od openvt passwd paste patch pgrep pkill pmap printf pscan"<br>c3="pstree pwdx readlink realpath renice reset resize rpm2cpio runsv runsvdir rx script seq setfattr setkeycodes setsid setuidgid sha1sum sha256sum sha3sum sha512sum showkey shred shuf smemcap softlimit sort split ssl_client strings sum sv svc svok tac tail taskset tcpsvd tee telnet test tftp time timeout top tr traceroute traceroute6 truncate ts tty ttysize udhcpc6 udpsvd unexpand uniq unix2dos unlink unlzma unshare unxz unzip uptime users uudecode uuencode vlock volname w wall wc wget which who whoami whois xargs xxd xz xzcat yes"<br>for cmd in $c1 $c2 $c3; do<br>  /bin/busybox ln -s /bin/busybox /bin/$cmd<br>done<br>mkdir -p /proc &amp;&amp; mount -t proc  none /proc<br>mkdir -p /sys  &amp;&amp; mount -t sysfs none /sys<br>export PS1='(linux) '<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>在上面啥都用不了的虚拟机里面，把上述的指令拷贝进去。。。？？？可以直接在终端执行linux指令了！！！</p>
+<p>本质上就是把busybox链接到/bin/目录下了，生成的链接文件的名字为ps, arch, ash, base64等linux常用命令的名字！</p>
+<p>重启整个虚拟机的话：make &amp;&amp; make run</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221104059.png" srcset="/img/loading.gif" lazyload alt="image-20221222110452004"></p>
+<ul>
+<li>试试 adb shell (<a target="_blank" rel="noopener" href="https://landley.net/toybox/">toybox</a>) -&gt; 比busybox更简陋的一个命令行工具。一样的，符号链接，可以使用昂！！！</li>
+</ul>
+<hr>
+<p>可以直接在文件系统中添加静态链接的二进制文件</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/minimal.S">minimal.S</a></li>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/logisim.c">logisim.c</a></li>
+</ul>
+<blockquote>
+<p>手动放到linux-minimal/initramfs的code目录下，启动：</p>
+<p>gcc -c minimal.S &amp;&amp; ld minimal.o -&gt; ./a.out</p>
+<p>gcc logisim.c -o logisim -static</p>
+</blockquote>
+<ul>
+<li>静态链接的话，会有点大 -&gt; 没关系。但是我们发现，我们在code目录下，mac编译好的这些输出的结果。在我们的qemu虚拟机，也就是在最小的linux环境下，一样是可以跑出来的！！！</li>
+</ul>
+<blockquote>
+<p>我们最小的操作系统的dev，只有console昂！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221113627.png" srcset="/img/loading.gif" lazyload alt="image-20221222111320587"></p>
+<blockquote>
+<p>这里最小的linux里面，不也就是一个进程。然后在这个进程上面，运行别的程序吗？对不！！！</p>
+<p>注意，init脚本里面有很多链接的过程被注释掉了，本质上就是我们上面手动执行的脚本，把注释掉的链接打开。直接make &amp;&amp; make run，就能得到一个有体验的最小的linux系统昂！</p>
+</blockquote>
+<ul>
+<li>最小的Linux很好玩！！！<ul>
+<li>足够真实，真的是一个Linux的环境！</li>
+<li>足够小，啥都没有哈哈哈哈，可以帮我们理解很多东西。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>2021 年，CCF 以迅雷不及掩耳盗铃之势发布了 NOILinux 2.0</p>
+<ul>
+<li>Ubuntu 20.04 Desktop (x86-64 only)</li>
+<li>真就不管那些 32-bit 的老爷机和老爷系统的死活了？</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221122660.jpg" srcset="/img/loading.gif" lazyload alt="img">和刚才的 “最小” 系统但本质一样</p>
+<ul>
+<li>有更多设备 (磁盘、网卡等)</li>
+<li>initramfs 里挂载了磁盘</li>
+<li>磁盘里安装了最少的编译运行环境 (g++, …) 和一个 Web 服务</li>
+<li><code>switch_root</code> (<code>pivot_root</code> 系统调用) 完成 “启动”</li>
+</ul>
+<blockquote>
+<p>和上面类似的！！！要真的模拟整个x64，x32根本顶不住啊。。。简单的呢？精简的文件系统，32-bit上跑64-bit，由于IO竞赛，只提供部分的外设（比如挂载磁盘，方便选手提交答案）还有运行环境，比如gcc之类的，不是就！！！很小的一个运行环境吗！！！</p>
+</blockquote>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221134305.png" srcset="/img/loading.gif" lazyload alt="image-20221222113418246"></p>
+<blockquote>
+<p>syscall三大类：<strong>进程管理，内存管理，文件管理</strong>。有这三个调用，其实就能够构造出一个小小世界了！！！有这三个就可以写出一个小小的操作系统了昂！！！</p>
+</blockquote>
+<h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><blockquote>
+<p>操作系统创建了第一个进程以后，操作系统只有一个进程。后面这些进程，该怎么产生呢？</p>
+</blockquote>
+<ul>
+<li>创建进程的API -&gt; fork()</li>
+</ul>
+<h3 id="fork"><a href="#fork" class="headerlink" title="fork()"></a>fork()</h3><p>C 程序 = 状态机</p>
+<ul>
+<li>初始状态：<code>main(argc, argv)</code></li>
+<li>程序可以直接在处理器上执行</li>
+</ul>
+<p><strong>虚拟化：操作系统在物理内存中保存多个状态机</strong></p>
+<ul>
+<li>通过虚拟内存实现每次 “拿出来一个执行”</li>
+<li>中断后进入操作系统代码，“换一个执行”</li>
+</ul>
+<blockquote>
+<p>状态机角度之Fork: 把进程这个状态机，复制了一份，<strong>复制出来的状态机和原来的状态机，完全一样的，而且相互独立的！！！</strong>内存的每个字节都一样，寄存器也都一样。除了返回值不一样（返回值在eax寄存器里面）</p>
+<p>被创建出来的fork()返回值为0</p>
+</blockquote>
+<ul>
+<li>操作系统的模型就变了！！！从原来的一个程序，变成了多个进程。 -&gt; 模型就变成了并发模型！！！</li>
+</ul>
+<blockquote>
+<p>什么是操作系统？状态机的管理者</p>
+<p>什么是虚拟化？操作系统里面可以管理好多个状态机，虽然容纳了很多状态机，但是每一次只能选一个状态机执行，这就是虚拟化！</p>
+</blockquote>
+<ul>
+<li>有个有意思的bomb：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221145425.png" srcset="/img/loading.gif" lazyload alt="image-20221222114528372"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221146103.png" srcset="/img/loading.gif" lazyload alt="image-20221222114655072"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221146342.png" srcset="/img/loading.gif" lazyload alt="image-20221222114620290"></p>
+<h3 id="小的例子理解fork"><a href="#小的例子理解fork" class="headerlink" title="小的例子理解fork()"></a>小的例子理解fork()</h3><h4 id="example-1"><a href="#example-1" class="headerlink" title="example 1"></a>example 1</h4><p>试着拿出一张纸，写出以下程序的输出结果</p>
+<ul>
+<li>fork-demo.c<ul>
+<li>你心里可能立即想，运行一下不就完了吗？</li>
+<li>记得用 “状态机” 去理解它</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">pid_t</span> pid1 = fork();<br><span class="hljs-type">pid_t</span> pid2 = fork();<br><span class="hljs-type">pid_t</span> pid3 = fork();<br><span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello World from (%d, %d, %d)\n"</span>, pid1, pid2, pid3);<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Result:</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">alex ~/my_code/c++/CLionProject  $ ./a.out     <br>Hello World from (52270, 52271, 52273)<br>Hello World from (52270, 52271, 0)<br>Hello World from (52270, 0, 52274)<br>Hello World from (0, 52272, 52275)<br>Hello World from (52270, 0, 0)<br>Hello World from (0, 0, 52276)<br>Hello World from (0, 52272, 0)<br>Hello World from (0, 0, 0)<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>涉及到了并发，状态机开始复杂了…</p>
+<p>main — (main -&gt; pid1) — (main -&gt; pid1 -&gt; pid2) || (main -&gt; pid1 &amp;&amp; main -&gt; pid2) — 再往下更乱呜呜呜！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221153828.png" srcset="/img/loading.gif" lazyload alt="image-20221222115336771"></p>
+<blockquote>
+<p>注意，fork的时候，是fork整个状态机昂！！！比如如果pid1执行了fork()，这个时候的fork()，是把pid1整个拷贝了一份（包括当前执行到的位置之类的）。pid1和main是并发执行的，所以从main()中fork()出来的进程，和pid1()中for()出来的，是不一样的昂！！！</p>
+</blockquote>
+<h4 id="example-2"><a href="#example-2" class="headerlink" title="example 2"></a>example 2</h4><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span> </span>{<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span> ; i &lt; <span class="hljs-number">2</span> ; i++) {<br>        fork();<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello\n"</span>);<br>    }<br><br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span> ; i &lt; <span class="hljs-number">2</span> ; i++) {<br>        <span class="hljs-built_in">wait</span>(<span class="hljs-literal">NULL</span>);<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221235044.png" srcset="/img/loading.gif" lazyload alt="image-20221222123536007"></p>
+<blockquote>
+<p>预测：应该是六个</p>
+</blockquote>
+<ul>
+<li>Result:</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs shell">alex ~/my_code/c++/CLionProject  $ ./a.out<br>Hello<br>Hello<br>Hello<br>Hello<br>Hello<br>Hello<br>alex ~/my_code/c++/CLionProject  $ ./a.out | wc -l<br>8<br>alex ~/my_code/c++/CLionProject  $ ./a.out | cat<br>Hello<br>Hello<br>Hello<br>Hello<br>Hello<br>Hello<br>Hello<br>Hello<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>奇怪了，命令行输出是6行，但是统计输出的行数是八行？？？</p>
+<p><strong>计算机系统里没有魔法。机器永远是对的。</strong></p>
+</blockquote>
+<ul>
+<li>本质上是printf有问题昂！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221247541.png" srcset="/img/loading.gif" lazyload alt="image-20221222124728497"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221248885.png" srcset="/img/loading.gif" lazyload alt="image-20221222124804848"></p>
+<blockquote>
+<p>上面这里，就算有\n，但是管道到另外一个文件中./a.out | less，”Hello”也没有了…</p>
+<p><strong>我们的fork()是无情的拷贝机器，它会忠实地把所有的寄存器和所有的内存都赋值一遍，不管这些变量有什么含义。 -&gt; 所以它会把那些库函数的内部状态，同样也复制一份。</strong></p>
+<p>fflush(stdout) -&gt; 会执行一个系统调用，真正把字符输出到文件里面去（库函数，会执行一个底层的系统调用）。</p>
+</blockquote>
+<h5 id="buffer详解"><a href="#buffer详解" class="headerlink" title="buffer详解"></a>buffer详解</h5><ul>
+<li>buffer其实有两种<ul>
+<li>line buffer</li>
+<li>full buffer</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221253855.png" srcset="/img/loading.gif" lazyload alt="image-20221222125316805"></p>
+<blockquote>
+<ul>
+<li><p>tty(终端)是line buffer: 如果看到一个\n，就会把所有缓冲区的东西，用系统调用写出来。</p>
+</li>
+<li><p>pipe/file是full buffer: 写满4096B（一个页面）之后，才会丢给系统调用，把这个页面输出出来。</p>
+</li>
+</ul>
+<p>fflush本质上就是调用系统调用，把缓冲区内的内容打印出来。</p>
+<p>tty的分析我们上面做过了，就是6个，对于pipe/file，我们应该怎么分析呢？</p>
+</blockquote>
+<ul>
+<li>pipe/file中的full buffer的分析：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221518963.png" srcset="/img/loading.gif" lazyload alt="image-20221222151831917"></p>
+<blockquote>
+<p>所以最后线程结束的时候，把所有的Hello\n输出到pipe中去，总共就是8个Hello\n。什么叫“忠实“的复制？忠实就是把printf这种内部库的buffer，也复制了！！！它会把那些库函数的内部状态，全部也同样复制一份。</p>
+<p>很有意思！！！</p>
+</blockquote>
+<ul>
+<li>能否改变这个行为？</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span> {<br>    setbuf(<span class="hljs-built_in">stdout</span>, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span> ; i &lt; <span class="hljs-number">2</span> ; i++) {<br>        fork();<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello\n"</span>);<br>    }<br><br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span> ; i &lt; <span class="hljs-number">2</span> ; i++) {<br>        wait(<span class="hljs-literal">NULL</span>);<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>设置为不缓冲！！！所有的printf都会被直接翻译为系统调用！！！</p>
+</blockquote>
+<p>Results:</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">alex ~/my_code/c++/CLionProject  $ gcc main.cpp &amp;&amp; ./a.out         <br>Hello<br>Hello<br>Hello<br>Hello<br>Hello<br>Hello<br>alex ~/my_code/c++/CLionProject  $ gcc main.cpp &amp;&amp; ./a.out | wc -l<br>6<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p><strong>连内部库的数组缓冲区都会被原样的复制！！！</strong></p>
+</blockquote>
+<h4 id="example-3"><a href="#example-3" class="headerlink" title="example 3"></a>example 3</h4><p>多线程程序的某个线程执行 <code>fork()</code>，应该发生什么？</p>
+<ul>
+<li>这是个很有趣的问题：创造 fork 时创始人并没有考虑线程</li>
+</ul>
+<p>我们可能作出以下设计：</p>
+<ul>
+<li>仅有执行 fork 的线程被复制，其他线程 “卡死”</li>
+<li>仅有执行 fork 的线程被复制，其他线程退出</li>
+<li>所有的线程都被复制并继续执行<ul>
+<li>这三种设计分别会带来什么问题？</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>自己思考，后续会提到！</p>
+</blockquote>
+<h3 id="execve"><a href="#execve" class="headerlink" title="execve()"></a>execve()</h3><blockquote>
+<p>Fork: 程序是状态机，正在执行的程序是进程（正在运行的状态机），Fork是状态机的副本。</p>
+<ul>
+<li>光有 fork 还不够，怎么 “执行别的程序”？-&gt; Execve()</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221530016.png" srcset="/img/loading.gif" lazyload alt="image-20221222153015971"></p>
+<p>UNIX 的答案: execve</p>
+<ul>
+<li>将当前运行的状态机重置成成另一个程序的初始状态</li>
+</ul>
+<figure class="highlight arduino"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">execve</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *pathname, <span class="hljs-type">char</span> * <span class="hljs-type">const</span> argv, <span class="hljs-type">char</span> * <span class="hljs-type">const</span> envp)</span></span>;<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>执行名为 <code>pathname</code> 的程序</li>
+<li>允许对新状态机设置参数argv(v) 和环境变量envp(e)<ul>
+<li>刚好对应了 <code>main()</code> 的参数！</li>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/execve-demo.c">execve-demo.c</a></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  <span class="hljs-type">char</span> * <span class="hljs-type">const</span> argv[] = {<br>    <span class="hljs-string">"/bin/bash"</span>, <span class="hljs-string">"-c"</span>, <span class="hljs-string">"env"</span>, <span class="hljs-literal">NULL</span>,<br>  };<br>  <span class="hljs-type">char</span> * <span class="hljs-type">const</span> envp[] = {<br>    <span class="hljs-string">"HELLO=WORLD"</span>, <span class="hljs-literal">NULL</span>,<br>  };<br>  execve(argv[<span class="hljs-number">0</span>], argv, envp);<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello, World!\n"</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>同一个进程，同一个进程号，所有的资源都在。但是，状态机被重置。</p>
+</blockquote>
+<p>Results:</p>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">/Users/alex/my_code/c++/CLionProject/cmake-build-debug/CLionProject<br>HELLO=WORLD<br>PWD=/Users/alex/my_code/c++/CLionProject/cmake-build-debug<br>SHLVL=1<br>_=/usr/bin/env<br><br>Process finished with <span class="hljs-built_in">exit</span> code 0<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>printf没有打印出来昂！！！因为重置了状态机，所以原来状态机，所有的状态都没有了昂！！！</p>
+</blockquote>
+<h4 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h4><blockquote>
+<p>“应用程序执行的环境”</p>
+</blockquote>
+<ul>
+<li>使用env命令查看<ul>
+<li><code>PATH</code>: 可执行文件搜索路径</li>
+<li><code>PWD</code>: 当前路径</li>
+<li><code>HOME</code>: home 目录</li>
+<li><code>DISPLAY</code>: 图形输出</li>
+<li><code>PS1</code>: shell 的提示符</li>
+</ul>
+</li>
+<li>export: 告诉 shell 在创建子进程时设置环境变量<ul>
+<li>小技巧：<code>export ARCH=x86_64-qemu</code> 或 <code>export ARCH=native</code></li>
+<li>上学期的 <code>AM_HOME</code> 终于破案了</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>可执行文件搜索路径</p>
+<ul>
+<li>还记得 gcc 的 strace 结果吗？</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">[pid 28369] execve("/usr/local/sbin/as", ["as", "--64", ...<br>[pid 28369] execve("/usr/local/bin/as", ["as", "--64", ...<br>[pid 28369] execve("/usr/sbin/as", ["as", "--64", ...<br>[pid 28369] execve("/usr/bin/as", ["as", "--64", ...<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>这个搜索顺序恰好是 <code>PATH</code> 里指定的顺序</li>
+</ul>
+<blockquote>
+<p>说白了，execve就会自动去我们的path里面去匹配，看看能不能找到，我们需要的东西！！！所以这里就和Windows里面一个道理，为啥需要配置Windows的环境变量（当下载软件的时候），这样软件才能找得到对应的软件的运行文件哇！！！</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">PATH=<span class="hljs-string">""</span> /usr/bin/gcc a.c</span><br>gcc: error trying to exec 'as': execvp: No such file or directory<br><span class="hljs-meta prompt_">$ </span><span class="language-bash">PATH=<span class="hljs-string">"/usr/bin/"</span> gcc a.c</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p><strong>计算机系统里没有魔法。机器永远是对的。</strong></p>
+</blockquote>
+<h3 id="exit"><a href="#exit" class="headerlink" title="_exit()"></a>_exit()</h3><blockquote>
+<p>有了 fork, execve 我们就能自由执行任何程序了，最后只缺一个销毁状态机的函数！</p>
+</blockquote>
+<p>UNIX 的答案: <code>_exit</code></p>
+<ul>
+<li><strong>立即摧毁状态机</strong></li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> _exit(<span class="hljs-type">int</span> status)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>销毁当前状态机，并允许有一个返回值</li>
+<li>子进程终止会通知父进程 (后续课程解释)</li>
+</ul>
+<p>这个简单……</p>
+<ul>
+<li>但问题来了：多线程程序怎么办？</li>
+</ul>
+<hr>
+<p>exit 的几种写法 (它们是不同)：</p>
+<ul>
+<li>exit(0) - stdlib.h中声明的 libc 函数<ul>
+<li>会调用 <code>atexit</code></li>
+</ul>
+</li>
+<li>_exit(0) - glibc 的 syscall wrapper<ul>
+<li>执行 “exit_group”系统调用终止整个进程 (所有线程)<ul>
+<li>细心的同学已经在 strace 中发现了</li>
+</ul>
+</li>
+<li>不会调用 <code>atexit</code></li>
+</ul>
+</li>
+<li>syscall(SYS_exit, 0)<ul>
+<li>执行 “<code>exit</code>” 系统调用终止当前线程</li>
+<li>不会调用 <code>atexit</code></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>atexit会帮助我们做libc的clean up！！！atexit其实就是一个注册回掉函数的地方！！！</p>
+</blockquote>
+<h4 id="小例子"><a href="#小例子" class="headerlink" title="小例子"></a>小例子</h4><p>结束当前进程执行的四种方式</p>
+<ul>
+<li><code>return</code>, <code>exit</code>, <code>_exit</code>, <code>syscall</code></li>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/exit-demo.c">exit-demo.c</a><ul>
+<li>用 strace 观察程序的执行</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;time.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/syscall.h&gt;</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">func</span><span class="hljs-params">()</span> {<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Goodbye, Cruel OS World!\n"</span>);<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span> {<br>  atexit(func);<br>	<br>  <span class="hljs-comment">// main函数return，会调用我们的atexit</span><br>  <span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span> EXIT_FAILURE;<br>  <br>  <span class="hljs-comment">// libc函数exit，会调用我们的atexit</span><br>  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">strcmp</span>(argv[<span class="hljs-number">1</span>], <span class="hljs-string">"exit"</span>) == <span class="hljs-number">0</span>)<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>  <span class="hljs-comment">// glibc函数_exit，不会调用我们的atexit</span><br>  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">strcmp</span>(argv[<span class="hljs-number">1</span>], <span class="hljs-string">"_exit"</span>) == <span class="hljs-number">0</span>)<br>    _exit(<span class="hljs-number">0</span>);<br>  <span class="hljs-comment">// syscall(SYS_exit, 0)，不会调用我们的atexit。</span><br>  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">strcmp</span>(argv[<span class="hljs-number">1</span>], <span class="hljs-string">"__exit"</span>) == <span class="hljs-number">0</span>)<br>    syscall(SYS_exit, <span class="hljs-number">0</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212221601299.png" srcset="/img/loading.gif" lazyload alt="image-20221222160103243"></p>
+<ul>
+<li>summary<ul>
+<li>main的返回和libc函数exit，不仅会执行atexit，还会做一些结尾处理。例如把printf的buffer的内容，给最终打印出来，给清空！</li>
+<li>glibc函数_exit。操作系统是无情的状态机管理者，才不管我们的buffer有没有东西没打印，有没有atexit。操作系统调用来关闭的时候，直接摧毁整个状态机，进程和里面所有的线程，资源，全部结束掉。</li>
+<li>syscall(SYS_exit, 0)，执行的是老的操作系统的调用，关闭的是当前的这一个线程。而_exit则是删除所有的线程。</li>
+</ul>
+</li>
+<li>Linux默认执行的是删除退出是_exit，所有的线程才退出，这其实是一种比较安全的行为。</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><p>qemu帮助手册：<a target="_blank" rel="noopener" href="http://linux.51yip.com/search/qemu%EF%BC%8C%E4%B8%8A%E7%BD%91%E6%9F%A5%E4%B8%80%E4%B8%8B%E5%BA%94%E8%AF%A5%E5%BE%88%E5%A4%9A%E8%BF%99%E4%B8%AA%E7%89%88%E6%9C%AC%EF%BC%8C%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E5%90%AF%E5%8A%A8%EF%BC%8C%E5%92%8C%E8%BF%9B%E5%85%A5%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%90%8E%E7%9A%84%E8%B0%83%E8%AF%95%EF%BC%8C%E9%83%BD%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%B0%E6%98%82%EF%BC%81">http://linux.51yip.com/search/qemu，上网查一下应该很多这个版本，虚拟机的启动，和进入虚拟机后的调试，都要使用到昂！</a></p>
+</li>
+<li><p>tmux的使用：tmux select-window</p>
+</li>
+<li><p>视频链接：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1hL411w737/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">https://www.bilibili.com/video/BV1hL411w737/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd</a></p>
+</li>
+<li><p>课件链接：<a target="_blank" rel="noopener" href="https://jyywiki.cn/OS/2022/slides/11.slides#/">https://jyywiki.cn/OS/2022/slides/11.slides#/</a></p>
+</li>
+<li><p>gcc exit-demo.c -static，静态编译之后，strace会简单一点昂！！！（因为会省去运行的时候，动态链接相关的系统调用，好看一点。）</p>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-11-操作系统上的进程</div>
+      <div>http://example.com/2022/12/22/njuos-11-cao-zuo-xi-tong-shang-de-jin-cheng/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月22日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/21/njuos-10-zhuang-tai-ji-mo-xing-de-ying-yong/" title="NJUOS-10-状态机模型的应用">
+                        <span class="hidden-mobile">NJUOS-10-状态机模型的应用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
