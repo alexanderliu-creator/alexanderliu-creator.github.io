@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212231556177.png">
 <meta property="article:published_time" content="2022-12-23T07:54:57.000Z">
-<meta property="article:modified_time" content="2022-12-23T09:10:12.052Z">
+<meta property="article:modified_time" content="2022-12-24T03:53:32.016Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.5k 字
+          12k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          30 分钟
+          98 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年12月23日 下午
+                    本文最后更新于：2022年12月24日 中午
                   
                 
               </p>
@@ -406,6 +406,9 @@
 <ul>
 <li>是不是 bss? 给我们的代码加一个大数组试试！</li>
 </ul>
+<blockquote>
+<p>在c语言里面加了大数组之后，可以看看，跑起来之后，分配的内存的类型，以及后面的标识昂。发现是anno(anonymous)</p>
+</blockquote>
 <h2 id="RTFM-5-proc-我们发现的宝藏"><a href="#RTFM-5-proc-我们发现的宝藏" class="headerlink" title="RTFM (5 proc): 我们发现的宝藏"></a>RTFM (5 proc): 我们发现的宝藏</h2><blockquote>
 <p>vdso (7): Virtual system calls: 只读的系统调用也许可以不陷入内核执行。</p>
 </blockquote>
@@ -441,6 +444,50 @@
 <blockquote>
 <p>每个进程有一段地址空间，操作系统会给每个进程都映射同一块儿的vvar，里面存的是系统当前时间。操作系统会（比如没过一秒），把这个vvar加个1。（所有进程都映射到同一个vvar昂！）</p>
 </blockquote>
+<ul>
+<li>不用陷入内核的系统调用：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212240942000.png" srcset="/img/loading.gif" lazyload alt="image-20221224094145577"></p>
+<blockquote>
+<p>man vdso -&gt; 上面这图就来自于vdso的手册昂！！！</p>
+</blockquote>
+<h3 id="小总结"><a href="#小总结" class="headerlink" title="小总结"></a>小总结</h3><ul>
+<li>所以这里讲了这么多，其实给我们提供了很多的方法，让我们真真正正能够看到。一个运行的进程，在我们的内存中，是如何给它进行内存的分配和管理之类的。</li>
+<li>能看到，就是全部的全部昂！！！</li>
+</ul>
+<h2 id="小知识-系统调用的实现"><a href="#小知识-系统调用的实现" class="headerlink" title="(小知识) 系统调用的实现"></a>(小知识) 系统调用的实现</h2><blockquote>
+<p><strong>“执行系统调用时，进程陷入内核态执行”——不，不是的。</strong></p>
+</blockquote>
+<p>系统调用就是一组接口的约定，谁说一定要 <code>int</code> 指令？-&gt; 很慢！！！</p>
+<ul>
+<li>光一条指令就要保存 ss, rsp, cs, rip, rflags (40 字节) 到内存</li>
+</ul>
+<p>SYSCALL — Fast System Call -&gt; 做的操作比上面提到的int少得多，不需要保存所有的寄存器，系统调用可以像函数调用一样执行，只保存尽可能少的一些信息。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs assembly">RCX    &lt;- RIP; (* 下条指令执行的地址 *)<br>RIP    &lt;- IA32_LSTAR;<br>R11    &lt;- RFLAGS;<br>RFLAGS &lt;- RFLAGS &amp; ~(IA32_FMASK);<br>CPL    &lt;- 0; (* 进入 Ring 0 执行 *)<br>CS.Selector &lt;- IA32_STAR[47:32] &amp; 0xFFFC<br>SS.Selector &lt;- IA32_STAR[47:32] + 8<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="小知识-系统调用的实现-cont’d"><a href="#小知识-系统调用的实现-cont’d" class="headerlink" title="(小知识) 系统调用的实现 (cont’d)"></a>(小知识) 系统调用的实现 (cont’d)</h2><blockquote>
+<p>我们看到上的VDSO和SYSCALL了，有没有可能在不进入操作系统内核的时候，实现几乎所有的系统调用呢？有！还真有</p>
+</blockquote>
+<p>能不能让其他系统调用也 trap 进入内核？</p>
+<ul>
+<li>疯狂的事情也许真的是能实现的 (这算是魔法吗？)<ul>
+<li><a target="_blank" rel="noopener" href="https://www.usenix.org/conference/osdi10/flexsc-flexible-system-call-scheduling-exception-less-system-calls">FlexSC: Flexible system call scheduling with exception-less system calls</a> (OSDI’10).</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>把vdso做的更加激进一点！！！系统调用无非就是通信嘛！！！syscall并不是唯一的同步方式！！！</p>
+</blockquote>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212240950108.jpg" srcset="/img/loading.gif" lazyload alt="img">使用共享内存和内核通信！</p>
+<ul>
+<li>内核线程在 spinning 等待系统调用的到来</li>
+<li>收到系统调用请求后立即开始执行</li>
+<li>进程 spin 等待系统调用完成</li>
+<li>如果系统调用很多，可以打包处理</li>
+</ul>
 <h1 id="进程的地址空间管理"><a href="#进程的地址空间管理" class="headerlink" title="进程的地址空间管理"></a>进程的地址空间管理</h1><h2 id="Execve-之后……"><a href="#Execve-之后……" class="headerlink" title="Execve 之后……"></a>Execve 之后……</h2><p>进程只有少量内存映射</p>
 <ul>
 <li>静态链接：代码、数据、堆栈、堆区</li>
@@ -449,14 +496,278 @@
 <hr>
 <p>地址空间里剩下的部分是怎么创建的？</p>
 <ul>
-<li>libc.so 都没有啊……</li>
+<li>libc.so 都没有啊…… -&gt; 操作系统帮助我们提供系统调用，把libc.so读取进来。</li>
 <li>创建了以后，我们还能修改它吗？<ul>
 <li>肯定是能的：动态链接库可以动态加载 (M4)</li>
-<li>当然是通过系统调用了</li>
+<li><strong>当然是通过系统调用了</strong></li>
 </ul>
 </li>
 </ul>
-<h1 id="地址空间的隔离"><a href="#地址空间的隔离" class="headerlink" title="地址空间的隔离"></a>地址空间的隔离</h1><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<h2 id="进程的地址空间-cont’d"><a href="#进程的地址空间-cont’d" class="headerlink" title="进程的地址空间 (cont’d)"></a>进程的地址空间 (cont’d)</h2><p>进程的地址空间 = 内存里若干连续的 “段”</p>
+<ul>
+<li>每一段是可访问 (读/写/执行) 的内存<ul>
+<li>可能映射到某个文件和/或在进程间共享</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>管理进程地址空间的系统调用</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 映射</span><br><span class="hljs-type">void</span> *<span class="hljs-title function_">mmap</span><span class="hljs-params">(<span class="hljs-type">void</span> *addr, <span class="hljs-type">size_t</span> length, <span class="hljs-type">int</span> prot, <span class="hljs-type">int</span> flags,<span class="hljs-type">int</span> fd, <span class="hljs-type">off_t</span> offset)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">munmap</span><span class="hljs-params">(<span class="hljs-type">void</span> *addr, <span class="hljs-type">size_t</span> length)</span>;<br><br><span class="hljs-comment">// 修改映射权限</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mprotect</span><span class="hljs-params">(<span class="hljs-type">void</span> *addr, <span class="hljs-type">size_t</span> length, <span class="hljs-type">int</span> prot)</span>;<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><p>RTFM</p>
+<ul>
+<li>说人话：状态上增加/删除/修改一段可访问的内存</li>
+</ul>
+<blockquote>
+<p>对于内存这个状态机，做了一些改变呢！！！</p>
+</blockquote>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241009905.png" srcset="/img/loading.gif" lazyload alt="image-20221224095942261"></p>
+<p><code>man 2 mmap</code>，可以查看mmap的手册昂！</p>
+<figure class="highlight vim"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs vim">PROT_NONE   Pages may not <span class="hljs-keyword">be</span> accessed.<br>PROT_READ   Pages may <span class="hljs-keyword">be</span> <span class="hljs-keyword">read</span>.<br>PROT_WRITE  Pages may <span class="hljs-keyword">be</span> written.<br>PROT_EXEC   Pages may <span class="hljs-keyword">be</span> executed.<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>手册里面有很多东西很全昂，比如这里对于上面的 int prot，这个参数的讲解，protection保护权限，总共就下面这几种昂！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241009078.png" srcset="/img/loading.gif" lazyload alt="image-20221224100916040"></p>
+<blockquote>
+<p>甚至可以把文件的一部分，直接映射到内存里面来。把文件搬进来，而且可以做到，我想访问文件哪里，我就去搬文件的哪里进内存。 -&gt; 非常好用！！！</p>
+<p>我们的加载器，其实用的就是这个昂！！！！！！ -&gt; 进程在创建的时候，加载器分配内存用的都是mmap昂！！！</p>
+</blockquote>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><ol>
+<li>使用strace查看动态编译后的文件</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241031415.png" srcset="/img/loading.gif" lazyload alt="image-20221224103130379"></p>
+<ol start="2">
+<li><code>readelf -l a.out</code></li>
+</ol>
+<blockquote>
+<p>告诉我们：当加载到这个程序的时候，要把什么东西，加载到哪里。文件是什么，权限是什么，偏移量是什么。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241033297.png" srcset="/img/loading.gif" lazyload alt="image-20221224103324247"></p>
+<blockquote>
+<p>mmap很简单，就是把上面的elf文件中的内容，读取并进行处理，作为参数传递给系统调用mmap，就可以完成正确的文件 -&gt; 内存的映射。</p>
+</blockquote>
+<h2 id="把文件映射到进程地址空间？"><a href="#把文件映射到进程地址空间？" class="headerlink" title="把文件映射到进程地址空间？"></a>把文件映射到进程地址空间？</h2><p>它们的确好像没有什么区别</p>
+<ul>
+<li>文件 = 字节序列</li>
+<li>内存 = 字节序列</li>
+<li>操作系统允许映射好像挺合理的……<ul>
+<li>带来了很大的方便</li>
+<li>ELF loader 用 mmap 非常容易实现<ul>
+<li>解析出要加载哪部分到内存，直接 mmap 就完了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="使用-Memory-Mapping"><a href="#使用-Memory-Mapping" class="headerlink" title="使用 Memory Mapping"></a>使用 Memory Mapping</h2><p>Example 1:</p>
+<ul>
+<li>用 mmap 申请大量内存空间(<a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/mmap-alloc.c">mmap-alloc.c</a>)<ul>
+<li>瞬间完成</li>
+<li>不妨 strace/gdb 看一下</li>
+<li>libc 的 malloc/free 在初始空间用完后使用 sbrk/mmap 申请空间</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/mman.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> GiB * (1024LL * 1024 * 1024)</span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  <span class="hljs-keyword">volatile</span> <span class="hljs-type">uint8_t</span> *p = mmap(<span class="hljs-literal">NULL</span>, <span class="hljs-number">3</span> GiB, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>);<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"mmap: %lx\n"</span>, (<span class="hljs-type">uintptr_t</span>)p);<br>  <span class="hljs-keyword">if</span> ((<span class="hljs-type">intptr_t</span>)p == <span class="hljs-number">-1</span>) {<br>    perror(<span class="hljs-string">"cannot map"</span>);<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>  }<br>  *(<span class="hljs-type">int</span> *)(p + <span class="hljs-number">1</span> GiB) = <span class="hljs-number">114</span>;<br>  *(<span class="hljs-type">int</span> *)(p + <span class="hljs-number">2</span> GiB) = <span class="hljs-number">514</span>;<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Read get: %d\n"</span>, *(<span class="hljs-type">int</span> *)(p + <span class="hljs-number">1</span> GiB));<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Read get: %d\n"</span>, *(<span class="hljs-type">int</span> *)(p + <span class="hljs-number">2</span> GiB));<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>分配3GB的内存，瞬间完成，非常快！！！</p>
+</blockquote>
+<ul>
+<li>查看strace:</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241038219.png" srcset="/img/loading.gif" lazyload alt="image-20221224103838179"></p>
+<p>只花费了非常短的时间昂！！！自己先考虑一下！why?</p>
+<blockquote>
+<p>mmap只需要标记这块内存被分配给我了就ok，取用的时候，再实际分配给我就行昂！(lazy load)</p>
+</blockquote>
+<hr>
+<p>Example 2:</p>
+<ul>
+<li>用 mmap 映射整个磁盘(<a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/mmap-disk.py">mmap-disk.py</a>)<ul>
+<li>瞬间完成</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><br><span class="hljs-keyword">import</span> mmap, hexdump<br><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">'/dev/sda'</span>, <span class="hljs-string">'rb'</span>) <span class="hljs-keyword">as</span> fp:<br>    mm = mmap.mmap(fp.fileno(), prot=mmap.PROT_READ, length=<span class="hljs-number">128</span> &lt;&lt; <span class="hljs-number">30</span>)<br>    hexdump.hexdump(mm[:<span class="hljs-number">512</span>])<br><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>mmap可以映射内存，也可以映射磁盘！！！</p>
+<p>/dev/sda是一个虚拟设备，虚拟磁盘昂！映射128G的内存，把前面的512个字节打印出来。</p>
+</blockquote>
+<ul>
+<li>mmap是非常简单的系统调用，但是非常强大！！！</li>
+</ul>
+<h2 id="Memory-Mapped-File-一致性"><a href="#Memory-Mapped-File-一致性" class="headerlink" title="Memory-Mapped File: 一致性"></a>Memory-Mapped File: 一致性</h2><p>但我们好像带来了一些问题……</p>
+<ul>
+<li>如果把页面映射到文件<ul>
+<li>修改什么时候生效？<ul>
+<li>立即生效：那会造成巨大量的磁盘 I/O</li>
+<li>unmap (进程终止) 时生效：好像又太迟了……</li>
+</ul>
+</li>
+<li>若干个映射到同一个文件的进程？<ul>
+<li>共享一份内存？</li>
+<li>各自有本地的副本？</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>请查阅手册，看看操作系统是如何规定这些操作的行为的</p>
+<ul>
+<li>例如阅读 <code>msync (2)</code>，<code>man 2 msync</code>，修改过的内存，重新推回到文件里面昂！</li>
+<li>这才是操作系统真正的复杂性</li>
+</ul>
+<h1 id="地址空间的隔离"><a href="#地址空间的隔离" class="headerlink" title="地址空间的隔离"></a>地址空间的隔离</h1><h2 id="地址空间：实现进程隔离"><a href="#地址空间：实现进程隔离" class="headerlink" title="地址空间：实现进程隔离"></a>地址空间：实现进程隔离</h2><p>每个 <code>*ptr</code> 都只能访问<strong>本进程 (状态机)</strong> 的内存</p>
+<ul>
+<li>除非 mmap 显示指定、映射共享文件或共享内存多线程</li>
+<li>实现了操作系统最重要的功能：进程之间的隔离</li>
+</ul>
+<p>任何一个程序都不能因为 bug 或恶意行为侵犯其他程序执行</p>
+<ul>
+<li>“连方法都没有”</li>
+<li>吗……？</li>
+</ul>
+<h2 id="很有意思的内容（外挂！！！）"><a href="#很有意思的内容（外挂！！！）" class="headerlink" title="很有意思的内容（外挂！！！）"></a>很有意思的内容（外挂！！！）</h2><h3 id="电子游戏的上一个黄金时代"><a href="#电子游戏的上一个黄金时代" class="headerlink" title="电子游戏的上一个黄金时代"></a>电子游戏的上一个黄金时代</h3><p>电子竞技的先行者：“即时战略游戏” (Real-Time Strategy)</p>
+<ul>
+<li>Command and Conquer(Westwood), Starcraft (Microsoft)…<ul>
+<li>如果我们想 “侵犯” 游戏的执行……呢？</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241051297.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="前互联网时代的神器-1-金山游侠"><a href="#前互联网时代的神器-1-金山游侠" class="headerlink" title="前互联网时代的神器 (1): 金山游侠"></a>前互联网时代的神器 (1): 金山游侠</h3><p>在进程的内存中找到代表 “金钱”、“生命” 的重要属性并且改掉</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241051767.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<hr>
+<p>只要有访问其他进程内存和在程序上 “悬浮显示” 的 API 即可</p>
+<ul>
+<li>想象成是另一个进程内存的 “调试器”</li>
+<li>在 Linux 中可以轻松拥有：<a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/dosbox-hack.c">dosbox-hack.c</a></li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;assert.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/mman.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdbool.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LENGTH(arr)  (sizeof(arr) / sizeof(arr[0]))</span><br><br><span class="hljs-type">int</span> n, fd, pid;<br><span class="hljs-type">uint64_t</span> found[<span class="hljs-number">4096</span>];<br><span class="hljs-type">bool</span> reset;<br><br><span class="hljs-comment">// scan方法很重要昂！</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">scan</span><span class="hljs-params">(<span class="hljs-type">uint16_t</span> val)</span> {<br>  <span class="hljs-type">uintptr_t</span> start, kb;<br>  <span class="hljs-type">char</span> perm[<span class="hljs-number">16</span>];<br>  <span class="hljs-comment">// 读取这个进程内存文件</span><br>  FILE *fp = popen(<span class="hljs-string">"pmap -x $(pidof dosbox) | tail -n +3"</span>, <span class="hljs-string">"r"</span>); assert(fp);<br>	<br>  <span class="hljs-comment">// 解析每一行，找到其中可以写的内存！！！</span><br>  <span class="hljs-keyword">if</span> (reset) n = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">while</span> (<span class="hljs-built_in">fscanf</span>(fp, <span class="hljs-string">"%lx"</span>, &amp;start) == <span class="hljs-number">1</span> &amp;&amp; (<span class="hljs-type">intptr_t</span>)start &gt; <span class="hljs-number">0</span>) {<br>    assert(<span class="hljs-built_in">fscanf</span>(fp, <span class="hljs-string">"%ld%*ld%*ld%s%*[^\n]s"</span>, &amp;kb, perm) &gt;= <span class="hljs-number">1</span>);<br>    <span class="hljs-keyword">if</span> (perm[<span class="hljs-number">1</span>] != <span class="hljs-string">'w'</span>) <span class="hljs-keyword">continue</span>;<br>	<br>    <span class="hljs-type">uintptr_t</span> size = kb * <span class="hljs-number">1024</span>;<br>    <span class="hljs-type">char</span> *mem = <span class="hljs-built_in">malloc</span>(size); assert(mem);<br>    assert(lseek(fd, start, SEEK_SET) != (<span class="hljs-type">off_t</span>)<span class="hljs-number">-1</span>);<br>    assert(read(fd, mem, size) == size);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; size; i += <span class="hljs-number">2</span>) {<br>      <span class="hljs-type">uint16_t</span> v = *(<span class="hljs-type">uint16_t</span> *)(&amp;mem[i]);<br>      <span class="hljs-keyword">if</span> (reset) {<br>        <span class="hljs-keyword">if</span> (val == v &amp;&amp; n &lt; LENGTH(found)) found[n++] = start + i;<br>      } <span class="hljs-keyword">else</span> {<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; n; j++) {<br>	  <span class="hljs-keyword">if</span> (found[j] == start + i &amp;&amp; v != val) found[j] = <span class="hljs-number">0</span>;<br>	}<br>      }<br>    }<br>    <span class="hljs-built_in">free</span>(mem);<br>  }<br>  pclose(fp);<br><br>  <span class="hljs-type">int</span> s = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) {<br>    <span class="hljs-keyword">if</span> (found[i] != <span class="hljs-number">0</span>) s++;<br>  }<br>  reset = <span class="hljs-literal">false</span>;<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"There are %d match(es).\n"</span>, s);<br>}<br><br><span class="hljs-comment">// 修改对应的值</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">overwrite</span><span class="hljs-params">(<span class="hljs-type">uint16_t</span> val)</span> {<br>  <span class="hljs-type">int</span> s = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    <span class="hljs-keyword">if</span> (found[i] != <span class="hljs-number">0</span>) {<br>      assert(lseek(fd, found[i], SEEK_SET) != (<span class="hljs-type">off_t</span>)<span class="hljs-number">-1</span>);<br>      write(fd, &amp;val, <span class="hljs-number">2</span>);<br>      s++;<br>    }<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d value(s) written.\n"</span>, s);<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  <span class="hljs-type">char</span> buf[<span class="hljs-number">32</span>];<br>  setbuf(<span class="hljs-built_in">stdout</span>, <span class="hljs-literal">NULL</span>);<br>	<br>  <span class="hljs-comment">// 先得到我现在运行游戏的dosbox的进程</span><br>  FILE *fp = popen(<span class="hljs-string">"pidof dosbox"</span>, <span class="hljs-string">"r"</span>);<br>  assert(<span class="hljs-built_in">fscanf</span>(fp, <span class="hljs-string">"%d"</span>, &amp;pid) == <span class="hljs-number">1</span>);<br>  pclose(fp);<br>  <br>  <span class="hljs-comment">// 把整个进程的内存，都作为一个文件暴露出来了！！！</span><br>  <span class="hljs-built_in">sprintf</span>(buf, <span class="hljs-string">"/proc/%d/mem"</span>, pid);<br>  fd = open(buf, O_RDWR); assert(fd &gt; <span class="hljs-number">0</span>);<br><br>  <span class="hljs-keyword">for</span> (reset = <span class="hljs-literal">true</span>; !feof(<span class="hljs-built_in">stdin</span>); ) {<br>    <span class="hljs-type">int</span> val;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">"(DOSBox %d) "</span>, pid);<br>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%s"</span>, buf) &lt;= <span class="hljs-number">0</span>) { close(fd); <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>); }<br>    <span class="hljs-keyword">switch</span> (buf[<span class="hljs-number">0</span>]) {<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'q'</span>: close(fd); <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>); <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'s'</span>: <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d"</span>, &amp;val); scan(val); <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'w'</span>: <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d"</span>, &amp;val); overwrite(val); <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'r'</span>: reset = <span class="hljs-literal">true</span>; <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Search results reset.\n"</span>); <span class="hljs-keyword">break</span>;<br>    }<br>  }<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<ul>
+<li>找到了所有可以改的数据，不知道对应关系怎么办？</li>
+</ul>
+<p>手动造一个东西（比如消耗钱），看看修改过后，哪些数据是被更改了。 -&gt; 施加对于值的扰动+观察内存的变化，能够帮助我们快速确定，我们要找的内存昂！</p>
+<ul>
+<li>把我们找到的对应的内存位置（也就是钱钱对应的位置），改成对应的值，诶嘿，你就是上帝了orz。</li>
+</ul>
+</blockquote>
+<h3 id="前互联网时代的神器-2-按键精灵"><a href="#前互联网时代的神器-2-按键精灵" class="headerlink" title="前互联网时代的神器 (2): 按键精灵"></a>前互联网时代的神器 (2): 按键精灵</h3><p>大量重复固定的任务 (例如 2 秒 17 枪)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241051846.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>这个简单，就是给进程发送键盘/鼠标事件</p>
+<ul>
+<li>键盘or鼠标，做个驱动。OS把你的驱动认为是正常的设备！很多鼠标支持自定义宏，其实就是这个原理。比如你点了一下，鼠标默认连续触发100次电路这种；或者</li>
+<li>利用操作系统/窗口管理器提供的 API<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/jordansissel/xdotool">xdotool</a> (我们用这玩意测试 vscode 的插件) -&gt; 可以给另外一个进程send键盘 or 鼠标的事件。（OS理所应当，愿意给我们提供的API）</li>
+<li><a target="_blank" rel="noopener" href="https://www.kernel.org/doc/html/latest/input/input.html">evdev</a> (我们用这玩意显示按键；仅课堂展示有效) -&gt; 就是课堂上，老师展示他输入的指令的时候，用的小脚本！！！可以监听按键的变化，并且打印出来。合理的操作系统应该提供的机制昂，不过可能需要一些权限！</li>
+</ul>
+</li>
+</ul>
+<h3 id="前互联网时代的神器-3-变速齿轮"><a href="#前互联网时代的神器-3-变速齿轮" class="headerlink" title="前互联网时代的神器 (3): 变速齿轮"></a>前互联网时代的神器 (3): 变速齿轮</h3><p><strong>调整游戏的逻辑更新速度</strong> -&gt; pokemon，笑死了…难绷…</p>
+<ul>
+<li>比如<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%8F%B0%E6%B9%BE%E5%A4%A9%E5%A0%82%E9%B8%9F%E8%B5%84%E8%AE%AF%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8/8443017">某神秘公司</a>慢到难以忍受的跑图和战斗，e.g.</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">int</span> main(){<br>  step();<br>  sleep(<span class="hljs-number">100</span>*time.seconds);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>怎么办？不是改数据了，改代码！！！把sleep的代码对应的内存给改了，hack一个跳转。hack到我们自己的sleep指令，根据我们的齿轮，我们自己的sleep的时间，可以我们自己控制的。就很方便昂！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241104212.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<hr>
+<p>本质是 “欺骗” 进程的时钟</p>
+<ul>
+<li>源头：闹钟、睡眠、<code>gettimeofday</code></li>
+<li>拦截它们需要稍稍更复杂的技术</li>
+</ul>
+<h3 id="更强大的游戏外挂？"><a href="#更强大的游戏外挂？" class="headerlink" title="更强大的游戏外挂？"></a>更强大的游戏外挂？</h3><p>游戏也是程序，也是状态机</p>
+<ul>
+<li>通过 API 调用 (和系统调用) 最终取得状态、修改状态</li>
+<li>外挂本质上就是，想象成是一个 “为这个游戏专门设计的 gdb”</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Wx41177np"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241104122.jpg" srcset="/img/loading.gif" lazyload alt="img"></a></p>
+<h2 id="代码注入-Hooking"><a href="#代码注入-Hooking" class="headerlink" title="代码注入 (Hooking)"></a>代码注入 (Hooking)</h2><p>我们<strong>可以改内存，也可以改代码</strong>！</p>
+<blockquote>
+<p>安全补丁！！！也是这么来的！软件运行的时候，可以把数据和代码都改掉昂！！！修复安全漏洞很重要！！！</p>
+</blockquote>
+<p>The Light Side</p>
+<ul>
+<li><strong>“软件热补丁”</strong> <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/dsu.c">dsu.c</a> (mprotect) -&gt; 05, 06年就出现这个想法了。</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/1519065.1519085">Ksplice: Automatic rebootless Kernel updates</a> (EuroSys’09) -&gt; 甚至Linux内核都可以动态更新！！！</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/mman.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;assert.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">foo</span><span class="hljs-params">()</span>     { <span class="hljs-built_in">printf</span>(<span class="hljs-string">"In old function %s\n"</span>, __func__); }<br><span class="hljs-type">void</span> <span class="hljs-title function_">foo_new</span><span class="hljs-params">()</span> { <span class="hljs-built_in">printf</span>(<span class="hljs-string">"In new function %s\n"</span>, __func__); }<br><br><span class="hljs-comment">// 48 b8 ff ff ff ff ff ff ff ff    movabs $0xffffffffffffffff,%rax</span><br><span class="hljs-comment">// ff e0                            jmpq   *%rax</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">DSU</span><span class="hljs-params">(<span class="hljs-type">void</span> *old, <span class="hljs-type">void</span> *new)</span> {<br>  <span class="hljs-meta">#<span class="hljs-keyword">define</span> ROUNDDOWN(ptr) ((void *)(((uintptr_t)ptr) &amp; ~0xfff))</span><br>  <span class="hljs-type">size_t</span>    pg_size = sysconf(_SC_PAGESIZE);<br>  <span class="hljs-type">char</span> *pg_boundary = ROUNDDOWN(old);<br>  <span class="hljs-type">int</span>         flags = PROT_WRITE | PROT_READ | PROT_EXEC;<br><br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Dynamically updating... "</span>); fflush(<span class="hljs-built_in">stdout</span>);<br>	<br>  <span class="hljs-comment">// 打开内存保护，然后人为把汇编代码给改了昂！！！补丁把寄存器（原来跳转到了old），改为了跳转到new。这个也叫跳转代码，帮助我们跳转到new昂！</span><br>  mprotect(pg_boundary, <span class="hljs-number">2</span> * pg_size, flags);<br>  <span class="hljs-built_in">memcpy</span>(old +  <span class="hljs-number">0</span>, <span class="hljs-string">"\x48\xb8"</span>, <span class="hljs-number">2</span>);<br>  <span class="hljs-built_in">memcpy</span>(old +  <span class="hljs-number">2</span>,       &amp;new, <span class="hljs-number">8</span>);<br>  <span class="hljs-built_in">memcpy</span>(old + <span class="hljs-number">10</span>, <span class="hljs-string">"\xff\xe0"</span>, <span class="hljs-number">2</span>);<br>  mprotect(pg_boundary, <span class="hljs-number">2</span> * pg_size, flags &amp; ~PROT_WRITE);<br><br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Done"</span>); fflush(<span class="hljs-built_in">stdout</span>);<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  <span class="hljs-comment">// 同一个foo()方法</span><br>  foo();<br>  DSU(foo, foo_new);<br>  foo();<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>DSU可以热更新，运行时，把foo()从old变成new，很厉害！！！</p>
+<p>这就是个补丁 -&gt; 从一段代码，hack掉。原函数的执行，跳转到另外一个代码段去执行了（热补丁）。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212241145636.png" srcset="/img/loading.gif" lazyload alt="image-20221224114525577"></p>
+<p>The Dark Side</p>
+<ul>
+<li>对于外挂，代码可以静态/动态/vtable/DLL… 注入<ul>
+<li><code>render(objects)</code> → <code>render_hacked(objects)</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="游戏外挂：攻与防"><a href="#游戏外挂：攻与防" class="headerlink" title="游戏外挂：攻与防"></a>游戏外挂：攻与防</h2><p>控制/数据流完整性(System Security)</p>
+<ul>
+<li>保护进程的完整性<ul>
+<li>独立的进程/驱动做完整性验证</li>
+</ul>
+</li>
+<li>保护隐私数据不被其他进程读写<ul>
+<li>拦截向本进程的 <code>ReadProcessMemory</code> 和 <code>WriteProcessMemory</code>，发现后立即拒绝执行</li>
+</ul>
+</li>
+<li>例子<ul>
+<li><a target="_blank" rel="noopener" href="https://irdeto.com/denuvo/anti-cheat/">Denuvo Anti-Cheat</a>, <a target="_blank" rel="noopener" href="https://dev.epicgames.com/docs/services/en-US/GameServices/AntiCheat/UsingAntiCheat/index.html">Epic Anti-Cheat Interface</a></li>
+</ul>
+</li>
+</ul>
+<p>其他解决方法</p>
+<ul>
+<li>AI 监控/社会工程学：<strong>如果你强得不正常</strong>，当然要盯上你。（统计学习之类的，都可以综合使用！！！）</li>
+<li>云/沙盒 (Enclave) 渲染：“计算不再信任操作系统”（CPU有一个运行模式，隔离出一个blackbox（黑地），没有人能够看到所有的运行相关东西，system的问题了。假设计算不再信任操作系统，拉起一个可信的执行环境！！！<strong>高可信软件，可信计算</strong>！！！）</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<ul>
+<li>win还是mac还是linux，都给了我们一些，修改访问和修改内存中变量的功能。 -&gt; 调试器需要这种的机制，才能够运行！！！</li>
+<li>留了这样的口子，但是一般的进程，是没有权限去做这样的事情的。（当然你是管理者，你乐意怎么搞就怎么搞就好……）</li>
+</ul>
+</blockquote>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 进程的地址空间是如何创建、如何更改的？<ul>
+<li>fork</li>
+<li>Execve</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>Take-away messages</p>
+<ul>
+<li>进程的地址空间<ul>
+<li>能文件关联的、带有访问权限的连续内存段<ul>
+<li>a.out, ld.so, libc.so, heap, stack, vdso</li>
+</ul>
+</li>
+<li>地址空间的隔离</li>
+</ul>
+</li>
+<li>进程地址空间的管理 API<ul>
+<li>mmap</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
 <li>vedio link: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Er4y1q7xo/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">https://www.bilibili.com/video/BV1Er4y1q7xo/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd</a></li>
 </ul>
 <blockquote>
@@ -480,7 +791,9 @@
 <ol start="7">
 <li>Address Space Layout Randomization -&gt; 地址空间随机化，每次程序都被加载到随机的位置上，但是调试器会把这个特性关掉（GDB）。导致我们每次运行程序，看到程序的地址空间都是固定的昂！</li>
 <li>Feature: GDB不能访问另外一个进程的vvar昂！</li>
-<li>man vdso -&gt; <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/436454953">https://zhuanlan.zhihu.com/p/436454953</a></li>
+<li>man vdso -&gt; <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/436454953">https://zhuanlan.zhihu.com/p/436454953</a> -&gt; 类似于mmap?</li>
+<li>pmap, readelf，很多指令昂！！！</li>
+<li>elf文件：<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/ELF/7120560">https://baike.baidu.com/item/ELF/7120560</a></li>
 </ol>
 
                 
