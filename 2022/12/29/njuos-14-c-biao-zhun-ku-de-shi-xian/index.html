@@ -1,0 +1,922 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="如何在系统调用之上构建程序能够普遍受惠的标准库？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-14-C标准库的实现">
+<meta property="og:url" content="http://example.com/2022/12/29/njuos-14-c-biao-zhun-ku-de-shi-xian/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="如何在系统调用之上构建程序能够普遍受惠的标准库？">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212291025323.png">
+<meta property="article:published_time" content="2022-12-29T02:24:37.000Z">
+<meta property="article:modified_time" content="2022-12-29T09:25:15.801Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212291025323.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-14-C标准库的实现 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-14-C标准库的实现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-29 10:24" pubdate>
+          2022年12月29日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          29 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-14-C标准库的实现</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月29日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>如何在系统调用之上构建程序能够普遍受惠的标准库？</p>
+<span id="more"></span>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212291030510.png" srcset="/img/loading.gif" lazyload alt="image-20221229103038483"></p>
+<h1 id="熟悉又陌生的-libc"><a href="#熟悉又陌生的-libc" class="headerlink" title="熟悉又陌生的 libc"></a>熟悉又陌生的 libc</h1><h2 id="为什么需要-libc"><a href="#为什么需要-libc" class="headerlink" title="为什么需要 libc?"></a>为什么需要 libc?</h2><p>“裸奔” 编程：能用 (而且绝对够用)，但不好用。很多功能是重复的！！！</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">long</span> <span class="hljs-title function_">syscall</span><span class="hljs-params">(<span class="hljs-type">int</span> num, ...)</span> {<br>  va_list ap;<br>  va_start(ap, num);<br>  <span class="hljs-keyword">register</span> <span class="hljs-type">long</span> a0 <span class="hljs-title function_">asm</span> <span class="hljs-params">(<span class="hljs-string">"rax"</span>)</span> = num;<br>  <span class="hljs-keyword">register</span> <span class="hljs-type">long</span> a1 <span class="hljs-title function_">asm</span> <span class="hljs-params">(<span class="hljs-string">"rdi"</span>)</span> = va_arg(ap, <span class="hljs-type">long</span>);<br>  <span class="hljs-keyword">register</span> <span class="hljs-type">long</span> a2 <span class="hljs-title function_">asm</span> <span class="hljs-params">(<span class="hljs-string">"rsi"</span>)</span> = va_arg(ap, <span class="hljs-type">long</span>);<br>  <span class="hljs-keyword">register</span> <span class="hljs-type">long</span> a3 <span class="hljs-title function_">asm</span> <span class="hljs-params">(<span class="hljs-string">"rdx"</span>)</span> = va_arg(ap, <span class="hljs-type">long</span>);<br>  <span class="hljs-keyword">register</span> <span class="hljs-type">long</span> a4 <span class="hljs-title function_">asm</span> <span class="hljs-params">(<span class="hljs-string">"r10"</span>)</span> = va_arg(ap, <span class="hljs-type">long</span>);<br>  va_end(ap);<br>  <span class="hljs-keyword">asm</span> <span class="hljs-title function_">volatile</span><span class="hljs-params">(<span class="hljs-string">"syscall"</span></span><br><span class="hljs-params">    : <span class="hljs-string">"+r"</span>(a0) : <span class="hljs-string">"r"</span>(a1), <span class="hljs-string">"r"</span>(a2), <span class="hljs-string">"r"</span>(a3), <span class="hljs-string">"r"</span>(a4)</span><br><span class="hljs-params">    : <span class="hljs-string">"memory"</span>, <span class="hljs-string">"rcx"</span>, <span class="hljs-string">"r8"</span>, <span class="hljs-string">"r9"</span>, <span class="hljs-string">"r11"</span>)</span>;<br>  <span class="hljs-keyword">return</span> a0;<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="任何程序都用得上的定义"><a href="#任何程序都用得上的定义" class="headerlink" title="任何程序都用得上的定义"></a>任何程序都用得上的定义</h2><blockquote>
+<p>例如，不同机器下的(long类型)很多类型，实现的底层是不一样的，例如大小。就可能导致可移植性造成一些问题。。。</p>
+<p>即便是没有任何的代码，也可以给我们提供一些必要的支持，比如说整数大小，之类的。很多库能帮助我们解决一部分这样的问题。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/freestanding">Freestanding 环境</a>下也可以使用的定义</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/cstddef/">stddef.h</a> - <code>size_t</code></li>
+<li><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/cstdint/">stdint.h</a> - <code>int32_t</code>, <code>uint64_t</code></li>
+<li><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/cstdbool/">stdbool.h</a> - <code>bool</code>, <code>true</code>, <code>false</code></li>
+<li><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/cfloat/">float.h</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/climits/">limits.h</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/cstdarg/">stdarg.h</a><ul>
+<li>syscall 就用到了 (但 syscall0, syscall1, … 更高效)</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/cinttypes/">inttypes.h</a><ul>
+<li>回答了你多年来的疑问！</li>
+<li>在你读过了小白阶段以后，就真的是 friendly manual 了</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212291101866.png" srcset="/img/loading.gif" lazyload alt="image-20221229110139804"></p>
+<blockquote>
+<p>解决了Portable问题，考虑到了，虽然看起来很shit……</p>
+</blockquote>
+<h2 id="然后，系统调用也要用得方便！"><a href="#然后，系统调用也要用得方便！" class="headerlink" title="然后，系统调用也要用得方便！"></a>然后，系统调用也要用得方便！</h2><blockquote>
+<p>系统调用是操作系统 “紧凑” 的最小接口。并不是所有系统调用都像 fork 一样可以直接使用。</p>
+</blockquote>
+<p>低情商 API：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">extern</span> <span class="hljs-type">char</span> **environ;<br><span class="hljs-type">char</span> *argv[] = { <span class="hljs-string">"echo"</span>, <span class="hljs-string">"hello"</span>, <span class="hljs-string">"world"</span>, <span class="hljs-literal">NULL</span>, };<br><span class="hljs-comment">// 这里会失败，因为execve要求的第一个参数，必须是一个合法的路径！！！！不合法就不行！！！</span><br><span class="hljs-comment">// 本质上我们想让操作系统做的是：“找到path里面的echo”，并且执行，我们还要自己找路径？？？不存在的！！！</span><br><span class="hljs-keyword">if</span> (execve(argv[<span class="hljs-number">0</span>], argv, environ) &lt; <span class="hljs-number">0</span>) {<br>  perror(<span class="hljs-string">"exec"</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>高情商 API：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 这个就会帮助我们自动去路径里面找到echo命令，然后执行echo hello world</span><br><span class="hljs-comment">// 包括下面的system()，就更加高级昂！！！</span><br>execlp(<span class="hljs-string">"echo"</span>, <span class="hljs-string">"echo"</span>, <span class="hljs-string">"hello"</span>, <span class="hljs-string">"world"</span>, <span class="hljs-literal">NULL</span>);<br>system(<span class="hljs-string">"echo hello world"</span>);<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Libc: low level -&gt; high level，把底层不好用的API，做成我们更好用的封装，低情商 -&gt; 高情商。</p>
+</blockquote>
+<h1 id="封装-1-纯粹的计算"><a href="#封装-1-纯粹的计算" class="headerlink" title="封装 (1): 纯粹的计算"></a>封装 (1): 纯粹的计算</h1><h2 id="string-h-字符串-x2F-数组操作"><a href="#string-h-字符串-x2F-数组操作" class="headerlink" title="string.h: 字符串/数组操作"></a><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/cstring/">string.h</a>: 字符串/数组操作</h2><p>简单，不简单</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> *<span class="hljs-title function_">memset</span><span class="hljs-params">(<span class="hljs-type">void</span> *s, <span class="hljs-type">int</span> c, <span class="hljs-type">size_t</span> n)</span> {<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">size_t</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) {<br>    ((<span class="hljs-type">char</span> *)s)[i] = c;<br>  }<br>  <span class="hljs-keyword">return</span> s;<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>让我们看看 clang 把它编译成了什么……</p>
+<ul>
+<li>以及，线程安全性？<a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/memset-race.c">memset-race.c</a></li>
+<li>标准库只对 “标准库内部数据” 的线程安全性负责<ul>
+<li>例子：printf 的 buffer</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">"thread.h"</span></span><br><br><span class="hljs-type">char</span> buf[<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">30</span>];<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">foo</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> {<br>  <span class="hljs-built_in">memset</span>(buf, <span class="hljs-string">'0'</span> + id, <span class="hljs-keyword">sizeof</span>(buf) - <span class="hljs-number">1</span>);<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">4</span>; i++)<br>    create(foo);<br>  join();<br>  <span class="hljs-built_in">puts</span>(buf);<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="排序和查找"><a href="#排序和查找" class="headerlink" title="排序和查找"></a>排序和查找</h2><ul>
+<li>低情商 (低配置) API</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">qsort</span><span class="hljs-params">(<span class="hljs-type">void</span> *base, <span class="hljs-type">size_t</span> nmemb, <span class="hljs-type">size_t</span> size,</span><br><span class="hljs-params">           <span class="hljs-type">int</span> (*compar)(<span class="hljs-type">const</span> <span class="hljs-type">void</span> *, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *))</span>;<br><br><span class="hljs-type">void</span> *<span class="hljs-title function_">bsearch</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">void</span> *key, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *base,</span><br><span class="hljs-params">              <span class="hljs-type">size_t</span> nmemb, <span class="hljs-type">size_t</span> size,</span><br><span class="hljs-params">              <span class="hljs-type">int</span> (*compar)(<span class="hljs-type">const</span> <span class="hljs-type">void</span> *, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *))</span>;<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>高情商 API</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">sort(xs.begin(), xs.end(), [] (<span class="hljs-keyword">auto</span>&amp; a, <span class="hljs-keyword">auto</span>&amp; b) {...});<br>xs.sort(lambda key=...)<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="更多的例子"><a href="#更多的例子" class="headerlink" title="更多的例子"></a>更多的例子</h2><p>RTFM!</p>
+<ul>
+<li>更多的<a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/cstdlib/">stdlib.h</a>中的例子<ul>
+<li>atoi, atol, atoll, strtoull, …</li>
+<li>rand (注意线程安全), …</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/csetjmp/">setjmp.h</a><ul>
+<li>体会到我们精心设计的良苦用心？<ul>
+<li>一次掉队，终身掉队 😂</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/cmath/">math.h</a><ul>
+<li>这玩意复杂了; 《操作系统》课直接摆烂<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/2737924.2737959">Automatically improving accuracy for floating point expressions</a> (PLDI’15, Distinguished Paper 🏅)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="封装-2-文件描述符"><a href="#封装-2-文件描述符" class="headerlink" title="封装 (2): 文件描述符"></a>封装 (2): 文件描述符</h1><h2 id="stdio-h-你熟悉的味道"><a href="#stdio-h-你熟悉的味道" class="headerlink" title="stdio.h: 你熟悉的味道"></a><a target="_blank" rel="noopener" href="https://www.cplusplus.com/reference/cstdio/">stdio.h</a>: 你熟悉的味道</h2><blockquote>
+<p>访问操作系统对象最主要的就是访问文件描述符，文件描述符就是一个打开了的文件。Linux上，一切都是文件。原则上，文件描述符可以访问任何对象！！！</p>
+</blockquote>
+<p><code>FILE *</code> 背后其实是一个文件描述符</p>
+<ul>
+<li>我们可以用 gdb 查看具体的FILE *(例如 stdout)<ul>
+<li>可以 “窥探” 到 glibc 的一些内部实现</li>
+<li>可以加载 glibc 的 debug symbols<ul>
+<li>在这门课上不推荐：你调试起来会很浪费时间</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>封装了文件描述符上的系统调用 (fseek, fgetpos, ftell, feof, …)</li>
+</ul>
+<hr>
+<p>vprintf 系列</p>
+<ul>
+<li>使用了 <code>stdarg.h</code> 的参数列表</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">vfprintf</span><span class="hljs-params">(FILE *stream, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *format, va_list ap)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">vasprintf</span><span class="hljs-params">(<span class="hljs-type">char</span> **ret, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *format, va_list ap)</span>;<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="popen-和-pclose"><a href="#popen-和-pclose" class="headerlink" title="popen 和 pclose"></a>popen 和 pclose</h2><p>我们在 <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/dosbox-hack.c">dosbox-hack.c</a> 中使用了它</p>
+<ul>
+<li>一个设计有缺陷的 API<ul>
+<li><strong>Since a pipe is by definition unidirectional, the type argument may specify only reading or writing, <em>not both</em>; the resulting stream is correspondingly read-only or write-only.</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>高情商 API (现代编程语言)</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c">subprocess.check_output([<span class="hljs-string">'cat'</span>],<br>  input=b<span class="hljs-number">'</span>Hello World<span class="hljs-number">'</span>, <span class="hljs-built_in">stderr</span>=subprocess.STDOUT)<br>let dir_checksum = {<br>  Exec::shell(<span class="hljs-string">"find . -type f"</span>)<br>    | Exec::cmd(<span class="hljs-string">"sort"</span>) | Exec::cmd(<span class="hljs-string">"sha1sum"</span>)<br>}.capture()?.stdout_str();<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h1 id="封装-3-更多的进程-x2F-操作系统功能"><a href="#封装-3-更多的进程-x2F-操作系统功能" class="headerlink" title="封装 (3): 更多的进程/操作系统功能"></a>封装 (3): 更多的进程/操作系统功能</h1><h2 id="err-error-perror"><a href="#err-error-perror" class="headerlink" title="err, error, perror"></a>err, error, perror</h2><p>所有 API 都可能失败</p>
+<figure class="highlight gams"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gams"><span class="hljs-symbol">$</span> gcc nonexist.c<br>gcc: error: nonexist.c: <span class="hljs-keyword">No</span> such <span class="hljs-keyword">file</span> <span class="hljs-keyword">or</span> directory<br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>这个 “No such file or directory” 似乎见得有点多？</p>
+<ul>
+<li><code>cat nonexist.c, wc nonexist.c</code> 都是同样的 error message</li>
+<li>这不是巧合！<ul>
+<li>我们也可以 “山寨” 出同样的效果</li>
+<li>warn(“%s”, fname); (观察 strace)<ul>
+<li><code>err</code> 可以额外退出程序</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>errno 是进程共享还是线程独享？<ul>
+<li>这下知道协程的轻量了吧</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li>Vedio link: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17F411s7e9/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd%EF%BC%8C%E8%BF%98%E6%98%AF%E5%BB%BA%E8%AE%AE%E7%9C%8B%E7%9C%8B%EF%BC%8C%E5%B0%A4%E5%85%B6%E6%88%91%E8%BF%99%E7%A7%8DC%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%8D%E6%89%8E%E5%AE%9E%E7%9A%84orz">https://www.bilibili.com/video/BV17F411s7e9/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd，还是建议看看，尤其我这种C语言基础不扎实的orz</a></li>
+<li>perror -&gt; print a system error message，可以<code>$ man 3 perror</code>，查看调用。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-14-C标准库的实现</div>
+      <div>http://example.com/2022/12/29/njuos-14-c-biao-zhun-ku-de-shi-xian/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/27/njuos-13-xi-tong-diao-yong-he-shell/" title="NJUOS-13-系统调用和Shell">
+                        <span class="hidden-mobile">NJUOS-13-系统调用和Shell</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
