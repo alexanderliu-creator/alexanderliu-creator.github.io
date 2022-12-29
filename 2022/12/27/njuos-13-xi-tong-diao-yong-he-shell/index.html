@@ -1,0 +1,1123 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="这一节会比较有趣昂！Unix Shell和这些东西联系起来啦！！！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-13-系统调用和Shell">
+<meta property="og:url" content="http://example.com/2022/12/27/njuos-13-xi-tong-diao-yong-he-shell/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="这一节会比较有趣昂！Unix Shell和这些东西联系起来啦！！！">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271037689.png">
+<meta property="article:published_time" content="2022-12-27T02:36:59.000Z">
+<meta property="article:modified_time" content="2022-12-28T05:25:37.145Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271037689.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-13-系统调用和Shell - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-13-系统调用和Shell"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-27 10:36" pubdate>
+          2022年12月27日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          16k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          130 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-13-系统调用和Shell</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月28日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>这一节会比较有趣昂！Unix Shell和这些东西联系起来啦！！！</p>
+<span id="more"></span>
+
+
+
+<h1 id="Shell"><a href="#Shell" class="headerlink" title="Shell"></a>Shell</h1><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271049346.png" srcset="/img/loading.gif" lazyload alt="image-20221227104925319"></p>
+<p>这就是 Shell (内核 Kernel 提供系统调用；Shell 提供用户接口)</p>
+<ul>
+<li>“与人类直接交互的第一个程序”</li>
+<li>帮助人类创建/管理进程 (应用程序)、数据文件……</li>
+</ul>
+<h2 id="The-UNIX-Shell"><a href="#The-UNIX-Shell" class="headerlink" title="The UNIX Shell"></a>The UNIX Shell</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271055018.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271055094.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>“终端” 时代的伟大设计</p>
+<ul>
+<li>“Command-line interface” (CLI) 的巅峰</li>
+</ul>
+<p><strong>Shell 是一门 “把用户指令翻译成系统调用” 的编程语言</strong></p>
+<ul>
+<li>man sh (推荐阅读！), bash, …</li>
+<li>原来我们一直在编程<ul>
+<li>直到有了 Graphical Shell (GUI)</li>
+<li>Windows, Gnome, Symbian, Android</li>
+</ul>
+</li>
+</ul>
+<h2 id="脾气有点小古怪的-UNIX-世界"><a href="#脾气有点小古怪的-UNIX-世界" class="headerlink" title="脾气有点小古怪的 UNIX 世界"></a>脾气有点小古怪的 UNIX 世界</h2><p>“Unix is user-friendly; it’s just choosy about who its friends are.”</p>
+<ul>
+<li>但如果把 shell 理解成编程语言，“不好用” 好像也没什么毛病了<ul>
+<li><del>你见过哪个编程语言 “好用” 的？</del></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271056961.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>(UNIX 世界有很多历史遗留约定)</p>
+<h2 id="A-Zero-dependency-UNIX-Shell-from-xv6"><a href="#A-Zero-dependency-UNIX-Shell-from-xv6" class="headerlink" title="A Zero-dependency UNIX Shell (from xv6)"></a>A Zero-dependency UNIX Shell (from xv6)</h2><p><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/sh-xv6.c">sh-xv6.c</a></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// Linux port of xv6-riscv shell (no libc)</span><br><span class="hljs-comment">// Compile with "-ffreestanding"!</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdarg.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stddef.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/syscall.h&gt;</span></span><br><br><span class="hljs-comment">// Parsed command representation</span><br><span class="hljs-class"><span class="hljs-keyword">enum</span> {</span> EXEC = <span class="hljs-number">1</span>, REDIR, PIPE, LIST, BACK };<br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAXARGS 10</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NULL ((void *)0)</span><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cmd</span> {</span><br>  <span class="hljs-type">int</span> type;<br>};<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">execcmd</span> {</span><br>  <span class="hljs-type">int</span> type;<br>  <span class="hljs-type">char</span> *argv[MAXARGS], *eargv[MAXARGS];<br>};<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">redircmd</span> {</span><br>  <span class="hljs-type">int</span> type, fd, mode;<br>  <span class="hljs-type">char</span> *file, *efile;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cmd</span>* <span class="hljs-title">cmd</span>;</span><br>};<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pipecmd</span> {</span><br>  <span class="hljs-type">int</span> type;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cmd</span> *<span class="hljs-title">left</span>, *<span class="hljs-title">right</span>;</span><br>};<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">listcmd</span> {</span><br>  <span class="hljs-type">int</span> type;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cmd</span> *<span class="hljs-title">left</span>, *<span class="hljs-title">right</span>;</span><br>};<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">backcmd</span> {</span><br>  <span class="hljs-type">int</span> type;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cmd</span>* <span class="hljs-title">cmd</span>;</span><br>};<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">parsecmd</span><span class="hljs-params">(<span class="hljs-type">char</span>*)</span>;<br><br><span class="hljs-comment">// Minimum runtime library</span><br><span class="hljs-type">long</span> <span class="hljs-title function_">syscall</span><span class="hljs-params">(<span class="hljs-type">int</span> num, ...)</span> {<br>  va_list ap;<br>  va_start(ap, num);<br>  <span class="hljs-keyword">register</span> <span class="hljs-type">long</span> a0 <span class="hljs-title function_">asm</span> <span class="hljs-params">(<span class="hljs-string">"rax"</span>)</span> = num;<br>  <span class="hljs-keyword">register</span> <span class="hljs-type">long</span> a1 <span class="hljs-title function_">asm</span> <span class="hljs-params">(<span class="hljs-string">"rdi"</span>)</span> = va_arg(ap, <span class="hljs-type">long</span>);<br>  <span class="hljs-keyword">register</span> <span class="hljs-type">long</span> a2 <span class="hljs-title function_">asm</span> <span class="hljs-params">(<span class="hljs-string">"rsi"</span>)</span> = va_arg(ap, <span class="hljs-type">long</span>);<br>  <span class="hljs-keyword">register</span> <span class="hljs-type">long</span> a3 <span class="hljs-title function_">asm</span> <span class="hljs-params">(<span class="hljs-string">"rdx"</span>)</span> = va_arg(ap, <span class="hljs-type">long</span>);<br>  <span class="hljs-keyword">register</span> <span class="hljs-type">long</span> a4 <span class="hljs-title function_">asm</span> <span class="hljs-params">(<span class="hljs-string">"r10"</span>)</span> = va_arg(ap, <span class="hljs-type">long</span>);<br>  va_end(ap);<br>  <span class="hljs-keyword">asm</span> <span class="hljs-title function_">volatile</span><span class="hljs-params">(<span class="hljs-string">"syscall"</span></span><br><span class="hljs-params">    : <span class="hljs-string">"+r"</span>(a0) : <span class="hljs-string">"r"</span>(a1), <span class="hljs-string">"r"</span>(a2), <span class="hljs-string">"r"</span>(a3), <span class="hljs-string">"r"</span>(a4)</span><br><span class="hljs-params">    : <span class="hljs-string">"memory"</span>, <span class="hljs-string">"rcx"</span>, <span class="hljs-string">"r8"</span>, <span class="hljs-string">"r9"</span>, <span class="hljs-string">"r11"</span>)</span>;<br>  <span class="hljs-keyword">return</span> a0;<br>}<br><br><span class="hljs-type">size_t</span> <span class="hljs-title function_">strlen</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *s)</span> {<br>  <span class="hljs-type">size_t</span> len = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">for</span> (; *s; s++) len++;<br>  <span class="hljs-keyword">return</span> len;<br>}<br><br><span class="hljs-type">char</span> *<span class="hljs-title function_">strchr</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *s, <span class="hljs-type">int</span> c)</span> {<br>  <span class="hljs-keyword">for</span> (; *s; s++) {<br>    <span class="hljs-keyword">if</span> (*s == c) <span class="hljs-keyword">return</span> (<span class="hljs-type">char</span> *)s;<br>  }<br>  <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">print</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *s, ...)</span> {<br>  va_list ap;<br>  va_start(ap, s);<br>  <span class="hljs-keyword">while</span> (s) {<br>    syscall(SYS_write, <span class="hljs-number">2</span>, s, <span class="hljs-built_in">strlen</span>(s));<br>    s = va_arg(ap, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *);<br>  }<br>  va_end(ap);<br>}<br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> assert(cond) \</span><br><span class="hljs-meta">  do { <span class="hljs-keyword">if</span> (!(cond)) { \</span><br><span class="hljs-meta">    print(<span class="hljs-string">"Panicked.\n"</span>, NULL); \</span><br><span class="hljs-meta">    syscall(SYS_exit, 1); } \</span><br><span class="hljs-meta">  } while (0)</span><br><br><span class="hljs-type">static</span> <span class="hljs-type">char</span> mem[<span class="hljs-number">4096</span>], *freem = mem;<br><br><span class="hljs-type">void</span> *<span class="hljs-title function_">zalloc</span><span class="hljs-params">(<span class="hljs-type">size_t</span> sz)</span> {<br>  assert(freem + sz &lt; mem + <span class="hljs-keyword">sizeof</span>(mem));<br>  <span class="hljs-type">void</span> *ret = freem;<br>  freem += sz;<br>  <span class="hljs-keyword">return</span> ret;<br>}<br><br><span class="hljs-comment">// Execute cmd.  Never returns.</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">runcmd</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cmd* cmd)</span> {<br>  <span class="hljs-type">int</span> p[<span class="hljs-number">2</span>];<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">backcmd</span>* <span class="hljs-title">bcmd</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">execcmd</span>* <span class="hljs-title">ecmd</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">listcmd</span>* <span class="hljs-title">lcmd</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pipecmd</span>* <span class="hljs-title">pcmd</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">redircmd</span>* <span class="hljs-title">rcmd</span>;</span><br><br>  <span class="hljs-keyword">if</span> (cmd == <span class="hljs-number">0</span>) syscall(SYS_exit, <span class="hljs-number">1</span>);<br><br>  <span class="hljs-keyword">switch</span> (cmd-&gt;type) {<br>    <span class="hljs-keyword">case</span> EXEC:<br>      ecmd = (<span class="hljs-keyword">struct</span> execcmd*)cmd;<br>      <span class="hljs-keyword">if</span> (ecmd-&gt;argv[<span class="hljs-number">0</span>] == <span class="hljs-number">0</span>) syscall(SYS_exit, <span class="hljs-number">1</span>);<br>      syscall(SYS_execve, ecmd-&gt;argv[<span class="hljs-number">0</span>], ecmd-&gt;argv, <span class="hljs-literal">NULL</span>);<br>      print(<span class="hljs-string">"fail to exec "</span>, ecmd-&gt;argv[<span class="hljs-number">0</span>], <span class="hljs-string">"\n"</span>, <span class="hljs-literal">NULL</span>);<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> REDIR:<br>      rcmd = (<span class="hljs-keyword">struct</span> redircmd*)cmd;<br>      syscall(SYS_close, rcmd-&gt;fd);<br>      <span class="hljs-keyword">if</span> (syscall(SYS_open, rcmd-&gt;file, rcmd-&gt;mode, <span class="hljs-number">0644</span>) &lt; <span class="hljs-number">0</span>) {<br>        print(<span class="hljs-string">"fail to open "</span>, rcmd-&gt;file, <span class="hljs-string">"\n"</span>, <span class="hljs-literal">NULL</span>);<br>        syscall(SYS_exit, <span class="hljs-number">1</span>);<br>      }<br>      runcmd(rcmd-&gt;cmd);<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> LIST:<br>      lcmd = (<span class="hljs-keyword">struct</span> listcmd*)cmd;<br>      <span class="hljs-keyword">if</span> (syscall(SYS_fork) == <span class="hljs-number">0</span>) runcmd(lcmd-&gt;left);<br>      syscall(SYS_wait4, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>      runcmd(lcmd-&gt;right);<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> PIPE:<br>      pcmd = (<span class="hljs-keyword">struct</span> pipecmd*)cmd;<br>      assert(syscall(SYS_pipe, p) &gt;= <span class="hljs-number">0</span>);<br>      <span class="hljs-keyword">if</span> (syscall(SYS_fork) == <span class="hljs-number">0</span>) {<br>        syscall(SYS_close, <span class="hljs-number">1</span>);<br>        syscall(SYS_dup, p[<span class="hljs-number">1</span>]);<br>        syscall(SYS_close, p[<span class="hljs-number">0</span>]);<br>        syscall(SYS_close, p[<span class="hljs-number">1</span>]);<br>        runcmd(pcmd-&gt;left);<br>      }<br>      <span class="hljs-keyword">if</span> (syscall(SYS_fork) == <span class="hljs-number">0</span>) {<br>        syscall(SYS_close, <span class="hljs-number">0</span>);<br>        syscall(SYS_dup, p[<span class="hljs-number">0</span>]);<br>        syscall(SYS_close, p[<span class="hljs-number">0</span>]);<br>        syscall(SYS_close, p[<span class="hljs-number">1</span>]);<br>        runcmd(pcmd-&gt;right);<br>      }<br>      syscall(SYS_close, p[<span class="hljs-number">0</span>]);<br>      syscall(SYS_close, p[<span class="hljs-number">1</span>]);<br>      syscall(SYS_wait4, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>      syscall(SYS_wait4, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> BACK:<br>      bcmd = (<span class="hljs-keyword">struct</span> backcmd*)cmd;<br>      <span class="hljs-keyword">if</span> (syscall(SYS_fork) == <span class="hljs-number">0</span>) runcmd(bcmd-&gt;cmd);<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">default</span>:<br>      assert(<span class="hljs-number">0</span>);<br>  }<br>  syscall(SYS_exit, <span class="hljs-number">0</span>);<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">getcmd</span><span class="hljs-params">(<span class="hljs-type">char</span>* buf, <span class="hljs-type">int</span> nbuf)</span> {<br>  print(<span class="hljs-string">"&gt; "</span>, <span class="hljs-literal">NULL</span>);<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; nbuf; i++) buf[i] = <span class="hljs-string">'\0'</span>;<br><br>  <span class="hljs-keyword">while</span> (nbuf-- &gt; <span class="hljs-number">1</span>) {<br>    <span class="hljs-comment">// 就是用最基本的系统调用，而不调用别的库了！！！</span><br>    <span class="hljs-type">int</span> nread = syscall(SYS_read, <span class="hljs-number">0</span>, buf, <span class="hljs-number">1</span>);<br>    <span class="hljs-keyword">if</span> (nread &lt;= <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    <span class="hljs-keyword">if</span> (*(buf++) == <span class="hljs-string">'\n'</span>) <span class="hljs-keyword">break</span>;<br>  }<br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>}<br><br><span class="hljs-type">void</span> _start() {<br>  <span class="hljs-type">static</span> <span class="hljs-type">char</span> buf[<span class="hljs-number">100</span>];<br><br>  <span class="hljs-comment">// Read and run input commands.</span><br>  <span class="hljs-keyword">while</span> (getcmd(buf, <span class="hljs-keyword">sizeof</span>(buf)) &gt;= <span class="hljs-number">0</span>) {<br>    <span class="hljs-keyword">if</span> (buf[<span class="hljs-number">0</span>] == <span class="hljs-string">'c'</span> &amp;&amp; buf[<span class="hljs-number">1</span>] == <span class="hljs-string">'d'</span> &amp;&amp; buf[<span class="hljs-number">2</span>] == <span class="hljs-string">' '</span>) {<br>      <span class="hljs-comment">// Chdir must be called by the parent, not the child.</span><br>      buf[<span class="hljs-built_in">strlen</span>(buf) - <span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;  <span class="hljs-comment">// chop \n</span><br>      <span class="hljs-keyword">if</span> (syscall(SYS_chdir, buf + <span class="hljs-number">3</span>) &lt; <span class="hljs-number">0</span>) print(<span class="hljs-string">"cannot cd "</span>, buf + <span class="hljs-number">3</span>, <span class="hljs-string">"\n"</span>, <span class="hljs-literal">NULL</span>);<br>      <span class="hljs-keyword">continue</span>;<br>    }<br>    <span class="hljs-keyword">if</span> (syscall(SYS_fork) == <span class="hljs-number">0</span>) runcmd(parsecmd(buf));<br>    syscall(SYS_wait4, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>  }<br>  syscall(SYS_exit, <span class="hljs-number">0</span>);<br>}<br><br><span class="hljs-comment">// Constructors</span><br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">execcmd</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> {<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">execcmd</span>* <span class="hljs-title">cmd</span>;</span><br><br>  cmd = zalloc(<span class="hljs-keyword">sizeof</span>(*cmd));<br>  cmd-&gt;type = EXEC;<br>  <span class="hljs-keyword">return</span> (<span class="hljs-keyword">struct</span> cmd*)cmd;<br>}<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">redircmd</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cmd* subcmd, <span class="hljs-type">char</span>* file, <span class="hljs-type">char</span>* efile, <span class="hljs-type">int</span> mode,</span><br><span class="hljs-params">                     <span class="hljs-type">int</span> fd)</span> {<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">redircmd</span>* <span class="hljs-title">cmd</span>;</span><br><br>  cmd = zalloc(<span class="hljs-keyword">sizeof</span>(*cmd));<br>  cmd-&gt;type = REDIR;<br>  cmd-&gt;cmd = subcmd;<br>  cmd-&gt;file = file;<br>  cmd-&gt;efile = efile;<br>  cmd-&gt;mode = mode;<br>  cmd-&gt;fd = fd;<br>  <span class="hljs-keyword">return</span> (<span class="hljs-keyword">struct</span> cmd*)cmd;<br>}<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">pipecmd</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cmd* left, <span class="hljs-keyword">struct</span> cmd* right)</span> {<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pipecmd</span>* <span class="hljs-title">cmd</span>;</span><br><br>  cmd = zalloc(<span class="hljs-keyword">sizeof</span>(*cmd));<br>  cmd-&gt;type = PIPE;<br>  cmd-&gt;left = left;<br>  cmd-&gt;right = right;<br>  <span class="hljs-keyword">return</span> (<span class="hljs-keyword">struct</span> cmd*)cmd;<br>}<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">listcmd</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cmd* left, <span class="hljs-keyword">struct</span> cmd* right)</span> {<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">listcmd</span>* <span class="hljs-title">cmd</span>;</span><br><br>  cmd = zalloc(<span class="hljs-keyword">sizeof</span>(*cmd));<br>  cmd-&gt;type = LIST;<br>  cmd-&gt;left = left;<br>  cmd-&gt;right = right;<br>  <span class="hljs-keyword">return</span> (<span class="hljs-keyword">struct</span> cmd*)cmd;<br>}<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">backcmd</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cmd* subcmd)</span> {<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">backcmd</span>* <span class="hljs-title">cmd</span>;</span><br><br>  cmd = zalloc(<span class="hljs-keyword">sizeof</span>(*cmd));<br>  cmd-&gt;type = BACK;<br>  cmd-&gt;cmd = subcmd;<br>  <span class="hljs-keyword">return</span> (<span class="hljs-keyword">struct</span> cmd*)cmd;<br>}<br><br><span class="hljs-comment">// Parsing</span><br><br><span class="hljs-type">char</span> whitespace[] = <span class="hljs-string">" \t\r\n\v"</span>;<br><span class="hljs-type">char</span> symbols[] = <span class="hljs-string">"&lt;|&gt;&amp;;()"</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">gettoken</span><span class="hljs-params">(<span class="hljs-type">char</span>** ps, <span class="hljs-type">char</span>* es, <span class="hljs-type">char</span>** q, <span class="hljs-type">char</span>** eq)</span> {<br>  <span class="hljs-type">char</span>* s;<br>  <span class="hljs-type">int</span> ret;<br><br>  s = *ps;<br>  <span class="hljs-keyword">while</span> (s &lt; es &amp;&amp; <span class="hljs-built_in">strchr</span>(whitespace, *s)) s++;<br>  <span class="hljs-keyword">if</span> (q) *q = s;<br>  ret = *s;<br>  <span class="hljs-keyword">switch</span> (*s) {<br>    <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:<br>      <span class="hljs-keyword">break</span>;<br>    <span class="hljs-keyword">case</span> <span class="hljs-string">'|'</span>: <span class="hljs-keyword">case</span> <span class="hljs-string">'('</span>: <span class="hljs-keyword">case</span> <span class="hljs-string">')'</span>: <span class="hljs-keyword">case</span> <span class="hljs-string">';'</span>: <span class="hljs-keyword">case</span> <span class="hljs-string">'&amp;'</span>: <span class="hljs-keyword">case</span> <span class="hljs-string">'&lt;'</span>:<br>      s++;<br>      <span class="hljs-keyword">break</span>;<br>    <span class="hljs-keyword">case</span> <span class="hljs-string">'&gt;'</span>:<br>      s++;<br>      <span class="hljs-keyword">if</span> (*s == <span class="hljs-string">'&gt;'</span>) {<br>        ret = <span class="hljs-string">'+'</span>; s++;<br>      }<br>      <span class="hljs-keyword">break</span>;<br>    <span class="hljs-keyword">default</span>:<br>      ret = <span class="hljs-string">'a'</span>;<br>      <span class="hljs-keyword">while</span> (s &lt; es &amp;&amp; !<span class="hljs-built_in">strchr</span>(whitespace, *s) &amp;&amp; !<span class="hljs-built_in">strchr</span>(symbols, *s)) s++;<br>      <span class="hljs-keyword">break</span>;<br>  }<br>  <span class="hljs-keyword">if</span> (eq) *eq = s;<br><br>  <span class="hljs-keyword">while</span> (s &lt; es &amp;&amp; <span class="hljs-built_in">strchr</span>(whitespace, *s)) s++;<br>  *ps = s;<br>  <span class="hljs-keyword">return</span> ret;<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">peek</span><span class="hljs-params">(<span class="hljs-type">char</span>** ps, <span class="hljs-type">char</span>* es, <span class="hljs-type">char</span>* toks)</span> {<br>  <span class="hljs-type">char</span>* s;<br><br>  s = *ps;<br>  <span class="hljs-keyword">while</span> (s &lt; es &amp;&amp; <span class="hljs-built_in">strchr</span>(whitespace, *s)) s++;<br>  *ps = s;<br>  <span class="hljs-keyword">return</span> *s &amp;&amp; <span class="hljs-built_in">strchr</span>(toks, *s);<br>}<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">parseline</span><span class="hljs-params">(<span class="hljs-type">char</span>**, <span class="hljs-type">char</span>*)</span>;<br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">parsepipe</span><span class="hljs-params">(<span class="hljs-type">char</span>**, <span class="hljs-type">char</span>*)</span>;<br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">parseexec</span><span class="hljs-params">(<span class="hljs-type">char</span>**, <span class="hljs-type">char</span>*)</span>;<br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">nulterminate</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cmd*)</span>;<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">parsecmd</span><span class="hljs-params">(<span class="hljs-type">char</span>* s)</span> {<br>  <span class="hljs-type">char</span>* es;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cmd</span>* <span class="hljs-title">cmd</span>;</span><br><br>  es = s + <span class="hljs-built_in">strlen</span>(s);<br>  cmd = parseline(&amp;s, es);<br>  peek(&amp;s, es, <span class="hljs-string">""</span>);<br>  assert(s == es);<br>  nulterminate(cmd);<br>  <span class="hljs-keyword">return</span> cmd;<br>}<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">parseline</span><span class="hljs-params">(<span class="hljs-type">char</span>** ps, <span class="hljs-type">char</span>* es)</span> {<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cmd</span>* <span class="hljs-title">cmd</span>;</span><br><br>  cmd = parsepipe(ps, es);<br>  <span class="hljs-keyword">while</span> (peek(ps, es, <span class="hljs-string">"&amp;"</span>)) {<br>    gettoken(ps, es, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>    cmd = backcmd(cmd);<br>  }<br>  <span class="hljs-keyword">if</span> (peek(ps, es, <span class="hljs-string">";"</span>)) {<br>    gettoken(ps, es, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>    cmd = listcmd(cmd, parseline(ps, es));<br>  }<br>  <span class="hljs-keyword">return</span> cmd;<br>}<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">parsepipe</span><span class="hljs-params">(<span class="hljs-type">char</span>** ps, <span class="hljs-type">char</span>* es)</span> {<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cmd</span>* <span class="hljs-title">cmd</span>;</span><br><br>  cmd = parseexec(ps, es);<br>  <span class="hljs-keyword">if</span> (peek(ps, es, <span class="hljs-string">"|"</span>)) {<br>    gettoken(ps, es, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>    cmd = pipecmd(cmd, parsepipe(ps, es));<br>  }<br>  <span class="hljs-keyword">return</span> cmd;<br>}<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">parseredirs</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cmd* cmd, <span class="hljs-type">char</span>** ps, <span class="hljs-type">char</span>* es)</span> {<br>  <span class="hljs-type">int</span> tok;<br>  <span class="hljs-type">char</span> *q, *eq;<br><br>  <span class="hljs-keyword">while</span> (peek(ps, es, <span class="hljs-string">"&lt;&gt;"</span>)) {<br>    tok = gettoken(ps, es, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>    assert(gettoken(ps, es, &amp;q, &amp;eq) == <span class="hljs-string">'a'</span>);<br>    <span class="hljs-keyword">switch</span> (tok) {<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'&lt;'</span>:<br>        cmd = redircmd(cmd, q, eq, O_RDONLY, <span class="hljs-number">0</span>);<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'&gt;'</span>:<br>        cmd = redircmd(cmd, q, eq, O_WRONLY | O_CREAT | O_TRUNC, <span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'+'</span>:  <span class="hljs-comment">// &gt;&gt;</span><br>        cmd = redircmd(cmd, q, eq, O_WRONLY | O_CREAT, <span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">break</span>;<br>    }<br>  }<br>  <span class="hljs-keyword">return</span> cmd;<br>}<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">parseblock</span><span class="hljs-params">(<span class="hljs-type">char</span>** ps, <span class="hljs-type">char</span>* es)</span> {<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cmd</span>* <span class="hljs-title">cmd</span>;</span><br><br>  assert(peek(ps, es, <span class="hljs-string">"("</span>));<br>  gettoken(ps, es, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>  cmd = parseline(ps, es);<br>  assert(peek(ps, es, <span class="hljs-string">")"</span>));<br>  gettoken(ps, es, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>  cmd = parseredirs(cmd, ps, es);<br>  <span class="hljs-keyword">return</span> cmd;<br>}<br><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">parseexec</span><span class="hljs-params">(<span class="hljs-type">char</span>** ps, <span class="hljs-type">char</span>* es)</span> {<br>  <span class="hljs-type">char</span> *q, *eq;<br>  <span class="hljs-type">int</span> tok, argc;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">execcmd</span>* <span class="hljs-title">cmd</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cmd</span>* <span class="hljs-title">ret</span>;</span><br><br>  <span class="hljs-keyword">if</span> (peek(ps, es, <span class="hljs-string">"("</span>)) <span class="hljs-keyword">return</span> parseblock(ps, es);<br><br>  ret = execcmd();<br>  cmd = (<span class="hljs-keyword">struct</span> execcmd*)ret;<br><br>  argc = <span class="hljs-number">0</span>;<br>  ret = parseredirs(ret, ps, es);<br>  <span class="hljs-keyword">while</span> (!peek(ps, es, <span class="hljs-string">"|)&amp;;"</span>)) {<br>    <span class="hljs-keyword">if</span> ((tok = gettoken(ps, es, &amp;q, &amp;eq)) == <span class="hljs-number">0</span>) <span class="hljs-keyword">break</span>;<br>    assert(tok == <span class="hljs-string">'a'</span>);<br>    cmd-&gt;argv[argc] = q;<br>    cmd-&gt;eargv[argc] = eq;<br>    assert(++argc &lt; MAXARGS);<br>    ret = parseredirs(ret, ps, es);<br>  }<br>  cmd-&gt;argv[argc] = <span class="hljs-number">0</span>;<br>  cmd-&gt;eargv[argc] = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">return</span> ret;<br>}<br><br><span class="hljs-comment">// NUL-terminate all the counted strings.</span><br><span class="hljs-keyword">struct</span> cmd* <span class="hljs-title function_">nulterminate</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cmd* cmd)</span> {<br>  <span class="hljs-type">int</span> i;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">backcmd</span>* <span class="hljs-title">bcmd</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">execcmd</span>* <span class="hljs-title">ecmd</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">listcmd</span>* <span class="hljs-title">lcmd</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pipecmd</span>* <span class="hljs-title">pcmd</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">redircmd</span>* <span class="hljs-title">rcmd</span>;</span><br><br>  <span class="hljs-keyword">if</span> (cmd == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br>  <span class="hljs-keyword">switch</span> (cmd-&gt;type) {<br>    <span class="hljs-keyword">case</span> EXEC:<br>      ecmd = (<span class="hljs-keyword">struct</span> execcmd*)cmd;<br>      <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; ecmd-&gt;argv[i]; i++) *ecmd-&gt;eargv[i] = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> REDIR:<br>      rcmd = (<span class="hljs-keyword">struct</span> redircmd*)cmd;<br>      nulterminate(rcmd-&gt;cmd);<br>      *rcmd-&gt;efile = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> PIPE:<br>      pcmd = (<span class="hljs-keyword">struct</span> pipecmd*)cmd;<br>      nulterminate(pcmd-&gt;left);<br>      nulterminate(pcmd-&gt;right);<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> LIST:<br>      lcmd = (<span class="hljs-keyword">struct</span> listcmd*)cmd;<br>      nulterminate(lcmd-&gt;left);<br>      nulterminate(lcmd-&gt;right);<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> BACK:<br>      bcmd = (<span class="hljs-keyword">struct</span> backcmd*)cmd;<br>      nulterminate(bcmd-&gt;cmd);<br>      <span class="hljs-keyword">break</span>;<br>  }<br>  <span class="hljs-keyword">return</span> cmd;<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>零库函数依赖 (-ffreestanding 编译、ld 链接)</li>
+<li>可以作为最小 Linux 的 init 程序</li>
+<li>用到文件描述符：一个打开文件的 “指针”</li>
+</ul>
+<blockquote>
+<p>上面这个编译好了之后，是直接可以跑的昂！！！</p>
+<p>上面这些代码写的十分精巧，下去要读一读昂！！！</p>
+</blockquote>
+<hr>
+<p>支持的功能：</p>
+<ul>
+<li>命令执行 <code>ls</code></li>
+<li>重定向 <code>ls &gt; a.txt</code></li>
+<li>管道 <code>ls | wc -l</code></li>
+<li>后台 <code>ls &amp;</code></li>
+<li>命令组合 <code>(echo a ; echo b) | wc -l</code></li>
+</ul>
+<h2 id="A-Zero-dependency-UNIX-Shell-from-xv6-1"><a href="#A-Zero-dependency-UNIX-Shell-from-xv6-1" class="headerlink" title="A Zero-dependency UNIX Shell (from xv6)"></a>A Zero-dependency UNIX Shell (from xv6)</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271056955.gif" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>我们应该如何阅读 <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/sh-xv6.c">sh-xv6.c</a> 的代码？ -&gt; 这里以fork()为例子</p>
+<ul>
+<li>strace + gdb!<ul>
+<li>set follow-fork-mode, set follow-exec-mode</li>
+</ul>
+</li>
+</ul>
+<h3 id="Pipe的实现理解"><a href="#Pipe的实现理解" class="headerlink" title="Pipe的实现理解"></a>Pipe的实现理解</h3><ul>
+<li>表达式求值：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271117251.png" srcset="/img/loading.gif" lazyload alt="image-20221227111733215"></p>
+<ul>
+<li>shell解析：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271118721.png" srcset="/img/loading.gif" lazyload alt="image-20221227111849691"></p>
+<blockquote>
+<p>这里的echo可能涉及系统调用啊，list;，这里的;又涉及到执行顺序。语法树中，先执行左边的语法树，再执行右边的语法树。可能还会涉及到编译原理相关的一些内容。</p>
+</blockquote>
+<h3 id="Pipe的形式语义-amp-实现"><a href="#Pipe的形式语义-amp-实现" class="headerlink" title="Pipe的形式语义 &amp; 实现"></a>Pipe的形式语义 &amp; 实现</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271125670.png" srcset="/img/loading.gif" lazyload alt="image-20221227112506638"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271127464.png" srcset="/img/loading.gif" lazyload alt="image-20221227112756432"></p>
+<blockquote>
+<p>1是管道的读口，0是管道的写口。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271129862.png" srcset="/img/loading.gif" lazyload alt="image-20221227112945829"></p>
+<blockquote>
+<p>执行fork()，会完整把进程状态拷贝一份（包括这里的文件描述符，意味着，父子进程其实共享了一份管道。管道不会被复制一份哈！！！因为fork()完全拷贝的是进程的状态和享有的资源（例如printf缓冲区），而pipe是操作系统的资源，因此复制的时候，只能复制进程中的对应的管道创建的文件描述符昂！！！）</p>
+<p>下面有点代码的解析，首先这里有几个概念：0 -&gt; stdin，1 -&gt; stdout, p[0] -&gt; 管道输入，p[1] -&gt; 管道输出。</p>
+</blockquote>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">case</span> PIPE:<br>			<span class="hljs-comment">// 创建一个管道</span><br>      pcmd = (<span class="hljs-keyword">struct</span> pipecmd*)cmd;<br>      assert(syscall(SYS_pipe, p) &gt;= <span class="hljs-number">0</span>);<br>			<span class="hljs-comment">// 子进程</span><br>      <span class="hljs-keyword">if</span> (syscall(SYS_fork) == <span class="hljs-number">0</span>) {<br>        <span class="hljs-comment">// 把编号为1的文件描述符给关掉了(也就是刚刚的stdout被关掉了)</span><br>        syscall(SYS_close, <span class="hljs-number">1</span>);<br>        <span class="hljs-comment">// 把刚刚关掉的stdout，指向了p[1]，也就是管道的写口</span><br>        syscall(SYS_dup, p[<span class="hljs-number">1</span>]);<br>        <span class="hljs-comment">// 把p[0]关掉</span><br>        syscall(SYS_close, p[<span class="hljs-number">0</span>]);<br>        <span class="hljs-comment">// 把p[1]关掉</span><br>        syscall(SYS_close, p[<span class="hljs-number">1</span>]);<br>        <span class="hljs-comment">// 其实相当于把子进程的输出接入管道的输入，其他的文件描述符都关掉啦！！！</span><br>        runcmd(pcmd-&gt;left);<br>      }<br><br>			<span class="hljs-comment">// 下面这里是类似的，把管道的写口导向到进程的stdin。然后把这个进程中，多余的文件描述符都关掉啦！！！</span><br>      <span class="hljs-keyword">if</span> (syscall(SYS_fork) == <span class="hljs-number">0</span>) {<br>        syscall(SYS_close, <span class="hljs-number">0</span>);<br>        syscall(SYS_dup, p[<span class="hljs-number">0</span>]);<br>        syscall(SYS_close, p[<span class="hljs-number">0</span>]);<br>        syscall(SYS_close, p[<span class="hljs-number">1</span>]);<br>        runcmd(pcmd-&gt;right);<br>      }<br>      syscall(SYS_close, p[<span class="hljs-number">0</span>]);<br>      syscall(SYS_close, p[<span class="hljs-number">1</span>]);<br>      syscall(SYS_wait4, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>      syscall(SYS_wait4, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>      <span class="hljs-keyword">break</span>;<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271153301.png" srcset="/img/loading.gif" lazyload alt="image-20221227115333229"></p>
+<blockquote>
+<ol>
+<li>子进程执行管道左边的指令，并且把输入塞进管道。</li>
+<li>子进程执行管道右边的指令，取出管道中的内容，并计算得出结果。</li>
+<li>触发管道操作本身的父进程，wait上面两个子进程的结束，这就是管道！！！优雅干净！！！</li>
+</ol>
+</blockquote>
+<ul>
+<li>本质还是上面形式语义的那一棵树树！！！|变成了管道，左右两边的命令变成了子进程执行而已昂，通过创建的管道进行了进程间的同步！！！</li>
+</ul>
+<p>关键点</p>
+<ul>
+<li>命令的执行、重定向、管道和对应的系统调用</li>
+<li>这里用到 <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/minimal.S">minimal.S</a> 会简化输出</li>
+</ul>
+<figure class="highlight jboss-cli"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-keyword">echo</span> '<span class="hljs-string">./a.out</span> &gt; <span class="hljs-string">/tmp/a.txt</span>' | strace -f <span class="hljs-string">./sh</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>还可以用管道过滤不想要的系统调用</li>
+</ul>
+<h2 id="如何理解底层源码调用"><a href="#如何理解底层源码调用" class="headerlink" title="如何理解底层源码调用"></a>如何理解底层源码调用</h2><ol>
+<li>我们应该如何阅读 <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/sh-xv6.c">sh-xv6.c</a> 的代码？ -&gt; 这里以fork()为例子<ul>
+<li>strace + gdb!<ul>
+<li>set follow-fork-mode, set follow-exec-mode</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>一步一步跟着走</p>
+</blockquote>
+<ol start="2">
+<li>系统调用追踪</li>
+</ol>
+<blockquote>
+<p> Strace -f -o /tmp/strace.log ./sh</p>
+<p>Tail -f /tmp/strace.log</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271205437.png" srcset="/img/loading.gif" lazyload alt="image-20221227120511392"></p>
+<ul>
+<li>仔细看看执行命令的时候，系统调用时如何运行的，也会对于我们理解指令底层的执行，有更好的帮助昂！！！</li>
+<li>小技巧：如何想要系统调用的序列干净一点，可以把所有的进程绑定到同一个CPU上(Shell)，干净！！！</li>
+</ul>
+<h2 id="The-Shell-Programming-Language"><a href="#The-Shell-Programming-Language" class="headerlink" title="The Shell Programming Language"></a>The Shell Programming Language</h2><p>基于文本替换的快速工作流搭建</p>
+<ul>
+<li>重定向: <code>cmd &gt; file &lt; file 2&gt; /dev/null</code></li>
+<li>顺序结构: <code>cmd1; cmd2</code>, <code>cmd1 &amp;&amp; cmd2</code>, <code>cmd1 || cmd2</code></li>
+<li>管道: <code>cmd1 | cmd2</code></li>
+<li>预处理: <code>$()</code>, <code>&lt;()</code></li>
+<li>变量/环境变量、控制流……</li>
+</ul>
+<hr>
+<p>Job control</p>
+<ul>
+<li>类比窗口管理器里的 “叉”、“最小化”<ul>
+<li>jobs, fg, bg, wait</li>
+<li>(今天的 GUI 并没有比 CLI 多做太多事)</li>
+</ul>
+</li>
+</ul>
+<h2 id="UNIX-Shell-Traps-and-Pitfalls"><a href="#UNIX-Shell-Traps-and-Pitfalls" class="headerlink" title="UNIX Shell: Traps and Pitfalls"></a>UNIX Shell: Traps and Pitfalls</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281107551.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在 “自然语言”、“机器语言” 和 “1970s 的算力” 之间达到优雅的平衡</p>
+<ul>
+<li>平衡意味着并不总是完美</li>
+</ul>
+<hr>
+<ul>
+<li>操作的 “优先级”？<ul>
+<li><code>ls &gt; a.txt | cat</code> (bash/zsh)</li>
+</ul>
+</li>
+<li>文本数据 “责任自负”<ul>
+<li>有空格？后果自负！(PowerShell: 我有 object stream pipe 啊喂) -&gt; touch “a b.txt” -&gt; vim a b.txt -&gt; 寄了，同时操作两个文件，OS操作的时候，当成两个文件orz。Unix的设计里面，空格会具有二义性，既可能是命令的分割，也可能是文件的分割，这是“自然语言的缺陷！！！”，本身我们也会引发歧义昂，不是操作系统的问题昂！！！</li>
+</ul>
+</li>
+<li>行为并不总是 intuitive</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">echo</span> hello &gt; /etc/a.txt</span><br>bash: /etc/a.txt: Permission denied<br><span class="hljs-meta prompt_">$ </span><span class="language-bash">sudo <span class="hljs-built_in">echo</span> hello &gt; /etc/a.txt</span><br>bash: /etc/a.txt: Permission denied<br><span class="hljs-meta prompt_"># </span><span class="language-bash">先执行<span class="hljs-built_in">echo</span> hello &gt; /etc/a.txt，再去执行sudo，导致出现问题！！！执行命令的时候，还没有获得sudo的权限昂！！！</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Unix-Shell在做啥？"><a href="#Unix-Shell在做啥？" class="headerlink" title="Unix Shell在做啥？"></a>Unix Shell在做啥？</h2><blockquote>
+<p>命令 -&gt; 一颗树(Semantics) -&gt; 根据这棵树，执行系统调用！！！</p>
+</blockquote>
+<h2 id="展望未来"><a href="#展望未来" class="headerlink" title="展望未来"></a>展望未来</h2><blockquote>
+<p>Open question: 我们能否从根本上改变命令行的交互模式？</p>
+</blockquote>
+<p>Shell 连接了用户和操作系统</p>
+<ul>
+<li>是 “自然语言”、“机器语言” 之间的边缘地带！</li>
+<li>非常适合 BERT 这样的语言模型</li>
+</ul>
+<hr>
+<p>已经看到的一些方向</p>
+<ul>
+<li>fish, zsh, …</li>
+<li>Stackoverflow, tldr, <a target="_blank" rel="noopener" href="https://github.com/nvbn/thefuck">thef**k</a> (自动修复)</li>
+<li>Command palette of vscode (Ctrl-Shift-P)</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3371111">Executable formal semantics for the POSIX shell</a> (POPL’20)</li>
+</ul>
+<h1 id="终端和-Job-Control"><a href="#终端和-Job-Control" class="headerlink" title="终端和 Job Control"></a>终端和 Job Control</h1><h2 id="Shell-还有一些未解之谜"><a href="#Shell-还有一些未解之谜" class="headerlink" title="Shell 还有一些未解之谜"></a>Shell 还有一些未解之谜</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212271056172.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>为什么 Ctrl-C 可以退出程序？</p>
+<p>为什么有些程序又不能退出？</p>
+<ul>
+<li>没有人 read 这个按键，为什么进程能退出？</li>
+<li>Ctrl-C 到底是杀掉一个，还是杀掉全部？<ul>
+<li>如果我 fork 了一份计算任务呢？</li>
+<li>如果我 fork-execve 了一个 shell 呢？<ul>
+<li>Hmmm……</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>为什么 <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/fork-printf.c">fork-printf.c</a> 会在管道时有不同表现？</p>
+<ul>
+<li>libc 到底是根据什么调整了缓冲区的行为？</li>
+</ul>
+<hr>
+<p>为什么 Tmux 可以管理多个窗口？</p>
+<ul>
+<li>tmux是怎么实现的呢？</li>
+</ul>
+<h2 id="答案：终端"><a href="#答案：终端" class="headerlink" title="答案：终端"></a>答案：终端</h2><p>终端是 UNIX 操作系统中一类非常特别的设备！</p>
+<ul>
+<li>RTFM: tty, stty, …</li>
+</ul>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281135543.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<blockquote>
+<p>tmux开的每一个新的端口，都是一个终端！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281155244.png" srcset="/img/loading.gif" lazyload alt="image-20221228115554210"></p>
+<blockquote>
+<p>虽然三个窗口在一个终端上，但是其实有三个状态！！！</p>
+<p>有意思的操作！！！！</p>
+<ul>
+<li>在tty1 -&gt; echo hello &gt; /dev/pts/2。在tty1中将hello打印到第二个终端上。</li>
+<li>甚至可以vim /dev/pts/2，编辑终端！！！，:%!ls，然后保存到vim中。实质上保存过程中，vim就会将数据写入我们的设备中。</li>
+</ul>
+</blockquote>
+<h2 id="观察-Tmux-的实现"><a href="#观察-Tmux-的实现" class="headerlink" title="观察 Tmux 的实现"></a>观察 Tmux 的实现</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281200391.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>首先，我们可以 “使用” tmux</p>
+<ul>
+<li>在多个窗口中执行 tty，会看到它们是不同的终端设备！</li>
+</ul>
+<hr>
+<p>然后，我们也可以把 tmux “打开”</p>
+<ul>
+<li>strace (<code>-o</code>) 可以看到一些关键的系统调用 (以及 man 7 pty)</li>
+</ul>
+<blockquote>
+<p>tmux把你按键的信息捕捉下来，并且转发给对应的terminal，就可以实现了昂！！！</p>
+</blockquote>
+<h2 id="终端相关的-API"><a href="#终端相关的-API" class="headerlink" title="终端相关的 API"></a>终端相关的 API</h2><p>为什么 <code>fork-printf</code> 能识别 tty 和管道？</p>
+<ul>
+<li>当然是观察 strace 了！<ul>
+<li>找到是哪个系统调用 “识别” 出了终端？</li>
+</ul>
+</li>
+</ul>
+<hr>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello, World\n"</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281205254.png" srcset="/img/loading.gif" lazyload alt="image-20221228120508216"></p>
+<blockquote>
+<p>通过fstat系统调用，查看是不是终端！！！</p>
+</blockquote>
+<h2 id="Session-Process-Group-和信号"><a href="#Session-Process-Group-和信号" class="headerlink" title="Session, Process Group 和信号"></a>Session, Process Group 和信号</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281205965.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>参考 <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/signal-handler.c">signal-handler.c</a></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">handler</span><span class="hljs-params">(<span class="hljs-type">int</span> signum)</span> {<br>  <span class="hljs-keyword">switch</span> (signum) {<br>    <span class="hljs-keyword">case</span> SIGINT:<br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Received SIGINT!\n"</span>);<br>      <span class="hljs-keyword">break</span>;<br>    <span class="hljs-keyword">case</span> SIGQUIT:<br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Received SIGQUIT!\n"</span>);<br>      <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>      <span class="hljs-keyword">break</span>;<br>  }<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">cleanup</span><span class="hljs-params">()</span> {<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"atexit() cleanup\n"</span>);<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  signal(SIGINT,  handler);<br>  signal(SIGQUIT, handler);<br>  atexit(cleanup);<br><br>  <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) {<br>    <span class="hljs-type">char</span> buf[<span class="hljs-number">4096</span>];<br>    <span class="hljs-type">int</span> nread = read(STDIN_FILENO, buf, <span class="hljs-keyword">sizeof</span>(buf));<br>    buf[nread - <span class="hljs-number">1</span>] = <span class="hljs-string">'\0'</span>;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">"[%d] Got: %s\n"</span>, getpid(), buf);<br>    <span class="hljs-keyword">if</span> (nread &lt; <span class="hljs-number">0</span>) {<br>      perror(<span class="hljs-string">"read"</span>);<br>      <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    }<br>    sleep(<span class="hljs-number">1</span>);<br>  }<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>ctrl + c，本质上我们终端会给我们的前台进程发送一个信号，进程收到这个信号后，可以有相应的信号的handler。（ctrl + c -&gt; SIGINT, ctrl + / -&gt; SIGQUIT）。</p>
+<p>如果进程没有自定义handler的话，SIGINT默认对应的就是退出！</p>
+<p>上面的程序会从标准输入里面读入数据，并且打印出来。ctrl + c没有用！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281210841.png" srcset="/img/loading.gif" lazyload alt="image-20221228121014810"></p>
+<p><strong>终端给进程发信号！！！</strong></p>
+<ul>
+<li>如果fork拷贝了一份呢？？？ -&gt; 对应同一个外设tty，对于多个进程，怎么去发送SIGINT等信号呢（是不是应该把所有的fork()，都发送一次呢？？？）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281212933.png" srcset="/img/loading.gif" lazyload alt="image-20221228121251900"></p>
+<blockquote>
+<ul>
+<li>任何时候，只能有一个前台的进程组(Terminal里面)，因此ctrl + c杀不掉后台的进程。</li>
+<li>如果我们启动一个shell，会启动一个session</li>
+<li>一个session里面，有很多“进程组”的概念。进程组可以放前台，可以放后台。无论fork多少个进程，所有的进程都是属于一个进程组（Process Group ID是一样的）！</li>
+<li>ctrl + c或者ctrl + /等terminal信号，会发送给前台进程组里所有的进程。（这样就可以一起退出）</li>
+<li>有些进程可以拒绝退出，转为后台执行（收到SIGINT之后，自己Handle就可以了嘛，本质上就是：</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281305366.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="SIGSEGV-和-SIGFPE"><a href="#SIGSEGV-和-SIGFPE" class="headerlink" title="SIGSEGV 和 SIGFPE"></a>SIGSEGV 和 SIGFPE</h2><p>大家熟悉的 Segmentation Fault/Floating point exception (core dumped)</p>
+<ul>
+<li>#GP, #PF 或 #DIV<ul>
+<li>UNIX 系统会给进程发送一个信号</li>
+<li>此时可以生成一个 “core” 文件 (ELF 格式)，能用 gdb 调试</li>
+</ul>
+</li>
+</ul>
+<p>UNIX (System V) 信号其实是有一些 dark corners 的</p>
+<ul>
+<li>如果SIGSEGV里再次SIGSEGV?<ul>
+<li>POSIX.1 solved the portability mess by specifying sigaction(2), which provides explicit control of the semantics when a signal handler is invoked; use that interface instead of signal()<ul>
+<li>支持多线程 (早期的 UNIX 还没有多线程)、信号屏蔽、……</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Job-Control-背后的机制"><a href="#Job-Control-背后的机制" class="headerlink" title="Job Control 背后的机制"></a>Job Control 背后的机制</h2><blockquote>
+<p>RTFM: setpgid/getpgid(2)，它解释了 process group, session, controlling terminal 之间的关系</p>
+<p><code>$ man setpgid</code></p>
+<p>——你神奇地发现，读手册不再是障碍了！</p>
+</blockquote>
+<ul>
+<li>The PGID (process-group ID) is preserved across an execve(2) and inherited in fork(2)…</li>
+<li>Each process group is a member of a <em>session</em></li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281308115.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="Job-Control-RTFM-cont’d"><a href="#Job-Control-RTFM-cont’d" class="headerlink" title="Job Control: RTFM (cont’d)"></a>Job Control: RTFM (cont’d)</h2><ul>
+<li>A session can have a controlling terminal<ul>
+<li>At any time, <strong>one (and only one) of the process groups in the session can be the foreground process group for the terminal; the remaining process groups are in the background.</strong><ul>
+<li><code>./a.out &amp;</code> 创建新的进程组 (使用 setpgid)</li>
+</ul>
+</li>
+<li>If a signal is generated from the terminal (e.g., typing the interrupt key to generate SIGINT), <strong>that signal is sent to the foreground process group</strong>.<ul>
+<li>Ctrl-C 是终端 (设备) 发的信号，发给 foreground 进程组</li>
+<li>所有 fork 出的进程 (默认同一个 PGID) 都会收到信号</li>
+<li>可以修改 <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/signal-handler.c">signal-handler.c</a> 观察到这个行为</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Job-Control-RTFM-cont’d-1"><a href="#Job-Control-RTFM-cont’d-1" class="headerlink" title="Job Control: RTFM (cont’d)"></a>Job Control: RTFM (cont’d)</h2><ul>
+<li>Only the foreground process group may read(2) from the terminal; if a background process group tries to read(2) from the terminal, then the group is sent a SIGTTIN signal, which suspends it.<ul>
+<li>这解释了 <code>cat &amp;</code> 时你看到的 “suspended (tty input)”</li>
+<li>同一个进程组的进程 read tty 会竞争</li>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/signal-handler.c">signal-handler.c</a> 同样可以观察到这个行为</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>The setpgid() and getpgrp() calls are used by programs such as bash(1) to create process groups in order to <strong>implement shell job control</strong>.<ul>
+<li>如果希望从进程组里 detach, 使用 setpgid</li>
+<li><code>ps -eo pid,pgid,cmd</code> 可以查看进程的 pgid</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>shell在执行的时候，可以通过fg命令，把controlling terminal交给某个前台进程，由进程执行，这个时候，shell程序就不能接受来自用户的输入了，转为这个前台进程使用controlling terminal。</p>
+</blockquote>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li>不怕读手册：man sh</li>
+<li>shell可以直接把指令丢到后台运行，jobs可以看到其中的内容昂！！！</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212281105246.png" srcset="/img/loading.gif" lazyload alt="image-20221228110548122"></p>
+<blockquote>
+<p>1970年代的Shell就很酷啦。</p>
+</blockquote>
+<ol start="3">
+<li>tmux也可以完成类似的功能昂！！！把任务放在后台执行昂！！！</li>
+<li>重定向和管道啊之类，多种命令的组合的优先级，在不同的shell之间，可能是不一样的昂！！！（bash和zsh就不一样昂！！！）</li>
+<li>tty可以查看当前终端</li>
+<li>man setpgid , get-bid</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-13-系统调用和Shell</div>
+      <div>http://example.com/2022/12/27/njuos-13-xi-tong-diao-yong-he-shell/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/23/njuos-12-jin-cheng-de-di-zhi-kong-jian/" title="NJUOS-12-进程的地址空间">
+                        <span class="hidden-mobile">NJUOS-12-进程的地址空间</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
