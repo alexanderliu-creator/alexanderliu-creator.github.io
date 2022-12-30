@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212291025323.png">
 <meta property="article:published_time" content="2022-12-29T02:24:37.000Z">
-<meta property="article:modified_time" content="2022-12-29T09:25:15.801Z">
+<meta property="article:modified_time" content="2022-12-30T04:01:57.951Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.4k 字
+          6.7k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          29 分钟
+          56 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年12月29日 下午
+                    本文最后更新于：2022年12月30日 中午
                   
                 
               </p>
@@ -448,10 +448,14 @@
 
 
 <h1 id="封装-3-更多的进程-x2F-操作系统功能"><a href="#封装-3-更多的进程-x2F-操作系统功能" class="headerlink" title="封装 (3): 更多的进程/操作系统功能"></a>封装 (3): 更多的进程/操作系统功能</h1><h2 id="err-error-perror"><a href="#err-error-perror" class="headerlink" title="err, error, perror"></a>err, error, perror</h2><p>所有 API 都可能失败</p>
-<figure class="highlight gams"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gams"><span class="hljs-symbol">$</span> gcc nonexist.c<br>gcc: error: nonexist.c: <span class="hljs-keyword">No</span> such <span class="hljs-keyword">file</span> <span class="hljs-keyword">or</span> directory<br></code></pre></td></tr></tbody></table></figure>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">$ gcc nonexist.c<br>gcc: error: nonexist.c: No such file or directory<br></code></pre></td></tr></tbody></table></figure>
 
 <hr>
 <p>这个 “No such file or directory” 似乎见得有点多？</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212300952827.png" srcset="/img/loading.gif" lazyload alt="image-20221230095206795"></p>
+<blockquote>
+<p>上面这些函数，表现出来的行为都是一致的，背后是不是有什么东西在支撑这个呢？非常能够猜到，这个报错or提示，应该来自同一个库 or 包来实现。</p>
+</blockquote>
 <ul>
 <li><code>cat nonexist.c, wc nonexist.c</code> 都是同样的 error message</li>
 <li>这不是巧合！<ul>
@@ -462,14 +466,289 @@
 </li>
 </ul>
 </li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212300956757.png" srcset="/img/loading.gif" lazyload alt="image-20221230095618731"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212300956865.png" srcset="/img/loading.gif" lazyload alt="image-20221230095652824"></p>
+<blockquote>
+<p>strace看看底层更加有意思，甚至打印的都是分开的，有点组件的感觉。（其实底层call的是同一个library）-&gt; 已经被广泛接受啦！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212300958564.png" srcset="/img/loading.gif" lazyload alt="image-20221230095857527"></p>
+<ul>
 <li>errno 是进程共享还是线程独享？<ul>
 <li>这下知道协程的轻量了吧</li>
 </ul>
 </li>
 </ul>
+<h2 id="environ-7"><a href="#environ-7" class="headerlink" title="environ (7)"></a>environ (7)</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212300951063.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>我们也可以实现自己的 <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/env.c">env.c</a></p>
+<p><code>alex ~  $ man environ</code> -&gt; 可以看看这个手册昂</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  <span class="hljs-keyword">extern</span> <span class="hljs-type">char</span> **environ;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">char</span> **env = environ; *env; env++) {<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%s\n"</span>, *env);<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>问题来了：<strong>environ 是谁赋值的</strong>？<ul>
+<li>这个函数又是在哪里定义的？</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301017449.png" srcset="/img/loading.gif" lazyload alt="image-20221230101739422"></p>
+<blockquote>
+<p>怎么去查，用gdb来debug一下，看看！！！</p>
+</blockquote>
+<ul>
+<li><code>gcc env.c -g -static &amp;&amp; gdb a.out</code>:</li>
+</ul>
+<p>​	<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301030827.png" srcset="/img/loading.gif" lazyload alt="image-20221230103040781"></p>
+<ul>
+<li><p>哦～在_libc_start_main()中，完成了对于上面这个environ变量的赋值。</p>
+</li>
+<li><p>动态链接是一样的，是可以看到的昂！！！</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301034916.png" srcset="/img/loading.gif" lazyload alt="image-20221230103432875"></p>
+<blockquote>
+<p>_init里，就是在那个ld.so那个loader里面昂！！！</p>
+</blockquote>
+<ul>
+<li><p>debugger + libc，就可以看到很多执行流程，可以边学习边康康昂！！！</p>
+</li>
+<li><p>RTFM 后</p>
+<ul>
+<li>对环境变量的理解又上升了</li>
+</ul>
+</li>
+</ul>
+<h1 id="封装-4-地址空间"><a href="#封装-4-地址空间" class="headerlink" title="封装 (4): 地址空间"></a>封装 (4): 地址空间</h1><h2 id="malloc-和-free-amp-自定义malloc和free"><a href="#malloc-和-free-amp-自定义malloc和free" class="headerlink" title="malloc 和 free &amp; 自定义malloc和free"></a>malloc 和 free &amp; 自定义malloc和free</h2><blockquote>
+<p>很重要！！！申请内存！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301037337.png" srcset="/img/loading.gif" lazyload alt="image-20221230103716279"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301045968.png" srcset="/img/loading.gif" lazyload alt="image-20221230104515939"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301046898.png" srcset="/img/loading.gif" lazyload alt="image-20221230104620858"></p>
+<blockquote>
+<ul>
+<li>本质上malloc/free就是进行内存的“区间管理”嘛！！</li>
+<li>红黑树之类的数据结构会有偏差！！！算法里面强调worst case的best，不符合OS实际应用昂！！！多处理器上，不合理！！！</li>
+</ul>
+</blockquote>
+<h2 id="实现高效的-malloc-x2F-free"><a href="#实现高效的-malloc-x2F-free" class="headerlink" title="实现高效的 malloc/free"></a>实现高效的 malloc/free</h2><blockquote>
+<p><strong>Premature optimization is the root of all evil.</strong></p>
+<p>——D. E. Knuth</p>
+</blockquote>
+<p>重要的事情说三遍：</p>
+<ul>
+<li>脱离 workload 做优化就是耍流氓</li>
+<li>脱离 workload 做优化就是耍流氓</li>
+<li>脱离 workload 做优化就是耍流氓<ul>
+<li>在开始考虑性能之前，理解你需要考虑什么样的性能</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>然后，去哪里找 workload?</strong> -&gt; 找到业界</p>
+<ul>
+<li>当然是paper了 (顺便白得一个方案)<ul>
+<li><a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/research/uploads/prod/2019/06/mimalloc-tr-v1.pdf">Mimalloc: free list sharding in action</a> (APLAS’19)</li>
+</ul>
+</li>
+</ul>
+<h2 id="Workload-分析"><a href="#Workload-分析" class="headerlink" title="Workload 分析"></a>Workload 分析</h2><blockquote>
+<p>指导思想：O(n)大小的对象分配后至少有Ω(<em>n</em>) 的读写操作，否则就是 performance bug (不应该分配那么多)。</p>
+</blockquote>
+<ul>
+<li>越小的对象创建/分配越频繁<ul>
+<li>字符串、临时对象等 (几十到几百字节)；生存周期可长可短</li>
+</ul>
+</li>
+<li>较为频繁地分配中等大小的对象<ul>
+<li>较大的数组、复杂的对象；更长的生存周期</li>
+</ul>
+</li>
+<li>低频率的大对象<ul>
+<li>巨大的容器、分配器；很长的生存周期</li>
+</ul>
+</li>
+<li>Chanllenge: <strong>并行、并行、再并行</strong><ul>
+<li>所有分配都会在所有处理器上发生</li>
+<li>使用链表/区间树 (first fit) 可不是个好想法</li>
+</ul>
+</li>
+</ul>
+<h2 id="Malloc-Fast-and-Slow"><a href="#Malloc-Fast-and-Slow" class="headerlink" title="Malloc, Fast and Slow"></a>Malloc, Fast and Slow</h2><p><strong>设置两套系统</strong>：</p>
+<ul>
+<li>fast path<ul>
+<li>性能极好、并行度极高、覆盖大部分情况</li>
+<li>但有小概率会失败 (fall back to slow path)</li>
+</ul>
+</li>
+<li>slow path<ul>
+<li>不在乎那么快</li>
+<li>但把困难的事情做好<ul>
+<li>计算机系统里有很多这样的例子 (比如 <strong>cache</strong>)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>人类也是这样的系统</p>
+<ul>
+<li>Daniel Kahneman. <em>Thinking, Fast and Slow</em>. Farrar, Straus and Giroux, 2011.</li>
+</ul>
+<h2 id="Malloc-Fast-Slow-Path-设计"><a href="#Malloc-Fast-Slow-Path-设计" class="headerlink" title="Malloc: Fast Slow Path 设计"></a>Malloc: Fast Slow Path 设计</h2><p><strong>使所有 CPU 都能并行地申请内存</strong></p>
+<ul>
+<li><p>Fast</p>
+<ul>
+<li><p>线程都事先瓜分一些 “领地” (thread-local allocation buffer)</p>
+</li>
+<li><p>默认从自己的领地里分配</p>
+<ul>
+<li>除了在另一个 CPU 释放，acquire lock 几乎总是成功</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Slow</p>
+<ul>
+<li>如果自己的领地不足，就从全局的池子里借一点</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>不要在乎一点小的浪费<ul>
+<li>这就是为什么要对齐到 2k 字节</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>绝大多数fast path，很少的slow path -&gt; 如果slow path还是用链表实现，大锁的contension很小的昂！！！加上可能马上就释放掉了！！！</p>
+</blockquote>
+<ul>
+<li>为每一个分配大小，串成链表！！！（视频一个半小时的位置，这里讲的很好！！！可以去听听！！！）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301134436.png" srcset="/img/loading.gif" lazyload alt="image-20221230113432373"></p>
+<blockquote>
+<ul>
+<li><p>一个page_size是64KB，内存按需大小分块。比如16B，那么一页，就相当于4096块。32B -&gt; 2048，64B -&gt; 1024。分配的时候，按照大小范围分配，很快！！！</p>
+</li>
+<li><p>Malloc(28B) -&gt; malloc(32B)，从链表头部取一块儿，就完成了分配，O(1)，很快昂！！！你看，32B总共有2048，分配两千次，才可能触发一次Slow Path，就很酷昂！！！很快！！！！！</p>
+</li>
+<li><p>注意，每个Page的链表头，也就是slab，需要一把锁。这样从这个页面里面，取出内容进行分配的时候，并发才不会出问题昂。不过这个是每个CPU拥有的内存啦，也快很多昂，不是全局的！！！</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="小内存：Segregated-List"><a href="#小内存：Segregated-List" class="headerlink" title="小内存：Segregated List"></a>小内存：Segregated List</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301122515.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>分配: Segregated List (Slab)</p>
+<ul>
+<li>每个 slab 里的每个对象都一样大<ul>
+<li>每个线程拥有每个对象大小的 slab</li>
+<li>fast path → 立即在线程本地分配完成</li>
+<li>slow path → pgalloc()</li>
+</ul>
+</li>
+<li>两种实现<ul>
+<li>全局大链表 v.s. List sharding (per-page 小链表)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301122199.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>回收</p>
+<ul>
+<li>直接归还到 slab 中<ul>
+<li>注意这可能是另一个线程持有的 slab，需要 per-slab 锁 (小心数据竞争)</li>
+</ul>
+</li>
+</ul>
+<h2 id="大内存：一把大锁保平安"><a href="#大内存：一把大锁保平安" class="headerlink" title="大内存：一把大锁保平安"></a>大内存：一把大锁保平安</h2><p>Buddy system (1963)</p>
+<ul>
+<li>如果你想分配 1, 2, 3, 4, …, n个连续的页面？<ul>
+<li>例如：64 KB/页面</li>
+</ul>
+</li>
+<li>那就 first fit 或者 best fit 吧……</li>
+</ul>
+<hr>
+<p>你只需要一个数据结构解决问题</p>
+<ul>
+<li>区间树；线段树……</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301144497.png" srcset="/img/loading.gif" lazyload alt="image-20221230114455461"></p>
+<ul>
+<li>用链表当然也可以啦，很方便！！！当然啦，线段树也可以，对应的就是buddy system。</li>
+</ul>
+<h2 id="现实世界中的-malloc-x2F-free"><a href="#现实世界中的-malloc-x2F-free" class="headerlink" title="现实世界中的 malloc/free"></a>现实世界中的 malloc/free</h2><p>以上就是所有现代 malloc/free 实现的基础</p>
+<ul>
+<li>当然，实际情况会复杂一些，性能也是锱铢必较<ul>
+<li><a target="_blank" rel="noopener" href="https://sourceware.org/glibc/wiki/MallocInternals">glibc</a>: arena → heap → tcache (thread-local)</li>
+<li><a target="_blank" rel="noopener" href="https://google.github.io/tcmalloc/design.html">tcmalloc</a>: thread-caching malloc, <a target="_blank" rel="noopener" href="https://github.com/microsoft/mimalloc">mimalloc</a><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212301141359.png" srcset="/img/loading.gif" lazyload alt="img"></li>
+<li>OpenJDK: ZGC: region based + tlab (thread-local)<ul>
+<li>managed memory 允许 object move，因此复杂得多……</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="无止境地封装"><a href="#无止境地封装" class="headerlink" title="无止境地封装"></a>无止境地封装</h1><h2 id="想知道有没有更多的功能？"><a href="#想知道有没有更多的功能？" class="headerlink" title="想知道有没有更多的功能？"></a>想知道有没有更多的功能？</h2><p>RTFM: <a target="_blank" rel="noopener" href="https://www.gnu.org/software/libc/manual/">The GNU C Library</a>, RTFSC: <a target="_blank" rel="noopener" href="https://sourceware.org/newlib/">Newlib</a></p>
+<ul>
+<li>都不太长 (glibc 的手册和 newlib 的源码) 也好读</li>
+<li>Computer System 系列课程的重要目标：摆正看手册的心态</li>
+</ul>
+<hr>
+<p>你会发现很多宝藏</p>
+<ul>
+<li>Globbing</li>
+<li>Regex</li>
+<li>Shell-style word expansion</li>
+<li>……</li>
+</ul>
+<h2 id="我们还可以……"><a href="#我们还可以……" class="headerlink" title="我们还可以……"></a>我们还可以……</h2><p>走出 C 的领域，基于 libc 实现</p>
+<ul>
+<li>C++ 编译器<ul>
+<li>继续实现 C++ Standard Library</li>
+<li>继续实现 <a target="_blank" rel="noopener" href="https://openjdk.java.net/groups/hotspot/">OpenJDK (HotSpot)</a></li>
+<li>继续实现 <a target="_blank" rel="noopener" href="https://v8.dev/">V8</a> (JavaScript)</li>
+</ul>
+</li>
+<li>CPython</li>
+<li>Go<ul>
+<li>再之后 Go 就可以自己编译自己了 (Goodbye, C!)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>Eventually, (千疮百孔) 的整个计算机世界！</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3209212">C is not a low-level language</a> (CACM’18)</li>
+<li><a target="_blank" rel="noopener" href="https://gankra.github.io/blah/c-isnt-a-language/">C isn’t a programming language any more</a> (Gankra’s Blog)</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>shell + libc，就已经足以构建所有的上层应用啦，这俩本质上都是最底层操作系统层面kernel的API的封装昂！！！</p>
+</li>
+<li><p>后面就开始介绍kernel内部的实现啦！！！(本质就是一个C程序昂！！！)</p>
+</li>
+</ul>
+</blockquote>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="无止境地封装-1"><a href="#无止境地封装-1" class="headerlink" title="无止境地封装"></a>无止境地封装</h1><h2 id="想知道有没有更多的功能？-1"><a href="#想知道有没有更多的功能？-1" class="headerlink" title="想知道有没有更多的功能？"></a>想知道有没有更多的功能？</h2><p>RTFM: <a target="_blank" rel="noopener" href="https://www.gnu.org/software/libc/manual/">The GNU C Library</a>, RTFSC: <a target="_blank" rel="noopener" href="https://sourceware.org/newlib/">Newlib</a></p>
+<ul>
+<li>都不太长 (glibc 的手册和 newlib 的源码) 也好读</li>
+<li>Computer System 系列课程的重要目标：摆正看手册的心态</li>
+</ul>
+<hr>
+<p>你会发现很多宝藏</p>
+<ul>
+<li>Globbing</li>
+<li>Regex</li>
+<li>Shell-style word expansion</li>
+<li>……</li>
+</ul>
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
 <li>Vedio link: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17F411s7e9/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd%EF%BC%8C%E8%BF%98%E6%98%AF%E5%BB%BA%E8%AE%AE%E7%9C%8B%E7%9C%8B%EF%BC%8C%E5%B0%A4%E5%85%B6%E6%88%91%E8%BF%99%E7%A7%8DC%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E4%B8%8D%E6%89%8E%E5%AE%9E%E7%9A%84orz">https://www.bilibili.com/video/BV17F411s7e9/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd，还是建议看看，尤其我这种C语言基础不扎实的orz</a></li>
 <li>perror -&gt; print a system error message，可以<code>$ man 3 perror</code>，查看调用。</li>
+<li>environ手册。</li>
+<li>RTFM: Read The Fucking Manual</li>
+<li>debugger + libc，就可以看到很多执行流程，可以边学习边康康昂！！！</li>
+<li>脱离 workload 做优化就是耍流氓</li>
 </ol>
 
                 
