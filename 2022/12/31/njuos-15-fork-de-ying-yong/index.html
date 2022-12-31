@@ -1,0 +1,1134 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="下半学期的内容啦！！！从上层往下层再走啦！！！怎么样用好fork() ???">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-15-Fork的应用">
+<meta property="og:url" content="http://example.com/2022/12/31/njuos-15-fork-de-ying-yong/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="下半学期的内容啦！！！从上层往下层再走啦！！！怎么样用好fork() ???">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212310948382.png">
+<meta property="article:published_time" content="2022-12-31T01:47:20.000Z">
+<meta property="article:modified_time" content="2022-12-31T07:52:32.544Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212310948382.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-15-Fork的应用 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-15-Fork的应用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-31 09:47" pubdate>
+          2022年12月31日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          46 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-15-Fork的应用</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2022年12月31日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>下半学期的内容啦！！！从上层往下层再走啦！！！怎么样用好fork() ???</p>
+<span id="more"></span>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212310957873.png" srcset="/img/loading.gif" lazyload alt="image-20221231095719844"></p>
+<h1 id="期中测验讲解"><a href="#期中测验讲解" class="headerlink" title="期中测验讲解"></a>期中测验讲解</h1><h2 id="简答题：并发求和"><a href="#简答题：并发求和" class="headerlink" title="简答题：并发求和"></a>简答题：并发求和</h2><p>如果假设 <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/sum.c">sum.c</a> 中的 <code>sum++</code> 是如下构成：</p>
+<ul>
+<li><code>t = atomic_fetch(sum)</code></li>
+<li><code>t++</code></li>
+<li><code>atomic_store(sum, t)</code></li>
+</ul>
+<p>那么 k 个线程，输出的最小 <code>sum</code> 是多少？</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">"thread.h"</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> N 100000000</span><br><br><span class="hljs-type">long</span> sum = <span class="hljs-number">0</span>;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">Tsum</span><span class="hljs-params">()</span> {<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; N; i++) {<br>    sum++;<br>  }<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  create(Tsum);<br>  create(Tsum);<br>  join();<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"sum = %ld\n"</span>, sum);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>结论有些反直觉：</p>
+<ul>
+<li>对于所有 n, k &gt;= 2，<code>sum</code> 的最小值都是 2</li>
+<li>只要有一个线程在最后一轮循环 “持有” 2，再保持到最后写入<ul>
+<li>Online Judge 就送分了</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311003407.png" srcset="/img/loading.gif" lazyload alt="image-20221231100304377"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311003979.png" srcset="/img/loading.gif" lazyload alt="image-20221231100338948"></p>
+<blockquote>
+<p>好巧妙，两只脚叠着踩楼梯一样，笑死</p>
+</blockquote>
+<h2 id="水面下的冰山：“反直觉”-的来源"><a href="#水面下的冰山：“反直觉”-的来源" class="headerlink" title="水面下的冰山：“反直觉” 的来源"></a>水面下的冰山：“反直觉” 的来源</h2><p>Verifying Sequential Consistency (VSC) is NP-Complete</p>
+<ul>
+<li>给出若干线程的共享内存 load/store 序列，判定是否存在一个 “全局” 的读写顺序，使得线程总是读到最近写入的数值</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311011830.png" srcset="/img/loading.gif" lazyload alt="image-20221231101109807"></p>
+<hr>
+<p>课后习题难度 (3-SAT)</p>
+<ul>
+<li><p>阶段 1: 赋值</p>
+<ul>
+<li>对每个变量 x 构造 write(x<em>x</em>, 0) 和 write(x<em>x</em>, 1) 的线程</li>
+</ul>
+</li>
+<li><p>阶段 2: 判定$C_i=x∨¬y$</p>
+<ul>
+<li>(T1) read(x) = 1, write($S_i$, 1) (T2) read(y) = 0, write($S_i$, 1)</li>
+</ul>
+</li>
+<li><p>阶段 3: 收结果</p>
+<ul>
+<li>read($S_1$) = 1, read($S_2$) = 1, …</li>
+</ul>
+</li>
+<li><p>阶段 4: 收尾 (使所有线程都能顺利结束)</p>
+<ul>
+<li>write(x, 0), write(x, 1)</li>
+</ul>
+</li>
+</ul>
+<h2 id="更多的技术处理"><a href="#更多的技术处理" class="headerlink" title="更多的技术处理"></a>更多的技术处理</h2><p>“加强豪华版课后习题” 😂</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://epubs.siam.org/doi/epdf/10.1137/S0097539794279614">Testing shared memories</a> (SIAM Journal on Computing’97)</li>
+<li>使用的同步机制比刚才的 “课后习题版本” 稍巧妙一些</li>
+</ul>
+<hr>
+<table>
+<thead>
+<tr>
+<th align="left">VSC 的变种</th>
+<th align="left">复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">刚才的证明 (一般情况)</td>
+<td align="left">NP-Complete</td>
+</tr>
+<tr>
+<td align="left">每个线程只执行 2 个操作</td>
+<td align="left">NP-Complete</td>
+</tr>
+<tr>
+<td align="left">只有 2 个变量</td>
+<td align="left">NP-Complete</td>
+</tr>
+<tr>
+<td align="left">只有 3 个线程</td>
+<td align="left">NP-Complete</td>
+</tr>
+<tr>
+<td align="left">每个读知道写者</td>
+<td align="left">NP-Complete</td>
+</tr>
+<tr>
+<td align="left">每个变量只被一个线程写入</td>
+<td align="left">NP-Complete</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>并发程序的理解是很困难的！！！</p>
+</blockquote>
+<h2 id="编程题：生产者-消费者"><a href="#编程题：生产者-消费者" class="headerlink" title="编程题：生产者-消费者"></a>编程题：生产者-消费者</h2><p>投机取巧的方法：C 标准库是线程安全的！</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">Tworker</span><span class="hljs-params">()</span> {<br>  <span class="hljs-keyword">while</span> (!feof(<span class="hljs-built_in">stdin</span>) &amp;&amp; <span class="hljs-built_in">scanf</span>(<span class="hljs-string">"%d"</span>, &amp;x) == <span class="hljs-number">1</span>) {<br>    <span class="hljs-type">long</span> res = f(x);<br>    lock(&amp;lk);<br>    sum += res;<br>    unlock(&amp;lk);<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>如果限制只有一个线程可以读，那就需要生产者-消费者了</p>
+<h2 id="统计结果"><a href="#统计结果" class="headerlink" title="统计结果"></a>统计结果</h2><p>正确率 (OJ 实时统计通过似乎只统计了编程题……)</p>
+<ul>
+<li>简答题 56/74 (75.7%)</li>
+<li>编程题 28/74 (37.8%)</li>
+</ul>
+<hr>
+<p>87.5% (56/64) 的问卷表示 “没有出卖灵魂”</p>
+<ul>
+<li>希望大家保持！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311039880.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="fork-行为的补充解释"><a href="#fork-行为的补充解释" class="headerlink" title="fork() 行为的补充解释"></a>fork() 行为的补充解释</h1><h2 id="复习：fork"><a href="#复习：fork" class="headerlink" title="复习：fork()"></a>复习：fork()</h2><p>状态机的复制</p>
+<ul>
+<li>fork-demo.c<ul>
+<li>操作系统：状态机的管理者</li>
+</ul>
+</li>
+<li>fork-printf.c<ul>
+<li>一切状态都会被复制</li>
+</ul>
+</li>
+<li>sh-xv6.c<ul>
+<li>fork + execve + pipe: UNIX Shell 的经典设计</li>
+<li>fork 状态机复制包括持有的所有操作系统对象</li>
+<li>execve “重置” 状态机，但<strong>继承持有的所有操作系统对象</strong></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311041428.png" srcset="/img/loading.gif" lazyload alt="image-20221231104142394"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311059975.png" srcset="/img/loading.gif" lazyload alt="image-20221231105929945"></p>
+<h2 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h2><p>熟悉又陌生</p>
+<blockquote>
+<p><code>$ man 2 open</code>可以打开手册</p>
+</blockquote>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">open</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *pathname, <span class="hljs-type">int</span> flags)</span>;<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>RTFM: <code>O_CLOEXEC</code>, <code>O_APPEND</code></li>
+</ul>
+<hr>
+<p>文件描述符：一个指向操作系统内对象的 “指针”</p>
+<ul>
+<li>对象只能通过操作系统允许的方式访问</li>
+<li>从 0 开始编号 (0, 1, 2 分别是 stdin, stdout, stderr)</li>
+<li>可以通过 open 取得；close 释放；dup “复制”</li>
+<li>对于数据文件，<strong>文件描述符会 “记住” 上次访问文件的位置</strong><ul>
+<li><code>write(3, "a", 1); write(3, "b", 1);</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="文件描述符的-“复制”"><a href="#文件描述符的-“复制”" class="headerlink" title="文件描述符的 “复制”"></a>文件描述符的 “复制”</h2><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c">fd = open(<span class="hljs-string">"a.txt"</span>, O_WRONLY | O_CREAT); assert(fd &gt; <span class="hljs-number">0</span>);<br><span class="hljs-type">pid_t</span> pid = fork(); assert(pid &gt;= <span class="hljs-number">0</span>);<br><span class="hljs-keyword">if</span> (pid == <span class="hljs-number">0</span>) {<br>  write(fd, <span class="hljs-string">"Hello"</span>);<br>} <span class="hljs-keyword">else</span> {<br>  write(fd, <span class="hljs-string">"World"</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>文件中存的是什么呢？HelloWorld / WorldHello。预期：不断往后写呀！！！ -&gt; 操作系统设计开始复杂了昂！！！</p>
+</blockquote>
+<hr>
+<p>文件抽象的代价</p>
+<ul>
+<li>操作系统必须正确管理好偏移量 (如果是日志文件)<ul>
+<li>原子性 (RTFM: write(2), BUGS section)</li>
+</ul>
+</li>
+<li><strong>dup() 的两个文件描述符是共享 offset，还是独立 offset</strong>？<ul>
+<li><strong>RTFM again!</strong></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311112569.png" srcset="/img/loading.gif" lazyload alt="image-20221231111213513"></p>
+<blockquote>
+<p>share file offset, 就是符合我们上面的认知了昂！！！</p>
+</blockquote>
+<ul>
+<li>甚至还有bugs……</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311108013.png" srcset="/img/loading.gif" lazyload alt="image-20221231110805974"></p>
+<h2 id="复制，但又没有完全复制-Copy-on-Write"><a href="#复制，但又没有完全复制-Copy-on-Write" class="headerlink" title="复制，但又没有完全复制(Copy on Write)"></a>复制，但又没有完全复制(Copy on Write)</h2><p>概念上状态机被复制，但实际上<strong>复制后内存都被共享</strong></p>
+<ul>
+<li>“Copy-on-write” 只有被写入的页面才会复制一份<ul>
+<li><strong>被复制后，整个地址空间都被标记为 “只读”</strong></li>
+<li>操作系统<strong>捕获 Page Fault 后酌情复制页面</strong></li>
+<li><strong>fork-execve 效率得到提升</strong></li>
+</ul>
+</li>
+<li>操作系统会维护每个页面的引用计数</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311118058.png" srcset="/img/loading.gif" lazyload alt="image-20221231111836025"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311122264.png" srcset="/img/loading.gif" lazyload alt="image-20221231112205227"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311125044.png" srcset="/img/loading.gif" lazyload alt="image-20221231112526011"></p>
+<blockquote>
+<p>所有的页面实际上都属于OS管理，进程本质上只拥有一个映射表（MMU）。操作系统在中间是有操作空间的！！！</p>
+<p>操作系统有一个CR3寄存器，帮助我们进行逻辑地址 -&gt; 物理地址的地址翻译。</p>
+<p>Fork()完成之后，操作系统悄悄“抹掉”写权限，都是只读。你要写的时候，就会触发一个page fault(缺页中断)。进程会向操作系统发送一个SIGSEGV（访问rw页面，产生page fault）。 -&gt; 把rw页面的饮用计数-1，然后重新分配一个相同的页面，把rw权限重新还给这个进程，进程就可以写它啦！！！</p>
+</blockquote>
+<ul>
+<li>好处：很多文件都是只用不写，同一个物理地址，超多次复用。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311126250.png" srcset="/img/loading.gif" lazyload alt="image-20221231112626217"></p>
+<hr>
+<p>想证明这一点？</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/cow-test.c">cow-test.c</a>: 128MB 代码 + 128MB 数据</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;assert.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NPROC 1000</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MB 128</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> SIZE (MB * (1 &lt;&lt; 20))</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> xstr(s) str(s)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> str(s) #s</span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  <span class="hljs-type">char</span> *data = <span class="hljs-built_in">malloc</span>(SIZE); <span class="hljs-comment">// 128MB shared memory</span><br>  <span class="hljs-built_in">memset</span>(data, <span class="hljs-string">'_'</span>, SIZE);<br><br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; NPROC - <span class="hljs-number">1</span>; i++) {<br>    <span class="hljs-keyword">if</span> (fork() == <span class="hljs-number">0</span>) <span class="hljs-keyword">break</span>;<br>  }<br><br>  <span class="hljs-comment">// NPROC processes go here</span><br><br>  <span class="hljs-keyword">asm</span> <span class="hljs-title function_">volatile</span><span class="hljs-params">(<span class="hljs-string">".fill 1048576 * "</span> xstr(MB) <span class="hljs-string">", 1, 0x90"</span>)</span>; <span class="hljs-comment">// 128MB shared code</span><br><br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> idx = <span class="hljs-number">0</span>;<br>  <span class="hljs-type">int</span> fd = open(<span class="hljs-string">"/dev/urandom"</span>, O_RDONLY); assert(fd &gt; <span class="hljs-number">0</span>);<br>  read(fd, &amp;idx, <span class="hljs-keyword">sizeof</span>(idx));<br>  close(fd);<br>  idx %= <span class="hljs-number">1048576</span> * MB;<br><br>  data[idx] = <span class="hljs-string">'.'</span>;<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"pid = %d, write data[%u]\n"</span>, getpid(), idx);<br><br>  <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) {<br>    sleep(<span class="hljs-number">1</span>); <span class="hljs-comment">// not terminate</span><br>  }<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>创建 1000 个进程 (2GB 内存的虚拟能抗住吗)？<ul>
+<li>所以，整个操作系统里 libc 代码和只读数据只有一个副本！</li>
+<li><strong>推论：统计进程占用的内存是个伪命题</strong> -&gt; 共享内存，导致占用的内存是不好统计的昂！！！</li>
+</ul>
+</li>
+</ul>
+<h1 id="状态机、fork-和魔法"><a href="#状态机、fork-和魔法" class="headerlink" title="状态机、fork() 和魔法"></a>状态机、fork() 和魔法</h1><h2 id="状态机的视角"><a href="#状态机的视角" class="headerlink" title="状态机的视角"></a>状态机的视角</h2><p>帮助我们</p>
+<ul>
+<li>理解物理世界 (Cellular Automata)</li>
+<li>理解处理器、操作系统</li>
+<li>调试 (record-replay)、profiler</li>
+<li>Model checker 和 program verifier</li>
+</ul>
+<hr>
+<p>fork() 可以复制状态机？</p>
+<ul>
+<li>感觉是一个非常 “强大” 的操作</li>
+<li>比如创造平行宇宙！</li>
+</ul>
+<h2 id="创造平行宇宙：搜索并行化"><a href="#创造平行宇宙：搜索并行化" class="headerlink" title="创造平行宇宙：搜索并行化"></a>创造平行宇宙：搜索并行化</h2><p>那我们不就可以加速状态空间搜索了吗？</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311139624.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>每次探索都 fork 一个新进程</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/dfs-fork.c">dfs-fork.c</a>: 连回溯都可以不要了 -&gt; 在不同的平行宇宙去探索不同的分支。平行宇宙甚至可以“并行”探索，找出所有的解，太牛了！！！dfs单机 -&gt; fork()多进程，平行宇宙并行探测，太牛了这个想法！！！进程直接exit() -&gt; 就可以直接退出，很方便，fork()保存了中间状态的结果，很方便！！！</li>
+<li><strong>单机DFS: 只有一个状态机，只能一个一个状态的探索。Fork()，同时创建多个状态机，并行探索不同的分支和状态。</strong></li>
+</ul>
+<h2 id="创造平行宇宙：跳过初始化"><a href="#创造平行宇宙：跳过初始化" class="headerlink" title="创造平行宇宙：跳过初始化"></a>创造平行宇宙：跳过初始化</h2><p>假设你实现的 NEMU 需要启动很多份</p>
+<ul>
+<li><code>./nemu dummy.elf</code></li>
+<li><code>./nemu add.elf</code></li>
+<li><code>./nemu add-longlong.elf</code>…</li>
+<li>而你的 NEMU 实现初始化又需要很长的时间？</li>
+</ul>
+<hr>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  nemu_init(); <span class="hljs-comment">// only once</span><br>  <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) {<br>    file = get_start_request();<br>    <span class="hljs-keyword">if</span> ((pid = fork()) == <span class="hljs-number">0</span>) {<br>      <span class="hljs-comment">// bad practice: no error checking</span><br>      load_file();<br>    }<br>    ...<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="创造平行宇宙：跳过初始化-1"><a href="#创造平行宇宙：跳过初始化-1" class="headerlink" title="创造平行宇宙：跳过初始化"></a>创造平行宇宙：跳过初始化</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311152941.png" srcset="/img/loading.gif" lazyload alt="image-20221231115202903"></p>
+<blockquote>
+<p>一次初始化，多次复用！！！所有的Android应用都是这么做的！！！Java和Kotlin的依赖非常多，加载很慢。一次加载所有的依赖，后面所有来的都fork()，就能直接使用了。Android！！！</p>
+</blockquote>
+<p>在实际中的应用（快是最重要的！！！）</p>
+<ul>
+<li>Zygote Process (Android)<ul>
+<li><strong>Java Virtual Machine 初始化涉及大量的类加载</strong></li>
+<li><strong>一次加载，全员使用</strong><ul>
+<li>App 使用的系统资源</li>
+<li>基础类库</li>
+<li>libc</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Chrome site isolation (Chrome)</li>
+<li>Fork server (AFL)</li>
+</ul>
+<h2 id="创造平行宇宙：备份和容错"><a href="#创造平行宇宙：备份和容错" class="headerlink" title="创造平行宇宙：备份和容错"></a>创造平行宇宙：备份和容错</h2><p>要是我们总是能 “试一试”，试错了还能回到过去就好了</p>
+<ul>
+<li>有 bug 的程序：我也想这样</li>
+</ul>
+<hr>
+<p>那就用 fork() 做个快照吧</p>
+<ul>
+<li>主进程 crash 了，启动快照重新执行 -&gt; 存档重新加载，说不定就赢了！！！<ul>
+<li>有些 bug 可能调整一下环境就消失了 (比如并发，出了bug，重新fork存档，再来一次！！！反复重试！！！)</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/citation.cfm?id=1095833">Rx: Treating bugs as allergies–A safe method to survive software failures</a>. (SOSP’05, Best Paper Award 🏅)</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311154995.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="突如其来的广告"><a href="#突如其来的广告" class="headerlink" title="突如其来的广告"></a>突如其来的广告</h2><blockquote>
+<p>计算机系统里没有魔法。处理器/操作系统/程序就是状态机。</p>
+</blockquote>
+<p>但这就是魔法啊！</p>
+<ul>
+<li><del><a target="_blank" rel="noopener" href="https://cs.nju.edu.cn/ics/recruit/index.html">签订契约，成为魔法少女</a></del> (<a target="_blank" rel="noopener" href="https://zh.moegirl.org/QB%E5%A8%98">这是什么梗</a>)</li>
+</ul>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311154630.webp" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>キュウべえ和大学教授有某种程度的相似</p>
+<p><del>总是在骗你，但从不说假话</del></p>
+<blockquote>
+<p>欢迎报考NJU哈哈哈哈哈，笑死我了。</p>
+</blockquote>
+<h1 id="状态机复制：我们做对了吗？"><a href="#状态机复制：我们做对了吗？" class="headerlink" title="状态机复制：我们做对了吗？"></a>状态机复制：我们做对了吗？</h1><p><a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/research/uploads/prod/2019/04/fork-hotos19.pdf">A <code>fork()</code> in the road</a> (HotOS’19)</p>
+<blockquote>
+<p>fork太复杂啦，UNIX Fork()不好用！！！</p>
+</blockquote>
+<h2 id="fork-UNIX-时代的遗产"><a href="#fork-UNIX-时代的遗产" class="headerlink" title="fork(): UNIX 时代的遗产"></a><code>fork()</code>: UNIX 时代的遗产</h2><p>fork + execve</p>
+<ul>
+<li>如果只有内存和文件描述符，这是十分优雅的方案</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311543741.png" srcset="/img/loading.gif" lazyload alt="image-20221231154355697"></p>
+<blockquote>
+<p>上面这个模型是十分优雅的！！！</p>
+</blockquote>
+<ul>
+<li>但贪婪的人类怎么可能满足？</li>
+</ul>
+<hr>
+<p>在操作系统的演化过程中，为进程增加了更多的东西</p>
+<ul>
+<li>信号 (信号处理程序，操作系统负责维护)</li>
+<li>线程 (Linux 为线程提供了 clone 系统调用)</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311547360.png" srcset="/img/loading.gif" lazyload alt="image-20221231154724325"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212311547160.png" srcset="/img/loading.gif" lazyload alt="image-20221231154750097"></p>
+<ul>
+<li>进程间通信对象</li>
+<li>ptrace (追踪/调试)</li>
+<li>……</li>
+</ul>
+<h2 id="创建进程：POSIX-Spawn"><a href="#创建进程：POSIX-Spawn" class="headerlink" title="创建进程：POSIX Spawn"></a>创建进程：POSIX Spawn</h2><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">posix_spawn</span><span class="hljs-params">(<span class="hljs-type">pid_t</span> *pid, <span class="hljs-type">char</span> *path,</span><br><span class="hljs-params">  <span class="hljs-type">posix_spawn_file_actions_t</span> *file_actions,</span><br><span class="hljs-params">  <span class="hljs-type">posix_spawnattr_t</span> *attrp,</span><br><span class="hljs-params">  <span class="hljs-type">char</span> * argv[], <span class="hljs-type">char</span> * envp[])</span>;<br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<blockquote>
+<p>在fork()之后设计出来的API，更好用之类的昂！！！</p>
+</blockquote>
+<p>参数</p>
+<ul>
+<li><code>pid</code>: 返回的进程号</li>
+<li><code>path</code>: 程序 (重置的状态机)</li>
+<li><code>file_actions</code>: open, close, dup</li>
+<li><code>attrp</code>: 信号、进程组等信息</li>
+<li>argv, envp: 同execve<ul>
+<li>很明显：这是一个 “后设计” 的 API</li>
+</ul>
+</li>
+</ul>
+<h2 id="A-fork-in-the-Road"><a href="#A-fork-in-the-Road" class="headerlink" title="A fork() in the Road"></a>A <code>fork()</code> in the Road</h2><p>fork() 的七宗罪</p>
+<ul>
+<li>Fork is no longer simple</li>
+<li>Fork doesn’t compose - <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/fork-printf.c">fork-printf.c</a></li>
+<li>Fork isn’t thread-safe</li>
+<li>Fork is insecure - 打破了 Address Space Layout Randomization</li>
+<li>Fork is slow - 的确……</li>
+<li>Fork doesn’t scale - 也是……</li>
+<li>Fork encourages memory overcommit - 呃……</li>
+</ul>
+<hr>
+<p>但 fork() 是魔法啊：这引起了更多的思考</p>
+<ul>
+<li>应用程序到底需要什么？</li>
+<li>操作系统到底应该提供什么？</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 如何巧妙地使用 fork() “<strong>创建平行世界</strong>” 的功能？</li>
+</ul>
+<hr>
+<p>Take-away messages</p>
+<ul>
+<li>创建平行世界<ul>
+<li>搜索的加速</li>
+<li>状态的复用 (Zygote)</li>
+<li>“时间旅行”——穿越到过去，让自己变得更强</li>
+</ul>
+</li>
+<li>从操作系统的角度，fork 可能不是 API 的最佳选择<ul>
+<li>可能可以在这个基础上做出非常基础性的工作！</li>
+</ul>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-15-Fork的应用</div>
+      <div>http://example.com/2022/12/31/njuos-15-fork-de-ying-yong/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月31日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/29/njuos-14-c-biao-zhun-ku-de-shi-xian/" title="NJUOS-14-C标准库的实现">
+                        <span class="hidden-mobile">NJUOS-14-C标准库的实现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
