@@ -16,26 +16,26 @@
   <meta name="author" content="Alexander Liu">
   <meta name="keywords" content="分布式系统,后端研发,数据协同">
   
-    <meta name="description" content="Welcome to NJU’s Operation System by JYY，多学点操作系统准没错！ 本期操作系统内容的回顾，我自己主要围绕三个方面展开：  哈工大李治军的OS 南大蒋炎岩的OS 小林Coding上操作系统的专题 + 各种面经 CMU 15-445数据库课程   上面这些内容应该能把我自己对于操作系统的理解再加深一步了">
+    <meta name="description" content="本次课回答的问题  Q: 可执行文件到底是什么？ Q: 可执行文件是如何在操作系统上被执行的？  本次课主要内容  可执行文件 解析可执行文件 链接和加载 今天假设只有静态链接">
 <meta property="og:type" content="article">
-<meta property="og:title" content="1. 操作系统概述">
-<meta property="og:url" content="http://example.com/2022/12/07/njuos-1-cao-zuo-xi-tong-gai-shu/index.html">
+<meta property="og:title" content="NJUOS-16-什么是可执行文件">
+<meta property="og:url" content="http://example.com/2023/01/01/njuos-16-shi-me-shi-ke-zhi-xing-wen-jian/index.html">
 <meta property="og:site_name" content="兔の博客">
-<meta property="og:description" content="Welcome to NJU’s Operation System by JYY，多学点操作系统准没错！ 本期操作系统内容的回顾，我自己主要围绕三个方面展开：  哈工大李治军的OS 南大蒋炎岩的OS 小林Coding上操作系统的专题 + 各种面经 CMU 15-445数据库课程   上面这些内容应该能把我自己对于操作系统的理解再加深一步了">
+<meta property="og:description" content="本次课回答的问题  Q: 可执行文件到底是什么？ Q: 可执行文件是如何在操作系统上被执行的？  本次课主要内容  可执行文件 解析可执行文件 链接和加载 今天假设只有静态链接">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071136497.png">
-<meta property="article:published_time" content="2022-12-07T03:35:42.000Z">
-<meta property="article:modified_time" content="2022-12-08T03:23:09.738Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011012496.png">
+<meta property="article:published_time" content="2023-01-01T02:10:54.000Z">
+<meta property="article:modified_time" content="2023-01-01T04:19:31.890Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071136497.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011012496.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>1. 操作系统概述 - 兔の博客</title>
+  <title>NJUOS-16-什么是可执行文件 - 兔の博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -215,7 +215,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="1. 操作系统概述"></span>
+            <span id="subtitle" data-typed-text="NJUOS-16-什么是可执行文件"></span>
           
         </div>
 
@@ -231,8 +231,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-12-07 11:35" pubdate>
-          2022年12月7日 中午
+        <time datetime="2023-01-01 10:10" pubdate>
+          2023年1月1日 上午
         </time>
       </span>
     
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k 字
+          2.7k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          14 分钟
+          23 分钟
         
       </span>
     
@@ -300,12 +300,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">1. 操作系统概述</h1>
+            <h1 style="display: none">NJUOS-16-什么是可执行文件</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：24 天前
+                    本文最后更新于：1 分钟前
                   
                 
               </p>
@@ -313,149 +313,208 @@
             
               <div class="markdown-body">
                 
-                <p>Welcome to NJU’s Operation System by JYY，多学点操作系统准没错！</p>
-<p>本期操作系统内容的回顾，我自己主要围绕三个方面展开：</p>
-<ol>
-<li>哈工大李治军的OS</li>
-<li>南大蒋炎岩的OS</li>
-<li>小林Coding上操作系统的专题 + 各种面经</li>
-<li>CMU 15-445数据库课程</li>
-</ol>
+                <p>本次课回答的问题</p>
 <ul>
-<li>上面这些内容应该能把我自己对于操作系统的理解再加深一步了</li>
+<li><strong>Q</strong>: 可执行文件到底是什么？</li>
+<li><strong>Q</strong>: 可执行文件是如何在操作系统上被执行的？</li>
+</ul>
+<p>本次课主要内容</p>
+<ul>
+<li>可执行文件</li>
+<li>解析可执行文件</li>
+<li>链接和加载<ul>
+<li><strong>今天假设只有静态链接</strong></li>
+</ul>
+</li>
 </ul>
 <span id="more"></span>
 
 
 
-
-
-<h1 id="操作系统概述"><a href="#操作系统概述" class="headerlink" title="操作系统概述"></a>操作系统概述</h1><ul>
-<li>Academic Integrity:<ul>
-<li>不上传代码到互联网</li>
-<li>主动不参考别人完成的实验代码</li>
-<li>不使用他人测试用例</li>
+<h1 id="可执行文件"><a href="#可执行文件" class="headerlink" title="可执行文件"></a>可执行文件</h1><h2 id="RTFM"><a href="#RTFM" class="headerlink" title="RTFM"></a>RTFM</h2><p>本次课涉及的手册</p>
+<ul>
+<li>System V ABI: <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/manuals/sysv-abi.pdf">System V Application Binary Interface (AMD64 Architecture Processor Supplement)</a> (<a target="_blank" rel="noopener" href="https://gitlab.com/x86-psABIs/x86-64-ABI">repo</a>)</li>
+<li><a target="_blank" rel="noopener" href="https://refspecs.linuxbase.org/">和更多 refspecs</a></li>
+</ul>
+<hr>
+<p>(不用听了，可以下课了)</p>
+<ul>
+<li>课堂要回答的问题<ul>
+<li>为什么 f**king manual 是 f**king 的?</li>
+<li>应该怎么读手册？</li>
 </ul>
 </li>
 </ul>
+<h2 id="可执行文件：状态机的描述"><a href="#可执行文件：状态机的描述" class="headerlink" title="可执行文件：状态机的描述"></a>可执行文件：状态机的描述</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011141401.png" srcset="/img/loading.gif" lazyload alt="image-20230101114109588"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011143274.png" srcset="/img/loading.gif" lazyload alt="image-20230101114312244"></p>
 <blockquote>
-<p>有些行为可能会让你得到分数，但失去应有的训练 -&gt; 良心不痛就成功了哈哈哈哈</p>
+<p>可执行文件：描述了一个状态机。状态？寄存器+内存（地址空间）</p>
 </blockquote>
-<h2 id="为什么要学操作系统："><a href="#为什么要学操作系统：" class="headerlink" title="为什么要学操作系统："></a>为什么要学操作系统：</h2><ul>
-<li>编程力量的觉醒，每天用的东西写不出来的…甚至原理都不了解…</li>
-<li>操作系统的实现，为上层提供了什么接口。</li>
+<p>操作系统 “为程序 (状态机) 提供执行环境”</p>
+<ul>
+<li>可执行文件 (状态机的描述) 是最重要的操作系统对象！</li>
 </ul>
-<h2 id="什么是操作系统："><a href="#什么是操作系统：" class="headerlink" title="什么是操作系统："></a>什么是操作系统：</h2><ul>
-<li>A body of software, in fact, that is responsible for making it easy to run programs</li>
-<li>All is programs -&gt; 举例性质，自己去悟</li>
-<li>国内定义：管理软硬件资源，为程序提供服务的程序。</li>
+<hr>
+<p>一个描述了状态机的初始状态 + 迁移的<strong>数据结构</strong> -&gt; <strong>可执行文件就是一个数据结构！！！描述了状态机！！！</strong></p>
+<ul>
+<li>寄存器<ul>
+<li>大部分由 ABI 规定，操作系统负责设置</li>
+<li>例如初始的 PC</li>
 </ul>
-<p>​	<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071219267.png" srcset="/img/loading.gif" lazyload alt="啥是操作系统"></p>
+</li>
+<li>地址空间<ul>
+<li>二进制文件 + ABI 共同决定</li>
+<li>例如 argv 和 envp (和其他信息) 的存储</li>
+</ul>
+</li>
+<li>其他有用的信息 (例如便于调试和 core dump 的信息)</li>
+</ul>
+<h2 id="例子：操作系统上的可执行文件"><a href="#例子：操作系统上的可执行文件" class="headerlink" title="例子：操作系统上的可执行文件"></a>例子：操作系统上的可执行文件</h2><p>需要满足若干条件</p>
+<ul>
+<li>具有执行 (x) 权限</li>
+<li>加载器能识别的可执行文件</li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ./a.c<br>bash: ./a.c: Permission denied<br>$ <span class="hljs-built_in">chmod</span> -x a.out &amp;&amp; ./a.out<br>fish: The file “./a.out” is not executable by this user<br>$ <span class="hljs-built_in">chmod</span> +x a.c &amp;&amp; ./a.c<br>Failed to execute process <span class="hljs-string">'./a.c'</span>. Reason:<br><span class="hljs-built_in">exec</span>: Exec format error<br>The file <span class="hljs-string">'./a.c'</span> is marked as an executable but could not be run by the operating system.<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="是谁决定了一个文件能不能执行？"><a href="#是谁决定了一个文件能不能执行？" class="headerlink" title="是谁决定了一个文件能不能执行？"></a>是谁决定了一个文件能不能执行？</h2><blockquote>
+<p>操作系统代码 (execve) 决定的。</p>
+</blockquote>
+<p>动手试一试</p>
+<ul>
+<li>strace ./a.c</li>
+<li>你可以看到失败的 execve!<ul>
+<li>没有执行权限的 a.c: execve = -1, EACCESS</li>
+<li>有执行权限的 a.c: execve = -1, ENOEXEC</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011159080.png" srcset="/img/loading.gif" lazyload alt="image-20230101115931052"></p>
 <blockquote>
-<p>操作系统是如何发展的？硬件，软件，操作系统</p>
+<p>先玩一玩，有个基本的认识！！！</p>
 </blockquote>
 <ul>
-<li><p>1950s，内存很小，一次一个任务。CPU贵，但是没有办法，单批次执行任务，一个一个任务执行。（计算机很贵很贵） -&gt; 单批次处理系统</p>
-</li>
-<li><p>1960s，内存大了，多个任务可以放入内存中 -&gt; OS可以进行调度，更加充分利用CPU资源，充分榨干CPU的能力。(计算机也是很贵很贵) -&gt; 多批次处理系统</p>
+<li>再读一遍 execve (2) 的手册<ul>
+<li>读手册的方法：先理解主干行为、再查漏补缺</li>
+<li>“ERRORS” 规定了什么时候不能执行</li>
+</ul>
 </li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071522423.png" srcset="/img/loading.gif" lazyload alt="image-20221207152104606"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011201378.png" srcset="/img/loading.gif" lazyload alt="image-20230101120104346"></p>
 <blockquote>
+<p>手册读不下去了 -&gt; 玩过一些小例子，慢慢理解，就慢慢能读懂，慢慢能深入啦！！！</p>
+</blockquote>
+<h2 id="常见的可执行文件"><a href="#常见的可执行文件" class="headerlink" title="常见的可执行文件"></a>常见的可执行文件</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011156873.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>就是操作系统里的一个<strong>普通对象</strong></p>
 <ul>
-<li><strong>同时将多个程序载入内存</strong>是一项巨大的能力：<ul>
-<li>有了进程(process)的概念</li>
-<li>进程在执行I/O时，可以将CPU让给另一个进程：<ul>
-<li>在多个地址空间隔离的程序之间<strong>切换</strong>（地址空间隔离避免了程序bug导致误操作别的程序的情况）</li>
-<li>虚拟存储使一个程序出现bug不会crash整个系统</li>
+<li><p>绿导师原谅你了.avi</p>
+</li>
+<li><p>Windows 95/NT+, UEFI</p>
+<ul>
+<li>PE (Portable Executable), since Windows 95/NT+</li>
+</ul>
+</li>
+<li><p>UNIX/Linux</p>
+<ul>
+<li>a.out (deprecated)</li>
+<li>ELF (Executable Linkable Format)</li>
+<li>She-bang<ul>
+<li>我们可以试着 She-bang 一个自己的可执行文件！</li>
+<li>She-bang 其实是一个 “偷换参数” 的 execve</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>操作系统中自然增加了进程管理的API</li>
+<li><p>She-bang:</p>
+</li>
 </ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011204725.png" srcset="/img/loading.gif" lazyload alt="image-20230101120438676"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011204325.png" srcset="/img/loading.gif" lazyload alt="image-20230101120451282"></p>
+<blockquote>
+<p>二进制文件，本质上就是一个可以被execve接受，并且翻译成状态机状态的数据结构嘛！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011210379.png" srcset="/img/loading.gif" lazyload alt="image-20230101121013350"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011207016.png" srcset="/img/loading.gif" lazyload alt="image-20230101120746971"></p>
+<blockquote>
+<p>偷换参数！！！</p>
+<p>#!会被在执行execve的时候，偷偷替换掉！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011208386.png" srcset="/img/loading.gif" lazyload alt="image-20230101120853338"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011210395.png" srcset="/img/loading.gif" lazyload alt="image-20230101121058361"></p>
+<blockquote>
+<p>偷偷把argv换掉，再去执行execve。（这里只有一个argv[1]哈，历史遗留问题！！！）</p>
+<p>比如#! xxx python3，本质上状态机会被变为python3， python3会去拿出来这个文件，解析并且进行执行昂！</p>
 </blockquote>
 <ul>
-<li>1970s+，既然能够对任务进行调度，是不是可以用时间来进行调度呢？基于中断的想法出现</li>
+<li>再来看手册：</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071530290.png" srcset="/img/loading.gif" lazyload alt="image-20221207153004259"></p>
-<blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011213284.png" srcset="/img/loading.gif" lazyload alt="image-20230101121349234"></p>
+<h1 id="解析可执行文件"><a href="#解析可执行文件" class="headerlink" title="解析可执行文件"></a>解析可执行文件</h1><h2 id="Binutils-Binary-Utilities"><a href="#Binutils-Binary-Utilities" class="headerlink" title="Binutils - Binary Utilities"></a>Binutils - Binary Utilities</h2><p><a target="_blank" rel="noopener" href="https://www.gnu.org/software/binutils/">GNU binutils</a></p>
 <ul>
-<li>基于中断（例如时钟中断）机制<ul>
-<li>时钟中断：程序在执行时，异步插入函数调用</li>
-<li>由操作系统（调度策略）决定是否要切换到另一个程序执行</li>
-<li>Multics(MIT, 1965)：现代操作系统诞生</li>
+<li>生成可执行文件<ul>
+<li>ld (linker), as (assembler)</li>
+<li>ar, ranlib</li>
 </ul>
 </li>
-<li>到了这个阶段，从技术层面，就已经和我们现代操作系统接近了昂！ -&gt; 诞生了很多的系统</li>
+<li>分析可执行文件<ul>
+<li>objcopy/objdump/readelf (计算机系统基础)</li>
+<li>addr2line, size, nm</li>
 </ul>
-</blockquote>
+</li>
+</ul>
+<h2 id="可执行文件的运行时状态"><a href="#可执行文件的运行时状态" class="headerlink" title="可执行文件的运行时状态"></a>可执行文件的运行时状态</h2><p><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/segfault.c">segfault.c</a> - 为什么 gdb 知道出错的位置？</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stddef.h&gt;</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">bar</span><span class="hljs-params">()</span> {<br>  *(<span class="hljs-type">int</span> *)<span class="hljs-literal">NULL</span> = <span class="hljs-number">1</span>;<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">foo</span><span class="hljs-params">()</span> {<br>  bar();<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  foo();<br>}<br></code></pre></td></tr></tbody></table></figure>
+
 <ul>
-<li>今天的操作系统</li>
+<li>gcc (-static -g)</li>
 </ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">./a.out</span><br>Segmentation fault (core dumped)<br>(gdb) r<br>Starting program: /tmp/demo/a.out <br><br>Program received signal SIGSEGV, Segmentation fault.<br>bar () at segfault.c:4<br>4         *(int *)NULL = 1;<br>(gdb) bt<br><span class="hljs-meta prompt_">#</span><span class="language-bash">0  bar () at segfault.c:4</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">1  0x0000000000401d0d <span class="hljs-keyword">in</span> foo () at segfault.c:8</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">2  0x0000000000401d22 <span class="hljs-keyword">in</span> main () at segfault.c:12</span><br></code></pre></td></tr></tbody></table></figure>
+
 <blockquote>
+<p>gdb调试！！！gdb为什么可以打印程序的backtrace。</p>
+</blockquote>
+<h2 id="调试信息"><a href="#调试信息" class="headerlink" title="调试信息"></a>调试信息</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011217507.gif" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>将一个 assembly (机器) 状态映射到 “C 世界” 状态的函数</p>
 <ul>
-<li>空前复杂的系统之一：<ul>
-<li>更复杂的处理器和内存<ul>
-<li>非对称多处理器</li>
-<li>Non-uniform Memory Access(NUMA)</li>
-<li>更多硬件机制 Intel-VT</li>
+<li>The DWARF Debugging Standard<ul>
+<li>定义了一个 Turing Complete 的指令集 <code>DW_OP_XXX</code></li>
+<li>可以执行 “任意计算” 将当前机器状态映射回 C</li>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/manuals/DWARF5.pdf">RTFM</a></li>
 </ul>
 </li>
-<li>更多的设备和资源：<ul>
-<li>网卡，SSD，GPU，FPGA…</li>
+<li>但非常不完美<ul>
+<li>对现代语言支持有限 (C++ templates)<ul>
+<li>还是因为编程语言太复杂了</li>
 </ul>
 </li>
-<li>复杂的应用程序和应用环境：<ul>
-<li>服务器，电脑，手机，手表，IoT…</li>
+<li>编译器也没法保证就做得对<ul>
+<li>各种令人生气的 <code>&lt;optimized out&gt;</code></li>
+<li>各种不正确的调试信息</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071540862.png" srcset="/img/loading.gif" lazyload alt="操作系统的根本问题"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071541676.png" srcset="/img/loading.gif" lazyload alt="image-20221207154116630"></p>
-<h2 id="成为合格的操作系统用户"><a href="#成为合格的操作系统用户" class="headerlink" title="成为合格的操作系统用户"></a>成为合格的操作系统用户</h2><ol>
-<li>称为Power User</li>
-</ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071543850.png" srcset="/img/loading.gif" lazyload alt="image-20221207154331814"></p>
-<ol start="2">
-<li>学会写代码</li>
-</ol>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071555903.png" srcset="/img/loading.gif" lazyload alt="image-20221207155506868"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071559218.png" srcset="/img/loading.gif" lazyload alt="image-20221207155906184"></p>
-<blockquote>
-<p>谢谢，Robert Morris也友情参演了MIT 6.824…，太牛了orz</p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071600740.png" srcset="/img/loading.gif" lazyload alt="image-20221207160028703"></p>
-<h2 id="命令学习"><a href="#命令学习" class="headerlink" title="命令学习"></a>命令学习</h2><ol>
-<li>name -a</li>
-</ol>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">~  $ <span class="hljs-built_in">uname</span> -a<br>Darwin AlexdeMacBook-Pro.<span class="hljs-built_in">local</span> 21.6.0 Darwin Kernel Version 21.6.0: Mon Aug 22 20:17:10 PDT 2022; root:xnu-8020.140.49~2/RELEASE_X86_64 x86_64<br></code></pre></td></tr></tbody></table></figure>
+<h2 id="例子：寄存器分配"><a href="#例子：寄存器分配" class="headerlink" title="例子：寄存器分配"></a>例子：寄存器分配</h2><p><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/popcount.c">popcount.c</a></p>
+<ul>
+<li>优化的编译器 (-O2)</li>
+<li>使用工具查看<ul>
+<li>-g -S 查看嵌入汇编的 debug info</li>
+<li>readelf -w 查看调试信息</li>
+</ul>
+</li>
+<li>gdb 调试<ul>
+<li><code>s=&lt;optimized out&gt;</code></li>
+<li>呃……</li>
+</ul>
+</li>
+</ul>
+<h1 id="编译和链接"><a href="#编译和链接" class="headerlink" title="编译和链接"></a>编译和链接</h1><h2 id="从-C-代码到二进制文件"><a href="#从-C-代码到二进制文件" class="headerlink" title="从 C 代码到二进制文件"></a>从 C 代码到二进制文件</h2><p>被《计算机系统基础》支配的恐惧？</p>
+<figure class="highlight cpp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// main.c</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">hello</span><span class="hljs-params">()</span></span>;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{<br>  <span class="hljs-built_in">hello</span>();<br>}<br><span class="hljs-comment">// hello.c</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">hello</span><span class="hljs-params">()</span> </span>{<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello World\n"</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-
-
-<ol start="2">
-<li><p>man tar -&gt; 查询某个命令的运用</p>
-</li>
-<li><p>tldr命令(recommandation)</p>
-</li>
-</ol>
-<p>tldr命令安装：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37768971/article/details/114845695">https://blog.csdn.net/qq_37768971/article/details/114845695</a></p>
-<ol start="4">
-<li>python查看手册</li>
-</ol>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">python3 -m 库<br></code></pre></td></tr></tbody></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202212071553719.png" srcset="/img/loading.gif" lazyload alt="image-20221207155323686"></p>
-<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
-<li>video: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Cm4y1d7Ur/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">https://www.bilibili.com/video/BV1Cm4y1d7Ur/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd</a></li>
-<li>Books:<ul>
-<li>Remzi’s Operating Systems: Three Easy Pieces</li>
-<li>CSAPP</li>
-</ul>
-</li>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li>System V ABI: <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/manuals/sysv-abi.pdf">System V Application Binary Interface (AMD64 Architecture Processor Supplement)</a> (<a target="_blank" rel="noopener" href="https://gitlab.com/x86-psABIs/x86-64-ABI">repo</a>)，应用和二进制的Interface。</li>
+<li><a target="_blank" rel="noopener" href="https://refspecs.linuxbase.org/">和更多 refspecs</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.gnu.org/software/binutils/">GNU binutils</a> -&gt; 二进制文件的工具集合(ld啊，readelf啊，objdump啊之类的昂！！！) -&gt; 本质上就是二进制文件这种数据结构的查看 or 修改的工具哇！！！</li>
 </ol>
 
                 
@@ -502,8 +561,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>1. 操作系统概述</div>
-      <div>http://example.com/2022/12/07/njuos-1-cao-zuo-xi-tong-gai-shu/</div>
+      <div>NJUOS-16-什么是可执行文件</div>
+      <div>http://example.com/2023/01/01/njuos-16-shi-me-shi-ke-zhi-xing-wen-jian/</div>
     </div>
     <div class="license-meta">
       
@@ -515,7 +574,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年12月7日</div>
+          <div>2023年1月1日</div>
         </div>
       
       
@@ -547,18 +606,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/12/08/njuos-2-cao-zuo-xi-tong-shang-de-cheng-xu/" title="2. 操作系统上的程序">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">2. 操作系统上的程序</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/12/05/cpu-cache-xue-xi/" title="CPU Cache 学习">
-                        <span class="hidden-mobile">CPU Cache 学习</span>
+                      <a href="/2022/12/31/njuos-15-fork-de-ying-yong/" title="NJUOS-15-Fork的应用">
+                        <span class="hidden-mobile">NJUOS-15-Fork的应用</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
