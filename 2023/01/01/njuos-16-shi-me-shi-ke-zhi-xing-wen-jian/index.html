@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011012496.png">
 <meta property="article:published_time" content="2023-01-01T02:10:54.000Z">
-<meta property="article:modified_time" content="2023-01-01T04:19:31.890Z">
+<meta property="article:modified_time" content="2023-01-02T03:52:24.263Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.7k 字
+          6.6k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          23 分钟
+          56 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：6 小时前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -470,23 +470,38 @@
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">./a.out</span><br>Segmentation fault (core dumped)<br>(gdb) r<br>Starting program: /tmp/demo/a.out <br><br>Program received signal SIGSEGV, Segmentation fault.<br>bar () at segfault.c:4<br>4         *(int *)NULL = 1;<br>(gdb) bt<br><span class="hljs-meta prompt_">#</span><span class="language-bash">0  bar () at segfault.c:4</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">1  0x0000000000401d0d <span class="hljs-keyword">in</span> foo () at segfault.c:8</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">2  0x0000000000401d22 <span class="hljs-keyword">in</span> main () at segfault.c:12</span><br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
-<p>gdb调试！！！gdb为什么可以打印程序的backtrace。</p>
+<p>gdb调试！！！gdb为什么可以打印程序的backtrace？</p>
+<p>应用程序的二进制文件里面，有一些额外信息，帮助我们的debugger解析运行时的状态，addr2line。</p>
 </blockquote>
-<h2 id="调试信息"><a href="#调试信息" class="headerlink" title="调试信息"></a>调试信息</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011217507.gif" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="调试信息"><a href="#调试信息" class="headerlink" title="调试信息"></a>调试信息</h2><blockquote>
+<p>编译器会在编译过程中，自动帮助我们完成addr2line的映射！！！</p>
+<p><code>gcc -static segfault.c -g -S</code>，编译器会在汇编里面，自动帮助我们生成很多调试信息！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301011217507.gif" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>将一个 assembly (机器) 状态映射到 “C 世界” 状态的函数</p>
 <ul>
-<li>The DWARF Debugging Standard<ul>
+<li><a target="_blank" rel="noopener" href="https://dwarfstd.org/">The DWARF Debugging Standard</a><ul>
 <li>定义了一个 Turing Complete 的指令集 <code>DW_OP_XXX</code></li>
 <li>可以执行 “任意计算” 将当前机器状态映射回 C</li>
 <li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/manuals/DWARF5.pdf">RTFM</a></li>
 </ul>
 </li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021008170.png" srcset="/img/loading.gif" lazyload alt="image-20230102100852128"></p>
+<blockquote>
+<p>在对应执行的内存中，通过我们自定义的Turing Complete，就可以打印出来内存中的一些信息（便于调试）！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021011517.png" srcset="/img/loading.gif" lazyload alt="image-20230102101104483"></p>
+<blockquote>
+<p>相当于做了一个，编译状态到C状态的映射。Debug Info就是一个函数，帮我们把汇编机器下的状态，映射为C语言里面的状态！！！但是可以遇见的是，由于中间的翻译和优化，上下要对应起来，十分困难 -&gt; 不完美！！！</p>
+</blockquote>
+<ul>
 <li>但非常不完美<ul>
 <li>对现代语言支持有限 (C++ templates)<ul>
 <li>还是因为编程语言太复杂了</li>
 </ul>
 </li>
-<li>编译器也没法保证就做得对<ul>
+<li>编译器也没法保证就做得对（摆烂了orz）<ul>
 <li>各种令人生气的 <code>&lt;optimized out&gt;</code></li>
 <li>各种不正确的调试信息</li>
 </ul>
@@ -495,8 +510,16 @@
 </li>
 </ul>
 <h2 id="例子：寄存器分配"><a href="#例子：寄存器分配" class="headerlink" title="例子：寄存器分配"></a>例子：寄存器分配</h2><p><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/popcount.c">popcount.c</a></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br>__attribute__((noinline))<br><span class="hljs-type">int</span> <span class="hljs-title function_">popcount</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> {<br>  <span class="hljs-type">int</span> s = <span class="hljs-number">0</span>;<br>  <span class="hljs-type">int</span> b0 = (x &gt;&gt; <span class="hljs-number">0</span>) &amp; <span class="hljs-number">1</span>;<br>  s += b0;<br>  <span class="hljs-type">int</span> b1 = (x &gt;&gt; <span class="hljs-number">1</span>) &amp; <span class="hljs-number">1</span>;<br>  s += b1;<br>  <span class="hljs-type">int</span> b2 = (x &gt;&gt; <span class="hljs-number">2</span>) &amp; <span class="hljs-number">1</span>;<br>  s += b2;<br>  <span class="hljs-type">int</span> b3 = (x &gt;&gt; <span class="hljs-number">3</span>) &amp; <span class="hljs-number">1</span>;<br>  s += b3;<br>  <span class="hljs-keyword">return</span> s;<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, popcount(<span class="hljs-number">0b1101</span>));<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
 <ul>
 <li>优化的编译器 (-O2)</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021027480.png" srcset="/img/loading.gif" lazyload alt="image-20230102102721433"></p>
+<blockquote>
+<p>优化之后的值都和原来的值对不上了……</p>
+</blockquote>
+<ul>
 <li>使用工具查看<ul>
 <li>-g -S 查看嵌入汇编的 debug info</li>
 <li>readelf -w 查看调试信息</li>
@@ -504,17 +527,160 @@
 </li>
 <li>gdb 调试<ul>
 <li><code>s=&lt;optimized out&gt;</code></li>
-<li>呃……</li>
+<li>呃……离谱，这看个🔨orz……</li>
 </ul>
 </li>
 </ul>
-<h1 id="编译和链接"><a href="#编译和链接" class="headerlink" title="编译和链接"></a>编译和链接</h1><h2 id="从-C-代码到二进制文件"><a href="#从-C-代码到二进制文件" class="headerlink" title="从 C 代码到二进制文件"></a>从 C 代码到二进制文件</h2><p>被《计算机系统基础》支配的恐惧？</p>
-<figure class="highlight cpp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// main.c</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">hello</span><span class="hljs-params">()</span></span>;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{<br>  <span class="hljs-built_in">hello</span>();<br>}<br><span class="hljs-comment">// hello.c</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">hello</span><span class="hljs-params">()</span> </span>{<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello World\n"</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
+<h2 id="例子：Stack-Unwinding"><a href="#例子：Stack-Unwinding" class="headerlink" title="例子：Stack Unwinding"></a>例子：Stack Unwinding</h2><p><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/unwind.c">unwind.c</a></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><br><span class="hljs-type">const</span> <span class="hljs-type">char</span> *binary;<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">frame</span> {</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">frame</span> *<span class="hljs-title">next</span>;</span> <span class="hljs-comment">// push %rbp</span><br>  <span class="hljs-type">void</span> *addr;         <span class="hljs-comment">// call f (pushed retaddr)</span><br>};<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">backtrace</span><span class="hljs-params">()</span> {<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">frame</span> *<span class="hljs-title">f</span>;</span><br>  <span class="hljs-type">char</span> cmd[<span class="hljs-number">1024</span>];<br>  <span class="hljs-keyword">extern</span> <span class="hljs-type">char</span> end;<br>	<br>  <span class="hljs-comment">// rbp寄存器的值赋值给f，我们就可以类似于链表，进行遍历了昂！！！</span><br>  <span class="hljs-keyword">asm</span> <span class="hljs-title function_">volatile</span> <span class="hljs-params">(<span class="hljs-string">"movq %%rbp, %0"</span> : <span class="hljs-string">"=g"</span>(f))</span>;<br>  <span class="hljs-keyword">for</span> (; f-&gt;addr &lt; (<span class="hljs-type">void</span> *)&amp;end; f = f-&gt;next) {<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%016lx  "</span>, (<span class="hljs-type">long</span>)f-&gt;addr); fflush(<span class="hljs-built_in">stdout</span>);<br>    <span class="hljs-comment">// 对于合法的地址，我们调用addr2line把对应的行打出来就好了昂！！！</span><br>    <span class="hljs-built_in">sprintf</span>(cmd, <span class="hljs-string">"addr2line -e %s %p"</span>, binary, f-&gt;addr);<br>    system(cmd);<br>  }<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">bar</span><span class="hljs-params">()</span> {<br>  backtrace();<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">foo</span><span class="hljs-params">()</span> {<br>  bar();<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span> {<br>  binary = argv[<span class="hljs-number">0</span>];<br>  foo();<br>}<br><br></code></pre></td></tr></tbody></table></figure>
 
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<ul>
+<li>思路：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021033156.png" srcset="/img/loading.gif" lazyload alt="image-20230102103310104"></p>
+<blockquote>
+<p>函数调用无非就是栈帧嘛！！！我们顺着存栈帧的指针，把对应的数据结构struct frame取出来，然后像链表遍历一样，从目前遍历到一开始，就能够backtrace()出来最终的结果哇！</p>
+</blockquote>
+<ul>
+<li>需要的编译选项<ul>
+<li>-g (生成调试信息)</li>
+<li>-static (静态链接)</li>
+<li>-fno-omit-frame-pointer (总是生成 frame pointer)</li>
+<li>可以尝试不同的 optimization level<ul>
+<li>再试试 gdb</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021037946.png" srcset="/img/loading.gif" lazyload alt="image-20230102103753905"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021041593.png" srcset="/img/loading.gif" lazyload alt="image-20230102104114550"></p>
+<blockquote>
+<p>O2状态下产生了内联呢，O0就是正常的，没有啥优化。</p>
+<p>因此调试逻辑错误都是用O0的昂！！！</p>
+<p>这里也看到，就算是O2，gdb也能找出调用信息。本质上栈帧优化之后，是找不到调用了。但是GDB可以根据这些Debug Info，给“虚构”出来调用的链路，这事儿没我们想的那么容易昂！！！</p>
+</blockquote>
+<hr>
+<p>没有 frame pointer 的时候呢？</p>
+<ul>
+<li>Linus 锐评 Kernel backtrace unwind support<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3360572">Reliable and fast DWARF-based stack unwinding</a> (OOPSLA’19)</li>
+</ul>
+</li>
+<li>一般问题：Still open (有很多工作可以做)</li>
+</ul>
+<h2 id="逆向工程-Reverse-Engineering"><a href="#逆向工程-Reverse-Engineering" class="headerlink" title="逆向工程 (Reverse Engineering)"></a>逆向工程 (Reverse Engineering)</h2><p>得到 “不希望” 你看到的商业软件代码 (然后就可以分析漏洞啥了)</p>
+<ul>
+<li>调试信息 (代码) 是绝对不可能了</li>
+<li>连符号表都没有 (stripped)</li>
+<li>看起来就是一串指令序列 (可以执行)</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021029751.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="编译和链接"><a href="#编译和链接" class="headerlink" title="编译和链接"></a>编译和链接</h1><h2 id="从-C-代码到二进制文件"><a href="#从-C-代码到二进制文件" class="headerlink" title="从 C 代码到二进制文件"></a>从 C 代码到二进制文件</h2><p>被《计算机系统基础》支配的恐惧？</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// main.c</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">hello</span><span class="hljs-params">()</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  hello();<br>}<br><br><span class="hljs-comment">// hello.c</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">hello</span><span class="hljs-params">()</span> {<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Hello World\n"</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">gcc -c main.c<br>gcc -c hello.c<br>gcc -static main.o hello.o<br>./a.out<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>从main函数里面调用一个它不知道的hello，main.c编译的时候，声明了hello的存在。编译main的时候，还没有解析hello，不知道在哪儿，在链接的时候再决定昂！但是编译可以正常完成，这样就可以在我们的一个文件不知道其他部分的情况下，完成编译。 -&gt; 大的项目拆小</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021058426.png" srcset="/img/loading.gif" lazyload alt="image-20230102105827374"></p>
+<h2 id="其实不难"><a href="#其实不难" class="headerlink" title="其实不难"></a>其实不难</h2><p><code>gcc -S -c main.c</code>:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021108334.png" srcset="/img/loading.gif" lazyload alt="image-20230102110813260"></p>
+<blockquote>
+<p>可以看到底层就是编译成了一条call指令而已捏！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021118660.png" srcset="/img/loading.gif" lazyload alt="image-20230102111850597"></p>
+<p>编译器生成文本汇编代码 → 汇编器生成二进制指令序列</p>
+<figure class="highlight apache"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">0000000000000000</span> &lt;main&gt;:<br>   <span class="hljs-attribute">0</span>:   f3 <span class="hljs-number">0</span>f <span class="hljs-number">1</span>e fa         endbr64 <br>   <span class="hljs-attribute">4</span>:   <span class="hljs-number">48</span> <span class="hljs-number">83</span> ec <span class="hljs-number">08</span>         sub    $<span class="hljs-number">0</span>x8,%rsp<br>   <span class="hljs-attribute">8</span>:   <span class="hljs-number">31</span> c0               xor    %eax,%eax<br>   <span class="hljs-attribute">a</span>:   e8 <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span>      callq  ????????<br>   <span class="hljs-attribute">f</span>:   <span class="hljs-number">31</span> c0               xor    %eax,%eax<br>  <span class="hljs-attribute">11</span>:   <span class="hljs-number">48</span> <span class="hljs-number">83</span> c4 <span class="hljs-number">08</span>         add    $<span class="hljs-number">0</span>x8,%rsp<br>  <span class="hljs-attribute">15</span>:   c3                  retq   <br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>但有些地址编译的时候不知道啊 (比如 hello) -&gt; 目标文件执行不了，必须经过链接，才能够生成可执行文件！！！绝大多数代码都生成完成了，但是call的是hello，不知道hello是啥呀，因此摆烂了，全是0……</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021125028.png" srcset="/img/loading.gif" lazyload alt="image-20230102112549952"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021128960.png" srcset="/img/loading.gif" lazyload alt="image-20230102112801916"></p>
+<blockquote>
+<p>这里是成立的！！！</p>
+<p>前面还好。这里我不明白为什么要+offset。这个offset的值是多少？ -&gt; offset是从地址p读出来的一个偏移（因为马上要函数调用了，要跳转到别的地方，这里是相对地址），判断函数调用之后的结果，是不是hello，就是酱！</p>
+</blockquote>
+<p>main.o</p>
+<ul>
+<li>就先填个 0 吧</li>
+</ul>
+<h2 id="重定位-Relocation"><a href="#重定位-Relocation" class="headerlink" title="重定位 (Relocation)"></a>重定位 (Relocation)</h2><p>但这 4-bytes 最终是需要被填上的（被真正的hello填上！），使得 assertion 被满足：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">assert(<br>  (<span class="hljs-type">char</span> *)hello ==<br>    (<span class="hljs-type">char</span> *)main + <span class="hljs-number">0xf</span> + <span class="hljs-comment">// call hello 的 next PC</span><br>    *(<span class="hljs-type">int32_t</span> *)((<span class="hljs-type">uintptr_t</span>)main + <span class="hljs-number">0xb</span>) <span class="hljs-comment">// call 指令中的 offset</span><br>);<br></code></pre></td></tr></tbody></table></figure>
+
+<p>这个要求也要被写在文件里</p>
+<ul>
+<li><p>ELF 文件：部分状态机的 “容器”</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">  Offset            Type      Sym. Name + Addend<br><span class="hljs-number">00000000000b</span>  R_X86_64_PLT32  hello - <span class="hljs-number">4</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>重填 32-bit value 为 “S + A - P” (P = main + 0xb)</li>
+<li>如何理解？考虑 call “S + A - P” 的行为 -&gt; S+A-P就是(char *)main + 0xf + *(int32_t *)((uintptr_t)main + 0xb)</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>S+A-P=S-(P-A)    P-A就是现在的PC值，就是跳转的目标地址减去现在的PC。这边感觉确实讲的复杂了些，其实就是求hello的第一条指令的起始地址和call指令的下一条指令的起始地址的偏移，就是一个跳转时的偏移量，如果用汇编来写的话就很简单了，call hello；1:；hel</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021130374.png" srcset="/img/loading.gif" lazyload alt="image-20230102113007331"></p>
+<h2 id="重新理解编译、链接流程"><a href="#重新理解编译、链接流程" class="headerlink" title="重新理解编译、链接流程"></a>重新理解编译、链接流程</h2><p>编译器 (gcc)</p>
+<ul>
+<li>High-level semantics (C 状态机) → low-level semantics (汇编)</li>
+</ul>
+<p>汇编器 (as)</p>
+<ul>
+<li>Low-level semantics → Binary semantics (状态机容器)<ul>
+<li>“一一对应” 地翻译成二进制代码<ul>
+<li>sections, symbols, debug info</li>
+</ul>
+</li>
+<li>不能决定的要留下 “之后怎么办” 的信息<ul>
+<li>relocations</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>链接器 (ld)</p>
+<ul>
+<li>合并所有容器，得到 “一个完整的状态机”<ul>
+<li>ldscript (<code>-Wl,--verbose</code>); 和 C Runtime Objects (CRT) 链接</li>
+<li>missing/duplicate symbol 会出错</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021136612.png" srcset="/img/loading.gif" lazyload alt="image-20230102113649576"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021137393.png" srcset="/img/loading.gif" lazyload alt="image-20230102113726326"></p>
+<h2 id="奇怪，我们完全没有讲-ELF-的细节？"><a href="#奇怪，我们完全没有讲-ELF-的细节？" class="headerlink" title="奇怪，我们完全没有讲 ELF 的细节？"></a>奇怪，我们完全没有讲 ELF 的细节？</h2><p>ELF 就是一个 “容器数据结构”，包含了必要的信息</p>
+<ul>
+<li>你完全可以试着自己定义二进制文件格式 (dump it to disk)！</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">executable</span> {</span><br>  <span class="hljs-type">uint32_t</span> entry;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">segment</span> *<span class="hljs-title">segments</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">reloc</span> *<span class="hljs-title">relocs</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">symbol</span> *<span class="hljs-title">symbols</span>;</span><br>};<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">segment</span> {</span> <span class="hljs-type">uint32_t</span> flags, size; <span class="hljs-type">char</span> data[<span class="hljs-number">0</span>]; }<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">reloc</span>   {</span> <span class="hljs-type">uint32_t</span> S, A, P; <span class="hljs-type">char</span> name[<span class="hljs-number">32</span>]; };<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">symbol</span>  {</span> <span class="hljs-type">uint32_t</span> off; <span class="hljs-type">char</span> name[<span class="hljs-number">32</span>]; };<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><p>当然，这有很多缺陷</p>
+<ul>
+<li>“名字” 其实应该集中存储 (<code>const char *</code> 而不是 <code>char[]</code>)</li>
+<li>慢慢理解了 ELF 里的各种设计 (例如 memsz 和 filesz 不一样大) -&gt; 例如symbol里面的name，如果每个都分配32个字节，太大了！！！可能有一个buffer，里面装了全部的字符串常量，存储的时候，就存一个便宜量。诶嘿，方便小巧，取出来的时候再构成上面的数据结构嘛！！！</li>
+</ul>
+</li>
+<li><p>如何理解：</p>
+<ul>
+<li>a.out就是一个数据结构，描述的状态机的初始状态和转换。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301021145306.png" srcset="/img/loading.gif" lazyload alt="image-20230102114544265"></p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
 <li>System V ABI: <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/manuals/sysv-abi.pdf">System V Application Binary Interface (AMD64 Architecture Processor Supplement)</a> (<a target="_blank" rel="noopener" href="https://gitlab.com/x86-psABIs/x86-64-ABI">repo</a>)，应用和二进制的Interface。</li>
 <li><a target="_blank" rel="noopener" href="https://refspecs.linuxbase.org/">和更多 refspecs</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.gnu.org/software/binutils/">GNU binutils</a> -&gt; 二进制文件的工具集合(ld啊，readelf啊，objdump啊之类的昂！！！) -&gt; 本质上就是二进制文件这种数据结构的查看 or 修改的工具哇！！！</li>
+<li>file指令，可以查看elf文件的类型和基本信息之类的哇！！！</li>
+<li>readelf可以查看elf文件（最后可执行的二进制文件格式）</li>
+<li>CSAPP很重要，链接章节再看一遍，会有额外收获昂！！！</li>
 </ol>
 
                 
@@ -605,6 +771,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/01/03/njuos-17-dong-tai-lian-jie-he-jia-zai/" title="NJUOS-17-动态链接和加载">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">NJUOS-17-动态链接和加载</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">

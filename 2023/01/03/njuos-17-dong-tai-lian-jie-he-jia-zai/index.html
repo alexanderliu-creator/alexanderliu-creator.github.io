@@ -1,0 +1,1140 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="本次课回答的问题  Q1: 可执行文件是如何被操作系统加载的？ Q2: 什么是动态链接&#x2F;动态加载？  本次课主要内容  若干真正的静态 ELF 加载器 动态链接和加载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-17-动态链接和加载">
+<meta property="og:url" content="http://example.com/2023/01/03/njuos-17-dong-tai-lian-jie-he-jia-zai/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="本次课回答的问题  Q1: 可执行文件是如何被操作系统加载的？ Q2: 什么是动态链接&#x2F;动态加载？  本次课主要内容  若干真正的静态 ELF 加载器 动态链接和加载">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031013481.png">
+<meta property="article:published_time" content="2023-01-03T02:12:36.000Z">
+<meta property="article:modified_time" content="2023-01-04T11:20:21.454Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031013481.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-17-动态链接和加载 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-17-动态链接和加载"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-03 10:12" pubdate>
+          2023年1月3日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          122 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-17-动态链接和加载</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：3 分钟前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本次课回答的问题</p>
+<ul>
+<li><strong>Q1</strong>: 可执行文件是如何被操作系统加载的？</li>
+<li><strong>Q2</strong>: 什么是动态链接/动态加载？</li>
+</ul>
+<p>本次课主要内容</p>
+<ul>
+<li>若干真正的静态 ELF 加载器</li>
+<li>动态链接和加载</li>
+</ul>
+<span id="more"></span>
+
+
+
+<h1 id="静态-ELF-加载器：实现"><a href="#静态-ELF-加载器：实现" class="headerlink" title="静态 ELF 加载器：实现"></a>静态 ELF 加载器：实现</h1><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031018468.png" srcset="/img/loading.gif" lazyload alt="image-20230103101853443"></p>
+<blockquote>
+<p>/usr/include/elf.h -&gt; 有我们想知道的elf文件的全部信息！！！很好用！！！</p>
+<p>Readelf -h /bin/ls -&gt; 可以看到和上面类似的，X86_64的信息，也是可以从elf文件中获取出来的昂！</p>
+</blockquote>
+<h2 id="在操作系统上实现-ELF-Loader"><a href="#在操作系统上实现-ELF-Loader" class="headerlink" title="在操作系统上实现 ELF Loader"></a>在操作系统上实现 ELF Loader</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031028242.png" srcset="/img/loading.gif" lazyload alt="image-20230103102817207"></p>
+<p>可执行文件</p>
+<ul>
+<li>一个描述了状态机的初始状态 (迁移) 的数据结构<ul>
+<li>不同于内存里的数据结构，“指针” 都被 “偏移量” 代替</li>
+<li>数据结构各个部分定义：<code>/usr/include/elf.h</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>加载器 (loader)</p>
+<ul>
+<li>解析数据结构 + 复制到内存 + 跳转</li>
+<li>创建进程运行时初始状态 (argv, envp, …)<ul>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/loader-static.c">loader-static.c</a><ul>
+<li>可以加载任何静态链接的代码 <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/minimal.S">minimal.S</a>, <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/dfs-fork.c">dfs-fork.c</a></li>
+<li>并且能正确处理参数/环境变量 <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/env.c">env.c</a></li>
+</ul>
+</li>
+<li>RTFM: <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/manuals/sysv-abi.pdf">System V ABI</a> Figure 3.9 (Initial Process Stack)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;assert.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;elf.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/mman.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> STK_SZ           (1 &lt;&lt; 20)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> ROUND(x, align)  (void *)(((uintptr_t)x) &amp; ~(align - 1))</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MOD(x, align)    (((uintptr_t)x) &amp; (align - 1))</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> push(sp, T, ...) ({ *((T*)sp) = (T)__VA_ARGS__; sp = (void *)((uintptr_t)(sp) + sizeof(T)); })</span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">execve_</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *file, <span class="hljs-type">char</span> *argv[], <span class="hljs-type">char</span> *envp[])</span> {<br>  <span class="hljs-comment">// WARNING: This execve_ does not free process resources.</span><br>  <span class="hljs-type">int</span> fd = open(file, O_RDONLY);<br>  assert(fd &gt; <span class="hljs-number">0</span>);<br>  Elf64_Ehdr *h = mmap(<span class="hljs-literal">NULL</span>, <span class="hljs-number">4096</span>, PROT_READ, MAP_PRIVATE, fd, <span class="hljs-number">0</span>);<br>  assert(h != (<span class="hljs-type">void</span> *)<span class="hljs-number">-1</span>);<br>  assert(h-&gt;e_type == ET_EXEC &amp;&amp; h-&gt;e_machine == EM_X86_64);<br><br>  Elf64_Phdr *pht = (Elf64_Phdr *)((<span class="hljs-type">char</span> *)h + h-&gt;e_phoff);<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; h-&gt;e_phnum; i++) {<br>    Elf64_Phdr *p = &amp;pht[i];<br>    <span class="hljs-keyword">if</span> (p-&gt;p_type == PT_LOAD) {<br>      <span class="hljs-type">int</span> prot = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">if</span> (p-&gt;p_flags &amp; PF_R) prot |= PROT_READ;<br>      <span class="hljs-keyword">if</span> (p-&gt;p_flags &amp; PF_W) prot |= PROT_WRITE;<br>      <span class="hljs-keyword">if</span> (p-&gt;p_flags &amp; PF_X) prot |= PROT_EXEC;<br>      <span class="hljs-type">void</span> *ret = mmap(<br>        ROUND(p-&gt;p_vaddr, p-&gt;p_align),              <span class="hljs-comment">// addr, rounded to ALIGN</span><br>        p-&gt;p_memsz + MOD(p-&gt;p_vaddr, p-&gt;p_align),   <span class="hljs-comment">// length</span><br>        prot,                                       <span class="hljs-comment">// protection</span><br>        MAP_PRIVATE | MAP_FIXED,                    <span class="hljs-comment">// flags, private &amp; strict</span><br>        fd,                                         <span class="hljs-comment">// file descriptor</span><br>        (<span class="hljs-type">uintptr_t</span>)ROUND(p-&gt;p_offset, p-&gt;p_align)); <span class="hljs-comment">// offset</span><br>      assert(ret != (<span class="hljs-type">void</span> *)<span class="hljs-number">-1</span>);<br>      <span class="hljs-built_in">memset</span>((<span class="hljs-type">void</span> *)(p-&gt;p_vaddr + p-&gt;p_filesz), <span class="hljs-number">0</span>, p-&gt;p_memsz - p-&gt;p_filesz);<br>    }<br>  }<br>  close(fd);<br><br>  <span class="hljs-type">static</span> <span class="hljs-type">char</span> <span class="hljs-built_in">stack</span>[STK_SZ], rnd[<span class="hljs-number">16</span>];<br>  <span class="hljs-type">void</span> *sp = ROUND(<span class="hljs-built_in">stack</span> + <span class="hljs-keyword">sizeof</span>(<span class="hljs-built_in">stack</span>) - <span class="hljs-number">4096</span>, <span class="hljs-number">16</span>);<br>  <span class="hljs-type">void</span> *sp_exec = sp;<br>  <span class="hljs-type">int</span> argc = <span class="hljs-number">0</span>;<br><br>  <span class="hljs-comment">// argc</span><br>  <span class="hljs-keyword">while</span> (argv[argc]) argc++;<br>  push(sp, <span class="hljs-type">intptr_t</span>, argc);<br>  <span class="hljs-comment">// argv[], NULL-terminate</span><br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt;= argc; i++)<br>    push(sp, <span class="hljs-type">intptr_t</span>, argv[i]);<br>  <span class="hljs-comment">// envp[], NULL-terminate</span><br>  <span class="hljs-keyword">for</span> (; *envp; envp++) {<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strchr</span>(*envp, <span class="hljs-string">'_'</span>)) <span class="hljs-comment">// remove some verbose ones</span><br>      push(sp, <span class="hljs-type">intptr_t</span>, *envp);<br>  }<br>  <span class="hljs-comment">// auxv[], AT_NULL-terminate</span><br>  push(sp, <span class="hljs-type">intptr_t</span>, <span class="hljs-number">0</span>);<br>  push(sp, Elf64_auxv_t, { .a_type = AT_RANDOM, .a_un.a_val = (<span class="hljs-type">uintptr_t</span>)rnd } );<br>  push(sp, Elf64_auxv_t, { .a_type = AT_NULL } );<br><br>  <span class="hljs-keyword">asm</span> <span class="hljs-title function_">volatile</span><span class="hljs-params">(</span><br><span class="hljs-params">    <span class="hljs-string">"mov $0, %%rdx;"</span> <span class="hljs-comment">// required by ABI</span></span><br><span class="hljs-params">    <span class="hljs-string">"mov %0, %%rsp;"</span></span><br><span class="hljs-params">    <span class="hljs-string">"jmp *%1"</span> : : <span class="hljs-string">"a"</span>(sp_exec), <span class="hljs-string">"b"</span>(h-&gt;e_entry))</span>;<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[], <span class="hljs-type">char</span> *envp[])</span> {<br>  <span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>) {<br>    <span class="hljs-built_in">fprintf</span>(<span class="hljs-built_in">stderr</span>, <span class="hljs-string">"Usage: %s file [args...]\n"</span>, argv[<span class="hljs-number">0</span>]);<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>  }<br>  execve_(argv[<span class="hljs-number">1</span>], argv + <span class="hljs-number">1</span>, envp);<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>使用</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">gcc loader-static.c -o loader<br>./loader minimal<br>./loader dfs<br>./loader env<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031133226.png" srcset="/img/loading.gif" lazyload alt="image-20230103113339178"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031133768.png" srcset="/img/loading.gif" lazyload alt="image-20230103113352691"></p>
+<ul>
+<li>Strace ./loader minimal:</li>
+</ul>
+<blockquote>
+<p>不是loader的第一个系统调用是execve,而是shell解释器调用的execve，让loader跑起来了。loader执行过程中，没有调用任何的execve，但是让程序正常跑起来了。</p>
+<p>自定义loader，把要加在的，ELF中的代码段，数据段给mmap映射到当前进程虚拟地址空间对应的区域中，并让其跑起来！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031605488.png" srcset="/img/loading.gif" lazyload alt="image-20230103160514441"></p>
+<blockquote>
+<p>Loader相当于根据ELF文件的数据结构，把ELF文件放入内存，设置好堆栈之类的，就能跑了！！！</p>
+</blockquote>
+<ul>
+<li>上面的RTFM里面，就有很多的内容：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031608832.png" srcset="/img/loading.gif" lazyload alt="image-20230103160809776"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031608974.png" srcset="/img/loading.gif" lazyload alt="image-20230103160844902"></p>
+<blockquote>
+<p>Loader是可以自己手动实现的！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031615551.png" srcset="/img/loading.gif" lazyload alt="image-20230103161514468"></p>
+<blockquote>
+<p>内存按照手册放好了，就可以很简单的实现一个loader。loader无非就是一个，把ELF文件中的数据结构解析，放进内存和寄存器中的对应位置，并让其执行起来的程序嘛！！！</p>
+</blockquote>
+<ul>
+<li>回想execve这个API，不也类似的？底层就是由open, mmap, close调用组合而成的。帮助我们将状态机的位置“set”好，数据结构都放好，然后就能够正常执行啦！！！</li>
+<li>execve是内核态的，我们的代码还是用户态的呢。用户态就能完成这个操作，不需要进入操作系统内核哇。诶嘿，那我们自己做操作系统的时候，是不是就可以不用写类似的API。Loader写好，所有的程序通过Loader进行加载就行，程序就是先执行loader，再让loader构造好内存空间，执行loader对应的程序内容的加载和放置呢？</li>
+</ul>
+<h2 id="Boot-Block-Loader"><a href="#Boot-Block-Loader" class="headerlink" title="Boot Block Loader"></a>Boot Block Loader</h2><p>加载操作系统内核？</p>
+<ul>
+<li>也是一个 ELF 文件</li>
+<li>解析数据结构 + 复制到内存 + 跳转</li>
+</ul>
+<hr>
+<p><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/bootmain.c">bootmain.c</a> (i386/x86-64 通用)</p>
+<ul>
+<li>之前给大家调试过<ul>
+<li>不花时间调试了</li>
+<li>马上有重磅主角登场</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;elf.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;x86/x86.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> SECTSIZE 512</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> ARGSIZE  1024</span><br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">wait_disk</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> {<br>  <span class="hljs-keyword">while</span> ((inb(<span class="hljs-number">0x1f7</span>) &amp; <span class="hljs-number">0xc0</span>) != <span class="hljs-number">0x40</span>);<br>}<br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">read_disk</span><span class="hljs-params">(<span class="hljs-type">void</span> *buf, <span class="hljs-type">int</span> sect)</span> {<br>  wait_disk();<br>  outb(<span class="hljs-number">0x1f2</span>, <span class="hljs-number">1</span>);<br>  outb(<span class="hljs-number">0x1f3</span>, sect);<br>  outb(<span class="hljs-number">0x1f4</span>, sect &gt;&gt; <span class="hljs-number">8</span>);<br>  outb(<span class="hljs-number">0x1f5</span>, sect &gt;&gt; <span class="hljs-number">16</span>);<br>  outb(<span class="hljs-number">0x1f6</span>, (sect &gt;&gt; <span class="hljs-number">24</span>) | <span class="hljs-number">0xE0</span>);<br>  outb(<span class="hljs-number">0x1f7</span>, <span class="hljs-number">0x20</span>);<br>  wait_disk();<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; SECTSIZE / <span class="hljs-number">4</span>; i ++) {<br>    ((<span class="hljs-type">uint32_t</span> *)buf)[i] = inl(<span class="hljs-number">0x1f0</span>);<br>  }<br>}<br><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">copy_from_disk</span><span class="hljs-params">(<span class="hljs-type">void</span> *buf, <span class="hljs-type">int</span> nbytes, <span class="hljs-type">int</span> disk_offset)</span> {<br>  <span class="hljs-type">uint32_t</span> cur  = (<span class="hljs-type">uint32_t</span>)buf &amp; ~(SECTSIZE - <span class="hljs-number">1</span>);<br>  <span class="hljs-type">uint32_t</span> ed   = (<span class="hljs-type">uint32_t</span>)buf + nbytes;<br>  <span class="hljs-type">uint32_t</span> sect = (disk_offset / SECTSIZE) + (ARGSIZE / SECTSIZE) + <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">for</span>(; cur &lt; ed; cur += SECTSIZE, sect ++)<br>    read_disk((<span class="hljs-type">void</span> *)cur, sect);<br>}<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">load_program</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> filesz, <span class="hljs-type">uint32_t</span> memsz, <span class="hljs-type">uint32_t</span> paddr, <span class="hljs-type">uint32_t</span> offset)</span> {<br>  copy_from_disk((<span class="hljs-type">void</span> *)paddr, filesz, offset);<br>  <span class="hljs-type">char</span> *bss = (<span class="hljs-type">void</span> *)(paddr + filesz);<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">uint32_t</span> i = filesz; i != memsz; i++) {<br>    *bss++ = <span class="hljs-number">0</span>;<br>  }<br>}<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">load_elf64</span><span class="hljs-params">(Elf64_Ehdr *elf)</span> {<br>  Elf64_Phdr *ph = (Elf64_Phdr *)((<span class="hljs-type">char</span> *)elf + elf-&gt;e_phoff);<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; elf-&gt;e_phnum; i++, ph++) {<br>    load_program(<br>      (<span class="hljs-type">uint32_t</span>)ph-&gt;p_filesz,<br>      (<span class="hljs-type">uint32_t</span>)ph-&gt;p_memsz,<br>      (<span class="hljs-type">uint32_t</span>)ph-&gt;p_paddr,<br>      (<span class="hljs-type">uint32_t</span>)ph-&gt;p_offset<br>    );<br>  }<br>}<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">load_elf32</span><span class="hljs-params">(Elf32_Ehdr *elf)</span> {<br>  Elf32_Phdr *ph = (Elf32_Phdr *)((<span class="hljs-type">char</span> *)elf + elf-&gt;e_phoff);<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; elf-&gt;e_phnum; i++, ph++) {<br>    load_program(<br>      (<span class="hljs-type">uint32_t</span>)ph-&gt;p_filesz,<br>      (<span class="hljs-type">uint32_t</span>)ph-&gt;p_memsz,<br>      (<span class="hljs-type">uint32_t</span>)ph-&gt;p_paddr,<br>      (<span class="hljs-type">uint32_t</span>)ph-&gt;p_offset<br>    );<br>  }<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">load_kernel</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> {<br>  Elf32_Ehdr *elf32 = (<span class="hljs-type">void</span> *)<span class="hljs-number">0x8000</span>;<br>  Elf64_Ehdr *elf64 = (<span class="hljs-type">void</span> *)<span class="hljs-number">0x8000</span>;<br>  <span class="hljs-type">int</span> is_ap = boot_record()-&gt;is_ap;<br><br>  <span class="hljs-keyword">if</span> (!is_ap) {<br>    <span class="hljs-comment">// load argument (string) to memory</span><br>    copy_from_disk((<span class="hljs-type">void</span> *)MAINARG_ADDR, <span class="hljs-number">1024</span>, <span class="hljs-number">-1024</span>);<br>    <span class="hljs-comment">// load elf header to memory</span><br>    copy_from_disk(elf32, <span class="hljs-number">4096</span>, <span class="hljs-number">0</span>);<br>    <span class="hljs-keyword">if</span> (elf32-&gt;e_machine == EM_X86_64) {<br>      load_elf64(elf64);<br>    } <span class="hljs-keyword">else</span> {<br>      load_elf32(elf32);<br>    }<br>  } <span class="hljs-keyword">else</span> {<br>    <span class="hljs-comment">// everything should be loaded</span><br>  }<br><br>  <span class="hljs-keyword">if</span> (elf32-&gt;e_machine == EM_X86_64) {<br>    ((<span class="hljs-type">void</span>(*)())(<span class="hljs-type">uint32_t</span>)elf64-&gt;e_entry)();<br>  } <span class="hljs-keyword">else</span> {<br>    ((<span class="hljs-type">void</span>(*)())(<span class="hljs-type">uint32_t</span>)elf32-&gt;e_entry)();<br>  }<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031626727.png" srcset="/img/loading.gif" lazyload alt="image-20230103162607647"></p>
+<blockquote>
+<p>操作系统内核的Boot Loader本质上干的事情是一样的</p>
+<p>BootLoader启动的时候，将操作系统(Kernel)这个ELF文件，搬到我们的内存里面来，然后把它跑起来。Loader都是一样的，创建一个状态机。但是区别在于：BootLoader的时候，操作系统并不存在！！！从磁盘把内容搬入内容，还需要别的机制（RTFM），调用一些硬件指令，把操作系统代码搬进来。然后一样的，进行ELF解析，把操作系统运行起来！！！</p>
+</blockquote>
+<h2 id="Linux-内核闪亮登场"><a href="#Linux-内核闪亮登场" class="headerlink" title="Linux 内核闪亮登场"></a>Linux 内核闪亮登场</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031631132.png" srcset="/img/loading.gif" lazyload alt="image-20230103163152028"></p>
+<blockquote>
+<p>老师演示了一个能跑的Linux，编译之后，发现没有任何区别昂！！！也就是一个ELF文件而已昂！！！原视频40min开始，建议去看看，视频链接在References里面。</p>
+<p>编译好，专门有make debug，甚至可以gdb调试linux的启动…太恐怖了……没有任何的魔法！！！</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/loader-static.c">loader-static.c</a>, <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/bootmain.c">bootmain.c</a> 和 Linux 有本质区别吗？没有！</p>
+<ul>
+<li><p>解压缩源码包</p>
+</li>
+<li><p><code>make menuconfig</code> (生成 .config 文件)</p>
+</li>
+<li><p>```shell<br>make bzImage -j8</p>
+<figure class="highlight cpp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><br>  - 顺便给 Kernel 个补丁 (kernel/exit.c)<br><br>------<br><br>编译结果<br><br>- <span class="hljs-built_in">vmlinux</span> (ELF 格式的内核二进制代码)<br>- <span class="hljs-built_in">vmlinuz</span> (压缩的镜像，可以直接被 QEMU 加载)<br>- readelf 入口地址 <span class="hljs-number">0x1000000</span> (物理内存 <span class="hljs-number">16</span>M 位置)<br>  - `__startup_64`: [RTFSC](https:<span class="hljs-comment">//elixir.bootlin.com/linux/latest/source/arch/x86/kernel/head64.c#L165); 调试起来！</span><br>  - 时刻告诉自己：不要怕，就是状态机 (和你们的 lab 完全一样)<br><br>```c<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;assert.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;elf.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/mman.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> STK_SZ           (1 &lt;&lt; 20)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> ROUND(x, align)  (void *)(((uintptr_t)x) &amp; ~(align - 1))</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MOD(x, align)    (((uintptr_t)x) &amp; (align - 1))</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> push(sp, T, ...) ({ *((T*)sp) = (T)__VA_ARGS__; sp = (void *)((uintptr_t)(sp) + sizeof(T)); })</span><br><br><span class="hljs-type">void</span> <span class="hljs-built_in">execve_</span>(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *file, <span class="hljs-type">char</span> *argv[], <span class="hljs-type">char</span> *envp[]) {<br>  <span class="hljs-comment">// WARNING: This execve_ does not free process resources.</span><br>  <span class="hljs-type">int</span> fd = <span class="hljs-built_in">open</span>(file, O_RDONLY);<br>  <span class="hljs-built_in">assert</span>(fd &gt; <span class="hljs-number">0</span>);<br>  Elf64_Ehdr *h = <span class="hljs-built_in">mmap</span>(<span class="hljs-literal">NULL</span>, <span class="hljs-number">4096</span>, PROT_READ, MAP_PRIVATE, fd, <span class="hljs-number">0</span>);<br>  <span class="hljs-built_in">assert</span>(h != (<span class="hljs-type">void</span> *)<span class="hljs-number">-1</span>);<br>  <span class="hljs-built_in">assert</span>(h-&gt;e_type == ET_EXEC &amp;&amp; h-&gt;e_machine == EM_X86_64);<br><br>  Elf64_Phdr *pht = (Elf64_Phdr *)((<span class="hljs-type">char</span> *)h + h-&gt;e_phoff);<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; h-&gt;e_phnum; i++) {<br>    Elf64_Phdr *p = &amp;pht[i];<br>    <span class="hljs-keyword">if</span> (p-&gt;p_type == PT_LOAD) {<br>      <span class="hljs-type">int</span> prot = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">if</span> (p-&gt;p_flags &amp; PF_R) prot |= PROT_READ;<br>      <span class="hljs-keyword">if</span> (p-&gt;p_flags &amp; PF_W) prot |= PROT_WRITE;<br>      <span class="hljs-keyword">if</span> (p-&gt;p_flags &amp; PF_X) prot |= PROT_EXEC;<br>      <span class="hljs-type">void</span> *ret = <span class="hljs-built_in">mmap</span>(<br>        <span class="hljs-built_in">ROUND</span>(p-&gt;p_vaddr, p-&gt;p_align),              <span class="hljs-comment">// addr, rounded to ALIGN</span><br>        p-&gt;p_memsz + <span class="hljs-built_in">MOD</span>(p-&gt;p_vaddr, p-&gt;p_align),   <span class="hljs-comment">// length</span><br>        prot,                                       <span class="hljs-comment">// protection</span><br>        MAP_PRIVATE | MAP_FIXED,                    <span class="hljs-comment">// flags, private &amp; strict</span><br>        fd,                                         <span class="hljs-comment">// file descriptor</span><br>        (<span class="hljs-type">uintptr_t</span>)<span class="hljs-built_in">ROUND</span>(p-&gt;p_offset, p-&gt;p_align)); <span class="hljs-comment">// offset</span><br>      <span class="hljs-built_in">assert</span>(ret != (<span class="hljs-type">void</span> *)<span class="hljs-number">-1</span>);<br>      <span class="hljs-built_in">memset</span>((<span class="hljs-type">void</span> *)(p-&gt;p_vaddr + p-&gt;p_filesz), <span class="hljs-number">0</span>, p-&gt;p_memsz - p-&gt;p_filesz);<br>    }<br>  }<br>  <span class="hljs-built_in">close</span>(fd);<br><br>  <span class="hljs-type">static</span> <span class="hljs-type">char</span> stack[STK_SZ], rnd[<span class="hljs-number">16</span>];<br>  <span class="hljs-type">void</span> *sp = <span class="hljs-built_in">ROUND</span>(stack + <span class="hljs-built_in">sizeof</span>(stack) - <span class="hljs-number">4096</span>, <span class="hljs-number">16</span>);<br>  <span class="hljs-type">void</span> *sp_exec = sp;<br>  <span class="hljs-type">int</span> argc = <span class="hljs-number">0</span>;<br><br>  <span class="hljs-comment">// argc</span><br>  <span class="hljs-keyword">while</span> (argv[argc]) argc++;<br>  <span class="hljs-built_in">push</span>(sp, <span class="hljs-type">intptr_t</span>, argc);<br>  <span class="hljs-comment">// argv[], NULL-terminate</span><br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt;= argc; i++)<br>    <span class="hljs-built_in">push</span>(sp, <span class="hljs-type">intptr_t</span>, argv[i]);<br>  <span class="hljs-comment">// envp[], NULL-terminate</span><br>  <span class="hljs-keyword">for</span> (; *envp; envp++) {<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strchr</span>(*envp, <span class="hljs-string">'_'</span>)) <span class="hljs-comment">// remove some verbose ones</span><br>      <span class="hljs-built_in">push</span>(sp, <span class="hljs-type">intptr_t</span>, *envp);<br>  }<br>  <span class="hljs-comment">// auxv[], AT_NULL-terminate</span><br>  <span class="hljs-built_in">push</span>(sp, <span class="hljs-type">intptr_t</span>, <span class="hljs-number">0</span>);<br>  <span class="hljs-built_in">push</span>(sp, Elf64_auxv_t, { .a_type = AT_RANDOM, .a_un.a_val = (<span class="hljs-type">uintptr_t</span>)rnd } );<br>  <span class="hljs-built_in">push</span>(sp, Elf64_auxv_t, { .a_type = AT_NULL } );<br><br>  <span class="hljs-keyword">asm</span> <span class="hljs-built_in">volatile</span>(<br>    <span class="hljs-string">"mov $0, %%rdx;"</span> <span class="hljs-comment">// required by ABI</span><br>    <span class="hljs-string">"mov %0, %%rsp;"</span><br>    <span class="hljs-string">"jmp *%1"</span> : : <span class="hljs-string">"a"</span>(sp_exec), <span class="hljs-string">"b"</span>(h-&gt;e_entry));<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-built_in">main</span>(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[], <span class="hljs-type">char</span> *envp[]) {<br>  <span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>) {<br>    <span class="hljs-built_in">fprintf</span>(stderr, <span class="hljs-string">"Usage: %s file [args...]\n"</span>, argv[<span class="hljs-number">0</span>]);<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>  }<br>  <span class="hljs-built_in">execve_</span>(argv[<span class="hljs-number">1</span>], argv + <span class="hljs-number">1</span>, envp);<br>}<br></code></pre></td></tr></tbody></table></figure></li>
+</ul>
+<h2 id="调试-Linux-Kernel-ELF-Loader"><a href="#调试-Linux-Kernel-ELF-Loader" class="headerlink" title="调试 Linux Kernel ELF Loader"></a>调试 Linux Kernel ELF Loader</h2><p><a target="_blank" rel="noopener" href="https://elixir.bootlin.com/linux/latest/source/fs/binfmt_elf.c#L100"><code>fs/binfmt_elf.c</code></a>: load_elf_binary</p>
+<ul>
+<li>这里我们看到了 Linux Kernel 里的面向对象 (同我们的 oslab)</li>
+</ul>
+<hr>
+<p>让我们愉快地打个断点……</p>
+<ul>
+<li><p>当然是使用正确的工具了</p>
+<ul>
+<li>```shell<br>script/gen_compile_commands.py<figure class="highlight markdown"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">    -</span> 思考题: 如何实现 “自动” 获得所有编译选项的工具？<br><br><span class="hljs-code">    &gt; 上面生成的这个东西，就能够放到vscode里面，作为配置进行使用的。</span><br><span class="hljs-code"></span><br><span class="hljs-bullet">  -</span> vscode 快捷键<br><br><span class="hljs-bullet">    -</span> ⌃/⌘ + P (<span class="hljs-code">`@`</span>, <span class="hljs-code">`#`</span>)<br><span class="hljs-bullet">    -</span> ⌃/⌘ + ⇧ + P - 任何你不知道按什么键的时候，搜索！<br><br><span class="hljs-bullet">  -</span> Linux Kernel 也不过如此！<br><br><span class="hljs-bullet">    -</span> 你们需要一个 “跨过一道坎” 的过程<br><br><span class="hljs-quote">&gt; vscode配置好，就很好用！！！现代化的工具还是必要的！！！！！！</span><br><span class="hljs-quote">&gt;</span><br><span class="hljs-quote">&gt; 配置好了之后，可以直接在vscode里面启动整个linux内核代码！！！！！！甚至可以打断点，命令行里输入，vscode里面就可以追踪处理昂！！！</span><br><br>![<span class="hljs-string">image-20230103164057027</span>](<span class="hljs-link">https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031640072.png</span>)<br><br><span class="hljs-quote">&gt; 和我们的操作没有本质区别呀，也是遍历ELF的(PHT, Program Header Table)，并进行校验处理！</span><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><span class="hljs-section"># 动态链接和加载</span><br><br><span class="hljs-section">## “拆解应用程序” 的需求</span><br><br><span class="hljs-quote">&gt; 随着库函数越来越大，希望项目能够 “运行时链接”。</span><br><br>![<span class="hljs-string">image-20230103164703924</span>](<span class="hljs-link">https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031647970.png</span>)<br><br><span class="hljs-quote">&gt; 模块儿化方便更新！！！也减少了很多内存占用！！！</span><br><br>减少库函数的磁盘和内存拷贝<br><br><span class="hljs-bullet">-</span> 每个可执行文件里都有所有库函数的拷贝那也太浪费了<br><span class="hljs-bullet">-</span> 只要大家遵守基本约定，不挑库函数的版本<br><span class="hljs-bullet">  -</span> “[<span class="hljs-string">Semantic Versioning</span>](<span class="hljs-link">https://semver.org/</span>)”<br><span class="hljs-bullet">  -</span> 否则发布一个新版本就要重新编译全部程序<br><br>------<br><br>大型项目的分解<br><br><span class="hljs-bullet">-</span> 编译一部分，不用重新链接<br><span class="hljs-bullet">-</span> libjvm.so, libart.so, ...<br><span class="hljs-bullet">  -</span> NEMU: “把 CPU 插上 board”<br><br>![<span class="hljs-string">image-20230103164953442</span>](<span class="hljs-link">https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031649529.png</span>)<br><br><span class="hljs-quote">&gt; 甚至可以动态换CPU...抽象成一个动态链接就好了。</span><br><br><span class="hljs-section">## 动态链接：今天不讲 ELF</span><br><br>和 ELF battle 的每一年：讲着讲着就讲不下去了<br><br><span class="hljs-bullet">-</span> 其实不是讲不清楚，是大家跟不上<br><span class="hljs-bullet">  -</span> 根本原因：概念上紧密相关的东西在数据结构中被强行 “拆散” 了<br><span class="hljs-bullet">    -</span> <span class="hljs-code">`GOT[0]`</span>, <span class="hljs-code">`GOT[1]`</span>, ... ???<br><br>------<br><br>换一种方法<br><br><span class="hljs-bullet">-</span> 如果编译器、链接器、加载器都受你控制<br><span class="hljs-bullet">-</span> 你怎么设计、实现一个 “最直观” 的动态链接格式？<br><span class="hljs-bullet">  -</span> 再去考虑怎么改进它，你就得到了 ELF！<br><span class="hljs-bullet">-</span> <span class="hljs-strong">**假设编译器可以为你生成位置无关代码 (PIC)**</span><br><br>![<span class="hljs-string">image-20230103165509889</span>](<span class="hljs-link">https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031655933.png</span>)<br><br><span class="hljs-section">## 设计一个新的二进制文件格式</span><br><br><span class="hljs-quote">&gt; <span class="hljs-strong">**动态链接的符号查表就行了嘛。**</span></span><br><br><span class="hljs-code">```c</span><br><span class="hljs-code">DL_HEAD</span><br><span class="hljs-code"></span><br><span class="hljs-code">LOAD("libc.dl") # 加载动态库</span><br><span class="hljs-code">IMPORT(putchar) # 加载外部符号</span><br><span class="hljs-code">EXPORT(hello)   # 为动态库导出符号</span><br><span class="hljs-code"></span><br><span class="hljs-code">DL_CODE</span><br><span class="hljs-code"></span><br><span class="hljs-code">hello:</span><br><span class="hljs-code">  ...</span><br><span class="hljs-code">  call DSYM(putchar) # 动态链接符号</span><br><span class="hljs-code">  ...</span><br><span class="hljs-code"></span><br><span class="hljs-code">DL_END</span><br></code></pre></td></tr></tbody></table></figure></li>
+</ul>
+</li>
+<li><p>四个需求：</p>
+<ul>
+<li>加载动态库</li>
+<li>加载外部符号</li>
+<li>为动态库导出符号</li>
+<li>动态链接符号</li>
+</ul>
+</li>
+</ul>
+<h2 id="用最小代价为-dl-文件配齐全套工具链"><a href="#用最小代价为-dl-文件配齐全套工具链" class="headerlink" title="用最小代价为 .dl 文件配齐全套工具链"></a>用最小代价为 <code>.dl</code> 文件配齐全套工具链</h2><p>编译器</p>
+<ul>
+<li>开局一条狗，出门全靠偷 (GCC, GNU as)</li>
+</ul>
+<hr>
+<p>binutils</p>
+<ul>
+<li>ld = objcopy (偷来的)</li>
+<li>as = GNU as (偷来的)</li>
+<li>剩下的就需要自己动手了<ul>
+<li>readdl (readelf)</li>
+<li>objdump</li>
+<li>你同样可以山寨 addr2line, nm, objcopy, …</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>和最重要的加载器</p>
+<ul>
+<li>这个也得自己动手了</li>
+</ul>
+<h2 id="动态链接：实现"><a href="#动态链接：实现" class="headerlink" title="动态链接：实现"></a>动态链接：实现</h2><p>头文件</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/dl/dl.h">dl.h</a> (数据结构定义)</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> REC_SZ 32</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> DL_MAGIC <span class="hljs-string">"\x01\x14\x05\x14"</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> __ASSEMBLER__</span><br>  <span class="hljs-meta">#<span class="hljs-keyword">define</span> DL_HEAD     __hdr: \</span><br><span class="hljs-meta">                      <span class="hljs-comment">/* magic */</span>    .ascii DL_MAGIC; \</span><br><span class="hljs-meta">                      <span class="hljs-comment">/* file_sz */</span>  .4byte (__end - __hdr); \</span><br><span class="hljs-meta">                      <span class="hljs-comment">/* code_off */</span> .4byte (__code - __hdr)</span><br>  <span class="hljs-meta">#<span class="hljs-keyword">define</span> DL_CODE     .fill REC_SZ - 1, 1, 0; \</span><br><span class="hljs-meta">                      .align REC_SZ, 0; \</span><br><span class="hljs-meta">                      __code:</span><br>  <span class="hljs-meta">#<span class="hljs-keyword">define</span> DL_END      __end:</span><br><br>  <span class="hljs-meta">#<span class="hljs-keyword">define</span> RECORD(sym, off, name) \</span><br><span class="hljs-meta">    .align REC_SZ, 0; \</span><br><span class="hljs-meta">    sym .8byte (off); .ascii name</span><br><br>  <span class="hljs-meta">#<span class="hljs-keyword">define</span> IMPORT(sym) RECORD(sym:,           0, <span class="hljs-string">"?"</span> #sym <span class="hljs-string">"\0"</span>)</span><br>  <span class="hljs-meta">#<span class="hljs-keyword">define</span> EXPORT(sym) RECORD(    , sym - __hdr, <span class="hljs-string">"#"</span> #sym <span class="hljs-string">"\0"</span>)</span><br>  <span class="hljs-meta">#<span class="hljs-keyword">define</span> LOAD(lib)   RECORD(    ,           0, <span class="hljs-string">"+"</span> lib  <span class="hljs-string">"\0"</span>)</span><br>  <span class="hljs-meta">#<span class="hljs-keyword">define</span> DSYM(sym)   *sym(%rip)</span><br><span class="hljs-meta">#<span class="hljs-keyword">else</span></span><br>  <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dl_hdr</span> {</span><br>    <span class="hljs-type">char</span> magic[<span class="hljs-number">4</span>];<br>    <span class="hljs-type">uint32_t</span> file_sz, code_off;<br>  };<br><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">symbol</span> {</span><br>    <span class="hljs-type">int64_t</span> offset;<br>    <span class="hljs-type">char</span> type, name[REC_SZ - <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int64_t</span>) - <span class="hljs-number">1</span>];<br>  };<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>“全家桶” 工具集</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/dl/dlbox.c">dlbox.c</a> (gcc, readdl, objdump, interp)</li>
+</ul>
+<hr>
+<p>示例代码</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/dl/libc.S">libc.S</a> - 提供 putchar 和 exit</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/dl/libhello.S">libhello.S</a> - 调用 putchar, 提供 hello</p>
+</li>
+<li><p>main.S</p>
+<p> 调用 hello, 提供 main</p>
+<ul>
+<li>(假装你的高级语言编译器可以生成这样的汇编代码)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>使用：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">gcc dlbox.c -g<br>./dlbox gcc libc.S<br>./dlbox gcc libhello.S<br>./dlbox gcc main.S<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031701241.png" srcset="/img/loading.gif" lazyload alt="image-20230103170121179"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031702713.png" srcset="/img/loading.gif" lazyload alt="image-20230103170207665"></p>
+<blockquote>
+<p>工具链可以生成我们自定义的二进制文件的格式。</p>
+</blockquote>
+<h3 id="动态链接过程解析-dl"><a href="#动态链接过程解析-dl" class="headerlink" title="动态链接过程解析(dl)"></a>动态链接过程解析(dl)</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301031706566.png" srcset="/img/loading.gif" lazyload alt="image-20230103170617519"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041613649.png" srcset="/img/loading.gif" lazyload alt="image-20230104161345505"></p>
+<blockquote>
+<p>动态调用DYSM会被翻译成间接跳转，指向符号表里面对应的位置昂！</p>
+</blockquote>
+<ul>
+<li>翻译后的结果：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041620092.png" srcset="/img/loading.gif" lazyload alt="image-20230104162020046"></p>
+<p>动态链接的过程：</p>
+<ul>
+<li>如果你想要跳转到一块你不知道的地址上，你就先找一块儿数据填上0</li>
+<li>做一个间接跳转的书写，跳转过去，比如<code>call *hello(%rip)</code></li>
+<li>加载器在加载的时候，就会把对应的位置地址填上。（间接调用嗷，static就是直接调用啦！！！）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041625262.png" srcset="/img/loading.gif" lazyload alt="image-20230104162552179"></p>
+<blockquote>
+<p>上面就是导出的函数的格式，加载器就能够知道，putchar方法在哪里，就可以对于上面动态导入的地方，就进行替换了昂！！！就是在 ld 的时候把要动态链接的地址找出来填上。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041636326.png" srcset="/img/loading.gif" lazyload alt="image-20230104163606275"></p>
+<blockquote>
+<p>可以看到我们的二进制文件，对应的格式就是上面咱定义的！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041633873.png" srcset="/img/loading.gif" lazyload alt="image-20230104163311820"></p>
+<blockquote>
+<p>readdl无非就是对于我们上面的符号表进行扫描嘛！！！符号表里面+就是要Load，?就是外部链接，#就打印发好地址。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041638293.png" srcset="/img/loading.gif" lazyload alt="image-20230104163818237"></p>
+<blockquote>
+<p>objdump也是遍历符号表，但是还会遍历代码的每一个字节。如果代码的某一个字节，刚好对应了一个符号的时候，我们就扔给反汇编器，帮我们解释出来，就实现了一个dl -&gt; 汇编的东西！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041645659.png" srcset="/img/loading.gif" lazyload alt="image-20230104164543549"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041646263.png" srcset="/img/loading.gif" lazyload alt="image-20230104164626159"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041646554.png" srcset="/img/loading.gif" lazyload alt="image-20230104164642457"></p>
+<blockquote>
+<p>interpreter一样的，遍历符号表，如果找到一个是main的话，就赋值给一个函数指针。找到这个符号，直接执行它就可以了昂！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041648006.png" srcset="/img/loading.gif" lazyload alt="image-20230104164802899"></p>
+<blockquote>
+<p>加载器最核心部分，dl_open，非常简单！！！解析文件头，知道文件有多大，然后直接mmap映射到内存里。就开始遍历！！！如果符号表里面是+，我们就递归加载dependency，如果是？，我们会解析这个符号（直接给它赋值，注意，就是这一行进行动态的链接更新的，把上面说到的0的地方，改成符号的真实地址昂！！！）</p>
+<p><strong>二进制文件就是个头 + 符号表 + 代码，就有动态链接的功能了昂。</strong></p>
+</blockquote>
+<h1 id="重新回到-ELF"><a href="#重新回到-ELF" class="headerlink" title="重新回到 ELF"></a>重新回到 ELF</h1><h2 id="解决-dl-文件的设计缺陷"><a href="#解决-dl-文件的设计缺陷" class="headerlink" title="解决 dl 文件的设计缺陷"></a>解决 dl 文件的设计缺陷</h2><blockquote>
+<p>我们设计的dl是最简单的，这个小例子就拥有动态链接的功能了。但是真实的ELF，远远考虑的更多，我们考虑的情况，其实是有很多的缺陷的昂！！！</p>
+</blockquote>
+<p>存储保护和加载位置</p>
+<ul>
+<li>允许将 .dl 中的一部分以某个指定的权限映射到内存的某个位置 (program header table)</li>
+</ul>
+<hr>
+<p>允许自由指定加载器 (而不是 dlbox)</p>
+<ul>
+<li>加入 INTERP</li>
+</ul>
+<hr>
+<p>空间浪费</p>
+<ul>
+<li>字符串存储在常量池，统一通过 “指针” 访问<ul>
+<li>这是带来 ELF 文件难读的最根本原因</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>其他：不那么重要</p>
+<ul>
+<li>按需 RTFM/RTFSC</li>
+</ul>
+<h2 id="另一个重要的缺陷"><a href="#另一个重要的缺陷" class="headerlink" title="另一个重要的缺陷"></a>另一个重要的缺陷</h2><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> DSYM(sym)   *sym(%rip)</span><br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>DSYM 是间接内存访问</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">extern</span> <span class="hljs-type">void</span> <span class="hljs-title function_">foo</span><span class="hljs-params">()</span>;<br>foo();<br></code></pre></td></tr></tbody></table></figure>
+
+<p>一种写法，两种情况</p>
+<ul>
+<li>来自其他编译单元 (静态链接)<ul>
+<li>例如我们有a.o和b.o，ld成a.out，链接到同一个binary中，还间接跳转都很不聪明啦！！！（但是ld中，我们必须这么指定昂！！！）</li>
+<li>直接 PC 相对跳转即可 -&gt; 这种情况下，间接跳转效率太低了！！！</li>
+</ul>
+</li>
+<li>动态链接库<ul>
+<li>必须查表 (编译时不能决定) -&gt; 这种情况下，必须间接跳转了，因为我们当前的这个binary中，没有哇orz……</li>
+</ul>
+</li>
+</ul>
+<h2 id="“发明”-GOT-amp-PLT"><a href="#“发明”-GOT-amp-PLT" class="headerlink" title="“发明” GOT &amp; PLT"></a>“发明” GOT &amp; PLT</h2><blockquote>
+<p>针对上面遇到的这种问题，我们统一编译成，相对于rip简单的call。但是如果链接的时候，我们发现这个是一个动态链接库，外部的符号，我们就必须call PLT对应的Entry -&gt; 发明了GOT和PLT！！！</p>
+</blockquote>
+<p>我们的 “符号表” 就是 Global Offset Table (GOT)</p>
+<ul>
+<li>这下你不会理解不了 GOT 的概念了！<ul>
+<li>概念和名字都不重要，发明的过程才重要</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041704042.png" srcset="/img/loading.gif" lazyload alt="image-20230104170452976"></p>
+<blockquote>
+<p>通过自己定义的一个小的二进制文件，我们就明白了ELF同样的，设计的一些初衷！！！</p>
+</blockquote>
+<hr>
+<p>统一静态/动态链接：都用静态！</p>
+<ul>
+<li>增加一层 indirection: Procedure Linkage Table (PLT)</li>
+<li>所有未解析的符号都统一翻译成 call<ul>
+<li>现代处理器都对这种跳转做了一定的优化 (e.g., BTB)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-built_in">putchar</span>@PLT:<br>  call <span class="hljs-title function_">DSYM</span><span class="hljs-params">(<span class="hljs-built_in">putchar</span>)</span> <span class="hljs-meta"># in ELF: jmp *GOT[n]</span><br><br>main:<br>  call <span class="hljs-built_in">putchar</span>@PLT<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="再次回到-printf"><a href="#再次回到-printf" class="headerlink" title="再次回到 printf"></a>再次回到 printf</h2><p>你会发现和我们的 “最小” 二进制文件几乎完全一样！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041706803.png" srcset="/img/loading.gif" lazyload alt="image-20230104170625748"></p>
+<blockquote>
+<p>看到PLT对应的，下面这个，其实就类似于<code>call *hello(%rip)</code>，哦，就是加载上填上的东西呀！！！</p>
+</blockquote>
+<ul>
+<li>ELF 还有一些额外的 hack (比如可以 lazy binding)</li>
+</ul>
+<hr>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">00000000000010</span>c0 &lt;<span class="hljs-built_in">printf</span>@plt&gt;:<br>    <span class="hljs-number">10</span>c0:  endbr64 <br>    <span class="hljs-number">10</span>c4:  bnd jmpq *<span class="hljs-number">0x2efd</span>(%rip) # DSYM(<span class="hljs-built_in">printf</span>)<br>    <span class="hljs-number">10</span>cb:  nopl <span class="hljs-number">0x0</span>(%rax,%rax,<span class="hljs-number">1</span>)<br><br><span class="hljs-number">00000000000011</span>c9 &lt;main&gt;:<br>    ...<br>    <span class="hljs-number">1246</span>:  callq  <span class="hljs-number">10</span>c0 &lt;<span class="hljs-built_in">printf</span>@plt&gt;<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="最后还一个问题：数据"><a href="#最后还一个问题：数据" class="headerlink" title="最后还一个问题：数据"></a>最后还一个问题：数据</h2><p>如果我们想要引用动态链接库里的数据？</p>
+<ul>
+<li>数据不能增加一层 indirection</li>
+</ul>
+<hr>
+<p>stdout/errno/environ 的麻烦</p>
+<ul>
+<li><strong>多个库都会用；但应该只有一个副本！</strong></li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041919258.png" srcset="/img/loading.gif" lazyload alt="image-20230104191900193"></p>
+<blockquote>
+<p>由加载器来保证，世界里只有一个副本昂！！！</p>
+</blockquote>
+<hr>
+<p>当然是做实验了！</p>
+<ul>
+<li>readelf 看看 stdout 有没有不同</li>
+<li>再用 gdb 设一个 watch point<ul>
+<li>原来被特殊对待了</li>
+<li>算是某种 “摆烂” (workaround) 了</li>
+</ul>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301041920243.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>本次课回答的问题</p>
+<ul>
+<li><strong>Q1</strong>: 可执行文件是如何被操作系统加载的？</li>
+<li><strong>Q2</strong>: 什么是动态链接/动态加载？</li>
+</ul>
+<hr>
+<p>Take-away messages</p>
+<ul>
+<li><p>加载器</p>
+<ul>
+<li>借助底层机制把数据结构按 specification “搬运”</li>
+</ul>
+</li>
+<li><p>动态链接/加载</p>
+<ul>
+<li>GOT, PLT 和最小二进制文件</li>
+</ul>
+</li>
+<li><p>啪的一下！很快啊！</p>
+<p>我们就进入了操作系统内核</p>
+<ul>
+<li>没什么难的，就是个普通 C 程序</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li>/usr/include/elf.h -&gt; 有我们想知道的elf文件的全部信息</li>
+<li>readelf和objdump工具在mac下的安装：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zlcxbb/p/6059517.html">https://www.cnblogs.com/zlcxbb/p/6059517.html</a></li>
+<li>file /bin/ls</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">alex ~  $ file /bin/ls<br>/bin/ls: Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit executable x86_64] [arm64e:Mach-O 64-bit executable arm64e]<br>/bin/ls (<span class="hljs-keyword">for</span> architecture x86_64):	Mach-O 64-bit executable x86_64<br>/bin/ls (<span class="hljs-keyword">for</span> architecture arm64e):	Mach-O 64-bit executable arm64e<br></code></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>读elf文件：readelf /bin/ls，读elf文件头：readelf -h /bin/ls</li>
+<li>:set no wrap</li>
+<li>vedio link: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1wL4y1L72C/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">https://www.bilibili.com/video/BV1wL4y1L72C/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd</a></li>
+<li>.so文件：<a target="_blank" rel="noopener" href="https://blog.csdn.net/wangquan1992/article/details/113770115">https://blog.csdn.net/wangquan1992/article/details/113770115</a></li>
+<li>dsym: <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ec695ef26891">https://www.jianshu.com/p/ec695ef26891</a></li>
+<li>!xxd main.dl</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-17-动态链接和加载</div>
+      <div>http://example.com/2023/01/03/njuos-17-dong-tai-lian-jie-he-jia-zai/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年1月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/01/njuos-16-shi-me-shi-ke-zhi-xing-wen-jian/" title="NJUOS-16-什么是可执行文件">
+                        <span class="hidden-mobile">NJUOS-16-什么是可执行文件</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
