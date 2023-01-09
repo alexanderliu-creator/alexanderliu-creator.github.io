@@ -1,0 +1,1002 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="这几节课实践内容巨多，建议好好看视频，这里总结的不多昂，很多很多技巧呢！！！ 建议看视频！！！ -&gt; 讲的使用技巧比较杂，技巧有点多，原视频讲的多得多！！！ 复习  应用视角的操作系统：对象 + API 把操作系统当提供服务的 “黑盒子”     本次课回答的问题  Q: 如何理解 “操作系统就是 C 程序”？   本次课主要内容  xv6 简介 xv6 代码导读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-18-Xv6代码导读">
+<meta property="og:url" content="http://example.com/2023/01/05/njuos-18-xv6-dai-ma-dao-du/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="这几节课实践内容巨多，建议好好看视频，这里总结的不多昂，很多很多技巧呢！！！ 建议看视频！！！ -&gt; 讲的使用技巧比较杂，技巧有点多，原视频讲的多得多！！！ 复习  应用视角的操作系统：对象 + API 把操作系统当提供服务的 “黑盒子”     本次课回答的问题  Q: 如何理解 “操作系统就是 C 程序”？   本次课主要内容  xv6 简介 xv6 代码导读">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301051103824.png">
+<meta property="article:published_time" content="2023-01-05T03:02:49.000Z">
+<meta property="article:modified_time" content="2023-01-06T09:11:33.600Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301051103824.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-18-Xv6代码导读 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-18-Xv6代码导读"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-05 11:02" pubdate>
+          2023年1月5日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-18-Xv6代码导读</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：3 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>这几节课实践内容巨多，建议好好看视频，这里总结的不多昂，很多很多技巧呢！！！</p>
+<p>建议看视频！！！ -&gt; 讲的使用技巧比较杂，技巧有点多，原视频讲的多得多！！！</p>
+<p>复习</p>
+<ul>
+<li>应用视角的操作系统：对象 + API<ul>
+<li>把操作系统当提供服务的 “黑盒子”</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 如何理解 “操作系统就是 C 程序”？</li>
+</ul>
+<hr>
+<p>本次课主要内容</p>
+<ul>
+<li>xv6 简介</li>
+<li>xv6 代码导读</li>
+</ul>
+<span id="more"></span>
+
+
+
+<h1 id="xv6-简介"><a href="#xv6-简介" class="headerlink" title="xv6 简介"></a>xv6 简介</h1><blockquote>
+<p>一个山寨的操作系统，但是是一个实际的操作系统昂！！！</p>
+</blockquote>
+<h2 id="UNIX-传奇"><a href="#UNIX-传奇" class="headerlink" title="UNIX 传奇"></a>UNIX 传奇</h2><p>一万行代码得到一个真正的、好用的操作系统</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/357980.358014">The UNIX time sharing system</a> (SOSP’73 and CACM’74)</li>
+<li>免费授权给高校使用，它实在太适合教学了！<ul>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/manuals/unix-v6-book.pdf">UNIX v6 book（太经典啦！！！）</a></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301051110901.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="xv6-UNIX-v6-的现代-“克隆”"><a href="#xv6-UNIX-v6-的现代-“克隆”" class="headerlink" title="xv6: UNIX v6 的现代 “克隆”"></a>xv6: UNIX v6 的现代 “克隆”</h2><p>接近完整的 UNIX Shell 体验</p>
+<ul>
+<li>基本工具集 (wc, echo, cat, …)</li>
+<li>命令执行、管道、重定向<ul>
+<li>支持多处理器</li>
+<li>Now in RISC-V!</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301051113140.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>它真的是一个 “可用” 的操作系统！</p>
+<ul>
+<li>时间回到 1970s</li>
+<li>这些系统调用就足够支撑刚才提到的应用<ul>
+<li>cc, as, ld, vi, sed, awk, troff, lp, …</li>
+</ul>
+</li>
+</ul>
+<h2 id="xv6-系统调用-API"><a href="#xv6-系统调用-API" class="headerlink" title="xv6 系统调用 API"></a>xv6 系统调用 API</h2><p>21 个系统调用 (参考 <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/sh-xv6.c">sh-xv6.c</a> 使用的系统调用)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301051113484.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<blockquote>
+<p>最常用的系统调用昂！！！</p>
+</blockquote>
+<h2 id="xv6-系统实现"><a href="#xv6-系统实现" class="headerlink" title="xv6 系统实现"></a>xv6 系统实现</h2><p>这是一份包含了很多 Good Practice 的代码</p>
+<ul>
+<li>对初学者来说更像是一个 “艺术品”</li>
+<li>从代码里吸取智慧</li>
+</ul>
+<hr>
+<p>RTFM</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/manuals/xv6-riscv-rev2.pdf">xv6: A simple, Unix-like teaching operating system</a></li>
+<li><strong>宝藏手册</strong>！！！包含了所有细节和 “为什么要这么做”，推荐阅读</li>
+</ul>
+<hr>
+<p>RTFSC</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/mit-pdos/xv6-riscv">xv6-riscv</a></li>
+<li>会分几次课讲解</li>
+</ul>
+<blockquote>
+<p>建议看视频！！！ -&gt; 讲的有点杂，技巧有点多，原视频讲的多得多。</p>
+</blockquote>
+<h2 id="项目构建与运行"><a href="#项目构建与运行" class="headerlink" title="项目构建与运行"></a>项目构建与运行</h2><p>RTFSC: Makefile</p>
+<ul>
+<li>相比 AbstractMachine (跨平台/体系结构) 容易很多</li>
+<li>先找到构建目标<ul>
+<li>然后老规矩: <code>make -nB</code></li>
+<li>你可以根据需要修改一些配置<ul>
+<li>优化等级、CPU 数、编译指令等</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>复习：“程序的执行 (状态变化序列) 有时比代码 (状态机) 更容易理解”</p>
+<ul>
+<li>可以用于配制 vscode<ul>
+<li>Quick quiz: 如何自动生成 <code>compile_commands.json</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="xv6-中的进程"><a href="#xv6-中的进程" class="headerlink" title="xv6 中的进程"></a>xv6 中的进程</h1><h2 id="xv6-进程的地址空间"><a href="#xv6-进程的地址空间" class="headerlink" title="xv6 进程的地址空间"></a>xv6 进程的地址空间</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301051114005.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>回顾：进程 = 运行的状态机 (user/)</p>
+<ul>
+<li>gcc/ld 创建：代码、数据<ul>
+<li>参考 ldscript</li>
+</ul>
+</li>
+<li>运行时分配：堆栈<ul>
+<li>包含 exec 的参数</li>
+</ul>
+</li>
+<li>例子：<code>init.c</code> 和 <code>sh.c</code> (<a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/sh-xv6.c">sh-xv6.c</a> 的真身)</li>
+</ul>
+<blockquote>
+<p>init.c: The initial user-level program -&gt; 第一个用户态的进程</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301061623122.png" srcset="/img/loading.gif" lazyload alt="image-20230106162312018"></p>
+<hr>
+<ul>
+<li>整体结构：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301061637559.png" srcset="/img/loading.gif" lazyload alt="image-20230106163702519"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301061648189.png" srcset="/img/loading.gif" lazyload alt="image-20230106164839148"></p>
+<p>MAXVA 处有两个神奇的页面</p>
+<ul>
+<li>Trampoline 和 trapframe<ul>
+<li><strong>由操作系统分配，用户进程无权访问</strong></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301061659930.png" srcset="/img/loading.gif" lazyload alt="image-20230106165938882"></p>
+<h2 id="调试用户代码"><a href="#调试用户代码" class="headerlink" title="调试用户代码"></a>调试用户代码</h2><p>试一试 init 进程</p>
+<ul>
+<li>proc.c中包含一段 initcode<ul>
+<li>我们可以调试它！(<code>b *0</code>)</li>
+<li>系统调用实现：编号放入 a7 寄存器，执行 ecall 指令<ul>
+<li>man 2 syscall</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>然后再调试_init<ul>
+<li><code>add-symbol-file user/_init</code> 加载调试信息</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>使用 QEMU</p>
+<ul>
+<li>查看地址空间 <code>info mem</code></li>
+<li>对照手册，查看寄存器，例如p/x $stvec<ul>
+<li>可以打上断点 (<code>b *$stvec</code>)</li>
+</ul>
+</li>
+</ul>
+<h1 id="xv6-系统调用"><a href="#xv6-系统调用" class="headerlink" title="xv6 系统调用"></a>xv6 系统调用</h1><h2 id="xv6-系统调用-1"><a href="#xv6-系统调用-1" class="headerlink" title="xv6 系统调用"></a>xv6 系统调用</h2><p>RISC-V user-level ecall 指令</p>
+<ul>
+<li>关闭中断</li>
+<li>复制 $pc 到 $sepc</li>
+<li>设置 $sstatus 为 S-mode</li>
+<li>设置 $scause 为 trap 的原因 (ecall, 8)</li>
+<li>跳转到 $stvec ($pc = $stvec)</li>
+</ul>
+<hr>
+<p>在 xv6 中</p>
+<ul>
+<li>Trampoline: $stvec = 0x3ffffff000 (只读)</li>
+<li>Trapframe (0x3fffffe000): 保存进程寄存器现场的内存</li>
+</ul>
+<h2 id="Trampoline-跳板"><a href="#Trampoline-跳板" class="headerlink" title="Trampoline (跳板)"></a>Trampoline (跳板)</h2><p>trampoline.S (汇编代码)</p>
+<ul>
+<li>对 ecall 瞬间的状态做快照<ul>
+<li>填充 <code>struct trapframe</code> (proc.h)</li>
+<li>利用 $sscratch (S-mode scratch) 保存所有寄存器</li>
+<li>切换到内核栈 (相当于切换到进程对应的 “内核线程”, <a target="_blank" rel="noopener" href="https://jyywiki.cn/OS/2022/labs/L2">L2</a>)</li>
+<li>切换到内核地址空间<ul>
+<li>修改 $satp (S-mode address translation and protection)</li>
+<li>sfence.vma</li>
+</ul>
+</li>
+<li>跳转到 tf-&gt;kernel_trap<ul>
+<li>痛苦时间解除，进入 C 代码</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>总结：保存用户栈（数据和指令还有寄存器）状态，切换到内核栈 -&gt; 对应的就是内核线程。VSCode调试的话，可以很明显看到。用户态的状态机，被封存在了Trampoline和Trapframe中，然后跳转到内核的状态机，执行kernel的c代码昂！！！</p>
+</blockquote>
+<h2 id="系统调用处理"><a href="#系统调用处理" class="headerlink" title="系统调用处理"></a>系统调用处理</h2><p>struct proc *p = myproc()</p>
+<ul>
+<li>我们可以在 gdb 中查看 “进程” 在操作系统内的数据结构表示<ul>
+<li>p/x *p<ul>
+<li>可以看到 trapframe 的地址 (和地址空间中映射的完全一样)</li>
+<li>p/x *p-&gt;trapframe (a7 = 0x7)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>检查scause == 8(syscall)<ul>
+<li>$epc += 4 (更正返回地址)</li>
+<li>打开中断</li>
+<li>执行系统调用</li>
+</ul>
+</li>
+<li>usertrapret()返回<ul>
+<li>ecall 的逆操作</li>
+</ul>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 如何理解 “操作系统就是 C 程序”？</li>
+</ul>
+<hr>
+<p>Take-away messages</p>
+<ul>
+<li><strong>Talk is cheap. Show me the code.</strong></li>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/manuals/xv6-riscv-rev2.pdf">RTFM</a>, <a target="_blank" rel="noopener" href="https://github.com/mit-pdos/xv6-riscv">RTFSC</a></li>
+<li>用好现代工具<ul>
+<li>gdb tui + python, vscode, …</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><strong>宝藏手册</strong>！！！包含了所有细节和 “为什么要这么做”，推荐阅读: <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/manuals/xv6-riscv-rev2.pdf">xv6: A simple, Unix-like teaching operating system</a></li>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/manuals/unix-v6-book.pdf">UNIX v6 book（太经典啦！！！）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mit-pdos/xv6-riscv">xv6-riscv</a></li>
+<li>Vedio-link: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1DY4y1a7YD/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">https://www.bilibili.com/video/BV1DY4y1a7YD/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd</a></li>
+<li>vscode调试XV6: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/501901665">https://zhuanlan.zhihu.com/p/501901665</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-18-Xv6代码导读</div>
+      <div>http://example.com/2023/01/05/njuos-18-xv6-dai-ma-dao-du/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年1月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/01/07/njuos-19-xv6-shang-xia-wen-qie-huan/" title="NJUOS-19-Xv6上下文切换">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">NJUOS-19-Xv6上下文切换</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/03/njuos-17-dong-tai-lian-jie-he-jia-zai/" title="NJUOS-17-动态链接和加载">
+                        <span class="hidden-mobile">NJUOS-17-动态链接和加载</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

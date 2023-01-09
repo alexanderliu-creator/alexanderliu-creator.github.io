@@ -1,0 +1,1306 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="这里也是建议看视频，很多操作细节昂！！！   机制 (mechanism)：上下文切换 在中断&#x2F;系统调用时执行操作系统代码 操作系统实现所有状态机 (进程) 一视同仁的 “封存” 从而可以恢复任意一个状态机 (进程) 执行     本次课回答的问题  Q: 策略 (policy)：那我们到底选哪个进程执行呢？   本次课主要内容  常见调度算法：Round-Robin, 优先级, MLFQ, C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-20-处理器调度">
+<meta property="og:url" content="http://example.com/2023/01/08/njuos-20-chu-li-qi-diao-du/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="这里也是建议看视频，很多操作细节昂！！！   机制 (mechanism)：上下文切换 在中断&#x2F;系统调用时执行操作系统代码 操作系统实现所有状态机 (进程) 一视同仁的 “封存” 从而可以恢复任意一个状态机 (进程) 执行     本次课回答的问题  Q: 策略 (policy)：那我们到底选哪个进程执行呢？   本次课主要内容  常见调度算法：Round-Robin, 优先级, MLFQ, C">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301081100664.png">
+<meta property="article:published_time" content="2023-01-08T03:00:07.000Z">
+<meta property="article:modified_time" content="2023-01-09T11:28:05.907Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301081100664.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-20-处理器调度 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-20-处理器调度"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-08 11:00" pubdate>
+          2023年1月8日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          69 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-20-处理器调度</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>这里也是建议看视频，很多操作细节昂！！！</p>
+</blockquote>
+<ul>
+<li>机制 (mechanism)：上下文切换<ul>
+<li>在中断/系统调用时执行操作系统代码</li>
+<li>操作系统实现所有状态机 (进程) 一视同仁的 “封存”</li>
+<li>从而可以恢复任意一个状态机 (进程) 执行</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 策略 (policy)：那我们到底选哪个进程执行呢？</li>
+</ul>
+<hr>
+<p>本次课主要内容</p>
+<ul>
+<li>常见调度算法：Round-Robin, 优先级, MLFQ, CFS</li>
+<li>告诉大家为什么我们这门课不讲 “调度算法”</li>
+</ul>
+<h1 id="理想的处理器调度-1"><a href="#理想的处理器调度-1" class="headerlink" title="理想的处理器调度 (1)"></a>理想的处理器调度 (1)</h1><h2 id="简化的处理器调度问题"><a href="#简化的处理器调度问题" class="headerlink" title="简化的处理器调度问题"></a>简化的处理器调度问题</h2><p>中断机制</p>
+<ul>
+<li>处理器以固定的频率被中断<ul>
+<li>Linux Kernel 可以配置：100/250/300/1000Hz</li>
+</ul>
+</li>
+<li>中断/系统调用返回时可以自由选择进程/线程执行</li>
+</ul>
+<hr>
+<p>处理器调度问题的简化假设</p>
+<ul>
+<li>系统中有<strong>一个处理器</strong> (1970s)</li>
+<li>系统中有多个进程/线程共享 CPU<ul>
+<li>包括系统调用 (进程/线程的一部分代码在 syscall 中执行)</li>
+<li>偶尔会等待 I/O 返回，不使用 CPU (通常时间较长)</li>
+</ul>
+</li>
+</ul>
+<h2 id="策略-Round-Robin"><a href="#策略-Round-Robin" class="headerlink" title="策略: Round-Robin"></a>策略: Round-Robin</h2><p>假设当前$T_i$运行</p>
+<ul>
+<li>中断后试图切换到下一个线程 $T_{(i+1),\textrm{mod},n}$</li>
+<li>如果下一个线程正在等待 I/O 返回，继续尝试下一个<ul>
+<li>如果系统所有的线程都不需要 CPU，就调度 idle 线程执行</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>我们的 <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/thread-os.c">thread-os.c</a> 实际上实现了 Round-Robin 的调度器</p>
+<ul>
+<li>中断之间的线程执行称为 “时间片” (time-slicing)</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301081122884.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="策略：引入优先级"><a href="#策略：引入优先级" class="headerlink" title="策略：引入优先级"></a>策略：引入优先级</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301081105757.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>UNIX niceness</p>
+<ul>
+<li>-20 .. 19 的整数，<strong>越 nice 越让别人得到 CPU</strong><ul>
+<li>-20: 极坏; most favorable to the process</li>
+<li>19: 极好; least favorable to the process</li>
+</ul>
+</li>
+<li>基于优先级的调度策略<ul>
+<li>RTOS: 坏人躺下好人才能上<ul>
+<li><del>好人流下了悔恨的泪水</del></li>
+</ul>
+</li>
+<li><strong>Linux: nice 相差 10, CPU 资源获得率相差 10 倍</strong></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>如果一个坏人，while(1)呢……好人全被饿死了，貌似也不对，所以有上面这个<strong>Linux: nice 相差 10, CPU 资源获得率相差 10 倍</strong>。好人多少也会被调度到昂！！！</p>
+</blockquote>
+<ul>
+<li><p>不妨试一试: nice/renice</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">taskset -c <span class="hljs-number">0</span> nice -n <span class="hljs-number">19</span> yes &gt; /dev/null &amp;<br>taskset -c <span class="hljs-number">0</span> nice -n  <span class="hljs-number">9</span> yes &gt; /dev/null &amp;<br></code></pre></td></tr></tbody></table></figure></li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301081149199.png" srcset="/img/loading.gif" lazyload alt="image-20230108114917156"></p>
+<blockquote>
+<p>可以设置进程和CPU的绑定，只能在某个CPU上进行。绑定在同一个CPU上运行，然后查看性能：</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301081151388.png" srcset="/img/loading.gif" lazyload alt="image-20230108115115334"></p>
+<blockquote>
+<p>长时间内，大致保持的就是1:10的时间比例。好人坏人都有饭吃，吃得多吃的少的区别而已捏！！！</p>
+</blockquote>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301081132440.png" srcset="/img/loading.gif" lazyload alt="image-20230108113233354"></p>
+<p><code>alex ~  $ man nice</code>，man nice可以查看nice的使用之类的昂！！！</p>
+<figure class="highlight smali"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs smali">NAME<br>     nice –<span class="hljs-built_in"> execute </span>a utility at an altered scheduling priority<br><br>SYNOPSIS<br>     nice [-n increment] utility [argument ...]<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>nice如何理解？workload的概念之类的都要理解昂！！！</p>
+<p>nice代表好人，好人的CPU可以抢过来，尽量满足坏人的CPU需求（这不是欺负老实人吗？orz），所以现代Linux中的优先级啊，本质就是通过nice命令，进行绑定，执行的昂！！！</p>
+</blockquote>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sh">alex ~  $ tldr <span class="hljs-built_in">nice</span><br><br>  <span class="hljs-built_in">nice</span><br><br>  Execute a program with a custom scheduling priority (niceness).<br>  Niceness values range from -20 (the highest priority) to 19 (the lowest).<br>  More information: https://www.gnu.org/software/coreutils/nice.<br><br>  - Launch a program with altered priority:<br>    <span class="hljs-built_in">nice</span> -n niceness_value <span class="hljs-built_in">command</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h1 id="真实的处理器调度-1"><a href="#真实的处理器调度-1" class="headerlink" title="真实的处理器调度 (1)"></a>真实的处理器调度 (1)</h1><h2 id="Round-Robin-的问题"><a href="#Round-Robin-的问题" class="headerlink" title="Round-Robin 的问题"></a>Round-Robin 的问题</h2><p>系统里有两个进程</p>
+<ul>
+<li>交互式的 Vim，单线程</li>
+<li>纯粹计算的 <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/mandelbrot.c">mandelbrot.c</a>, 32 个线程</li>
+</ul>
+<hr>
+<p>Round-Robin</p>
+<ul>
+<li>Vim 花 0.1ms 处理完输入就又等输入了<ul>
+<li>主动让出 CPU</li>
+</ul>
+</li>
+<li>Mandelbrot 使 Vim 在有输入可以处理的时候被延迟<ul>
+<li>必须等当前的 Mandelbrot 转完一圈</li>
+<li>数百 ms 的延迟就会使人感到明显卡顿</li>
+</ul>
+</li>
+<li>你们会在 L2 里遇到这样的问题<ul>
+<li>表现形式：tty 卡顿</li>
+</ul>
+</li>
+</ul>
+<h2 id="策略：动态优先级-MLFQ"><a href="#策略：动态优先级-MLFQ" class="headerlink" title="策略：动态优先级 (MLFQ)"></a>策略：动态优先级 (MLFQ)</h2><blockquote>
+<p>自动优先级，不用手动指定哇，简单！！！Round-Robin + Priority</p>
+</blockquote>
+<p><strong>不会设置优先级？让系统自动设定！</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301081120205.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>设置若干个 Round-Robin 队列<ul>
+<li>每个队列对应一个优先级</li>
+</ul>
+</li>
+<li>动态优先级调整策略<ul>
+<li>优先调度高优先级队列</li>
+<li>用完时间片 → 坏人<ul>
+<li>Mandelbrot: 请你变得更好</li>
+</ul>
+</li>
+<li>让出 CPU I/O → 好人<ul>
+<li>Vim: 你可以变得更坏</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>上面这种策略，就类似于“一碗水”端平。坏人好点，好人坏点，总体持平。</p>
+<p>诶嘿，那我坏人能不能去“骗”，去“偷袭”！我明明是坏人，但是我表现的像好人。我一看我的时间片快用完了，我就主动释放掉。</p>
+</blockquote>
+<ul>
+<li>阅读教科书</li>
+</ul>
+<h2 id="策略：Complete-Fair-Scheduling-CFS"><a href="#策略：Complete-Fair-Scheduling-CFS" class="headerlink" title="策略：Complete Fair Scheduling (CFS)"></a>策略：Complete Fair Scheduling (CFS)</h2><p>试图去模拟一个 “Ideal Multi-Tasking CPU”:</p>
+<ul>
+<li>“Ideal multi-tasking CPU” is a (non-existent :-)) CPU that has 100% physical power and which can run each task at precise equal speed, in parallel, each at 1/n. For example: if there are 2 tasks running, then it runs each at 50% physical power — i.e., actually in parallel.</li>
+</ul>
+<blockquote>
+<p>一碗水端平，平分算力！！！</p>
+</blockquote>
+<hr>
+<p>“让系统里的所有进程尽可能公平地共享处理器”</p>
+<ul>
+<li>为每个进程记录精确的运行时间</li>
+<li>中断/异常发生后，切换到运行时间最少的进程执行<ul>
+<li>下次中断/异常后，当前进程的可能就不是最小的了</li>
+</ul>
+</li>
+</ul>
+<h2 id="CFS-实现优先级"><a href="#CFS-实现优先级" class="headerlink" title="CFS: 实现优先级"></a>CFS: 实现优先级</h2><p>操作系统具有对物理时钟的 “绝对控制”</p>
+<ul>
+<li><p>每人执行 1ms，但好人的钟快一些，坏人的钟慢一些</p>
+<ul>
+<li><p>vruntime (virtual runtime)</p>
+<blockquote>
+<p>虚拟时间！！！这里在虚拟时间上，一碗水端平！！！高优先级的进程，时间走的“慢”，用的少。这不就端平了吗嘿嘿嘿！！！</p>
+</blockquote>
+</li>
+<li><p>vrt[i] / vrt[j] 的增加比例 = wt[j] / wt[i]</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">const</span> <span class="hljs-type">int</span> sched_prio_to_weight[<span class="hljs-number">40</span>] = {<br>  <span class="hljs-comment">/* -20 */</span> <span class="hljs-number">88761</span>, <span class="hljs-number">71755</span>, <span class="hljs-number">56483</span>, <span class="hljs-number">46273</span>, <span class="hljs-number">36291</span>,<br>  <span class="hljs-comment">/* -15 */</span> <span class="hljs-number">29154</span>, <span class="hljs-number">23254</span>, <span class="hljs-number">18705</span>, <span class="hljs-number">14949</span>, <span class="hljs-number">11916</span>,<br>  <span class="hljs-comment">/* -10 */</span>  <span class="hljs-number">9548</span>,  <span class="hljs-number">7620</span>,  <span class="hljs-number">6100</span>,  <span class="hljs-number">4904</span>,  <span class="hljs-number">3906</span>,<br>  <span class="hljs-comment">/*  -5 */</span>  <span class="hljs-number">3121</span>,  <span class="hljs-number">2501</span>,  <span class="hljs-number">1991</span>,  <span class="hljs-number">1586</span>,  <span class="hljs-number">1277</span>,<br>  <span class="hljs-comment">/*   0 */</span>  <span class="hljs-number">1024</span>,   <span class="hljs-number">820</span>,   <span class="hljs-number">655</span>,   <span class="hljs-number">526</span>,   <span class="hljs-number">423</span>,<br>  <span class="hljs-comment">/*   5 */</span>   <span class="hljs-number">335</span>,   <span class="hljs-number">272</span>,   <span class="hljs-number">215</span>,   <span class="hljs-number">172</span>,   <span class="hljs-number">137</span>,<br>  <span class="hljs-comment">/*  10 */</span>   <span class="hljs-number">110</span>,    <span class="hljs-number">87</span>,    <span class="hljs-number">70</span>,    <span class="hljs-number">56</span>,    <span class="hljs-number">45</span>,<br>  <span class="hljs-comment">/*  15 */</span>    <span class="hljs-number">36</span>,    <span class="hljs-number">29</span>,    <span class="hljs-number">23</span>,    <span class="hljs-number">18</span>,    <span class="hljs-number">15</span>,<br>};<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301081206776.png" srcset="/img/loading.gif" lazyload alt="image-20230108120616693"></p>
+<blockquote>
+<p>听上去简单，实现起来巨复杂……工程就是工程哇！！！</p>
+</blockquote>
+<h2 id="CFS-的复杂性-1-新进程-x2F-线程"><a href="#CFS-的复杂性-1-新进程-x2F-线程" class="headerlink" title="CFS 的复杂性 (1): 新进程/线程"></a>CFS 的复杂性 (1): 新进程/线程</h2><p>子进程继承父进程的 vruntime</p>
+<ul>
+<li>并且从 2.6.32 开始，<a target="_blank" rel="noopener" href="https://lkml.org/lkml/2009/9/11/411">parent run first</a></li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">task_fork_fair</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> task_struct *p)</span> {<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sched_entity</span> *<span class="hljs-title">se</span> =</span> &amp;p-&gt;se, *curr;<br>  ...<br>  rq_lock(rq, &amp;rf);<br>  update_rq_clock(rq);<br>  cfs_rq = task_cfs_rq(current);<br>  curr = cfs_rq-&gt;curr;<br>  <span class="hljs-keyword">if</span> (curr) {<br>    update_curr(cfs_rq);<br>    se-&gt;vruntime = curr-&gt;vruntime; <span class="hljs-comment">// 继承父进程的 vruntime</span><br>  }<br>  place_entity(cfs_rq, se, <span class="hljs-number">1</span>);<br>  ...<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>如果疯狂fork()，而不是继承父进程的 vruntime，会导致进程饥饿！因此就有了这个设计昂！！！</p>
+</blockquote>
+<h2 id="CFS-的复杂性-2-I-x2F-O"><a href="#CFS-的复杂性-2-I-x2F-O" class="headerlink" title="CFS 的复杂性 (2): I/O"></a>CFS 的复杂性 (2): I/O</h2><p>I/O (例如 1 分钟) 以后回来 vruntime 严重落后（sleep也是类似的）-&gt; 复杂！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091637929.png" srcset="/img/loading.gif" lazyload alt="image-20230109163758868"></p>
+<ul>
+<li>为了赶上，CPU 会全部归它所有</li>
+</ul>
+<hr>
+<p>Linux 的实现</p>
+<ul>
+<li>被唤醒的进程获得 “最小” 的 vruntime (可以立即被执行)<ul>
+<li>曾经会给唤醒的进程一些额外的 vruntime</li>
+<li>现在没有了</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">if</span> (renorm &amp;&amp; curr)<br>  se-&gt;vruntime += cfs_rq-&gt;min_vruntime;<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="CFS-的复杂性-3-整数溢出"><a href="#CFS-的复杂性-3-整数溢出" class="headerlink" title="CFS 的复杂性 (3): 整数溢出"></a>CFS 的复杂性 (3): 整数溢出</h2><p>vruntime 有优先级的 “倍数”</p>
+<ul>
+<li>如果溢出了 64-bit 整数怎么办……？<ul>
+<li><code>a &lt; b</code> 不再代表 “小于”！</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>假设：系统中最近、最远的时刻差不超过数轴的一半</strong></p>
+<ul>
+<li>我们可以比较它们的相对大小</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">bool</span> <span class="hljs-title function_">less</span><span class="hljs-params">(u64 a, u64 b)</span> {<br>  <span class="hljs-keyword">return</span> (i64)(a - b) &lt; <span class="hljs-number">0</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="实现-CFS-的数据结构"><a href="#实现-CFS-的数据结构" class="headerlink" title="实现 CFS 的数据结构"></a>实现 CFS 的数据结构</h2><p>用什么数据结构维护所有进程的 vruntime?</p>
+<ul>
+<li>任何有序集合 (例如 binary search tree) 维护线程t的vrt(t)<ul>
+<li>更新 <code>vrt(t) &lt;- vrt(t) + delte(t)/w</code></li>
+<li>取最小的 vrt</li>
+<li>进程创建/退出/睡眠/唤醒时插入/删除<em>t</em></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>道理还挺简单的</p>
+<ul>
+<li>代码实现有困难</li>
+<li>还不能有并发 bug……</li>
+</ul>
+<h2 id="小结：是否解决了问题？"><a href="#小结：是否解决了问题？" class="headerlink" title="小结：是否解决了问题？"></a>小结：是否解决了问题？</h2><p>考虑三种情况：Producer, Consumer, <code>while (1)</code></p>
+<ul>
+<li>Round-Robin (L2)<ul>
+<li>Producer/Consumer 获得非常少比例的 CPU</li>
+</ul>
+</li>
+<li>MLFQ<ul>
+<li>Producer/Consumer 获得最高优先级 Round-Robin</li>
+<li><code>while (1)</code> 完全饥饿 → 需要定期把所有人优先级 “拉平”</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091646515.png" srcset="/img/loading.gif" lazyload alt="image-20230109164648472"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091647750.png" srcset="/img/loading.gif" lazyload alt="image-20230109164714712"></p>
+<ul>
+<li>CFS<ul>
+<li>线程有精确的 accounting 信息</li>
+<li>这些信息可以指导 Round-Robin<ul>
+<li>适当使用 uptime (不必太精确) 可以大幅缓解 L2</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>调度困难的根本原因：假设太简单了，进程协作的情况下，共享资源，这个问题就变得非常复杂！！！</p>
+</blockquote>
+<h1 id="真实的处理器调度-2"><a href="#真实的处理器调度-2" class="headerlink" title="真实的处理器调度 (2)"></a>真实的处理器调度 (2)</h1><blockquote>
+<p>上面假设的都是纯计算型的任务，没有涉及过资源的分配和占用。如果考虑到资源的调用，会更加复杂昂！！！</p>
+</blockquote>
+<h2 id="不要高兴得太早"><a href="#不要高兴得太早" class="headerlink" title="不要高兴得太早"></a>不要高兴得太早</h2><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">xiao_zhang</span><span class="hljs-params">()</span> { <span class="hljs-comment">// 高优先级</span><br>  sleep(<span class="hljs-number">1</span>); <span class="hljs-comment">// 休息一下先</span><br>  mutex_lock(&amp;wc);<br>  ...<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">xi_zhu_ren</span><span class="hljs-params">()</span> { <span class="hljs-comment">// 中优先级</span><br>  <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) ;<br>}<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">jyy</span><span class="hljs-params">()</span> { <span class="hljs-comment">// 最低优先级</span><br>  mutex_lock(&amp;wc);<br>  ...<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p>jyy 在持有互斥锁的时候被赶下了处理器…… -&gt; 系主任一直运行，jyy和校长都在等系主任……优先级反转！！！</p>
+<h2 id="这个故事在火星上发生过一次"><a href="#这个故事在火星上发生过一次" class="headerlink" title="这个故事在火星上发生过一次"></a>这个故事在火星上发生过一次</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091648146.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Sojourner “探路者” (PathFinder)，1997 年 7 月 4 日登陆火星</p>
+<h2 id="The-First-Bug-on-Mars"><a href="#The-First-Bug-on-Mars" class="headerlink" title="The First Bug on Mars"></a><a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=13210478">The First Bug on Mars</a></h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091649073.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Sojourner “探路者” (PathFinder)</p>
+<ul>
+<li>Lander (登陆舱)<ul>
+<li>IBM Rad6000 SC (20 MIPS), 128 MiB RAM, 6 MiB EEPROM</li>
+<li>VxWorks “实时” 任务操作系统<ul>
+<li>ASI/MET task: 大气成分监测 (低)</li>
+<li><code>bc_dist</code> task: 分发任务 (中)</li>
+<li><code>bc_sched</code> task: 总线调度 (高)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>实时：优先级更加重要，更加敏感！！！</p>
+</blockquote>
+<ul>
+<li>Rover (火星车)<ul>
+<li>Intel 80C85 (0.1 MIPS), 512K RAM, 176K Flash SSD</li>
+</ul>
+</li>
+<li>着陆后开始出现系统重启</li>
+</ul>
+<h2 id="The-First-Bug-on-Mars-cont’d"><a href="#The-First-Bug-on-Mars-cont’d" class="headerlink" title="The First Bug on Mars (cont’d)"></a>The First Bug on Mars (cont’d)</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091649966.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>(低优先级) <code>select -&gt; pipeIoctl -&gt; selNodeAdd -&gt; mutex_lock</code></li>
+<li>(高优先级) <code>pipeWrite -&gt; mutex_lock</code></li>
+</ul>
+<h2 id="解决优先级反转问题"><a href="#解决优先级反转问题" class="headerlink" title="解决优先级反转问题"></a>解决优先级反转问题</h2><p>Linux: CFS 凑合用吧</p>
+<ul>
+<li>实时系统：火星车在 CPU Reset 啊喂？？解决！！<ul>
+<li>优先级继承 (Priority Inheritance)/优先级提升 (Priority Ceiling)<ul>
+<li>持有 mutex 的线程/进程会继承 block 在该 mutex 上进程的最高优先级</li>
+<li>但也不是万能的 (例如条件变量唤醒)</li>
+</ul>
+</li>
+<li>在系统中动态维护资源依赖关系<ul>
+<li>优先级继承是它的特例</li>
+<li>似乎更困难了……</li>
+</ul>
+</li>
+<li>避免高/低优先级的任务争抢资源<ul>
+<li>对潜在的优先级反转进行预警 (lockdep)</li>
+<li>TX-based: 冲突的 TX 发生时，总是低优先级的 abort</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="真实的处理器调度-3"><a href="#真实的处理器调度-3" class="headerlink" title="真实的处理器调度 (3)"></a>真实的处理器调度 (3)</h1><h2 id="多处理器调度"><a href="#多处理器调度" class="headerlink" title="多处理器调度"></a>多处理器调度</h2><p>还没完：我们的计算机系统可是多核心、多线程的！</p>
+<ul>
+<li>我们的老服务器：2 Socket x 24 Cores x 2 Threads = 96T</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091649459.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="多处理器调度：被低估的复杂性"><a href="#多处理器调度：被低估的复杂性" class="headerlink" title="多处理器调度：被低估的复杂性"></a>多处理器调度：被低估的复杂性</h2><blockquote>
+<p>“And you have to realize that there are not very many things that have aged as well as the scheduler. Which is just another proof that scheduling is easy.” ——Linus Torvalds, 2001</p>
+</blockquote>
+<hr>
+<p>Linus 以为调度是个挺简单的问题？</p>
+<ul>
+<li><p>As a central part of resource management, the OS thread scheduler must maintain the following, simple, invariant:</p>
+<p>make sure that ready threads are scheduled on available cores</p>
+<p>… this invariant is often broken in Linux. Cores may stay idle for seconds while ready threads are waiting in runqueues.</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/2901318.2901326">The Linux scheduler: A decade of wasted cores</a>. (EuroSys’16)<ul>
+<li>作者在狂黑 Linus 😂</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>基本模型过于简单，实际情况无比复杂！！！</p>
+</blockquote>
+<h2 id="多处理器调度的困难所在"><a href="#多处理器调度的困难所在" class="headerlink" title="多处理器调度的困难所在"></a>多处理器调度的困难所在</h2><p>既不能简单地 “分配线程到处理器”</p>
+<ul>
+<li>线程退出，瞬间处理器开始围观</li>
+</ul>
+<hr>
+<p>也不能简单地 “谁空丢给谁”</p>
+<ul>
+<li>在处理器之间迁移会导致 cache/TLB 全都白给</li>
+</ul>
+<hr>
+<p>多处理器调度的两难境地</p>
+<ul>
+<li>迁移？可能过一会儿还得移回来</li>
+<li>不迁移？造成处理器的浪费</li>
+</ul>
+<h2 id="实际情况-1-多用户、多任务"><a href="#实际情况-1-多用户、多任务" class="headerlink" title="实际情况 (1): 多用户、多任务"></a>实际情况 (1): 多用户、多任务</h2><p>还是刚才服务器的例子</p>
+<ul>
+<li>马上要到 paper deadline 了，A 和 B 要在服务器上跑实验<ul>
+<li>A 要跑一个任务，因为要调用一个库，只能单线程跑</li>
+<li>B 跑并行的任务，创建 1000 个线程跑<ul>
+<li>B 获得几乎 100% 的 CPU</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>更糟糕的是，优先级解决不了这个问题……</p>
+<ul>
+<li>B 不能随便提高自己进程的优先级<ul>
+<li>“An unprivileged user can only increase the nice value and such changes are irreversible…”</li>
+</ul>
+</li>
+</ul>
+<h2 id="Linux-Namespaces-Control-Groups-cgroups"><a href="#Linux-Namespaces-Control-Groups-cgroups" class="headerlink" title="Linux Namespaces Control Groups (cgroups)"></a>Linux Namespaces Control Groups (cgroups)</h2><p>namespaces (7), cgroups (7)</p>
+<ul>
+<li>轻量级虚拟化，创造 “操作系统中的操作系统”<ul>
+<li>Mount, pid, network, IPC, user, cgroup namespace, time</li>
+<li>cgroup 允许以进程组为单位管理资源<ul>
+<li>Docker 就变得很容易实现了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091702537.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<blockquote>
+<p>可以以进程组为单位去调度。例如A, B两个用户（还是上面的问题），使用docker，各自占用一半的CPU，这个就公平了昂！！！或者类似于，A使用一个CPU的100%，其他的都给B，其他的策略也可以试试昂！！！</p>
+</blockquote>
+<h2 id="实际情况-2-Big-LITTLE-x2F-能效比"><a href="#实际情况-2-Big-LITTLE-x2F-能效比" class="headerlink" title="实际情况 (2): Big.LITTLE/能效比"></a>实际情况 (2): Big.LITTLE/能效比</h2><blockquote>
+<p>上面的感觉还简单，现在甚至，每一个CPU还会有不一样orz，调度策略就更加复杂了……</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091702327.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Snapdragon 888</p>
+<ul>
+<li>1X Prime Cortex-X1 (2.84GHz)</li>
+<li>3X Performance Cortex-A78 (2.4GHz)</li>
+<li>4X Efficiency Cortex-A55 (1.8GHz)</li>
+</ul>
+<hr>
+<p>“Dark silicon” 时代的困境</p>
+<ul>
+<li>功率无法支撑所有电路同时工作</li>
+<li>总得有一部分是停下的</li>
+<li>Linux Kernel <a target="_blank" rel="noopener" href="https://www.kernel.org/doc/html/latest/scheduler/sched-energy.html">EAS</a> (Energy Aware Scheduler)</li>
+</ul>
+<h2 id="实际情况-2-Big-LITTLE-x2F-能耗-cont’d"><a href="#实际情况-2-Big-LITTLE-x2F-能耗-cont’d" class="headerlink" title="实际情况 (2): Big.LITTLE/能耗 (cont’d)"></a>实际情况 (2): Big.LITTLE/能耗 (cont’d)</h2><blockquote>
+<p>现在甚至，每一个CPU还可以配置能耗和频率，调度策略就更加更加复杂了……</p>
+</blockquote>
+<p>软件可以配置 CPU 的工作模式</p>
+<ul>
+<li>开/关/工作频率 (频率越低，能效越好)</li>
+<li>如何在给定功率下平衡延迟 v.s. 吞吐量？</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091702395.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="实际情况-3-Non-Uniform-Memory-Access"><a href="#实际情况-3-Non-Uniform-Memory-Access" class="headerlink" title="实际情况 (3): Non-Uniform Memory Access"></a>实际情况 (3): Non-Uniform Memory Access</h2><p>共享内存只是假象</p>
+<ul>
+<li>L1 Cache 花了巨大的代价才让你感到内存是共享的</li>
+<li>Producer/Consumer 位于同一个/不同 module 性能差距可能很大</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091703156.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="程序执行比你想象得复杂"><a href="#程序执行比你想象得复杂" class="headerlink" title="程序执行比你想象得复杂"></a>程序执行比你想象得复杂</h2><p>基本的假设可能不再成立</p>
+<ul>
+<li>例子: more CPU time, more progress<ul>
+<li>我们课堂上的例子就可以 challenge 这一点</li>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/sum-atomic.c">sum-atomic.c</a></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">"thread.h"</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> N 100000000</span><br><br><span class="hljs-type">long</span> sum = <span class="hljs-number">0</span>;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">Tsum</span><span class="hljs-params">()</span> {<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; N; i++) {<br>    <span class="hljs-keyword">asm</span> <span class="hljs-title function_">volatile</span><span class="hljs-params">(<span class="hljs-string">"lock addq $1, %0"</span>: <span class="hljs-string">"+m"</span>(sum))</span>;<br>  }<br>}<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {<br>  create(Tsum);<br>  create(Tsum);<br>  join();<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"sum = %ld\n"</span>, sum);<br>}<br><br></code></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">time taskset -c 0   ./a.out</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">time taskset -c 0,1 ./a.out</span><br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>分配了 1/2 的处理器资源，反而速度更快了 -&gt; 第一个比第二个快！！！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091920849.png" srcset="/img/loading.gif" lazyload alt="image-20230109192008769"></p>
+<ul>
+<li>系统里进程的行为和交互是非常复杂的……<ul>
+<li>NUMA 里尤其重要 (当然上面的例子是个 performance bug)</li>
+</ul>
+</li>
+</ul>
+<h2 id="实际情况-4-CPU-Hot-plug"><a href="#实际情况-4-CPU-Hot-plug" class="headerlink" title="实际情况 (4): CPU Hot-plug"></a>实际情况 (4): CPU Hot-plug</h2><blockquote>
+<p>跑着跑着，CPU少了一个，或者多了一个……</p>
+</blockquote>
+<p>😂😂😂 我讲不下去了</p>
+<ul>
+<li>实在是太复杂了</li>
+<li>我不是代码的维护者，并不清楚这些细节<ul>
+<li>把上面都加起来<ul>
+<li>这得考虑多少情况，写多少代码……</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>复杂的系统无人可以掌控</p>
+<ul>
+<li><p>The battle of the schedulers: FreeBSD ULE vs. Linux CFS</p>
+<p>. (ATC’18)</p>
+<ul>
+<li>结论：在现实面前，没有绝对的赢家和输家</li>
+<li>如果你追求极致的性能，就不能全指望一个调度算法</li>
+</ul>
+</li>
+</ul>
+<h2 id="回到处理器调度"><a href="#回到处理器调度" class="headerlink" title="回到处理器调度"></a>回到处理器调度</h2><p>调度是复杂、有着深远考虑的困难问题</p>
+<ul>
+<li>下个时间片有 10,000,000 个时钟周期，分配给哪个线程？</li>
+<li>学校预算 10,000,000 经费，怎么分给院系？</li>
+<li>发改委下拨 1000,000,000,000 经费，怎么分给大家？</li>
+</ul>
+<hr>
+<p>巨大的设计空间</p>
+<ul>
+<li>建模 (理解和总结 “过去发生了什么”)<ul>
+<li>profiling 和 trace; PMU</li>
+</ul>
+</li>
+<li>预测 (试图预知未来可能发生什么)</li>
+<li>决策 (应该如何调整系统行为)</li>
+</ul>
+<h2 id="谁来完成建模-预测-决策？"><a href="#谁来完成建模-预测-决策？" class="headerlink" title="谁来完成建模-预测-决策？"></a>谁来完成建模-预测-决策？</h2><p>操作系统不 (完全) 背这个锅，毕竟要多少运行时间，你应用程序肯定清楚啊，你是使用者…我操作系统的workload太多了呜呜呜，太难了。</p>
+<ul>
+<li>让程序提供 scheduling hints</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3477132.3483542">ghOSt: Fast &amp; flexible user-space delegation of Linux scheduling</a> (SOSP’21)</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301091703710.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 中断后到底应该把哪个进程/线程调度到处理器上？</li>
+</ul>
+<hr>
+<p>Take-away messages</p>
+<ul>
+<li>机制 (做出来) 和策略 (做得好)<ul>
+<li>构建复杂系统的常用方法</li>
+</ul>
+</li>
+<li>真实世界的处理器调度<ul>
+<li>异构处理器 + Non-Uniform Memory Access</li>
+<li>优先级翻转</li>
+<li>教科书上的内容随时可能会被改写</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li>Vedio link: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12a411Y7uW/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">https://www.bilibili.com/video/BV12a411Y7uW/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd</a></li>
+<li>Pkill命令</li>
+<li>nice &amp; workload的概念</li>
+</ol>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sh">alex ~  $ tldr <span class="hljs-built_in">nice</span><br><br>  <span class="hljs-built_in">nice</span><br><br>  Execute a program with a custom scheduling priority (niceness).<br>  Niceness values range from -20 (the highest priority) to 19 (the lowest).<br>  More information: https://www.gnu.org/software/coreutils/nice.<br><br>  - Launch a program with altered priority:<br>    <span class="hljs-built_in">nice</span> -n niceness_value <span class="hljs-built_in">command</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>yes指令</li>
+</ol>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">yes</span> &amp;<br>top<br>pkill <span class="hljs-built_in">yes</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>进程后台执行，如何实现 on mac</p>
+</blockquote>
+<ol start="5">
+<li>taskset指令：<code>man taskset</code></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-20-处理器调度</div>
+      <div>http://example.com/2023/01/08/njuos-20-chu-li-qi-diao-du/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年1月8日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/07/njuos-19-xv6-shang-xia-wen-qie-huan/" title="NJUOS-19-Xv6上下文切换">
+                        <span class="hidden-mobile">NJUOS-19-Xv6上下文切换</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1014 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="去看看视频，这两节课都是昂！！！   xv6 的系统调用实现：大家听得一头雾水，但留了个印象 ecall 指令：跳转到 trampoline 代码 保存所有寄存器到 trapframe 使内核代码能够继续执行     本次课回答的问题  Q: 为什么要这么做？   本次课主要内容  上下文切换的原理与实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-19-Xv6上下文切换">
+<meta property="og:url" content="http://example.com/2023/01/07/njuos-19-xv6-shang-xia-wen-qie-huan/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="去看看视频，这两节课都是昂！！！   xv6 的系统调用实现：大家听得一头雾水，但留了个印象 ecall 指令：跳转到 trampoline 代码 保存所有寄存器到 trapframe 使内核代码能够继续执行     本次课回答的问题  Q: 为什么要这么做？   本次课主要内容  上下文切换的原理与实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301071915938.png">
+<meta property="article:published_time" content="2023-01-07T11:14:12.000Z">
+<meta property="article:modified_time" content="2023-01-07T13:30:27.986Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301071915938.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-19-Xv6上下文切换 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-19-Xv6上下文切换"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-07 19:14" pubdate>
+          2023年1月7日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          42 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-19-Xv6上下文切换</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>去看看视频，这两节课都是昂！！！</p>
+</blockquote>
+<ul>
+<li>xv6 的系统调用实现：大家听得一头雾水，但留了个印象<ul>
+<li>ecall 指令：跳转到 trampoline 代码</li>
+<li>保存所有寄存器到 trapframe</li>
+<li>使内核代码能够继续执行</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 为什么要这么做？</li>
+</ul>
+<hr>
+<p>本次课主要内容</p>
+<ul>
+<li>上下文切换的原理与实现</li>
+</ul>
+<span id="more"></span>
+
+
+
+
+
+<h1 id="处理器的虚拟化"><a href="#处理器的虚拟化" class="headerlink" title="处理器的虚拟化"></a>处理器的虚拟化</h1><h2 id="今天借助代码回答一个根本性的问题"><a href="#今天借助代码回答一个根本性的问题" class="headerlink" title="今天借助代码回答一个根本性的问题"></a>今天借助代码回答一个根本性的问题</h2><blockquote>
+<p>为什么死循环不能使计算机被彻底卡死？</p>
+</blockquote>
+<p>原理上</p>
+<ul>
+<li>硬件会发生中断 (类似于 “强行插入” 的 ecall)</li>
+<li>切换到操作系统代码执行</li>
+<li>操作系统代码可以切换到另一个进程执行</li>
+</ul>
+<hr>
+<p>实际上</p>
+<ul>
+<li>到底是如何发生的？<ul>
+<li>上一次课调试了代码，有了第一印象</li>
+<li>今天再补充一些细节</li>
+</ul>
+</li>
+</ul>
+<hr>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>{<br>  <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>在我们的应用程序(用户程序)，其实还好，不会对操作系统进行破坏。但是如果是操作系统里面出现这样的bug，由于操作系统本身具有对于系统的整体的控制权，导致很危险！！！</p>
+</blockquote>
+<ul>
+<li>程序的类别：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301071927032.png" srcset="/img/loading.gif" lazyload alt="image-20230107192723000"></p>
+<ul>
+<li>操作系统-管理程序状态机的集合：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301071929400.png" srcset="/img/loading.gif" lazyload alt="image-20230107192934353"></p>
+<ul>
+<li>OS的分时复用：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301071932063.png" srcset="/img/loading.gif" lazyload alt="image-20230107193205020"></p>
+<blockquote>
+<p><strong>虚拟化：操作系统做的所有的事情，我的进程是看不到的。例如我在shell里面，编程模型里面，我是拥有计算机所有的资源的昂（寄存器和内存等），虚拟出了一个操作系统世界。</strong></p>
+</blockquote>
+<h2 id="热身：协程库"><a href="#热身：协程库" class="headerlink" title="热身：协程库"></a>热身：协程库</h2><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">def <span class="hljs-title function_">positive_integers</span><span class="hljs-params">()</span>:<br>    i = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">while</span> i := i + <span class="hljs-number">1</span>:<br>        yield i<br></code></pre></td></tr></tbody></table></figure>
+
+<p><code>positive_integers()</code> 并不是 “调用” 它执行</p>
+<ul>
+<li>而是返回一个 generator</li>
+<li>generator 可以调用，到 yield 后 “封存” 状态</li>
+<li>我们用这个特性实现了 <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/model-checker.py">model-checker.py</a></li>
+</ul>
+<blockquote>
+<p>操作系统层面，这个yield，就是操作系统自动帮助我们插入的。分时嘛，隔一段时间，就出发一次，yield一下，本质就是这样昂！！！</p>
+</blockquote>
+<hr>
+<p>我们同样也可以在 C 里这么做</p>
+<ul>
+<li><pre><code class="c">call yield 
+<figure class="highlight markdown"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br>  切换到另一个执行流<br><br><span class="hljs-bullet">  -</span> 所有执行流共享内存<br><span class="hljs-bullet">  -</span> 拥有独立的寄存器和堆栈<br><br><span class="hljs-quote">&gt; Yield: snapshot and switch</span><br><span class="hljs-quote">&gt;</span><br><span class="hljs-quote">&gt; 把寄存器瞬间的现场状态保存下来，然后切换到另外一个寄存器现场。</span><br><br><span class="hljs-section">## 复习：程序的状态</span><br><br><span class="hljs-bullet">-</span> 进程是什么？<br><br><span class="hljs-quote">&gt; pmap可以看到进程的一些内容（内存映射）</span><br><span class="hljs-quote">&gt;</span><br><span class="hljs-quote">&gt; 进程如何切换？xv6可以看到昂，运行的进程和对应的代码昂！！！ -&gt; 看视频，34min的位置左右。</span><br><span class="hljs-quote">&gt;</span><br><span class="hljs-quote">&gt; 进程是用到的内存+寄存器组，假设内存无限大，只要保持寄存器组到内存，从内存恢复别的进程的寄存器组</span><br><br>![<span class="hljs-string">img</span>](<span class="hljs-link">https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301071921879.png</span>)<br><br><span class="hljs-bullet">-</span> 进程切换：<br><br>![<span class="hljs-string">image-20230107195752744</span>](<span class="hljs-link">https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301071957783.png</span>)<br><br><span class="hljs-bullet">-</span> xv6程序：<br><br><span class="hljs-quote">&gt; 无非就是内存+寄存器！！！</span><br><br>寄存器<br><br><span class="hljs-bullet">-</span> 32 个通用寄存器 + \$pc<br><span class="hljs-bullet">  -</span> \$x0 (\$zero), \$x1 (\$ra), ..., \$x31<br><br>------<br><br>内存<br><br><span class="hljs-bullet">-</span> \$satp “配置” 出的地址空间<br><span class="hljs-bullet">  -</span> QEMU: info mem 查看<br><span class="hljs-bullet">-</span> 再次调试 initcode<br><br>------<br><br>持有的操作系统对象 (不可见)<br><br><span class="hljs-bullet">-</span> 程序只能看见 “文件描述符” (系统调用返回值, a0, syscall.c)<br><span class="hljs-bullet">-</span> 回顾 [<span class="hljs-string">minimal.S</span>](<span class="hljs-link">https://jyywiki.cn/pages/OS/2022/demos/minimal.S</span>)<br><br>---<br><br><span class="hljs-bullet">-</span> 程序的状态：<br><br>![<span class="hljs-string">image-20230107200301075</span>](<span class="hljs-link">https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301072003105.png</span>)<br><br>![<span class="hljs-string">image-20230107200335263</span>](<span class="hljs-link">https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301072003307.png</span>)<br><br><span class="hljs-quote">&gt; CPU无非就是取出mem[$PC]执行！！！</span><br><br><span class="hljs-section">## 虚拟化：状态机的管理</span><br><br>寄存器组 (\$x0...\$x31, \$pc) 只有一份，物理内存也只有一份<br><br><span class="hljs-bullet">-</span> 寄存器的虚拟化：我们可以把寄存器保存到内存<br><span class="hljs-bullet">-</span> 内存的虚拟化：\$satp 的数据结构<br><br>------<br><br>操作系统代码最重要的 invariant (假设单处理器)<br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**操作系统代码开始真正 “处理” 系统调用/中断时，所有进程的状态都被 “封存” 在操作系统中**</span><br><span class="hljs-bullet">  -</span> 可以通过 <span class="hljs-code">`struct proc`</span> 里的指针访问 (<span class="hljs-code">`struct trapframe`</span>)<br><span class="hljs-bullet">  -</span> 中断/异常处理的一小段代码需要保证这一点<br><span class="hljs-bullet">  -</span> 中断返回时，把进程的状态机 “恢复” 到 CPU<br><br><span class="hljs-quote">&gt; 保存到 trapframe 里面然后根据 a7 寄存器执行系统调用顺便执行调度，下面这个就是封存！！！封存好了之后，跳转到操作系统代码，操作系统schedule，也就是从下面“封存”的状态机中，选一个出来！！！恢复状态到CPU上 -&gt; 这就是我们所说的上下文切换！！！</span><br><span class="hljs-quote">&gt;</span><br><span class="hljs-quote">&gt; 上下文切换：操作系统是不应该“入侵”状态机的，状态机都应该封存下来，操作系统选择执行其他的状态机而已。</span><br><span class="hljs-quote">&gt;</span><br><span class="hljs-quote">&gt; Xv6具体的代码切换，视频58min左右，建议康康昂！</span><br><br>![<span class="hljs-string">image-20230107201332691</span>](<span class="hljs-link">https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301072013734.png</span>)<br><br><br><br><span class="hljs-section">## 状态的封存：Trivial 的操作系统实现</span><br><br><span class="hljs-bullet">-</span> Trapframe:<br><br>![<span class="hljs-string">image-20230107204236214</span>](<span class="hljs-link">https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301072042248.png</span>)<br><br><span class="hljs-quote">&gt; 可以看到，封存到对应的p的数据结构里面啦！！！“封存”这样子，才算理解透彻了！！！</span><br><br>用最直观的 “封存” 方式。<br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**直接都保存到内存**</span><br><span class="hljs-bullet">  -</span> 假设操作系统代码直接 “看到” 所有物理内存 (L1)<br><br><span class="hljs-code">```c</span><br><span class="hljs-code">struct page { int prot; void *va, *pa; }</span><br><span class="hljs-code">struct proc {</span><br><span class="hljs-code">  uint64_t x1, x2, ... x31;</span><br><span class="hljs-code">  struct page pages[MAXPAGES];</span><br><span class="hljs-code">};</span><br></code></pre></td></tr></tbody></table></figure>
+</code></pre>
+</li>
+<li><p>保存：把 x1, …, x31 保存到当前的 proc 即可</p>
+<ul>
+<li>就满足了 “状态机封存” 的 invariant</li>
+</ul>
+</li>
+<li><p>恢复：把 pages 送到 $satp 对应的数据结构里</p>
+<ul>
+<li>通常我们是把这个数据结构准备好，只要一个赋值就行</li>
+</ul>
+</li>
+</ul>
+<h2 id="状态的封存：体系结构相关的处理"><a href="#状态的封存：体系结构相关的处理" class="headerlink" title="状态的封存：体系结构相关的处理"></a>状态的封存：体系结构相关的处理</h2><p>x86-64</p>
+<ul>
+<li>中断/异常会伴随堆栈切换<ul>
+<li>通过 TSS 指定一个 “内核栈”<ul>
+<li>中断前的寄存器保存在堆栈上 (典型的 CISC 行为)</li>
+<li><a target="_blank" rel="noopener" href="https://www.felixcloutier.com/x86/intn:into:int3:int1">感受一下有多复杂</a></li>
+</ul>
+</li>
+<li>这块空间可以顺便用来保存寄存器<ul>
+<li>参考 AbstractMachine (trap64.S; x86-qemu.h)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>xv6 (不限于 RISC-V)</p>
+<ul>
+<li>把进程的 trap frame 分配到固定地址 (通过 $stap)<ul>
+<li>trap frame 保存在 $sscratch</li>
+</ul>
+</li>
+<li>保存完毕后切换到内核线程执行 (包括堆栈切换)</li>
+</ul>
+<h2 id="再次调试系统调用"><a href="#再次调试系统调用" class="headerlink" title="再次调试系统调用"></a>再次调试系统调用</h2><p>ecall 指令的行为</p>
+<ul>
+<li>关闭中断</li>
+<li>复制 $pc 到 $sepc</li>
+<li>设置 $sstatus 为 S-mode，$scause 为 trap 的原因 (ecall, 8)</li>
+<li>跳转到 $stvec (S-mode trap vector)</li>
+</ul>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301071922872.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>ecall 时额外的系统状态</p>
+<ul>
+<li>$satp 控制了 “虚假” 的地址空间<ul>
+<li>进程访问内存时仿佛戴了 VR</li>
+</ul>
+</li>
+<li>$sscratch 保存了进程的 trap frame 地址<ul>
+<li>均由操作系统设置</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301072108043.png" srcset="/img/loading.gif" lazyload alt="image-20230107210816987"></p>
+<blockquote>
+<p>OS没有戴VR，它看到的就是真实的世界昂，真实的物理地址空间！！！可以访问所有的物理地址空间昂！！！</p>
+<p>进程戴了一个VR，SATP指向了一个数据结构，也在物理内存里面。SATP指向的物理内存里面的数据结构，维护了一个映射，也就是右边标黄的那一部分（SATP就像是那个VR昂！！！）</p>
+<p>进程不能访问SATP，Stvec之类的寄存器，这些都是系统寄存器。OS会把这些寄存器都配置好，给进程戴上VR，让进程以为，自己在独占CPU在执行。借助硬件的分页等机制啊，实现的（虚拟页表），trick！！！</p>
+</blockquote>
+<h2 id="Trampoline-代码完成的工作"><a href="#Trampoline-代码完成的工作" class="headerlink" title="Trampoline 代码完成的工作"></a>Trampoline 代码完成的工作</h2><p>把寄存器保存到 trap frame</p>
+<ul>
+<li>全靠 (struct trapframe *)$sscratch 寄存器</li>
+</ul>
+<hr>
+<p>切换到内核线程</p>
+<ul>
+<li>堆栈切换: $sp ← <code>tf-&gt;kernel_sp</code></li>
+<li>设置当前处理: $tp ← <code>tf-&gt;kernel_hartid</code></li>
+<li>设置页表: $satp ← <code>tf-&gt;kernel_trap</code><ul>
+<li>xv6: 与物理内存一一映射</li>
+<li>通过 info mem 查看内核线程的地址空间映射<ul>
+<li>低位的内存是 PLIC (0xc000000) 和 UART (0x10000000)</li>
+<li>物理内存一一映射 (A = Access, D = Dirty, xv6 中不使用)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>跳转到处理程序 <code>tf-&gt;kernel_trap</code> 执行</li>
+</ul>
+<h2 id="调用-usertrap-后的系统状态"><a href="#调用-usertrap-后的系统状态" class="headerlink" title="调用 usertrap() 后的系统状态"></a>调用 usertrap() 后的系统状态</h2><p>所有进程都被 “封存”</p>
+<ul>
+<li>通过 <code>struct proc</code> 就可以找到寄存器、内存、操作系统对象、……</li>
+<li>进程对应的 “内核线程” 开始执行<ul>
+<li>L2 - Kernel Multithreading</li>
+<li>从另一个角度，“进程” 就是拥有了地址空间的线程</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>操作系统代码可以为所欲为</p>
+<ul>
+<li>修改任何一个状态机<ul>
+<li>例如，执行系统调用</li>
+<li>执行系统调用时可能发生 I/O 中断</li>
+</ul>
+</li>
+<li>将任何另一个状态机调度到处理器上 (userret)</li>
+</ul>
+<h2 id="小结：状态机的封存"><a href="#小结：状态机的封存" class="headerlink" title="小结：状态机的封存"></a>小结：状态机的封存</h2><p>在执行完 “寄存器现场保存” 之后</p>
+<ul>
+<li>操作系统处于 “invariant 成立” 的状态<ul>
+<li>每个进程的状态机都被 “封存”</li>
+<li>能被操作系统内核代码访问<ul>
+<li>xv6: <code>struct proc</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>操作系统可以把任何一个状态机 “加载” 回 CPU<ul>
+<li>恢复寄存器和 $satp，然后 sret (保持 invariant, 包括 $scratch)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>因为被封存，我们的处理器可以选择把任何一个状态机恢复</p>
+<ul>
+<li>机制：允许在中断/异常返回时把任何进程加载回 CPU</li>
+<li>策略：处理器调度 (下次课)</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 操作系统是如何完成进程之间的切换的？</li>
+</ul>
+<hr>
+<p>Take-away messages</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301072123977.png" srcset="/img/loading.gif" lazyload alt="image-20230107212331945"></p>
+<blockquote>
+<p>进程切换需要OS介入，整个切换过程消耗较多的CPU时间，这个时间可以执行几百个普通指令</p>
+<p>进程切换的性能，不用考虑，一面中cpu能执行10几个G条语句</p>
+</blockquote>
+<ul>
+<li>“操作系统是<strong>中断处理程序</strong>”<ul>
+<li>ecall 后执行 trampoline 代码 (操作系统控制)</li>
+<li>进入系统调用后，就完全是状态机 (取 mem[$pc] 指令执行)</li>
+</ul>
+</li>
+<li>“操作系统是状态机的管理者”<ul>
+<li>操作系统持有所有物理页面 (通过 $stap 任意映射)</li>
+<li>用数据结构 (struct proc) 表示进程对象<ul>
+<li>进程的页面 (包括 trapframe) 实现<strong>状态的封存</strong></li>
+</ul>
+</li>
+<li>ecall → invariant (状态机被封存) → schedule → sret</li>
+<li>“操作系统给CPU戴上VR眼睛，CPU完全被操作系统控制住了。操作系统能看到的东西，就是进程能看到的东西。虚拟化！！！”</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p> 虚拟化的结果 -&gt; </p>
+<p>对于进程来说，进程独占CPU执行。</p>
+<p>对于CPU来说，CPU只能看到进程看到的东西，当前只执行一个进程，被进程绑定住了。</p>
+</blockquote>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li>vedio link: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1eA4y1Q76T/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">https://www.bilibili.com/video/BV1eA4y1Q76T/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd</a></li>
+<li>ppt link: <a target="_blank" rel="noopener" href="https://jyywiki.cn/OS/2022/slides/19.slides#/">https://jyywiki.cn/OS/2022/slides/19.slides#/</a></li>
+<li>Xv6官方手册：<a target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.S081/2020/xv6/book-riscv-rev1.pdf">https://pdos.csail.mit.edu/6.S081/2020/xv6/book-riscv-rev1.pdf</a></li>
+<li>Trap: 陷入的意思</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-19-Xv6上下文切换</div>
+      <div>http://example.com/2023/01/07/njuos-19-xv6-shang-xia-wen-qie-huan/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年1月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/01/08/njuos-20-chu-li-qi-diao-du/" title="NJUOS-20-处理器调度">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">NJUOS-20-处理器调度</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/05/njuos-18-xv6-dai-ma-dao-du/" title="NJUOS-18-Xv6代码导读">
+                        <span class="hidden-mobile">NJUOS-18-Xv6代码导读</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
