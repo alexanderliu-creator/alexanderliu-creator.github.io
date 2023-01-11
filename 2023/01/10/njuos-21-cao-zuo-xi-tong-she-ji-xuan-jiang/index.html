@@ -1,0 +1,1083 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="复习  操作系统设计：一组对象（e.g. Linux中一切都为文件，可以通过文件对象访问进程的内容） + 访问对象的 API 操作系统实现：一个 C 程序实现上面的设计   本次课回答的问题  Q: 操作系统到底应该提供什么对象和 API？   本次课主要内容  Micro&#x2F;Exo&#x2F;Unikernel  操作系统里到底该有什么？2022.4.25 小学生又出新产品了这次支持了分页和图形界面 (似乎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-21-操作系统设计选讲">
+<meta property="og:url" content="http://example.com/2023/01/10/njuos-21-cao-zuo-xi-tong-she-ji-xuan-jiang/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="复习  操作系统设计：一组对象（e.g. Linux中一切都为文件，可以通过文件对象访问进程的内容） + 访问对象的 API 操作系统实现：一个 C 程序实现上面的设计   本次课回答的问题  Q: 操作系统到底应该提供什么对象和 API？   本次课主要内容  Micro&#x2F;Exo&#x2F;Unikernel  操作系统里到底该有什么？2022.4.25 小学生又出新产品了这次支持了分页和图形界面 (似乎">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101019991.png">
+<meta property="article:published_time" content="2023-01-10T02:18:27.000Z">
+<meta property="article:modified_time" content="2023-01-10T08:09:18.771Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101019991.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-21-操作系统设计选讲 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-21-操作系统设计选讲"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-10 10:18" pubdate>
+          2023年1月10日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-21-操作系统设计选讲</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：20 小时前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>复习</p>
+<ul>
+<li><strong>操作系统设计：一组对象（e.g. Linux中一切都为文件，可以通过文件对象访问进程的内容） + 访问对象的 API</strong></li>
+<li><strong>操作系统实现：一个 C 程序实现上面的设计</strong></li>
+</ul>
+<hr>
+<p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 操作系统到底应该提供什么对象和 API？</li>
+</ul>
+<hr>
+<p>本次课主要内容</p>
+<ul>
+<li>Micro/Exo/Unikernel</li>
+</ul>
+<h1 id="操作系统里到底该有什么？"><a href="#操作系统里到底该有什么？" class="headerlink" title="操作系统里到底该有什么？"></a>操作系统里到底该有什么？</h1><h2 id="2022-4-25-小学生又出新产品了"><a href="#2022-4-25-小学生又出新产品了" class="headerlink" title="2022.4.25 小学生又出新产品了"></a>2022.4.25 小学生又出新产品了</h2><p>这次支持了分页和图形界面 (似乎是搬运了一些素材？)</p>
+<ul>
+<li>L2: tty 和 fb 驱动 (tty 是逐像素绘制的)</li>
+<li>L3: 9 个系统调用 (kputc, fork, wait, exit, kill, mmap, …)</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101021286.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="莫要慌：你们是大学生啊"><a href="#莫要慌：你们是大学生啊" class="headerlink" title="莫要慌：你们是大学生啊"></a>莫要慌：你们是大学生啊</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101021610.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="上课谈的不能称为真正的-“操作系统”"><a href="#上课谈的不能称为真正的-“操作系统”" class="headerlink" title="上课谈的不能称为真正的 “操作系统”"></a>上课谈的不能称为真正的 “操作系统”</h2><blockquote>
+<p>Talk is cheap -&gt; Reading the fucking manual and the fucking source code!</p>
+</blockquote>
+<p>发扬大学生 <strong>RTFM</strong> &amp; <strong>RTFSC</strong> 的光荣传统</p>
+<ul>
+<li>能够意识到这一点的中/小学生就能成为顶级的程序员</li>
+</ul>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://pubs.opengroup.org/onlinepubs/9699919799/mindex.html">The Open Group Base Specifications Issue 7 (2018 Ed.)</a></p>
+<ul>
+<li>XBD: Base Definitions</li>
+<li>XSH: System Interfaces</li>
+<li>XCU: Shell &amp; Utilities</li>
+<li>XRAT: Rationale<ul>
+<li>这是非常关键的：不仅告诉 “是什么”，还有 “为什么”</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list">Windows API Index</a></p>
+<ul>
+<li>和 POSIX 相当不同的一组设计</li>
+<li>“工业” v.s. “黑客” (PowerShell v.s. bash)</li>
+</ul>
+<blockquote>
+<p>Windows API更加严格，Unix API就比较宽松。“工业”很严格，“黑客”很舒服……</p>
+<p>“真正的操作系统”，其实比我们讲的，都要复杂的多！！！</p>
+</blockquote>
+<h2 id="冰山的一角"><a href="#冰山的一角" class="headerlink" title="冰山的一角"></a>冰山的一角</h2><p>API 意味着可以互相模拟，因为本质上，OS提供的功能是类似的，因此可以相互模拟昂！！！Windows and Linux相互模拟！！！</p>
+<ul>
+<li><p>Windows Subsystem for Linux (WSL)，大家都在用</p>
+<ul>
+<li><p>WSL1: 直接用 Windows 加载 ELF 文件</p>
+<blockquote>
+<p>hint太多，走兼容的路线，永远是被牵着走。例如上面这个，如果Linux做了版本更新，WSL就要实现并跟着更新，不然就兼容不了，难绷orz……</p>
+</blockquote>
+</li>
+<li><p>WSL2: 虚拟机</p>
+<blockquote>
+<p>内核版本分叉，提供虚拟化的体验！！！</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>Linux Subsystem for Windows (Wine)</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101022334.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="冰山的一角-cont’d"><a href="#冰山的一角-cont’d" class="headerlink" title="冰山的一角 (cont’d)"></a>冰山的一角 (cont’d)</h2><p>操作系统默默帮你承载了更多（例如transactions）</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/1629575.1629591">Operating system transactions</a> (SOSP’09)<ul>
+<li>在 Linux 2.6.22 上实现</li>
+<li>对 Kernel 破坏性太大，不太可能维护得下去</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/when-to-use-kernel-mode-ktm">Windows KTM</a>, since Windows Vista (2007)<ul>
+<li>对，你没看错，是 Windows Vista</li>
+<li>世界最强、骂声最大，悄然落幕</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>例如rename！！！如果手写一个保存，可能掉电，文件就丢了。但是操作系统底层的rename(mv)，就能保证automic，安全！！！（类似事务，要么成功，要么不成功）</p>
+<p>业务代码好多解决方案都是从操作系统里来的</p>
+</blockquote>
+<h2 id="小结：操作系统设计"><a href="#小结：操作系统设计" class="headerlink" title="小结：操作系统设计"></a>小结：操作系统设计</h2><p>操作系统 = 对象 + API</p>
+<ul>
+<li>承载了软件的 “一切需要”</li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1aY411P7e1">中国海军航母宣传片</a></li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101022982.jpg" srcset="/img/loading.gif" lazyload alt="img"> <img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101022399.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="如何迈出走向操作系统的第一步？"><a href="#如何迈出走向操作系统的第一步？" class="headerlink" title="如何迈出走向操作系统的第一步？"></a>如何迈出走向操作系统的第一步？</h2><p>理解老系统是如何实现、遇到怎样的问题</p>
+<ul>
+<li>xv6; 偶尔讲一些新特性</li>
+<li>然后：RTFM, RTFSC</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101022923.jpg" srcset="/img/loading.gif" lazyload alt="img"> <img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101022999.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="Microkernel"><a href="#Microkernel" class="headerlink" title="Microkernel"></a>Microkernel</h1><h2 id="Less-is-More"><a href="#Less-is-More" class="headerlink" title="Less is More"></a>Less is More</h2><blockquote>
+<p>公理：<strong>没有完美的程序员。</strong></p>
+<p>推论：<strong>越小的系统，错误就越少。</strong></p>
+</blockquote>
+<p>C 作为一个有 Undefined Behavior 的语言，是复杂系统的灾难</p>
+<ul>
+<li>Signed integer overflow (Linux Kernel 使用了 -fwrapv)</li>
+<li>Data race</li>
+<li>Memory error<ul>
+<li>libpng 高危漏洞 (一张图偷走你的密码)<ul>
+<li>整数溢出后空格 keyword 读取进程数据</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>Microkernel (微内核) 应运而生</p>
+<ul>
+<li><strong>把尽可能多的功能都用普通进程实现</strong> (失效隔离在 “进程” 级)</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101140733.png" srcset="/img/loading.gif" lazyload alt="image-20230110114019675"></p>
+<blockquote>
+<p>Sys_write -&gt; RPC，隔离！！！安全性就更高了！！！</p>
+</blockquote>
+<h2 id="试着用普通进程做更多的事"><a href="#试着用普通进程做更多的事" class="headerlink" title="试着用普通进程做更多的事"></a>试着用普通进程做更多的事</h2><blockquote>
+<p>操作系统功能从操作系统内核 -&gt; 进程（用户态）</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/sh-xv6.c">sh-xv6.c</a> 到底执行了哪些 “就算丢给另一个进程，还得请求操作系统” 的操作？</p>
+<ul>
+<li>进程 (状态机) 管理似乎绕不开<ul>
+<li>fork/spawn; exit</li>
+</ul>
+</li>
+<li>加载器 <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/loader-static.c">loader-static.c</a> (execve) 似乎不必要<ul>
+<li>mmap 似乎绕不开</li>
+</ul>
+</li>
+<li>终端 (tty) 可以放在进程里<ul>
+<li>让 “驱动进程” 能访问 memory-mapped register 就行</li>
+<li>或者提供一个 mmio 系统调用</li>
+</ul>
+</li>
+<li>文件系统 (open, close, read, write, …)<ul>
+<li>进程只要有访问磁盘的权限，在磁盘上做个数据结构不成问题</li>
+</ul>
+</li>
+</ul>
+<h2 id="Microkernel-微内核"><a href="#Microkernel-微内核" class="headerlink" title="Microkernel (微内核)"></a>Microkernel (微内核)</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101027977.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<hr>
+<p>微内核 (microkernel)</p>
+<ul>
+<li>只把 “不能放在用户态” 的东西留在内核里<ul>
+<li>状态机 (拥有寄存器和地址空间的执行流)</li>
+<li>状态机之间的协作机制 (进程间通信)</li>
+<li>权限管理 (例如设备访问)</li>
+</ul>
+</li>
+<li><strong>赋予进程最少的权限，就能降低错误带来的影响。整体风险就降低啦！！！</strong></li>
+</ul>
+<blockquote>
+<p>两面性，微内核性能不好呀，需要一个IPC通路。</p>
+</blockquote>
+<h2 id="Minix-另一个改变世界的操作系统"><a href="#Minix-另一个改变世界的操作系统" class="headerlink" title="Minix: 另一个改变世界的操作系统"></a>Minix: 另一个改变世界的操作系统</h2><p><img src="https://jyywiki.cn/pages/OS/img/minix2-book.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Minix: 完全用于教学的真实操作系统</p>
+<ul>
+<li>by Andrew S. Tanenbaum</li>
+</ul>
+<hr>
+<p>年轻人的第一个 “全功能” 操作系统</p>
+<ul>
+<li>Minix1 (1987): UNIXv7 兼容<ul>
+<li>Linus 实现 Linux 的起点</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="http://download.minix3.org/previous-versions/Intel-2.0.4/">Minix2</a> (1997): POSIX 兼容<ul>
+<li>更加完备的系统，书后附全部内核代码</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101027841.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://minix3.org/">Minix3</a>(2006): POSIX/NetBSD 兼容<ul>
+<li>一度是世界上应用最广的操作系统<ul>
+<li>Intel ME 人手一个</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Minix3-Architecture"><a href="#Minix3-Architecture" class="headerlink" title="Minix3 Architecture"></a>Minix3 Architecture</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101029778.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>Minix2 更极端一些，只有 send 和 receive 两个系统调用<ul>
+<li>主要用来实现 RPC (remote procedure call)</li>
+<li>操作系统还是操作系统，但跨模块调用会跨越进程边界 -&gt; 这个就可以实现Bug隔离</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>这就是典型的微内核架构啊！！！</p>
+</blockquote>
+<h2 id="再向前走一小步"><a href="#再向前走一小步" class="headerlink" title="再向前走一小步"></a>再向前走一小步</h2><p>听说 “微内核” 有更好的可靠性？ -&gt; Isolation</p>
+<ul>
+<li>那我们能不能证明它真的 “十分可靠”？<ul>
+<li>对于任何输入、任何执行路径</li>
+<li>没有 memory error</li>
+<li>不会 crash……</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>seL4 -&gt; 证明自己是对的？？？好神奇！！！外星科技！！！</p>
+<ul>
+<li>世界上第一个 verified micorkernel<ul>
+<li><a target="_blank" rel="noopener" href="https://sel4.systems/About/seL4-whitepaper.pdf">Whitepaper</a> (初学者友好，十分推荐)</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/2560537">Comprehensive formal verification of an OS microkernel</a> (TOCS’14)</li>
+</ul>
+</li>
+<li>有一个非常优雅的 capability 机制</li>
+</ul>
+<h2 id="seL4-证明思路"><a href="#seL4-证明思路" class="headerlink" title="seL4 证明思路"></a>seL4 证明思路</h2><p>首先，用适合描述行为的语言建一个模型 (seL4 有两层模型)</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">def <span class="hljs-title function_">rr_sched</span><span class="hljs-params">(cpu)</span>:<br>    cpu.threads = cpu.threads[<span class="hljs-number">1</span>:] + cpu.threads[:<span class="hljs-number">1</span>]<br>    assert anything_you_need<br>    <span class="hljs-keyword">return</span> cpu.threads[<span class="hljs-number">0</span>]<br></code></pre></td></tr></tbody></table></figure>
+
+<p>再写一份 C 代码</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/thread-os.c">thread-os.c</a><ul>
+<li>我们就有了两个状态机 (Python 和 C 代码的形式语义)</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>python好证明，c不好证明昂！！！</p>
+</blockquote>
+<p>就可以去证明操作系统的 functional correctness 啦！</p>
+<ul>
+<li><strong>证明两个数学对象 (状态机) 可观测行为的等价性</strong></li>
+<li>剩下就是去解决遇到的各种技术问题 (更重要的是<strong>敢不敢去做</strong>)<ul>
+<li>Non-trivial; 但也不是 “神来之笔” (incremental work)</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>同一个行为，多种不同实现，然后通过某些工具，证明是正确的。就ok了！！！（其实我们就之前见过，python里面的Model Checker，就可以证明正确性！！！）</p>
+</blockquote>
+<h1 id="我们置身的时代"><a href="#我们置身的时代" class="headerlink" title="我们置身的时代"></a>我们置身的时代</h1><h2 id="Linus-和-Andy-的激烈论战-1992"><a href="#Linus-和-Andy-的激烈论战-1992" class="headerlink" title="Linus 和 Andy 的激烈论战 (1992)"></a>Linus 和 Andy 的激烈论战 (1992)</h2><p>“<a target="_blank" rel="noopener" href="https://www.oreilly.com/openbook/opensources/book/appa.html">Linux is obsolete</a>”</p>
+<ul>
+<li>主要批评内核架构设计不合理、移植性问题</li>
+<li>30 年过去了，许多问题得到了解决；许多还没有</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101032608.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="Exokernel"><a href="#Exokernel" class="headerlink" title="Exokernel"></a>Exokernel</h2><blockquote>
+<p>“The essential observation about abstractions in traditional operating systems is that they are overly general.”</p>
+</blockquote>
+<p>操作系统就不应该有任何策略</p>
+<ul>
+<li>只应该管硬件资源的最小虚拟化</li>
+<li>Expose allocation, expose names, expose revocation<ul>
+<li>内核里甚至连 “进程” 的概念都没有，只有时间片<ul>
+<li>调度策略完全在 libOS 中实现</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/224057.224076">Exokernel: An operating system architecture for application-level resource management</a> (SOSP’95)</li>
+</ul>
+<h2 id="Unikernel-libOS-的复活"><a href="#Unikernel-libOS-的复活" class="headerlink" title="Unikernel: libOS 的复活"></a>Unikernel: libOS 的复活</h2><p>今天我们有虚拟机 (和硬件虚拟化) 了</p>
+<ul>
+<li>为什么不直接让 Lab2 跑应用程序呢？<ul>
+<li>应用代码直接和 klib, AbstractMachine, Lab 代码静态链接</li>
+<li>任何操作 (包括 I/O) 都可以直接做</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>Unikernel: 内核可以非常小 (应用不需要的特性都直接删除)</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.includeos.org/">includeOS</a> (C++); <a target="_blank" rel="noopener" href="http://runtimejs.org/">runtime.js</a> (JavaScript); <a target="_blank" rel="noopener" href="https://mirage.io/">Mirage</a> (OCaml)</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/2541883.2541895">Unikernels: The rise of the virtual library operating system</a> (CACM’14)</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3447786.3456248">Unikraft: Fast, specialized unikernels the easy way</a> (EuroSys’21, Best Paper Award 🏅)</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301101607047.png" srcset="/img/loading.gif" lazyload alt="image-20230110160708992"></p>
+<blockquote>
+<p>虚拟机隔离 + 插件化</p>
+</blockquote>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 操作系统到底应该提供什么对象和 API？</li>
+</ul>
+<hr>
+<p>Take-away messages</p>
+<ul>
+<li>“操作系统” 的含义随应用而变<ul>
+<li>可以大而全 (Linux/Windows API)</li>
+<li>可以只有最少的硬件抽象 (Microkernel)</li>
+<li>可以没有用户态 (Unikernel)</li>
+</ul>
+</li>
+<li>互联网时代<ul>
+<li>从井里走出去：RTFM, RTFSC</li>
+<li>然后去改变这个世界</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li>宝藏手册（Unix API）：<a target="_blank" rel="noopener" href="https://pubs.opengroup.org/onlinepubs/9699919799/mindex.html">The Open Group Base Specifications Issue 7 (2018 Ed.)</a>。走深一步，读读手册！！！</li>
+<li>宝藏手册（Windows API）<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list">Windows API Index</a>。走深一步，读读手册！！！</li>
+<li>RTFM &amp; RTFSC -&gt; 静下心来读，性价比极高！！！读完之后，深入了解！！！从入门 -&gt; 专家！！！</li>
+<li>SEL4：</li>
+</ol>
+<p>世界上第一个 verified micorkernel</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://sel4.systems/About/seL4-whitepaper.pdf">Whitepaper</a> (初学者友好，十分推荐)</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/2560537">Comprehensive formal verification of an OS microkernel</a> (TOCS’14)</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-21-操作系统设计选讲</div>
+      <div>http://example.com/2023/01/10/njuos-21-cao-zuo-xi-tong-she-ji-xuan-jiang/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年1月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/01/11/njuos-22-ji-xian-su-tong-cao-zuo-xi-tong-shi-yan/" title="NJUOS-22-极限速通操作系统实验">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">NJUOS-22-极限速通操作系统实验</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/08/njuos-20-chu-li-qi-diao-du/" title="NJUOS-20-处理器调度">
+                        <span class="hidden-mobile">NJUOS-20-处理器调度</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
