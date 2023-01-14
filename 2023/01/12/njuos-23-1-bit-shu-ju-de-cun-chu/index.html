@@ -1,0 +1,1316 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="复习  操作系统 状态机的管理者 对象 + API     本次课回答的问题  Q1: 状态机的状态是如何存储的？ Q2: 更多的持久状态是如何存储的？   本次课主要内容  1-bit 的存储方式 Volatile&#x2F;non-volatile storage">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-23-1-Bit数据的存储">
+<meta property="og:url" content="http://example.com/2023/01/12/njuos-23-1-bit-shu-ju-de-cun-chu/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="复习  操作系统 状态机的管理者 对象 + API     本次课回答的问题  Q1: 状态机的状态是如何存储的？ Q2: 更多的持久状态是如何存储的？   本次课主要内容  1-bit 的存储方式 Volatile&#x2F;non-volatile storage">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120953676.png">
+<meta property="article:published_time" content="2023-01-12T01:52:43.000Z">
+<meta property="article:modified_time" content="2023-01-12T03:34:11.970Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120953676.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-23-1-Bit数据的存储 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-23-1-Bit数据的存储"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-12 09:52" pubdate>
+          2023年1月12日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-23-1-Bit数据的存储</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>复习</p>
+<ul>
+<li>操作系统<ul>
+<li>状态机的管理者</li>
+<li>对象 + API</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>本次课回答的问题</p>
+<ul>
+<li><strong>Q1</strong>: 状态机的状态是如何存储的？</li>
+<li><strong>Q2</strong>: 更多的持久状态是如何存储的？</li>
+</ul>
+<hr>
+<p>本次课主要内容</p>
+<ul>
+<li>1-bit 的存储方式</li>
+<li>Volatile/non-volatile storage</li>
+</ul>
+<span id="more"></span>
+
+
+
+<h1 id="状态机状态的存储"><a href="#状态机状态的存储" class="headerlink" title="状态机状态的存储"></a>状态机状态的存储</h1><h2 id="计算机需要存储-“当前状态”"><a href="#计算机需要存储-“当前状态”" class="headerlink" title="计算机需要存储 “当前状态”"></a>计算机需要存储 “当前状态”</h2><p>机器指令模型 (Instruction Set Architecture) 只有 “两种” 状态</p>
+<ul>
+<li>寄存器: rax, rbx, …, cr3, …</li>
+<li>物理内存</li>
+</ul>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120955591.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>存储 “当前状态” 的需求</p>
+<ul>
+<li>可以寻址<ul>
+<li>根据编号读写数据</li>
+</ul>
+</li>
+<li>访问速度尽可能快<ul>
+<li><strong>甚至不惜规定状态在掉电后丢失</strong><ul>
+<li>机械玩具就没有这个烦恼</li>
+</ul>
+</li>
+<li>也因此有了 memory hierarchy</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>内存&amp;电路，可以使访问速度尽可能的快，但是与此同时，带来的妥协就是。掉电之后，寄！内存的状态是无法保存的，要重启昂！！！</p>
+</blockquote>
+<h2 id="“当前状态”-的存储"><a href="#“当前状态”-的存储" class="headerlink" title="“当前状态” 的存储"></a>“当前状态” 的存储</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120955250.gif" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Delay line: 绳子</p>
+<ul>
+<li>因为信号衰减，需要持续放大</li>
+</ul>
+<hr>
+<p>Magnetic core: <a target="_blank" rel="noopener" href="https://corememoryshield.com/index.html">磁铁</a></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/segfault.c">segfault.c</a>: “Segmentation fault (core dumped)”<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120955436.jpg" srcset="/img/loading.gif" lazyload alt="img">ulimit -c 可以修改 core file size (默认为 0)</li>
+<li><code>/proc/sys/kernel/core_pattern</code> 指定了 core dump 文件格式</li>
+</ul>
+</li>
+<li>Non-volatile memory!</li>
+</ul>
+<blockquote>
+<p>虽然速度慢，但是掉电信息不会丢失昂！！！</p>
+</blockquote>
+<hr>
+<p>SRAM/DRAM: Flip-Flop 和电容</p>
+<ul>
+<li>今天的实现方案</li>
+</ul>
+<h2 id="开始持久化之旅"><a href="#开始持久化之旅" class="headerlink" title="开始持久化之旅"></a>开始持久化之旅</h2><blockquote>
+<p>Persistence: “<em>A firm or obstinate continuance in a course of action in spite of difficulty or opposition</em>.”</p>
+<p><strong>除了 “当前状态”，我们希望更大、更多的数据能 “留下来”</strong> (并且被操作系统有效地管理起来)</p>
+</blockquote>
+<p>持久化的第一课：持久存储介质</p>
+<ul>
+<li>构成一切文件的基础<ul>
+<li>逻辑上是一个 bit/byte array</li>
+<li>根据局部性原理，允许我们按 “大块” 读写</li>
+</ul>
+</li>
+<li>评价方法：价格、容量、速度、可靠性<ul>
+<li>再次见证人类文明的高光时刻！</li>
+</ul>
+</li>
+</ul>
+<h1 id="存储介质：磁"><a href="#存储介质：磁" class="headerlink" title="存储介质：磁"></a>存储介质：磁</h1><h2 id="“持久化”-可能没有想象的那么困难"><a href="#“持久化”-可能没有想象的那么困难" class="headerlink" title="“持久化” 可能没有想象的那么困难"></a>“持久化” 可能没有想象的那么困难</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120955402.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>更进一步：用铁磁体的 “磁化方向” 表示 1-Bit 信息</p>
+<ul>
+<li>读取：放大感应电流</li>
+<li>写入：电磁铁磁化磁针</li>
+</ul>
+<h2 id="磁带-Magnetic-Tape-1928"><a href="#磁带-Magnetic-Tape-1928" class="headerlink" title="磁带 (Magnetic Tape, 1928)"></a>磁带 (Magnetic Tape, 1928)</h2><p>1D 存储设备（一维存储设备）</p>
+<ul>
+<li>把 Bits “卷起来”<ul>
+<li>纸带上均匀粘上铁磁性颗粒</li>
+</ul>
+</li>
+<li>只需要一个机械部件 (转动) 定位</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120955433.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121036934.png" srcset="/img/loading.gif" lazyload alt="image-20230112103649880"></p>
+<h2 id="磁带：作为存储设备的分析"><a href="#磁带：作为存储设备的分析" class="headerlink" title="磁带：作为存储设备的分析"></a>磁带：作为存储设备的分析</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120955555.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>分析</p>
+<ul>
+<li>价格<ul>
+<li>非常低 - 都是廉价的材料</li>
+</ul>
+</li>
+<li>容量<ul>
+<li>非常高</li>
+</ul>
+</li>
+<li>读写速度<ul>
+<li><strong>顺序读取：勉强 - 需要等待定位</strong></li>
+<li><strong>随机读取：几乎完全不行</strong></li>
+</ul>
+</li>
+<li>可靠性<ul>
+<li>存在机械部件、需要保存的环境苛刻</li>
+</ul>
+</li>
+</ul>
+<p>今天的应用场景</p>
+<ul>
+<li><strong>冷数据的存档和备份</strong></li>
+</ul>
+<h2 id="磁鼓-Magnetic-Drum-1932"><a href="#磁鼓-Magnetic-Drum-1932" class="headerlink" title="磁鼓 (Magnetic Drum, 1932)"></a>磁鼓 (Magnetic Drum, 1932)</h2><p>1D → 1.5D (1D x n)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121042993.png" srcset="/img/loading.gif" lazyload alt="image-20230112104250953"></p>
+<ul>
+<li>用旋转的二维平面存储数据<ul>
+<li>无法内卷，容量变小</li>
+</ul>
+</li>
+<li>读写延迟不会超过旋转周期<ul>
+<li>随机读写速度大幅提升</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120956731.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="磁盘-Hard-Disk-1956"><a href="#磁盘-Hard-Disk-1956" class="headerlink" title="磁盘 (Hard Disk, 1956)"></a>磁盘 (Hard Disk, 1956)</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121046902.png" srcset="/img/loading.gif" lazyload alt="image-20230112104642852"></p>
+<blockquote>
+<p>两个自由度：</p>
+<ol>
+<li>转轴</li>
+<li>读写头（和上面不同哈，只有一个读写头，在读写头上装电机，让读写头能自由在磁盘上移动昂！！！）</li>
+</ol>
+</blockquote>
+<p>1D → 2.5D (2D x n)</p>
+<ul>
+<li>在二维平面上放置许多磁带</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120956103.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="磁盘-cont’d"><a href="#磁盘-cont’d" class="headerlink" title="磁盘 (cont’d)"></a>磁盘 (cont’d)</h2><p>克服许多工程挑战</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120956007.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="磁盘：作为存储设备的分析"><a href="#磁盘：作为存储设备的分析" class="headerlink" title="磁盘：作为存储设备的分析"></a>磁盘：作为存储设备的分析</h2><p>分析</p>
+<ul>
+<li>价格<ul>
+<li>低 - 密度越高，成本越低</li>
+</ul>
+</li>
+<li>容量<ul>
+<li>高 (2.5D) - 平面上可以有数万个磁道</li>
+</ul>
+</li>
+<li>读写速度<ul>
+<li><strong>顺序读取：较高</strong></li>
+<li><strong>随机读取：勉强</strong></li>
+</ul>
+</li>
+<li>可靠性<ul>
+<li><strong>存在机械部件，磁头划伤盘片导致数据损坏</strong></li>
+</ul>
+</li>
+</ul>
+<p>今天的应用场景</p>
+<ul>
+<li>计算机系统的主力数据存储 (<del>海量数据：便宜才是王道</del>)</li>
+</ul>
+<h2 id="磁盘：性能调优"><a href="#磁盘：性能调优" class="headerlink" title="磁盘：性能调优"></a>磁盘：性能调优</h2><p>为了读/写一个扇区</p>
+<ol>
+<li>读写头需要到对应的磁道<ul>
+<li>7200rpm → 120rps → “寻道” 时间 8.3ms</li>
+</ul>
+</li>
+<li>转轴将盘片旋转到读写头的位置<ul>
+<li>读写头移动时间通常也需要几个 ms</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p>通过缓存/调度等缓解</p>
+<ul>
+<li>例如著名的 “电梯” 调度算法</li>
+<li>现代 HDD 都有很好的 firmware 管理磁盘 I/O 调度<ul>
+<li><code>/sys/block/[dev]/queue</code></li>
+<li><code>[mq-deadline] none</code> (读优先；但写也不至于饿死)</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>今天的磁盘很先进，自带“操作系统”。能够帮助我们更好的完成磁盘的调度。甚至自己还带了缓存…早就不是操作系统来调度磁盘并执行策略的年代了昂！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121053698.png" srcset="/img/loading.gif" lazyload alt="image-20230112105319657"></p>
+<h2 id="软盘-Floppy-Disk-1971"><a href="#软盘-Floppy-Disk-1971" class="headerlink" title="软盘 (Floppy Disk, 1971)"></a>软盘 (Floppy Disk, 1971)</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120957668.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>把读写头和盘片分开——实现数据移动</p>
+<ul>
+<li>计算机上的软盘驱动器 (drive) + 可移动的盘片<ul>
+<li>8” (1971), 5.25” (1975), 3.5” (1981)<ul>
+<li>最初的软盘成本很低，就是个纸壳子</li>
+<li>3.5 英寸软盘为了提高可靠性，已经是 “硬” 的了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120956137.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<blockquote>
+<p>软盘就是一个单纯的磁盘的盘片！！！读写头和盘面分开啦！！！盘面就是软盘！！！</p>
+</blockquote>
+<h2 id="软盘：作为存储设备的分析"><a href="#软盘：作为存储设备的分析" class="headerlink" title="软盘：作为存储设备的分析"></a>软盘：作为存储设备的分析</h2><p>分析</p>
+<ul>
+<li>价格<ul>
+<li>低 - 塑料、盘片和一些小材料</li>
+</ul>
+</li>
+<li>容量<ul>
+<li>低 (暴露的存储介质，密度受限)</li>
+</ul>
+</li>
+<li>读写速度<ul>
+<li>顺序/随机读取：低</li>
+</ul>
+</li>
+<li>可靠性<ul>
+<li>低 (暴露的存储介质)</li>
+</ul>
+</li>
+</ul>
+<p>今天的应用场景</p>
+<ul>
+<li>躺在博物馆供人参观</li>
+<li>彻底被 USB Flash Disk 杀死</li>
+</ul>
+<h1 id="存储介质：坑"><a href="#存储介质：坑" class="headerlink" title="存储介质：坑"></a>存储介质：坑</h1><h2 id="坑：天然容易-“阅读”-的数据存储"><a href="#坑：天然容易-“阅读”-的数据存储" class="headerlink" title="坑：天然容易 “阅读” 的数据存储"></a>坑：天然容易 “阅读” 的数据存储</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120957859.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120957255.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="Compact-Disk-CD-1980"><a href="#Compact-Disk-CD-1980" class="headerlink" title="Compact Disk (CD, 1980)"></a>Compact Disk (CD, 1980)</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120958976.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在反射平面 (1) 上挖上粗糙的坑 (0)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121058760.png" srcset="/img/loading.gif" lazyload alt="image-20230112105801718"></p>
+<ul>
+<li>激光扫过表面，就能读出坑的信息来<ul>
+<li>飞利浦 (碟片) 和索尼 (数字音频) 发明</li>
+<li>~700 MiB，在当时是非常巨大的容量</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120958940.gif" srcset="/img/loading.gif" lazyload alt="img"></p>
+<blockquote>
+<p>挖坑容易，填坑难。所以好读，不好改。。。</p>
+</blockquote>
+<h2 id="CD-RW"><a href="#CD-RW" class="headerlink" title="CD-RW"></a>CD-RW</h2><p>能否克服只读的限制？</p>
+<ul>
+<li>方法 1<ul>
+<li>用激光器烧出一个坑来 (“刻盘”)</li>
+<li>使用持久化数据结构 (append-only)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>方法 2：改变材料的反光特性<ul>
+<li>PCM (Phase-change Material)</li>
+<li><a target="_blank" rel="noopener" href="https://www.scientificamerican.com/article/how-do-rewriteable-cds-wo/">How do rewriteable CDs work?</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="挖坑的技术进展"><a href="#挖坑的技术进展" class="headerlink" title="挖坑的技术进展"></a>挖坑的技术进展</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120958027.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>CD (740 MB)</p>
+<ul>
+<li>780nm 红外激光</li>
+</ul>
+<hr>
+<p>DVD (4.7 GB)</p>
+<ul>
+<li>635nm 红色激光</li>
+</ul>
+<hr>
+<p>Blue Ray (100 GB)</p>
+<ul>
+<li>405nm 蓝紫色激光</li>
+</ul>
+<h2 id="光盘：作为存储设备的分析"><a href="#光盘：作为存储设备的分析" class="headerlink" title="光盘：作为存储设备的分析"></a>光盘：作为存储设备的分析</h2><p>分析</p>
+<ul>
+<li>价格<ul>
+<li><strong>很低 (而且很容易通过 “压盘” 复制)</strong> -&gt; 母盘，盗版是吧哈哈哈哈哈，古代cv。</li>
+<li>光盘可以电影，游戏哇，之类的昂！！！</li>
+</ul>
+</li>
+<li>容量<ul>
+<li>高</li>
+</ul>
+</li>
+<li>读写速度<ul>
+<li><strong>顺序读取速度高；随机读取勉强</strong></li>
+<li><strong>写入速度低 (挖坑容易填坑难)</strong></li>
+</ul>
+</li>
+<li>可靠性<ul>
+<li>高</li>
+</ul>
+</li>
+</ul>
+<p>今天的应用场景</p>
+<ul>
+<li><strong>数字媒体的分发 (即将被互联网 “按需分发” 淘汰)</strong></li>
+</ul>
+<blockquote>
+<p>盗版怎么做的？？？</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121101971.png" srcset="/img/loading.gif" lazyload alt="image-20230112110133901"></p>
+<h2 id="“挖坑”：不止是数据存储"><a href="#“挖坑”：不止是数据存储" class="headerlink" title="“挖坑”：不止是数据存储"></a>“挖坑”：不止是数据存储</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120958480.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<blockquote>
+<p>光刻！！！也是在挖坑！！！芯片，集成电路，就是在挖坑！！！</p>
+</blockquote>
+<h1 id="Finally-电"><a href="#Finally-电" class="headerlink" title="Finally, 电"></a>Finally, 电</h1><h2 id="Solid-State-Drive-1991"><a href="#Solid-State-Drive-1991" class="headerlink" title="Solid State Drive (1991)"></a>Solid State Drive (1991)</h2><p>之前的持久存储介质都有致命的缺陷</p>
+<ul>
+<li>磁：机械部件导致 ms 级延迟</li>
+<li>坑 (光): 一旦挖坑，填坑很困难 (CD 是只读的)</li>
+</ul>
+<p>最后还得靠电 (电路) 解决问题</p>
+<ul>
+<li>Flash Memory “闪存”<ul>
+<li>Floating gate 的充电/放电实现 1-bit 信息的存储</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120958565.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<blockquote>
+<p>电子器件，是否有电子 -&gt; 0 or 1。</p>
+</blockquote>
+<h2 id="Flash-Memory-几乎全是优点"><a href="#Flash-Memory-几乎全是优点" class="headerlink" title="Flash Memory: 几乎全是优点"></a>Flash Memory: 几乎全是优点</h2><p>分析</p>
+<ul>
+<li>价格<ul>
+<li>低 (大规模集成电路，便宜)</li>
+</ul>
+</li>
+<li>容量<ul>
+<li>高 (3D 空间里每个 (<em>x</em>,<em>y</em>,<em>z</em>) 都是一个 bit)</li>
+</ul>
+</li>
+<li>读写速度<ul>
+<li>高(直接通过电路读写)<ul>
+<li>不讲道理的特性：容量越大，速度越快 (电路级并行)</li>
+<li>快到淘汰了旧的 SATA 接口标准 (NVMe)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>可靠性<ul>
+<li>高 (没有机械部件，随便摔)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>但有一个意想不到的缺点 (大家知道是什么吗？)</p>
+<blockquote>
+<p>很多次erase后，cell就死了。。。</p>
+<p>今天已经基本被客服了昂！！！</p>
+</blockquote>
+<h2 id="USB-Flash-Disk-1999"><a href="#USB-Flash-Disk-1999" class="headerlink" title="USB Flash Disk (1999)"></a>USB Flash Disk (1999)</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301120959785.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>优盘容量大、速度快、相当便宜</p>
+<ul>
+<li>很快就取代了软盘，成为了人手n个的存储介质<ul>
+<li>Compact Flash (CF, 1994)</li>
+<li>USB Flash Disk (1999, “朗科”)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>放电 (erase) 做不到 100% 放干净</p>
+<ul>
+<li>放电数千/数万次以后，就好像是 “充电” 状态了</li>
+<li>dead cell; “wear out”<ul>
+<li>必须解决这个问题 SSD 才能实用</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121118327.png" srcset="/img/loading.gif" lazyload alt="image-20230112111818285"></p>
+<h2 id="NAND-Wear-Out-的解决：软件定义磁盘"><a href="#NAND-Wear-Out-的解决：软件定义磁盘" class="headerlink" title="NAND Wear-Out 的解决：软件定义磁盘"></a>NAND Wear-Out 的解决：软件定义磁盘</h2><p>每一个 SSD 里都藏了一个完整的计算机系统</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121000962.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>FTL: Flash Translation Layer<ul>
+<li>“Wear Leveling”: 软件管理那些可能出问题的 blocks</li>
+<li>像是 managed runtime (with garbage collection)<ul>
+<li>请阅读教科书</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>类似于虚拟内存！！！！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121119611.png" srcset="/img/loading.gif" lazyload alt="image-20230112111929537"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121120260.png" srcset="/img/loading.gif" lazyload alt="image-20230112112018213"></p>
+<blockquote>
+<p>有一个firmware会自动对于你对于磁盘的写，进行调度！！！不会因为某个cell读写过多，导致dead了昂！</p>
+</blockquote>
+<h2 id="优盘和-SSD-的区别"><a href="#优盘和-SSD-的区别" class="headerlink" title="优盘和 SSD 的区别"></a>优盘和 SSD 的区别</h2><p>优盘, SD 卡, SSD 都是 NAND Flash</p>
+<ul>
+<li>但软件/硬件系统的复杂程度不同，效率/寿命也不同<ul>
+<li>典型的 SSD<ul>
+<li>CPU, on-chip RAM, 缓存, store buffer, 操作系统 …</li>
+<li>寿命: <del>1 PiB 数据写入 (</del>1,000 年寿命)<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121000997.jpg" srcset="/img/loading.gif" lazyload alt="img"></li>
+</ul>
+</li>
+<li>SD 卡<ul>
+<li>SDHC 标准未规定<ul>
+<li>黑心商家一定会偷工减料 (毕竟接口完全一样)</li>
+</ul>
+</li>
+<li>但良心厂家依然有 <a target="_blank" rel="noopener" href="https://www.bunniestudios.com/blog/?p=898">ARM 芯片</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>一定不要用便宜的优盘保存重要数据</strong></p>
+<ul>
+<li>× 宝 9.9 包邮的优盘，芯片一毛钱都能省……</li>
+</ul>
+<h2 id="FTL-性能、可靠性、安全性的难题"><a href="#FTL-性能、可靠性、安全性的难题" class="headerlink" title="FTL: 性能、可靠性、安全性的难题"></a>FTL: 性能、可靠性、安全性的难题</h2><p><img src="http://jyywiki.cn/pages/OS/img/chenguanxi.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>大家可记得修电脑引发的血案？</p>
+<ul>
+<li>首先，(快速) 格式化是没用的<ul>
+<li>(M5 会告诉你这一点)</li>
+</ul>
+</li>
+<li>在你理解了 FTL 之后<ul>
+<li>即便格式化后写入数据 (不写满)<ul>
+<li>同一个 logic block 被覆盖，physical block 依然存储了数据 (copy-on-write)</li>
+<li>需要文件系统加密</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>另一个 memory system 相关的安全问题</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/8708249">Row Hammer</a>(TCAD’19)<ul>
+<li>更重的负载可能会 “干扰” 临近的 DRAM Cells</li>
+</ul>
+</li>
+</ul>
+<h2 id="SSD-的可靠性：另一个故事"><a href="#SSD-的可靠性：另一个故事" class="headerlink" title="SSD 的可靠性：另一个故事"></a>SSD 的可靠性：另一个故事</h2><p>什么？硬件里的软件？</p>
+<ul>
+<li>其实非常复杂：算法, cache; store buffer; …</li>
+</ul>
+<p>谁写出来的？那可得有 bug 啊！</p>
+<ul>
+<li>让我们好好构造疯狂的 workloads，把它弄挂吧！<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.5555/2591272.2591300">Understanding the robustness of SSDs under power fault</a> (FAST’13)</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121000225.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<blockquote>
+<p>给硬件上大重量，断电啊之类的。大的Workload直接打挂了SSD……</p>
+</blockquote>
+<h2 id="有趣的故事：结果"><a href="#有趣的故事：结果" class="headerlink" title="有趣的故事：结果"></a>有趣的故事：结果</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301121001459.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>这篇 paper 促进了硬件厂商对 FTL 的大幅改进</p>
+<ul>
+<li>在 2015 年之后出产的产品，已经几乎无法找到这样的问题了 (cool!)</li>
+</ul>
+<hr>
+<table>
+<thead>
+<tr>
+<th align="left">Device</th>
+<th align="left">Model</th>
+<th align="left">Year</th>
+<th align="left">Bug?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">SSD#1, 10, 8, 9, 6, 2</td>
+<td align="left">A</td>
+<td align="left">2011 x 3, 2012 x 2, 2010</td>
+<td align="left">Y</td>
+</tr>
+<tr>
+<td align="left">SSD#2</td>
+<td align="left">B</td>
+<td align="left">2010</td>
+<td align="left">Y</td>
+</tr>
+<tr>
+<td align="left">SSD#3, 11, 12</td>
+<td align="left">C</td>
+<td align="left">2011</td>
+<td align="left">Y</td>
+</tr>
+<tr>
+<td align="left">SSD#4, 13</td>
+<td align="left">D</td>
+<td align="left">2011</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">SSD#5, 14, 7, 15</td>
+<td align="left">E</td>
+<td align="left">2009, 2011 x 2, 2012</td>
+<td align="left">Y</td>
+</tr>
+</tbody></table>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 状态机的状态和持久的状态是如何存储的？</li>
+</ul>
+<hr>
+<p>Take-away messages</p>
+<ul>
+<li>1-Bit 信息的存储<ul>
+<li>磁 (磁带、磁盘)、坑 (光盘)、电 (Flash SSD)</li>
+<li>构成性格各异的<strong>存储设备</strong></li>
+</ul>
+</li>
+<li>重新思考 “状态的存储”<ul>
+<li>NVM 来了：主存的机器状态不会断电丢失<ul>
+<li>但寄存器/缓存依然是 volatile 的</li>
+</ul>
+</li>
+<li>计算机系统是否会经历彻底的 “重新设计”？<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.5555/1991596.1991599">Operating system implications of fast, cheap, non-volatile memory</a> (HotOS’13)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Persistence如果保证了，那是不是就不用发布软件的初始状态，而是能够直接发布快照了呢？初始状态的加载和状态机的演进可能会慢昂，快照就很快很快昂！！！</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-23-1-Bit数据的存储</div>
+      <div>http://example.com/2023/01/12/njuos-23-1-bit-shu-ju-de-cun-chu/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年1月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/01/13/njuos-24-shu-ru-shu-chu-she-bei-mo-xing/" title="NJUOS-24-输入输出设备模型">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">NJUOS-24-输入输出设备模型</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/11/njuos-22-ji-xian-su-tong-cao-zuo-xi-tong-shi-yan/" title="NJUOS-22-极限速通操作系统实验">
+                        <span class="hidden-mobile">NJUOS-22-极限速通操作系统实验</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

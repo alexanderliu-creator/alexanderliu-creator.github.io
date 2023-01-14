@@ -1,0 +1,1204 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="复习  1-Bit 的存储 Volatile: Delay line, SRAM&#x2F;DRAM Non-volatile: 磁 (磁芯&#x2F;磁带&#x2F;磁鼓&#x2F;软盘&#x2F;硬盘)、坑 (光盘)、电 (NAND Flash; SSD)     本次课回答的问题  Q: 器件之上的 “设备” 到底是什么？   本次课主要内容  计算机与外设的接口 总线、中断控制器和 DMA GPU 和异构计算">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-24-输入输出设备模型">
+<meta property="og:url" content="http://example.com/2023/01/13/njuos-24-shu-ru-shu-chu-she-bei-mo-xing/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="复习  1-Bit 的存储 Volatile: Delay line, SRAM&#x2F;DRAM Non-volatile: 磁 (磁芯&#x2F;磁带&#x2F;磁鼓&#x2F;软盘&#x2F;硬盘)、坑 (光盘)、电 (NAND Flash; SSD)     本次课回答的问题  Q: 器件之上的 “设备” 到底是什么？   本次课主要内容  计算机与外设的接口 总线、中断控制器和 DMA GPU 和异构计算">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130939770.png">
+<meta property="article:published_time" content="2023-01-13T01:38:52.000Z">
+<meta property="article:modified_time" content="2023-01-13T15:09:02.584Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130939770.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-24-输入输出设备模型 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-24-输入输出设备模型"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-13 09:38" pubdate>
+          2023年1月13日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          49 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-24-输入输出设备模型</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：1 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>复习</p>
+<ul>
+<li>1-Bit 的存储<ul>
+<li>Volatile: Delay line, SRAM/DRAM</li>
+<li>Non-volatile: 磁 (磁芯/磁带/磁鼓/软盘/硬盘)、坑 (光盘)、电 (NAND Flash; SSD)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 器件之上的 “设备” 到底是什么？</li>
+</ul>
+<hr>
+<p>本次课主要内容</p>
+<ul>
+<li>计算机与外设的接口</li>
+<li>总线、中断控制器和 DMA</li>
+<li>GPU 和异构计算</li>
+</ul>
+<span id="more"></span>
+
+
+
+<h1 id="计算机与世界的接口"><a href="#计算机与世界的接口" class="headerlink" title="计算机与世界的接口"></a>计算机与世界的接口</h1><h2 id="孤独的-CPU"><a href="#孤独的-CPU" class="headerlink" title="孤独的 CPU"></a>孤独的 CPU</h2><p>CPU 只是 “无情的指令执行机器”</p>
+<ul>
+<li>取指令、译码、执行</li>
+</ul>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130941544.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Altair-8800 (1975), with <a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/manuals/i8080.pdf">Intel 8080A</a>; 256B 板卡 RAM</p>
+<p>(你需要在面板上手工输入执行指令的起始地址)</p>
+<blockquote>
+<p>交互方式都不一样，要把二进制开关给拨到正确的位置昂！</p>
+</blockquote>
+<h2 id="从一个需求说起"><a href="#从一个需求说起" class="headerlink" title="从一个需求说起"></a>从一个需求说起</h2><p>如何用计算机实现核弹发射箱？</p>
+<ul>
+<li>关键问题：如何使计算机能<strong>感知外部状态、对外实施动作</strong>？<ul>
+<li>我们使用的并不是计算设备，而是 I/O 设备！</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130941534.gif" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="I-x2F-O-设备：“计算”-和-“物理世界”-之间的桥梁"><a href="#I-x2F-O-设备：“计算”-和-“物理世界”-之间的桥梁" class="headerlink" title="I/O 设备：“计算” 和 “物理世界” 之间的桥梁"></a>I/O 设备：“计算” 和 “物理世界” 之间的桥梁</h2><p>I/O 设备 (CPU 视角)：<strong>“一个能与 CPU 交换数据的接口/控制器”</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130941638.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>说人话</p>
+<ul>
+<li>就是 “几组约定好功能的线” (RTFM)<ul>
+<li>通过握手信号从线上读出/写入数据</li>
+</ul>
+</li>
+<li>每一组线有自己的地址<ul>
+<li>CPU 可以直接使用指令 (in/out/MMIO) 和设备交换数据</li>
+<li>(CPU 完全不管设备具体是如何实现的)</li>
+</ul>
+</li>
+</ul>
+<h2 id="例子-1-串口-UART"><a href="#例子-1-串口-UART" class="headerlink" title="例子 (1): 串口 (UART)"></a>例子 (1): 串口 (UART)</h2><p>“COM1”; <code>putch()</code> 的实现</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> COM1 0x3f8</span><br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">uart_init</span><span class="hljs-params">()</span> {<br>  outb(COM1 + <span class="hljs-number">2</span>, <span class="hljs-number">0</span>);   <span class="hljs-comment">// 控制器相关细节</span><br>  outb(COM1 + <span class="hljs-number">3</span>, <span class="hljs-number">0x80</span>);<br>  outb(COM1 + <span class="hljs-number">0</span>, <span class="hljs-number">115200</span> / <span class="hljs-number">9600</span>);<br>  ...<br>}<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">uart_tx</span><span class="hljs-params">(AM_UART_TX_T *send)</span> {<br>  outb(COM1, send-&gt;data);<br>}<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">uart_rx</span><span class="hljs-params">(AM_UART_RX_T *recv)</span> {<br>  recv-&gt;data = (inb(COM1 + <span class="hljs-number">5</span>) &amp; <span class="hljs-number">0x1</span>) ? inb(COM1) : <span class="hljs-number">-1</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>UART可进可出，就是个串口，可以便于进行IO设备和CPU中间交互的验证昂</p>
+</blockquote>
+<h2 id="例子-2-键盘控制器"><a href="#例子-2-键盘控制器" class="headerlink" title="例子 (2): 键盘控制器"></a>例子 (2): 键盘控制器</h2><p>IBM PC/AT 8042 PS/2 (Keyboard) Controller</p>
+<ul>
+<li>“硬编码” 到两个 I/O port: <code>0x60</code> (data), <code>0x64</code> (status/command)</li>
+</ul>
+<blockquote>
+<p>0x60是设备寄存器…</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">Command Byte</th>
+<th align="left">Use</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">0xED</td>
+<td align="left">LED 灯控</td>
+<td align="left">ScrollLock/NumLock/CapsLock</td>
+</tr>
+<tr>
+<td align="left">0xF3</td>
+<td align="left">设置重复速度</td>
+<td align="left">30Hz - 2Hz; Delay: 250 - 1000ms</td>
+</tr>
+<tr>
+<td align="left">0xF4/0xF5</td>
+<td align="left">打开/关闭</td>
+<td align="left">N/A</td>
+</tr>
+<tr>
+<td align="left">0xFE</td>
+<td align="left">重新发送</td>
+<td align="left">N/A</td>
+</tr>
+<tr>
+<td align="left">0xFF</td>
+<td align="left">RESET</td>
+<td align="left">N/A</td>
+</tr>
+</tbody></table>
+<p>参考 AbstractMachine 的键盘部分实现</p>
+<blockquote>
+<p>真实的设备protocol是比较复杂的，可能就给你一个Manual，你自己去读吧，因此存在Bug，是挺正常的一件事儿昂！！！</p>
+</blockquote>
+<h2 id="例子-3-磁盘控制器"><a href="#例子-3-磁盘控制器" class="headerlink" title="例子 (3): 磁盘控制器"></a>例子 (3): 磁盘控制器</h2><p>ATA (Advanced Technology Attachment)</p>
+<ul>
+<li>IDE (Integrated Drive Electronics) 接口磁盘<ul>
+<li>primary: <code>0x1f0 - 0x1f7</code>; secondary: <code>0x170 - 0x177</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">readsect</span><span class="hljs-params">(<span class="hljs-type">void</span> *dst, <span class="hljs-type">int</span> sect)</span> {<br>  waitdisk();<br>  out_byte(<span class="hljs-number">0x1f2</span>, <span class="hljs-number">1</span>);          <span class="hljs-comment">// sector count (1)</span><br>  out_byte(<span class="hljs-number">0x1f3</span>, sect);       <span class="hljs-comment">// sector</span><br>  out_byte(<span class="hljs-number">0x1f4</span>, sect &gt;&gt; <span class="hljs-number">8</span>);  <span class="hljs-comment">// cylinder (low)</span><br>  out_byte(<span class="hljs-number">0x1f5</span>, sect &gt;&gt; <span class="hljs-number">16</span>); <span class="hljs-comment">// cylinder (high)</span><br>  out_byte(<span class="hljs-number">0x1f6</span>, (sect &gt;&gt; <span class="hljs-number">24</span>) | <span class="hljs-number">0xe0</span>); <span class="hljs-comment">// drive</span><br>  out_byte(<span class="hljs-number">0x1f7</span>, <span class="hljs-number">0x20</span>);       <span class="hljs-comment">// command (write)</span><br>  waitdisk();<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; SECTSIZE / <span class="hljs-number">4</span>; i ++)<br>    ((<span class="hljs-type">uint32_t</span> *)dst)[i] = in_long(<span class="hljs-number">0x1f0</span>); <span class="hljs-comment">// data</span><br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>本质就是很多的寄存器哇……把要读的盘块儿之类的数据放入对应的寄存器，全部写好之后，发一个R/W的命令，就可以完成R/W。</p>
+<p>IO有专门的文档昂！！！驱动程序如果实现了对应的接口文档，就可以兼容这台机器，插入对应的机器就可以使用昂！</p>
+</blockquote>
+<h2 id="例子-4-打印机"><a href="#例子-4-打印机" class="headerlink" title="例子 (4): 打印机"></a>例子 (4): 打印机</h2><p><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/manuals/CalComp-Software-Reference.pdf"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130943072.jpg" srcset="/img/loading.gif" lazyload alt="img"></a></p>
+<p>打印机：将字节流描述的文字/图形打印到纸张上</p>
+<ul>
+<li>可简单 (打字机)</li>
+<li>可复杂 (编程语言描述的图形)<ul>
+<li>高清全页图片的传输是很大的挑战</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301131025546.png" srcset="/img/loading.gif" lazyload alt="image-20230113102419670"></p>
+<blockquote>
+<p>例如两个寄存器，一个是data，一个是status，CPU每次把对应的指令，放入status和data，就可以完成对于🖨️的操作了嘛！！！</p>
+</blockquote>
+<hr>
+<p>例子：PostScript (1984)</p>
+<ul>
+<li>一种描述页面布局的 <strong>domain-specific language</strong><ul>
+<li>类似于汇编语言</li>
+<li>可以用 “编译器” (例如 latex) 创建高质量的文稿</li>
+</ul>
+</li>
+<li>PDF 是它的 superset (<a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/page.ps">page.ps</a>)<ul>
+<li>打印机是另一个带 CPU 的设备</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301131027427.png" srcset="/img/loading.gif" lazyload alt="image-20230113102720355"></p>
+<blockquote>
+<p>1980年就能，写好代码，编译好，就能打印出高质量矢量图形！！！（怎么感觉这个过程有点像C orz）</p>
+</blockquote>
+<h1 id="总线、中断控制器和-DMA"><a href="#总线、中断控制器和-DMA" class="headerlink" title="总线、中断控制器和 DMA"></a>总线、中断控制器和 DMA</h1><h2 id="越来越多的-I-x2F-O-设备"><a href="#越来越多的-I-x2F-O-设备" class="headerlink" title="越来越多的 I/O 设备"></a>越来越多的 I/O 设备</h2><p>如果你只造 “一台计算机”</p>
+<ul>
+<li>随便给每个设备定一个端口/地址，用 mux 连接到 CPU 就行<ul>
+<li>你们的实验 (AbstractMachine) 和自制 CPU 就是这么做的</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301131037272.png" srcset="/img/loading.gif" lazyload alt="image-20230113103752166"></p>
+<blockquote>
+<p>固定死了，每个寄存器和规定的交互，非常有限！！！打咩！！！这是一个开放的世界昂！！！</p>
+</blockquote>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130942978.jpg" srcset="/img/loading.gif" lazyload alt="img">但如果你希望给未来留点空间？</p>
+<ul>
+<li>想卖大价钱的 “大型机”<ul>
+<li>IBM, DEC, …</li>
+</ul>
+</li>
+<li>车库里造出来的 “微型机”<ul>
+<li>名垂青史的梦想家</li>
+</ul>
+</li>
+<li>都希望接入更多 I/O 设备<ul>
+<li>甚至是<strong>未知</strong>的设备，但<strong>不希望改变 CPU</strong>？</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301131039411.png" srcset="/img/loading.gif" lazyload alt="image-20230113103952368"></p>
+<blockquote>
+<p>插槽，可拓展性！！！这个I/O设备，是所有的I/O设备的总管。甚至内存也连上去。。。</p>
+<p>不叫I/O设备了，叫总线。。。</p>
+</blockquote>
+<h2 id="总线：一个特殊的-I-x2F-O-设备"><a href="#总线：一个特殊的-I-x2F-O-设备" class="headerlink" title="总线：一个特殊的 I/O 设备"></a>总线：一个特殊的 I/O 设备</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301131041317.png" srcset="/img/loading.gif" lazyload alt="image-20230113104117277"></p>
+<p>提供<strong>设备的注册</strong>和<strong>地址到设备的转发</strong></p>
+<ul>
+<li>把收到的地址 (总线地址) 和数据转发到相应的设备上</li>
+<li>例子: port I/O 的端口就是总线上的地址<ul>
+<li>IBM PC 的 CPU 其实只看到这一个 I/O 设备</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>这样 CPU 只需要直连一个总线</strong> 就行了！</p>
+<ul>
+<li>今天 PCI 总线肩负了这个任务<ul>
+<li>总线可以桥接其他总线 (例如 PCI → USB)</li>
+</ul>
+</li>
+<li>lspci -tv和lsusb -tv: 查看系统中总线上的设备<ul>
+<li>概念简单，实际非常复杂……<ul>
+<li>电气特性、burst 传输、中断、[Plug and Play](<a target="_blank" rel="noopener" href="http://jyywiki.cn/OS/2022/slides/Windows">http://jyywiki.cn/OS/2022/slides/Windows</a> 蓝屏)……</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="例子：PCI-Device-Probe"><a href="#例子：PCI-Device-Probe" class="headerlink" title="例子：PCI Device Probe"></a>例子：PCI Device Probe</h2><p><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/pci-probe.c">pci-probe.c</a> (AbstractMachine, x86-64/i386)</p>
+<ul>
+<li>试着给 QEMU 增加 <code>-soundhw ac97</code> 的运行选项</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> bus = <span class="hljs-number">0</span>; bus &lt; <span class="hljs-number">256</span>; bus++)<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> slot = <span class="hljs-number">0</span>; slot &lt; <span class="hljs-number">32</span>; slot++) {<br>    <span class="hljs-type">uint32_t</span> info = pciconf_read(bus, slot, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>    <span class="hljs-type">uint16_t</span> id   = info &gt;&gt; <span class="hljs-number">16</span>, vendor = info &amp; <span class="hljs-number">0xffff</span>;<br>    <span class="hljs-keyword">if</span> (vendor != <span class="hljs-number">0xffff</span>) {<br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%02d:%02d device %x by vendor %x"</span>, bus, slot, id, vendor);<br>      <span class="hljs-keyword">if</span> (id == <span class="hljs-number">0x100e</span> &amp;&amp; vendor == <span class="hljs-number">0x8086</span>) {<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">" &lt;-- This is an Intel e1000 NIC card!"</span>);<br>      }<br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">"\n"</span>);<br>    }<br>  }<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="中断控制器"><a href="#中断控制器" class="headerlink" title="中断控制器"></a>中断控制器</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130944374.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>CPU 有一个中断引脚</p>
+<ul>
+<li>收到某个特定的电信号会触发中断<ul>
+<li>保存 5 个寄存器 (cs, rip, rflags, ss, rsp)</li>
+<li>跳转到中断向量表对应项执行</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>系统中的其他设备可以向中断控制器连线</p>
+<ul>
+<li>Intel 8259 PIC<ul>
+<li>programmable interrupt controller</li>
+<li>可以设置中断屏蔽、中断触发等……</li>
+</ul>
+</li>
+<li>APIC (Advanced PIC)<ul>
+<li>local APIC: 中断向量表, IPI, 时钟, ……</li>
+<li>I/O APIC: 其他 I/O 设备</li>
+</ul>
+</li>
+</ul>
+<h2 id="中断没能解的问题"><a href="#中断没能解的问题" class="headerlink" title="中断没能解的问题"></a>中断没能解的问题</h2><p>假设程序希望写入 1 GB 的数据到磁盘</p>
+<ul>
+<li>即便磁盘已经准备好，依然需要非常浪费缓慢的循环</li>
+<li>out 指令写入的是设备缓冲区，需要去总线上绕一圈<ul>
+<li>cache disable; store 其实很慢的</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">1</span> GB / <span class="hljs-number">4</span>; i++) {<br>  outl(PORT, ((u32 *)buf)[i]);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>能否把 CPU 从执行循环中解放出来？</p>
+<ul>
+<li>比如，在系统里征用一个小 CPU，专门复制数据?</li>
+<li>好像 <code>memcpy_to_port(ATA0, buf, length);</code></li>
+</ul>
+<h2 id="Direct-Memory-Access-DMA"><a href="#Direct-Memory-Access-DMA" class="headerlink" title="Direct Memory Access (DMA)"></a>Direct Memory Access (DMA)</h2><p>DMA: <strong>一个专门执行 “<code>memcpy</code>” 程序的 CPU</strong></p>
+<ul>
+<li>加一个通用处理器太浪费，不如加一个简单的</li>
+</ul>
+<hr>
+<p>支持的几种 <code>memcpy</code></p>
+<ul>
+<li>memory → memory</li>
+<li>memory → device (register)</li>
+<li>device (register) → memory<ul>
+<li>实际实现：直接把 DMA 控制器连接在总线和内存上</li>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/manuals/i8237a.pdf">Intel 8237A</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>PCI 总线支持 DMA</p>
+<ul>
+<li>干了非常多的脏事</li>
+</ul>
+<h1 id="GPU-和异构计算"><a href="#GPU-和异构计算" class="headerlink" title="GPU 和异构计算"></a>GPU 和异构计算</h1><h2 id="I-x2F-O-设备和计算机之间的边界逐渐模糊"><a href="#I-x2F-O-设备和计算机之间的边界逐渐模糊" class="headerlink" title="I/O 设备和计算机之间的边界逐渐模糊"></a>I/O 设备和计算机之间的边界逐渐模糊</h2><p><strong>DMA 不就是一个 “做一件特别事情” 的 CPU 吗</strong></p>
+<ul>
+<li>那么我们还可以有做各种事情的 “CPU” 啊</li>
+</ul>
+<hr>
+<p>例如，显示图形</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt;= H; i++) {<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">1</span>; j &lt;= W; j++)<br>    <span class="hljs-built_in">putchar</span>(j &lt;= i ? <span class="hljs-string">'*'</span> : <span class="hljs-string">' '</span>);<br>  <span class="hljs-built_in">putchar</span>(<span class="hljs-string">'\n'</span>);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p>难办的是性能：NES: 6502 @ 1.79Mhz; IPC = 0.43</p>
+<ul>
+<li>屏幕共有 256 x 240 = 61K 像素 (256 色)</li>
+<li>60FPS → 每一帧必须在 ~10K 条指令内完成<ul>
+<li>如何在有限的 CPU 运算力下实现 60Hz？</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>CPU跟不上图形！！！</p>
+<p>像DMA一样！！！DMA在CPU上增加了一个新的”CPU”，帮忙搬运。那能不能来一个新的“CPU”，专门帮忙画图呢？？？</p>
+</blockquote>
+<h2 id="NES-Picture-Processing-Unit-PPU"><a href="#NES-Picture-Processing-Unit-PPU" class="headerlink" title="NES Picture Processing Unit (PPU)"></a>NES Picture Processing Unit (PPU)</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130945719.png" srcset="/img/loading.gif" lazyload alt="img"> <img src="http://jyywiki.cn/pages/ICS/2020/slides/img/nes-ppu.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<figure class="highlight 1c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-number">76543210</span><br><span class="hljs-string">||||||||</span><br><span class="hljs-string">||||||++- Palette</span><br><span class="hljs-string">|||+++--- Unimplemented        </span><br><span class="hljs-string">||+------ Priority</span><br><span class="hljs-string">|+------- Flip horizontally</span><br>+-------- Flip vertically<br></code></pre></td></tr></tbody></table></figure>
+
+<p>CPU 只描述 8x8 “贴块” 的摆放方法</p>
+<ul>
+<li>背景是 “大图” 的一部分<ul>
+<li>每行的前景块不超过 8 个</li>
+</ul>
+</li>
+<li>PPU 完成图形的绘制<ul>
+<li>一个更简单的 “CPU”</li>
+</ul>
+</li>
+</ul>
+<h2 id="在受限的机能下提供丰富的图形"><a href="#在受限的机能下提供丰富的图形" class="headerlink" title="在受限的机能下提供丰富的图形"></a>在受限的机能下提供丰富的图形</h2><p>前景：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/38528261">《魂斗罗》（Contra）中角色为什么要「萝莉式屈腿俯卧」？</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130946915.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>背景：“卷轴” 操作</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130945975.gif" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="更好的-2D-游戏引擎"><a href="#更好的-2D-游戏引擎" class="headerlink" title="更好的 2D 游戏引擎"></a>更好的 2D 游戏引擎</h2><p>如果我们有更多的晶体管？</p>
+<ul>
+<li>NES PPU 的本质是和坐标轴平行的 “贴块块”<ul>
+<li>实现上只需要加法和位运算</li>
+</ul>
+</li>
+<li>更强大的计算能力 = 更复杂的图形绘制</li>
+</ul>
+<hr>
+<p>2D 图形加速硬件：图片的 “裁剪” + “拼贴”</p>
+<ul>
+<li>支持旋转、材质映射 (缩放)、后处理、……</li>
+</ul>
+<hr>
+<p>实现 3D</p>
+<ul>
+<li>三维空间中的多边形，在视平面上也是多边形<ul>
+<li>Thm. 任何n边形都可以分解成n−2个三角形</li>
+</ul>
+</li>
+</ul>
+<h2 id="以假乱真的剪贴-3D"><a href="#以假乱真的剪贴-3D" class="headerlink" title="以假乱真的剪贴 3D"></a>以假乱真的剪贴 3D</h2><p>GameBoy Advance</p>
+<ul>
+<li>4 层背景; 128 个剪贴 objects; 32 个 affine objects<ul>
+<li>CPU 给出描述；GPU 绘制 (执行 “一个程序” 的 CPU)</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130946350.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>(<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1bT4y1g75x">V-Rally</a>; Game Boy Advance, 2002)</p>
+<h2 id="但我们还是需要真正的-3D"><a href="#但我们还是需要真正的-3D" class="headerlink" title="但我们还是需要真正的 3D"></a>但我们还是需要真正的 3D</h2><p>三维空间中的三角形需要正确渲染</p>
+<ul>
+<li>这时候建模的东西就多了<ul>
+<li>几何、材质、贴图、光源、……</li>
+<li>Rendering pipeline 里大部分操作都是 massive parallel 的</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130947194.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>“Perspective correct” texture mapping (Wikipedia)</p>
+<h2 id="题外话：如此丰富的图形是怎么来的？"><a href="#题外话：如此丰富的图形是怎么来的？" class="headerlink" title="题外话：如此丰富的图形是怎么来的？"></a>题外话：如此丰富的图形是怎么来的？</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130947376.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="答案：全靠-PS-后处理"><a href="#答案：全靠-PS-后处理" class="headerlink" title="答案：全靠 PS (后处理)"></a>答案：全靠 PS (后处理)</h2><p>例子：GLSL (Shading Language)</p>
+<ul>
+<li>使 “shader program” 可以在 GPU 上执行<ul>
+<li>可以作用在各个渲染级别上：vertex, fragment, pixel shader</li>
+<li>相当于一个 “PS” 程序，算出每个部分的光照变化<ul>
+<li>全局光照、反射、阴影、环境光遮罩……</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130948225.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="现代-GPU-一个通用计算设备"><a href="#现代-GPU-一个通用计算设备" class="headerlink" title="现代 GPU: 一个通用计算设备"></a>现代 GPU: 一个通用计算设备</h2><p>一个完整的众核多处理器系统</p>
+<ul>
+<li>注重大量并行相似的任务<ul>
+<li>程序使用例如 OpenGL, CUDA, OpenCL, … 书写</li>
+</ul>
+</li>
+<li>程序保存在内存 (显存) 中<ul>
+<li>nvcc (LLVM) 分两个部分<ul>
+<li>main 编译/链接成本地可执行的 ELF</li>
+<li>kernel 编译成 GPU 指令 (送给驱动)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>数据也保存在内存 (显存) 中<ul>
+<li>可以输出到视频接口 (DP, HDMI, …)</li>
+<li>也可以通过 DMA 传回系统内存</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301131123451.png" srcset="/img/loading.gif" lazyload alt="image-20230113112323348"></p>
+<blockquote>
+<p>GPU既是I/O设备，其实也是另外一台计算机！！！</p>
+</blockquote>
+<h2 id="例子：PyTorch-和炼丹炉"><a href="#例子：PyTorch-和炼丹炉" class="headerlink" title="例子：PyTorch 和炼丹炉"></a>例子：PyTorch 和炼丹炉</h2><p>什么是 “深度神经网络”？</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/2022/demos/inference.cc">inference.cc</a></li>
+</ul>
+<p>如何 “训练”？</p>
+<ul>
+<li>大量计算密集型的任务</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c">class <span class="hljs-title function_">NeuralNetwork</span><span class="hljs-params">(nn.Module)</span>:<br>    def __<span class="hljs-title function_">init__</span><span class="hljs-params">(self)</span>:<br>        <span class="hljs-title function_">super</span><span class="hljs-params">(NeuralNetwork, self)</span>.__<span class="hljs-title function_">init__</span><span class="hljs-params">()</span><br>        self.flatten = nn.Flatten()<br>        self.linear_relu_stack = nn.Sequential(<br>            nn.Linear(<span class="hljs-number">28</span>*<span class="hljs-number">28</span>, <span class="hljs-number">512</span>),  nn.ReLU(),<br>            nn.Linear(<span class="hljs-number">512</span>, <span class="hljs-number">512</span>),    nn.ReLU(),<br>            nn.Linear(<span class="hljs-number">512</span>, <span class="hljs-number">10</span>),     nn.ReLU(), )<br>    ...<br>model = NeuralNetwork().to(<span class="hljs-string">'cuda'</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Dark-Silicon-Age-和异构计算"><a href="#Dark-Silicon-Age-和异构计算" class="headerlink" title="Dark Silicon Age 和异构计算"></a>Dark Silicon Age 和异构计算</h2><p>能完成 “同一件事” 的部件可能有很多</p>
+<ul>
+<li>要选择功耗/性能/时间最合适的那个！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130948602.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>CPU, GPU, NPU, DSP, DSM/RDMA<ul>
+<li>甚至可以丢到另一台计算机上执行：<a target="_blank" rel="noopener" href="https://www.usenix.org/system/files/conference/osdi12/osdi12-final-11.pdf">COMET: Code offload by migrating execution transparently</a> (OSDI’12)</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301131134427.png" srcset="/img/loading.gif" lazyload alt="image-20230113113408381"></p>
+<blockquote>
+<p>IO设备 -&gt; 异构计算</p>
+</blockquote>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 到底什么是输入输出设备？</li>
+</ul>
+<hr>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301130945800.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>Take-away messages</p>
+<ul>
+<li><strong>I/O 设备 (控制器)：一组交换数据的接口和协议</strong><ul>
+<li>Simply, RTFM &amp; RTFSC</li>
+</ul>
+</li>
+<li>如果你 “自己造一台计算机”，你会发现这一切都是自然的<ul>
+<li>“不容易理解” 的部分是随时间积累的复杂性</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li>vedio link: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1cv4y1T7wt/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd%E3%80%82%E5%8F%AF%E4%BB%A5%E5%BA%B7%E5%BA%B7%E6%98%82%EF%BC%8C%E6%8C%BA%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%EF%BC%81%EF%BC%81%EF%BC%81">https://www.bilibili.com/video/BV1cv4y1T7wt/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd。可以康康昂，挺有意思的！！！</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-24-输入输出设备模型</div>
+      <div>http://example.com/2023/01/13/njuos-24-shu-ru-shu-chu-she-bei-mo-xing/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年1月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/01/13/qing-xun-ying-hou-duan-ru-men-go-yu-yan-yuan-li-yu-shi-jian/" title="青训营-后端入门-Go语言原理与实践">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">青训营-后端入门-Go语言原理与实践</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/12/njuos-23-1-bit-shu-ju-de-cun-chu/" title="NJUOS-23-1-Bit数据的存储">
+                        <span class="hidden-mobile">NJUOS-23-1-Bit数据的存储</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
