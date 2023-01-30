@@ -1,0 +1,911 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="嗨嗨嗨，基于我的本科毕设以及研究生方向是和Distributed System相关，这里在老师的要求和自己的探索精神下，简单的读了一些文献，这里浅做记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式系统架构调研">
+<meta property="og:url" content="http://example.com/2023/01/28/fen-bu-shi-xi-tong-jia-gou-diao-yan/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="嗨嗨嗨，基于我的本科毕设以及研究生方向是和Distributed System相关，这里在老师的要求和自己的探索精神下，简单的读了一些文献，这里浅做记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301281120054.png">
+<meta property="article:published_time" content="2023-01-28T03:14:19.000Z">
+<meta property="article:modified_time" content="2023-01-28T11:29:22.109Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta property="article:tag" content="论文精读">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301281120054.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>分布式系统架构调研 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="分布式系统架构调研"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-28 11:14" pubdate>
+          2023年1月28日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          41 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">分布式系统架构调研</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>嗨嗨嗨，基于我的本科毕设以及研究生方向是和Distributed System相关，这里在老师的要求和自己的探索精神下，简单的读了一些文献，这里浅做记录。</p>
+<span id="more"></span>
+
+
+
+<h1 id="分布式消息系统研究综述："><a href="#分布式消息系统研究综述：" class="headerlink" title="分布式消息系统研究综述："></a>分布式消息系统研究综述：</h1><blockquote>
+<p>paper link: <a target="_blank" rel="noopener" href="https://www.jsjkx.com/EN/article/openArticlePDF.jsp?id=18255">https://www.jsjkx.com/EN/article/openArticlePDF.jsp?id=18255</a></p>
+</blockquote>
+<ul>
+<li><p>本文主要讲述的是分布式消息系统，分布式消息系统是分布式系统之间进行消息传递的重要组件，它利用高效、可靠的消息传递机制进行平台无关的数据交流，并基于数据通信进行分布式系统的集成。</p>
+</li>
+<li><p>分布式消息系统中的消息传递主要有两种模式,分别是：</p>
+<ul>
+<li>点对点模式(Point to Point,PTP)，说白了就是信息一对一关系。生产者-消息队列-消费者，一条消息由一个生产者生产，被一个消费者消费。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301281559594.png" srcset="/img/loading.gif" lazyload alt="image-20230128155913539"></p>
+<ul>
+<li>发布-订阅模式(Publish-Subscribe,Pub-Sub)，消息生产者生产消息,将消息发布到 Topic中,消 息消费者订阅 Topic,从 Topic中取出并且消费消息.消息一 直保存在 Topic中,一条消息可以被所有订阅该 Topic的消费者消费。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301281600615.png" srcset="/img/loading.gif" lazyload alt="image-20230128160056580"></p>
+</li>
+</ul>
+<blockquote>
+<p>多数分布式消息系统采用发布Ｇ订阅模式进行消 息传递,有些消息系统也支持点对点模式的消息传递.</p>
+</blockquote>
+<h2 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h2><h3 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h3><ul>
+<li>整体架构：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301281603662.png" srcset="/img/loading.gif" lazyload alt="image-20230128160336636"></p>
+<ul>
+<li><p>组成部分：</p>
+<ul>
+<li>Broker: 消息队列<strong>服务器</strong>, 用于接收和分发消息.每一个 RabbitMQServer是一个Broker, 一个 RabbitMQ集群由一个或多个 Broker组成。</li>
+<li>Queue: 用于<strong>存储消息</strong>, 一 条消息可以被转发到多个Queue中。</li>
+<li>Exchange: 用于<strong>转发消息</strong>,根据分发规则,将消息转发到 Queue中。</li>
+<li>Binding: Exchange和Queue之间的<strong>虚拟连接</strong>, Binding中包含RoutingKey。Binding信息保存在Exchange的查询表中, 用作消息的分发依据。根据RoutingKey绑定的Exchange与Queue的对应规则, 决定消息发送的方向。</li>
+<li>VirtualHost: 用于<strong>区分不同用户权限</strong>. 把AMQP的基本组件划分到一个虚拟的分组中,当多个不同的用户使用同一个Broker时,可以划分多个VirtualHost,每个用户在自己的VirtualHost上创建Exchange,Queue等.Broker中可以有多个VirtualHost.</li>
+<li>Connection: Producer, Consumer和 Broker之间的TCP连接.除出现网络故障、Broker宕机情况外,Broker不会断开连接, 只有客户端可以断开连接。</li>
+<li>Channel: Connection内部建立的逻辑连接.每个 ChanＧ nel代表一个会话任务,所有操作都在 Channel中进行,如果 应用程序支持多线程,通常每个线程创建单独的 Channel进 行通信.Channel作为轻量级的 Connection,减少了系统建立 TCPConnection的开销.Channel之间是完全隔 离 的,Connection中可以建多个 Channel。</li>
+</ul>
+</li>
+<li><p>Exchange模式：</p>
+<ul>
+<li>Direct: 默认，处理RouteingKey，Queue与Exchange绑定，Exchange消息转发到与RoutingKey完全匹配到Queue上。</li>
+<li>Fanout: 不处理RoutingQueue，消息转发到和Exchange绑定的所有Queue上（广播）。转发速度最快。</li>
+<li>Topic: 模式处理RoutingKey, Queue与 Exchange绑定,将发布到 Exchange 的消息转发至与 RoutingKey模糊匹配成功的Queue上，</li>
+<li>Headers: 不 处 理RouＧ tingKey,Queue与 Exchange绑定,绑定时 Queue提供一组键 值对,如果消息的键与其完全匹配,则 Exchange将消息转发到Queue.（和Direct思路一样，但是性能差很多，不太实用）</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Producer发送消息至Exchange,Exchange根据ExＧchange模式匹配到对应的Queue,将消息存入Queue中,Consumer从Queue中取出消息进行消费.</p>
+</blockquote>
+<h3 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h3><ul>
+<li><p>负载均衡：</p>
+<ul>
+<li>如果有多个 Consumer同时订阅同一个 Quque中的消 息，Quque中的消息会被平均分配给多个 Consumer.</li>
+<li>若每条消息的处理时间不同,就会导致某些 Consumer一直很忙,而 另一些 Consumer很快处理完工作,处于空闲状态.可以设 置 PrefetchCount＝１,则 Quque每次给每个 Consumer发送 一条消息;Consumer处理完这条消息后,Quque会再给 ConＧ sumer发送一条消息,以实现负载均衡。（类似于Ack）</li>
+</ul>
+</li>
+<li><p>可靠性：</p>
+<ul>
+<li>通过消息回执 (MessageAcknowlegment)机制、消息持久化(MessageDurability)机制和消息跟踪机制保证系统的可靠性。</li>
+<li>Consumer在消费完消息后,发送一个回执Broker, Broker收到消息回执后,才将该消息从Queue中移除.如果Broker没有收到回执,并检测到消费者的Broker连接断开,则Broker会将该消息发送给其他Consumer进行处理。</li>
+<li>当将 Queue设置为可持久化(Durability)时,数据会保存在硬盘上,保证了数据的可靠性。</li>
+<li>RabbitMQ提供消息跟踪机制,如果出现消息异常 的情况,用户可以通过跟踪机制找出异常。</li>
+<li>RabbitMQ 支持集群模式,多台服务器的 Queue数 据同步,若一台服务器丢失消息则可从其他服务器上获取,以 保证数据不会丢失。（Replication）</li>
+</ul>
+</li>
+<li><p>可拓展性：RabbitMQ 提供了许多插件,用户可以从多方面进行扩展,也可以根据需求开发自己的插件.</p>
+</li>
+</ul>
+<h2 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h2><h3 id="系统架构-1"><a href="#系统架构-1" class="headerlink" title="系统架构"></a>系统架构</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301281851272.png" srcset="/img/loading.gif" lazyload alt="image-20230128185145233"></p>
+<ul>
+<li>组成部分：<ul>
+<li>Broker: 用于持久化和备份消息.每一个<strong>KafkaServer是一个Broker,</strong> 一个Kafka集群由一个或多个Broker组成</li>
+<li>Topic: 消息按照类别区分,<strong>每个类别是一个Topic</strong>,一个Broker可以容纳多个Topic</li>
+<li>partition: 用于<strong>存储消息数据和索引文件</strong>.partition是一个<strong>有序的队列</strong>,每条消息在partition中拥有一个偏移量(offＧset),保证了消息的有序性,一个Topic可以包含一个或多个partition.</li>
+<li>Producer: 生产消息, 产生的消息将被发送到Broker的Topic.</li>
+<li>Consumer: 消费消息,消费的消息内容来自Broker的Topic.Kafka在创建Consumer时,设置其属于某个ConsumerGroup, 一个partition的数据可以同时被多个ConsumerGroup消费, 但是只能同时被ConsumerGroup内的一个Consumer消费. 当一个Topic被多个ConsumerGroup订阅时,如果每个Consumer属于不同的ConsumerGroup, 则实现了<strong>消息的广播</strong>;如果所有Consumer属于相同的ConsumerGroup,则实现了 <strong>消息的单播</strong>.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Producer产生消息,向Broker的Topic发布;Consumer订阅Broker的Topic,主动从Broker中拉取消息进行消费,通过指定offset可以消费任意位置的消息。</p>
+</blockquote>
+<h3 id="性能分析-1"><a href="#性能分析-1" class="headerlink" title="性能分析"></a>性能分析</h3><ul>
+<li>效率<ul>
+<li>partition设计和consumer group设计提高了系统的吞吐量和并发处理能力</li>
+<li>创建Topic时设置partition数量，所有的partition被均匀地分布在集群的所有节点上。Producer向Broker的Topic发布消息时，可以通过随机、哈希、轮训等策略选择将某条消息发布到某个partition。消息被并行地发布到不同节点的partition中。Producer和Consumer可以同时从多个partition上读写数据,提高了系统的并行处理能力。</li>
+<li>Kafka在创建Consumer时,设置其属于某个ConsumerGroup。ConsumerGroup之间完全独立，不同的ConsumerGroup可以同时消费一个partition的数据；ConsumerGroup内的多个Consumer可以交错地消费一个Topic的所有partition的数据，减少了每个Consumer连接Broker的通信开销，ConsumerGroup的设计有效地提高了消费消息的效率.</li>
+<li>Kafka采用发布、订阅模式传递消息，Producer只负责向 Broker发布消息，Consumer只负责从Broker消费消息, 消息的发布与消费是异步的，极大地提高了Kafka的吞吐量。</li>
+</ul>
+</li>
+<li>负载均衡<ul>
+<li>ZooKeeper进行集群管理.Broker,ConsuＧmer和ConsumerGroup都在ZooKeeper中注册,增加或减少Broker和Consumer均会触发负载均衡.此外,Topic与BroＧker的对应关系以及partition在集群内的分配也由ZooKeeper进行维护.</li>
+</ul>
+</li>
+<li>可靠性<ul>
+<li>Producer通过确认机制保证发布消息的可靠性.Producer发布消息后,如果在等待时间内未收到确认消息,则重新发布消息.</li>
+<li>Kafka将消息持久化到本地磁盘,消息被消费后不会立即删除,通过设置消息存储时间或存储消息最大值,自动处理消息.消息在存在期间可以被多次消费,若Consumer发生故障,没有正常消费消息,可以根据offset查找到上一条消息,重新处理.</li>
+<li>Broker通过备份partition提高系统的可靠性.每个parＧtition有多个备份,其分布在不同的服务器上,即使某个服务器发生故障,数据也不会丢失.同时,ZooKeeper查找可用Broker,并通知生产者和消费者,生产者和消费者转而使用其他Broker,不影响其正常工作</li>
+</ul>
+</li>
+<li>可扩展性<ul>
+<li>Kafka使用ZooKeeper保存元数据信息,进行负载均衡,提高系统的健壮性,在增加Broker,partition时，直接向ZooKeeper注册即可,不影响系统正常运行，使Kafka支持在线水平扩展,具有高可扩展性.</li>
+</ul>
+</li>
+</ul>
+<h2 id="ActiveMQ"><a href="#ActiveMQ" class="headerlink" title="ActiveMQ"></a>ActiveMQ</h2><p>ActiveMQ是一个开源的消息中间件</p>
+<h3 id="系统架构-2"><a href="#系统架构-2" class="headerlink" title="系统架构"></a>系统架构</h3><blockquote>
+<p>ActiveMQ 架构主要包括３层５个模块:传 输协议、消息域、消息存储、集群(Cluster)和监控(Monitor).</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202301281913186.png" srcset="/img/loading.gif" lazyload alt="image-20230128191332148"></p>
+<ul>
+<li>组成部分：<ul>
+<li>传输协议: 消息之间的传递需要协议进行沟通.ActiveMQ支持多种通信协议,包括TCP,NIO,STOMP等;ActiveMQ默认使用的应用协议是OpenWire，端口号为61616。</li>
+<li>消息域: PTP，Pub-Sub两种消息传输模式。</li>
+<li>消息存储: 消息存储到数据库或文件系统中,遇到机器故障时,信息不会丢失。</li>
+<li>Cluster(集群): 最常见的集群方式包括network of brokers和Master Slave.</li>
+<li>Monitor(监控): ActiveMQ一般由JMX来进行监控.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>ActiveMQ支持PTP和Pub-Sub两种消息传递方式。ActiveMQ提供通信接口、消息保存接口和网络服务接口。通信接口负责网络连接和消息传输；消息保存接口将数据持久化；网络服务接口支持存储转发、集群和命名服务等</p>
+</blockquote>
+<h3 id="性能分析-2"><a href="#性能分析-2" class="headerlink" title="性能分析"></a>性能分析</h3><ul>
+<li>性能：<ul>
+<li>支持集群模式,支持多种传送协议,如 TCP, SSL,NIO,UDP等,且支持JDBC 消息持久化和高效的日志系统。</li>
+</ul>
+</li>
+<li>可靠性：<ul>
+<li>支持内存、文件、内嵌数据库和外部数据库４种消息持久化方式，还提供失败重连机制、容错机制和多种恢复机制。另外，有很多种方法可以监控ActiveMQ不同层面的数据,包括JConsole,JMX等,保证了ActiveMQ消息的可靠性.</li>
+</ul>
+</li>
+</ul>
+<h2 id="RocketMQ"><a href="#RocketMQ" class="headerlink" title="RocketMQ"></a>RocketMQ</h2><p>阿里巴巴公司开源的分布式的消息中间件。RocketMQ去掉了ZooKeeper依赖，采用自主研发的轻量级名称服务(NameServer)进行元数据管理。由Java语言开发,采用发布订阅模式传递消息,具有高效的水平扩展能力和亿级消息堆积能力。是高性能、高吞吐量的分布式消息中间件.RocketMQ可以运行在Java语言所支持的平台之上。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/" class="category-chain-item">分布式系统那些事儿</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+        <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/">#论文精读</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>分布式系统架构调研</div>
+      <div>http://example.com/2023/01/28/fen-bu-shi-xi-tong-jia-gou-diao-yan/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年1月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/01/29/qing-xun-ying-shi-cao-xiang-mu-byteyoungdb/" title="青训营-实操项目(ByteYoungDB)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">青训营-实操项目(ByteYoungDB)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/28/qing-xun-ying-tos-dui-xiang-cun-chu-shi-zhan/" title="青训营-TOS对象存储实战">
+                        <span class="hidden-mobile">青训营-TOS对象存储实战</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
