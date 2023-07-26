@@ -16,16 +16,16 @@
   <meta name="author" content="Alexander Liu">
   <meta name="keywords" content="分布式系统,后端研发,数据协同">
   
-    <meta name="description" content="欢迎来到兔子的小窝，这里是兔子的一些笔记分享">
+    <meta name="description" content="本章我们将介绍神经网络的整个训练过程， 包括：定义简单的神经网络架构、数据处理、指定损失函数和如何训练模型。 为了更容易学习，我们将从经典算法————线性神经网络开始，介绍神经网络的基础知识。 经典统计学习技术中的线性回归和softmax回归可以视为线性神经网络， 这些知识将为本书其他部分中更复杂的技术奠定基础。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="D2L-3-Linear Neural Networks for Regression">
 <meta property="og:url" content="http://example.com/2023/07/25/d2l-3-linear-neural-networks-for-regression/index.html">
 <meta property="og:site_name" content="兔の博客">
-<meta property="og:description" content="欢迎来到兔子的小窝，这里是兔子的一些笔记分享">
+<meta property="og:description" content="本章我们将介绍神经网络的整个训练过程， 包括：定义简单的神经网络架构、数据处理、指定损失函数和如何训练模型。 为了更容易学习，我们将从经典算法————线性神经网络开始，介绍神经网络的基础知识。 经典统计学习技术中的线性回归和softmax回归可以视为线性神经网络， 这些知识将为本书其他部分中更复杂的技术奠定基础。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307231956594.jpg">
 <meta property="article:published_time" content="2023-07-25T09:01:02.000Z">
-<meta property="article:modified_time" content="2023-07-25T09:02:24.505Z">
+<meta property="article:modified_time" content="2023-07-26T09:21:40.815Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          8.7k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          1 分钟
+          73 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：几秒前
+                    本文最后更新于：2 小时前
                   
                 
               </p>
@@ -313,7 +313,168 @@
             
               <div class="markdown-body">
                 
-                
+                <p> 本章我们将介绍神经网络的整个训练过程， 包括：定义简单的神经网络架构、数据处理、指定损失函数和如何训练模型。 为了更容易学习，我们将从经典算法————<em>线性</em>神经网络开始，介绍神经网络的基础知识。 经典统计学习技术中的线性回归和softmax回归可以视为线性神经网络， 这些知识将为本书其他部分中更复杂的技术奠定基础。</p>
+<span id="more"></span>
+
+
+
+<h1 id="线性回归"><a href="#线性回归" class="headerlink" title="线性回归"></a>线性回归</h1><ul>
+<li><p><em>回归</em>（regression）是能为一个或多个自变量与因变量之间关系建模的一类方法。 在自然科学和社会科学领域，回归经常用来表示输入和输出之间的关系。</p>
+</li>
+<li><p>在机器学习领域中的大多数任务通常都与<em>预测</em>（prediction）有关。 当我们想预测一个数值时，就会涉及到回归问题。 常见的例子包括：预测价格（房屋、股票等）、预测住院时间（针对住院病人等）、 预测需求（零售销量等）。 <strong>但不是所有的<em>预测</em>都是回归问题。</strong></p>
+</li>
+</ul>
+<h2 id="基本元素"><a href="#基本元素" class="headerlink" title="基本元素"></a>基本元素</h2><ul>
+<li><em>线性回归</em>（linear regression）可以追溯到19世纪初， 它在回归的各种标准工具中最简单而且最流行。 线性回归基于几个简单的假设： 首先，假设自变量$\mathbf{x}$和因变量$y$之间的关系是线性的， 即$y$可以表示为$\mathbf{x}$中元素的加权和，这里通常允许包含观测值的一些噪声； 其次，我们假设任何噪声都比较正常，如噪声遵循正态分布。</li>
+<li>通常，我们使用$n$来表示数据集中的样本数。 对索引为$i$的样本，其输入表示为$\mathbf{x}^{(i)} = [x_1^{(i)}, x_2^{(i)}]^\top$， 其对应的标签是$y^{(i)}$。</li>
+</ul>
+<h3 id="线性模型"><a href="#线性模型" class="headerlink" title="线性模型"></a>线性模型</h3><ul>
+<li>线性假设是指目标（房屋价格）可以表示为特征（面积和房龄）的加权和，如：$\mathrm{price} = w_{\mathrm{area}} \cdot \mathrm{area} + w_{\mathrm{age}} \cdot \mathrm{age} + b.$。$w_{\mathrm{area}}$和$w_{\mathrm{age}}$是<em>权重</em>（weight），权重决定了每个特征对我们预测值的影响。$b$称为<em>偏置</em>（bias）、<em>偏移量</em>（offset）或<em>截距</em>（intercept）。偏置是指当所有特征都取值为0时，预测值应该为多少。 即使现实中不会有任何房子的面积是0或房龄正好是0年，我们仍然需要偏置项。 如果没有偏置项，我们模型的表达能力将受到限制。</li>
+</ul>
+<blockquote>
+<p>输入特征的一个 <em>仿射变换</em>（affine transformation）。 仿射变换的特点是通过加权和对特征进行<em>线性变换</em>（linear transformation）， 并通过偏置项来进行<em>平移</em>（translation）。</p>
+</blockquote>
+<ul>
+<li>给定一个数据集，我们的目标是寻找模型的权重$\mathbf{w}$和偏置$b$， 使得根据模型做出的预测大体符合数据里的真实价格。 输出的预测值由输入特征通过<em>线性模型</em>的仿射变换决定，仿射变换由所选权重和偏置确定。</li>
+<li>而在机器学习领域，我们通常使用的是高维数据集，建模时采用线性代数表示法会比较方便。 当我们的输入包含$d$个特征时，我们将预测结果$\hat{y}$（通常使用“尖角”符号表示$y$的估计值）表示为：</li>
+</ul>
+<p>$$<br>\hat{y} = w_1  x_1 + … + w_d  x_d + b.<br>$$</p>
+<blockquote>
+<p>特征放入$\mathbf{x} \in \mathbb{R}^d$，权重放入$\mathbf{w} \in \mathbb{R}^d$，我们可以用点积形式来简洁地表达模型：</p>
+</blockquote>
+<p>$$<br>\hat{y} = \mathbf{w}^\top \mathbf{x} + b.<br>$$</p>
+<ul>
+<li>$\mathbf{x}$对应于单个数据样本的特征。 用符号表示的矩阵$\mathbf{X} \in \mathbb{R}^{n \times d}$可以很方便地引用我们整个数据集的$n$个样本。 $\mathbf{X}$的每一行是一个样本，每一列是一种特征。对于特征集合$\mathbf{X}$，预测值$\hat{\mathbf{y}} \in \mathbb{R}^n$可以通过矩阵-向量乘法表示为：</li>
+</ul>
+<p>$$<br>{\hat{\mathbf{y}}} = \mathbf{X} \mathbf{w} + b<br>$$</p>
+<blockquote>
+<p>这个过程中的求和将使用广播机制 （广播机制在 <a target="_blank" rel="noopener" href="https://zh.d2l.ai/chapter_preliminaries/ndarray.html#subsec-broadcasting">2.1.3节</a>中有详细介绍）。 给定训练数据特征$\mathbf{X}$和对应的已知标签$\mathbf{y}$， 线性回归的目标是找到一组权重向量$w$和偏置$b$： 当给定从$\mathbf{X}$的同分布中取样的新样本特征时， 这组权重向量和偏置能够使得新样本预测标签的误差尽可能小。</p>
+</blockquote>
+<ul>
+<li><p>虽然我们相信给定$\mathbf{x}$预测$y$的最佳模型会是线性的， 但我们很难找到一个有$n$个样本的真实数据集，其中对于所有的$1 \leq i \leq n$，$y^{(i)}$完全等于$\mathbf{w}^\top \mathbf{x}^{(i)}+b$。 无论我们使用什么手段来观察特征$\mathbf{X}$和标签$y$， 都可能会出现少量的观测误差。 因此，即使确信特征与标签的潜在关系是线性的， 我们也会加入一个噪声项来考虑观测误差带来的影响。</p>
+</li>
+<li><p>在开始寻找最好的<em>模型参数</em>（model parameters）$\mathbf{w}$和$b$之前， 我们还需要两个东西： （1）一种模型质量的度量方式； （2）一种能够更新模型以提高模型预测质量的方法。</p>
+</li>
+</ul>
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><ul>
+<li>我们需要确定一个拟合程度的度量。 <em>损失函数</em>（loss function）能够量化目标的<em>实际</em>值与<em>预测</em>值之间的差距。 通常我们会选择非负数作为损失，且数值越小表示损失越小，完美预测时的损失为0。 回归问题中最常用的损失函数是平方误差函数。 当样本$i$的预测值为$\hat{y}^{(i)}$，其相应的真实标签为$y^{(i)}$时， 平方误差可以定义为以下公式：</li>
+</ul>
+<p>$$<br>l^{(i)}(\mathbf{w}, b) = \frac{1}{2} \left(\hat{y}^{(i)} - y^{(i)}\right)^2.<br>$$</p>
+<blockquote>
+<p>常数$\frac{1}{2}$不会带来本质的差别，但这样在形式上稍微简单一些 （因为当我们对损失函数求导后常数系数为1）。 由于训练数据集并不受我们控制，所以经验误差只是关于模型参数的函数。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307261014650.svg" srcset="/img/loading.gif" lazyload alt="../_images/fit-linreg.svg"></p>
+<ul>
+<li>由于平方误差函数中的二次方项， 估计值$\hat{y}^{(i)}$和观测值$y^{(i)}$之间较大的差异将导致更大的损失。 为了度量模型在整个数据集上的质量，我们需计算在训练集$n$个样本上的损失均值（也等价于求和）。</li>
+</ul>
+<p>$$<br>L(\mathbf{w}, b) =\frac{1}{n}\sum_{i=1}^n l^{(i)}(\mathbf{w}, b) =\frac{1}{n} \sum_{i=1}^n \frac{1}{2}\left(\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}\right)^2.<br>$$</p>
+<blockquote>
+<p>在训练模型时，我们希望寻找一组参数$(\mathbf{w}^*, b^*)$， 这组参数能最小化在所有训练样本上的总损失。如下式：</p>
+</blockquote>
+<p>$$<br>\mathbf{w}^*, b^* = \operatorname*{argmin}_{\mathbf{w}, b}\  L(\mathbf{w}, b).<br>$$</p>
+<h3 id="解析解"><a href="#解析解" class="headerlink" title="解析解"></a>解析解</h3><ul>
+<li>线性回归刚好是一个很简单的优化问题。 与我们将在本书中所讲到的其他大部分模型不同，线性回归的解可以用一个公式简单地表达出来， 这类解叫作解析解（analytical solution）。 首先，我们将偏置$b$合并到参数$\mathbf{w}$中，合并方法是在包含所有参数的矩阵中附加一列。 我们的预测问题是最小化$|\mathbf{y} - \mathbf{X}\mathbf{w}|^2$。 这在损失平面上只有一个临界点，这个临界点对应于整个区域的损失极小点。 将损失关于$\mathbf{w}$的导数设为0，得到解析解：</li>
+</ul>
+<p>$$<br>\mathbf{w}^* = (\mathbf X^\top \mathbf X)^{-1}\mathbf X^\top \mathbf{y}.<br>$$</p>
+<blockquote>
+<p><strong>像线性回归这样的简单问题存在解析解，但并不是所有的问题都存在解析解。</strong> 解析解可以进行很好的数学分析，但解析解对问题的限制很严格，导致它无法广泛应用在深度学习里。</p>
+</blockquote>
+<h3 id="随机梯度下降"><a href="#随机梯度下降" class="headerlink" title="随机梯度下降"></a>随机梯度下降</h3><ul>
+<li>我们用到一种名为<em>梯度下降</em>（gradient descent）的方法， 这种方法几乎可以优化所有深度学习模型。 它通过不断地在损失函数递减的方向上更新参数来降低误差。</li>
+<li>梯度下降最简单的用法是计算损失函数（数据集中所有样本的损失均值） 关于模型参数的导数（在这里也可以称为梯度）。 但实际中的执行可能会非常慢：因为在每一次更新参数之前，我们必须遍历整个数据集。 因此，我们通常会在每次需要计算更新的时候随机抽取一小批样本， 这种变体叫做<em>小批量随机梯度下降</em>（minibatch stochastic gradient descent）。</li>
+<li>在每次迭代中，我们首先随机抽样一个小批量$\mathcal{B}$， 它是由固定数量的训练样本组成的。 然后，我们计算小批量的平均损失关于模型参数的导数（也可以称为梯度）。 最后，我们将梯度乘以一个预先确定的正数$\eta$，并从当前参数的值中减掉。我们用下面的数学公式来表示这一更新过程（$\partial$表示偏导数）：</li>
+</ul>
+<p>$$<br>(\mathbf{w},b) \leftarrow (\mathbf{w},b) - \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} \partial_{(\mathbf{w},b)} l^{(i)}(\mathbf{w},b).<br>$$</p>
+<ul>
+<li>总结一下，算法的步骤如下： <ul>
+<li>（1）初始化模型参数的值，如随机初始化； </li>
+<li>（2）从数据集中随机抽取小批量样本且在负梯度的方向上更新参数，并不断迭代这一步骤。</li>
+</ul>
+</li>
+<li>对于平方损失和仿射变换，我们可以明确地写成如下形式:</li>
+</ul>
+<p>$$<br>\begin{split}\begin{aligned} \mathbf{w} &amp;\leftarrow \mathbf{w} -   \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} \partial_{\mathbf{w}} l^{(i)}(\mathbf{w}, b) = \mathbf{w} - \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} \mathbf{x}^{(i)} \left(\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}\right),\ b &amp;\leftarrow b -  \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} \partial_b l^{(i)}(\mathbf{w}, b)  = b - \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} \left(\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}\right). \end{aligned}\end{split}<br>$$</p>
+<blockquote>
+<p>$\mathbf{w}$和$x$都是向量，更优雅的向量表示法比系数表示法（如$w_1, w_2, \ldots, w_d$）更具可读性。 $|\mathcal{B}|$表示每个小批量中的样本数，这也称为<em>批量大小</em>（batch size）。 $\eta$表示<em>学习率</em>（learning rate）。 批量大小和学习率的值通常是手动预先指定，而不是通过模型训练得到的。 这些可以调整但不在训练过程中更新的参数称为<em>超参数</em>（hyperparameter）。 <em>调参</em>（hyperparameter tuning）是选择超参数的过程。 超参数通常是我们根据训练迭代结果来调整的， 而训练迭代结果是在独立的<em>验证数据集</em>（validation dataset）上评估得到的。</p>
+</blockquote>
+<ul>
+<li><p>在训练了预先确定的若干迭代次数后（或者直到满足某些其他停止条件后）， 我们记录下模型参数的估计值，表示为$\hat{\mathbf{w}}, \hat{b}$。 但是，即使我们的函数确实是线性的且无噪声，这些估计值也不会使损失函数真正地达到最小值。 因为算法会使得损失向最小值缓慢收敛，但却不能在有限的步数内非常精确地达到最小值。</p>
+</li>
+<li><p>线性回归恰好是一个在整个域中只有一个最小值的学习问题。 但是对像深度神经网络这样复杂的模型来说，损失平面上通常包含多个最小值。 深度学习实践者很少会去花费大力气寻找这样一组参数，使得在<em>训练集</em>上的损失达到最小。 事实上，更难做到的是找到一组参数，这组参数能够在我们从未见过的数据上实现较低的损失， 这一挑战被称为<em>泛化</em>（generalization）。</p>
+</li>
+</ul>
+<h3 id="用模型预测"><a href="#用模型预测" class="headerlink" title="用模型预测"></a>用模型预测</h3><ul>
+<li>“已学习”的线性回归模型$\hat{\mathbf{w}}^\top \mathbf{x} + \hat{b}$，就可以通过新的$\mathbf{x}$，来估计一个$y$。给定特征估计目标的过程通常称为<em>预测</em>（prediction）或<em>推断</em>（inference）。</li>
+<li>本书将尝试坚持使用<em>预测</em>这个词。 虽然<em>推断</em>这个词已经成为深度学习的标准术语，但其实<em>推断</em>这个词有些用词不当。 在统计学中，<em>推断</em>更多地表示基于数据集估计参数。</li>
+</ul>
+<h2 id="矢量化加速"><a href="#矢量化加速" class="headerlink" title="矢量化加速"></a>矢量化加速</h2><ul>
+<li>在训练我们的模型时，我们经常希望能够同时处理整个小批量的样本。 为了实现这一点，需要我们对计算进行矢量化， 从而利用线性代数库，而不是在Python中编写开销高昂的for循环。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">%matplotlib inline<br><span class="hljs-keyword">import</span> math<br><span class="hljs-keyword">import</span> time<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>线性代数库与for循环性能对比：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># test case</span><br>n = <span class="hljs-number">10000</span><br>a = torch.ones([n])<br>b = torch.ones([n])<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Timer</span>:  <span class="hljs-comment">#@save</span><br>    <span class="hljs-string">"""记录多次运行时间"""</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        self.times = []<br>        self.start()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">start</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">"""启动计时器"""</span><br>        self.tik = time.time()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">stop</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">"""停止计时器并将时间记录在列表中"""</span><br>        self.times.append(time.time() - self.tik)<br>        <span class="hljs-keyword">return</span> self.times[-<span class="hljs-number">1</span>]<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">avg</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">"""返回平均时间"""</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">sum</span>(self.times) / <span class="hljs-built_in">len</span>(self.times)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">sum</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">"""返回时间总和"""</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">sum</span>(self.times)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">cumsum</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">"""返回累计时间"""</span><br>        <span class="hljs-keyword">return</span> np.array(self.times).cumsum().tolist()<br><br><span class="hljs-comment"># for循环</span><br>c = torch.zeros(n)<br>timer = Timer()<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):<br>    c[i] = a[i] + b[i]<br><span class="hljs-string">f'<span class="hljs-subst">{timer.stop():<span class="hljs-number">.5</span>f}</span> sec'</span><br><span class="hljs-comment"># result</span><br><span class="hljs-string">'0.09661 sec'</span><br><br><br><span class="hljs-comment"># 线性代数库</span><br>timer.start()<br>d = a + b<br><span class="hljs-string">f'<span class="hljs-subst">{timer.stop():<span class="hljs-number">.5</span>f}</span> sec'</span><br><span class="hljs-comment"># result</span><br><span class="hljs-string">'0.00021 sec'</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>矢量化代码通常会带来数量级的加速。 另外，我们将更多的数学运算放到库中，而无须自己编写那么多的计算，从而减少了出错的可能性。</p>
+</blockquote>
+<h2 id="正态分布与平方损失"><a href="#正态分布与平方损失" class="headerlink" title="正态分布与平方损失"></a>正态分布与平方损失</h2><ul>
+<li>正态分布和线性回归之间的关系很密切。 正态分布（normal distribution），也称为<em>高斯分布</em>（Gaussian distribution）， 最早由德国数学家高斯（Gauss）应用于天文学研究。 简单的说，若随机变量$x$具有均值$\mu$和方差$\sigma^2$（标准差$\sigma$），其正态分布概率密度函数如下：</li>
+</ul>
+<p>$$<br>p(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\left(-\frac{1}{2 \sigma^2} (x - \mu)^2\right).<br>$$</p>
+<ul>
+<li>可视化正态分布：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">normal</span>(<span class="hljs-params">x, mu, sigma</span>):<br>    p = <span class="hljs-number">1</span> / math.sqrt(<span class="hljs-number">2</span> * math.pi * sigma**<span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">return</span> p * np.exp(-<span class="hljs-number">0.5</span> / sigma**<span class="hljs-number">2</span> * (x - mu)**<span class="hljs-number">2</span>)<br>  <br><span class="hljs-comment"># 再次使用numpy进行可视化</span><br>x = np.arange(-<span class="hljs-number">7</span>, <span class="hljs-number">7</span>, <span class="hljs-number">0.01</span>)<br><br><span class="hljs-comment"># 均值和标准差对</span><br>params = [(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>), (<span class="hljs-number">0</span>, <span class="hljs-number">2</span>), (<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)]<br>d2l.plot(x, [normal(x, mu, sigma) <span class="hljs-keyword">for</span> mu, sigma <span class="hljs-keyword">in</span> params], xlabel=<span class="hljs-string">'x'</span>,<br>         ylabel=<span class="hljs-string">'p(x)'</span>, figsize=(<span class="hljs-number">4.5</span>, <span class="hljs-number">2.5</span>),<br>         legend=[<span class="hljs-string">f'mean <span class="hljs-subst">{mu}</span>, std <span class="hljs-subst">{sigma}</span>'</span> <span class="hljs-keyword">for</span> mu, sigma <span class="hljs-keyword">in</span> params])<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307261041887.svg" srcset="/img/loading.gif" lazyload alt="../_images/output_linear-regression_216540_70_0.svg"></p>
+<ul>
+<li>就像我们所看到的，改变均值会产生沿$x$轴的偏移，增加方差将会分散分布、降低其峰值。均方误差损失函数（简称均方损失）可以用于线性回归的一个原因是： 我们假设了观测中包含噪声，其中噪声服从正态分布。 噪声正态分布如下式:</li>
+</ul>
+<p>$$<br>y = \mathbf{w}^\top \mathbf{x} + b + \epsilon,<br>$$</p>
+<blockquote>
+<p>其中，$\epsilon \sim \mathcal{N}(0, \sigma^2)$。因此，我们现在可以写出通过给定的$\mathbf{x}$观测到特定$y$的<em>似然</em>（likelihood）：</p>
+</blockquote>
+<p>$$<br>P(y \mid \mathbf{x}) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\left(-\frac{1}{2 \sigma^2} (y - \mathbf{w}^\top \mathbf{x} - b)^2\right).<br>$$</p>
+<blockquote>
+<p>现在，根据极大似然估计法，最优值是使整个数据集的<em>似然</em>最大的值：</p>
+</blockquote>
+<p>$$<br>P(\mathbf y \mid \mathbf X) = \prod_{i=1}^{n} p(y^{(i)}|\mathbf{x}^{(i)}).<br>$$</p>
+<blockquote>
+<p>根据极大似然估计法选择的估计量称为<em>极大似然估计量</em>。 虽然使许多指数函数的乘积最大化看起来很困难， 但是我们可以在不改变目标的前提下，通过最大化似然对数来简化。 由于历史原因，优化通常是说最小化而不是最大化。 我们可以改为<em>最小化负对数似然</em>$-\log P(\mathbf y \mid \mathbf X)$。 由此可以得到的数学公式是：</p>
+</blockquote>
+<p>$$<br>-\log P(\mathbf y \mid \mathbf X) = \sum_{i=1}^n \frac{1}{2} \log(2 \pi \sigma^2) + \frac{1}{2 \sigma^2} \left(y^{(i)} - \mathbf{w}^\top \mathbf{x}^{(i)} - b\right)^2.<br>$$</p>
+<blockquote>
+<p>现在我们只需要假设$\sigma$是某个固定常数就可以忽略第一项， 因为第一项不依赖于$\mathbf{w}$和$b$。 现在第二项除了常数$\frac{1}{\sigma^2}$外，其余部分和前面介绍的均方误差是一样的。 幸运的是，上面式子的解并不依赖于$\sigma$。 因此，在高斯噪声的假设下，最小化均方误差等价于对线性模型的极大似然估计。</p>
+</blockquote>
+<ul>
+<li>具体推导，可以看看下面那一篇知乎的reference昂！！！</li>
+</ul>
+<h2 id="从线性回归到深度网络"><a href="#从线性回归到深度网络" class="headerlink" title="从线性回归到深度网络"></a>从线性回归到深度网络</h2><ul>
+<li>尽管神经网络涵盖了更多更为丰富的模型，我们依然可以用描述神经网络的方式来描述线性模型， 从而把线性模型看作一个神经网络。 首先，我们用“层”符号来重写这个模型。</li>
+</ul>
+<h3 id="神经网络图"><a href="#神经网络图" class="headerlink" title="神经网络图"></a>神经网络图</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307261046793.svg" srcset="/img/loading.gif" lazyload alt="../_images/singleneuron.svg"></p>
+<blockquote>
+<p>输入为$x_1, \ldots, x_d$， 因此输入层中的<em>输入数</em>（或称为<em>特征维度</em>，feature dimensionality）为$d$。 网络的输出为$o_1$，因此输出层中的<em>输出数</em>是1。 需要注意的是，输入值都是已经给定的，并且只有一个<em>计算</em>神经元。 由于模型重点在发生计算的地方，所以通常我们在计算层数时不考虑输入层。 也就是说，图中神经网络的<em>层数</em>为1。 我们可以将线性回归模型视为仅由单个人工神经元组成的神经网络，或称为单层神经网络。</p>
+</blockquote>
+<ul>
+<li>对于线性回归，每个输入都与每个输出（在本例中只有一个输出）相连， 我们将这种变换称为<em>全连接层</em>（fully-connected layer）或称为<em>稠密层</em>（dense layer）。</li>
+</ul>
+<h3 id="生物学"><a href="#生物学" class="headerlink" title="生物学"></a>生物学</h3><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307261049045.svg" srcset="/img/loading.gif" lazyload alt="../_images/neuron.svg"></p>
+<blockquote>
+<p>树突中接收到来自其他神经元（或视网膜等环境传感器）的信息$x_i$。 该信息通过<em>突触权重</em>$w_i$来加权，以确定输入的影响（即，通过$x_i w_i$相乘来激活或抑制）。 来自多个源的加权输入以加权和$y = \sum_i x_i w_i + b$的形式汇聚在细胞核中， 然后将这些信息发送到轴突$y$中进一步处理，通常会通过$\sigma(y)$进行一些非线性处理。 之后，它要么到达目的地（例如肌肉），要么通过树突进入另一个神经元。</p>
+</blockquote>
+<ul>
+<li>当今大多数深度学习的研究几乎没有直接从神经科学中获得灵感。在深度学习中的灵感同样或更多地来自数学、统计学和计算机科学。</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zh.d2l.ai/chapter_linear-networks/linear-regression.html">https://zh.d2l.ai/chapter_linear-networks/linear-regression.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/95814925">https://zhuanlan.zhihu.com/p/95814925</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=s7BxboxEfnU">https://www.youtube.com/watch?v=s7BxboxEfnU</a></li>
+</ol>
+
                 
               </div>
             
