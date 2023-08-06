@@ -1,0 +1,1281 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="网络包括：AlexNet、VGG、NiN、GoogLeNet、ResNet、DenseNet Pytorch手动计算维度太困难，英文版教材已经改为自动推导参数（Lazy）！！！可以看英文版的！！！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="D2L-7-Modern Convolutional Neural Networks">
+<meta property="og:url" content="http://example.com/2023/08/06/d2l-7-modern-convolutional-neural-networks/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="网络包括：AlexNet、VGG、NiN、GoogLeNet、ResNet、DenseNet Pytorch手动计算维度太困难，英文版教材已经改为自动推导参数（Lazy）！！！可以看英文版的！！！">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307231956594.jpg">
+<meta property="article:published_time" content="2023-08-06T02:47:43.000Z">
+<meta property="article:modified_time" content="2023-08-06T13:59:49.017Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307231956594.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>D2L-7-Modern Convolutional Neural Networks - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="D2L-7-Modern Convolutional Neural Networks"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-06 10:47" pubdate>
+          2023年8月6日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          29k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          242 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">D2L-7-Modern Convolutional Neural Networks</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>网络包括：AlexNet、VGG、NiN、GoogLeNet、ResNet、DenseNet</p>
+<p>Pytorch手动计算维度太困难，英文版教材已经改为自动推导参数（Lazy）！！！可以看英文版的！！！</p>
+<span id="more"></span>
+
+<h1 id="深度卷积神经网络AlexNet"><a href="#深度卷积神经网络AlexNet" class="headerlink" title="深度卷积神经网络AlexNet"></a>深度卷积神经网络AlexNet</h1><ul>
+<li>经典机器学习的流水线看起来更像下面这样：<ol>
+<li>获取一个有趣的数据集。在早期，收集这些数据集需要昂贵的传感器（在当时最先进的图像也就100万像素）。</li>
+<li>根据光学、几何学、其他知识以及偶然的发现，手工对特征数据集进行预处理。</li>
+<li>通过标准的特征提取算法，如SIFT（尺度不变特征变换） (<a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_references/zreferences.html#id102">Lowe, 2004</a>)和SURF（加速鲁棒特征） (<a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_references/zreferences.html#id7">Bay <em>et al.</em>, 2006</a>)或其他手动调整的流水线来输入数据。</li>
+<li>将提取的特征送入最喜欢的分类器中（例如线性模型或其它核方法），以训练分类器。</li>
+</ol>
+</li>
+<li>观念上的重要改变！！！<ul>
+<li>人工特征提取 -&gt; SVM（例如房价预测的问题，手动进行特征提取和调整这一步就很关键！）</li>
+<li>通过CNN学习特征 -&gt; Softmax回归（端到端，直接照片 -&gt; 结果，这样整体进行学习！）</li>
+</ul>
+</li>
+</ul>
+<h2 id="学习表征"><a href="#学习表征" class="headerlink" title="学习表征"></a>学习表征</h2><ul>
+<li>设计一套新的特征函数、改进结果，并撰写论文是盛极一时的潮流。有些科学家的想法则与众不同：他们认为特征本身应该被学习。此外，他们还认为，在合理地复杂性前提下，特征应该由多个共同学习的神经网络层组成，每个层都有可学习的参数。在机器视觉中，最底层可能检测边缘、颜色和纹理。</li>
+<li>AlexNet在网络的最底层，模型学习到了一些类似于传统滤波器的特征抽取器。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308061109889.png" srcset="/img/loading.gif" lazyload alt="../_images/filters.png"></p>
+<blockquote>
+<p>AlexNet的更高层建立在这些底层表示的基础上，以表示更大的特征，如眼睛、鼻子、草叶等等。而更高的层可以检测整个物体，如人、飞机、狗或飞盘。最终的隐藏神经元可以学习图像的综合表示，从而使属于不同类别的数据易于区分。</p>
+</blockquote>
+<ul>
+<li>深度卷积神经网络的突破出现在2012年。突破可归因于两个关键因素。</li>
+</ul>
+<h3 id="缺少的成分：数据"><a href="#缺少的成分：数据" class="headerlink" title="缺少的成分：数据"></a>缺少的成分：数据</h3><ul>
+<li>包含许多特征的深度模型需要大量的有标签数据，才能显著优于基于凸优化的传统方法（如线性方法和核方法）。 古老的时期，数据数量少，数据质量不高。2009年，ImageNet数据集发布，并发起ImageNet挑战赛：要求研究人员从100万个样本中训练模型，以区分1000个不同类别的对象。ImageNet数据集由斯坦福教授李飞飞小组的研究人员开发，利用谷歌图像搜索（Google Image Search）对每一类图像进行预筛选，并利用亚马逊众包（Amazon Mechanical Turk）来标注每张图片的相关类别。</li>
+</ul>
+<h3 id="缺少的成分：硬件"><a href="#缺少的成分：硬件" class="headerlink" title="缺少的成分：硬件"></a>缺少的成分：硬件</h3><ul>
+<li><p>深度学习对计算资源要求很高，训练可能需要数百个迭代轮数，每次迭代都需要通过代价高昂的许多线性代数层传递数据。</p>
+</li>
+<li><p>用GPU训练神经网络改变了这一格局。<em>图形处理器</em>（Graphics Processing Unit，GPU）早年用来加速图形处理，使电脑游戏玩家受益。GPU可优化高吞吐量的4×4矩阵和向量乘法，从而服务于基本的图形任务。幸运的是，这些数学运算与卷积层的计算惊人地相似。由此，英伟达（NVIDIA）和ATI已经开始为通用计算操作优化gpu，甚至把它们作为<em>通用GPU</em>（general-purpose GPUs，GPGPU）来销售。</p>
+</li>
+<li><p>CPU vs GPU</p>
+<ul>
+<li>中央处理器（Central Processing Unit，CPU）的每个核心都拥有高时钟频率的运行能力，和高达数MB的三级缓存（L3Cache）。 它们非常适合执行各种指令，具有分支预测器、深层流水线和其他使CPU能够运行各种程序的功能。 然而，这种明显的优势也是它的致命弱点：通用核心的制造成本非常高。 它们需要大量的芯片面积、复杂的支持结构（内存接口、内核之间的缓存逻辑、高速互连等等），而且它们在任何单个任务上的性能都相对较差。 现代笔记本电脑最多有4核，即使是高端服务器也很少超过64核，因为它们的性价比不高。</li>
+<li>GPU由100∼1000个小的处理单元组成（NVIDIA、ATI、ARM和其他芯片供应商之间的细节稍有不同），通常被分成更大的组（NVIDIA称之为warps）。 虽然每个GPU核心都相对较弱，有时甚至以低于1GHz的时钟频率运行，但庞大的核心数量使GPU比CPU快几个数量级。 例如，NVIDIA最近一代的Ampere GPU架构为每个芯片提供了高达312 TFlops的浮点性能，而CPU的浮点性能到目前为止还没有超过1 TFlops。 之所以有如此大的差距，原因其实很简单：首先，功耗往往会随时钟频率呈二次方增长。 对于一个CPU核心，假设它的运行速度比GPU快4倍，但可以使用16个GPU核代替，那么GPU的综合性能就是CPU的16×1/4=4倍。 其次，GPU内核要简单得多，这使得它们更节能。 此外，深度学习中的许多操作需要相对较高的内存带宽，而GPU拥有10倍于CPU的带宽。</li>
+</ul>
+</li>
+<li><p>当Alex Krizhevsky和Ilya Sutskever实现了可以在GPU硬件上运行的深度卷积神经网络时，一个重大突破出现了。他们意识到卷积神经网络中的计算瓶颈：卷积和矩阵乘法，都是可以在硬件上并行化的操作。 于是，他们使用两个显存为3GB的NVIDIA GTX580 GPU实现了快速卷积运算。他们的创新<a target="_blank" rel="noopener" href="https://code.google.com/archive/p/cuda-convnet/">cuda-convnet</a>几年来它一直是行业标准，并推动了深度学习热潮。</p>
+</li>
+</ul>
+<h2 id="AlexNet"><a href="#AlexNet" class="headerlink" title="AlexNet"></a>AlexNet</h2><ul>
+<li>2012年，AlexNet横空出世。它首次证明了学习到的特征可以超越手工设计的特征。本书在这里提供的是一个稍微精简版本的AlexNet，去除了当年需要两个小型GPU同时运算的设计特点。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308061128144.png" srcset="/img/loading.gif" lazyload alt="image-20230806112826109"></p>
+<ul>
+<li>AlexNet和LeNet的设计理念非常相似，但也存在显著差异。<ol>
+<li>AlexNet比相对较小的LeNet5要深得多。AlexNet由八层组成：五个卷积层、两个全连接隐藏层和一个全连接输出层。</li>
+<li>AlexNet使用ReLU而不是sigmoid作为其激活函数。</li>
+</ol>
+</li>
+</ul>
+<h3 id="模型设计"><a href="#模型设计" class="headerlink" title="模型设计"></a>模型设计</h3><ul>
+<li>AlexNet的第一层，卷积窗口的形状是11×11。 由于ImageNet中大多数图像的宽和高比MNIST图像的多10倍以上，因此，需要一个更大的卷积窗口来捕获目标。 第二层中的卷积窗口形状被缩减为5×5，然后是3×3。 此外，在第一层、第二层和第五层卷积层之后，加入窗口形状为3×3、步幅为2的最大汇聚层。 而且，AlexNet的卷积通道数目是LeNet的10倍。</li>
+<li>在最后一个卷积层后有两个全连接层，分别有4096个输出。 这两个巨大的全连接层拥有将近1GB的模型参数。 由于早期GPU显存有限，原版的AlexNet采用了双数据流设计，使得每个GPU只负责存储和计算模型的一半参数。 幸运的是，现在GPU显存相对充裕，所以现在很少需要跨GPU分解模型（因此，本书的AlexNet模型在这方面与原始论文稍有不同）。</li>
+</ul>
+<h3 id="激活函数"><a href="#激活函数" class="headerlink" title="激活函数"></a>激活函数</h3><ul>
+<li>AlexNet将sigmoid激活函数改为更简单的ReLU激活函数。 一方面，ReLU激活函数的计算更简单，它不需要如sigmoid激活函数那般复杂的求幂运算。 另一方面，当使用不同的参数初始化方法时，ReLU激活函数使训练模型更加容易。 当sigmoid激活函数的输出非常接近于0或1时，这些区域的梯度几乎为0，因此反向传播无法继续更新一些模型参数。 相反，ReLU激活函数在正区间的梯度总是1。 因此，如果模型参数没有正确初始化，sigmoid函数可能在正区间内得到几乎为0的梯度，从而使模型无法得到有效的训练。</li>
+</ul>
+<h3 id="容量控制和预处理"><a href="#容量控制和预处理" class="headerlink" title="容量控制和预处理"></a>容量控制和预处理</h3><ul>
+<li>AlexNet通过暂退法（ <a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_multilayer-perceptrons/dropout.html#sec-dropout">4.6节</a>）控制全连接层的模型复杂度，而LeNet只使用了权重衰减。 为了进一步扩充数据，AlexNet在训练时增加了大量的图像增强数据，如翻转、裁切和变色。 这使得模型更健壮，更大的样本量有效地减少了过拟合。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br>net = nn.Sequential(<br>    <span class="hljs-comment"># 这里使用一个11*11的更大窗口来捕捉对象。</span><br>    <span class="hljs-comment"># 同时，步幅为4，以减少输出的高度和宽度。</span><br>    <span class="hljs-comment"># 另外，输出通道的数目远大于LeNet</span><br>    nn.Conv2d(<span class="hljs-number">1</span>, <span class="hljs-number">96</span>, kernel_size=<span class="hljs-number">11</span>, stride=<span class="hljs-number">4</span>, padding=<span class="hljs-number">1</span>), nn.ReLU(),<br>    nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>),<br>    <span class="hljs-comment"># 减小卷积窗口，使用填充为2来使得输入与输出的高和宽一致，且增大输出通道数</span><br>    nn.Conv2d(<span class="hljs-number">96</span>, <span class="hljs-number">256</span>, kernel_size=<span class="hljs-number">5</span>, padding=<span class="hljs-number">2</span>), nn.ReLU(),<br>    nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>),<br>    <span class="hljs-comment"># 使用三个连续的卷积层和较小的卷积窗口。</span><br>    <span class="hljs-comment"># 除了最后的卷积层，输出通道的数量进一步增加。</span><br>    <span class="hljs-comment"># 在前两个卷积层之后，汇聚层不用于减少输入的高度和宽度</span><br>    nn.Conv2d(<span class="hljs-number">256</span>, <span class="hljs-number">384</span>, kernel_size=<span class="hljs-number">3</span>, padding=<span class="hljs-number">1</span>), nn.ReLU(),<br>    nn.Conv2d(<span class="hljs-number">384</span>, <span class="hljs-number">384</span>, kernel_size=<span class="hljs-number">3</span>, padding=<span class="hljs-number">1</span>), nn.ReLU(),<br>    nn.Conv2d(<span class="hljs-number">384</span>, <span class="hljs-number">256</span>, kernel_size=<span class="hljs-number">3</span>, padding=<span class="hljs-number">1</span>), nn.ReLU(),<br>    nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>),<br>    nn.Flatten(),<br>    <span class="hljs-comment"># 这里，全连接层的输出数量是LeNet中的好几倍。使用dropout层来减轻过拟合</span><br>    nn.Linear(<span class="hljs-number">6400</span>, <span class="hljs-number">4096</span>), nn.ReLU(),<br>    nn.Dropout(p=<span class="hljs-number">0.5</span>),<br>    nn.Linear(<span class="hljs-number">4096</span>, <span class="hljs-number">4096</span>), nn.ReLU(),<br>    nn.Dropout(p=<span class="hljs-number">0.5</span>),<br>    <span class="hljs-comment"># 最后是输出层。由于这里使用Fashion-MNIST，所以用类别数为10，而非论文中的1000</span><br>    nn.Linear(<span class="hljs-number">4096</span>, <span class="hljs-number">10</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>我们构造一个高度和宽度都为224的单通道数据，来观察每一层输出的形状。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python">X = torch.randn(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">224</span>, <span class="hljs-number">224</span>)<br><span class="hljs-keyword">for</span> layer <span class="hljs-keyword">in</span> net:<br>    X=layer(X)<br>    <span class="hljs-built_in">print</span>(layer.__class__.__name__,<span class="hljs-string">'output shape:\t'</span>,X.shape)<br>    <br><span class="hljs-comment"># result</span><br>Conv2d output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">96</span>, <span class="hljs-number">54</span>, <span class="hljs-number">54</span>])<br>ReLU output shape:   torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">96</span>, <span class="hljs-number">54</span>, <span class="hljs-number">54</span>])<br>MaxPool2d output shape:      torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">96</span>, <span class="hljs-number">26</span>, <span class="hljs-number">26</span>])<br>Conv2d output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">256</span>, <span class="hljs-number">26</span>, <span class="hljs-number">26</span>])<br>ReLU output shape:   torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">256</span>, <span class="hljs-number">26</span>, <span class="hljs-number">26</span>])<br>MaxPool2d output shape:      torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">256</span>, <span class="hljs-number">12</span>, <span class="hljs-number">12</span>])<br>Conv2d output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">384</span>, <span class="hljs-number">12</span>, <span class="hljs-number">12</span>])<br>ReLU output shape:   torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">384</span>, <span class="hljs-number">12</span>, <span class="hljs-number">12</span>])<br>Conv2d output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">384</span>, <span class="hljs-number">12</span>, <span class="hljs-number">12</span>])<br>ReLU output shape:   torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">384</span>, <span class="hljs-number">12</span>, <span class="hljs-number">12</span>])<br>Conv2d output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">256</span>, <span class="hljs-number">12</span>, <span class="hljs-number">12</span>])<br>ReLU output shape:   torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">256</span>, <span class="hljs-number">12</span>, <span class="hljs-number">12</span>])<br>MaxPool2d output shape:      torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">256</span>, <span class="hljs-number">5</span>, <span class="hljs-number">5</span>])<br>Flatten output shape:        torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">6400</span>])<br>Linear output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>ReLU output shape:   torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>Dropout output shape:        torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>Linear output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>ReLU output shape:   torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>Dropout output shape:        torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>Linear output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">10</span>])<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="读取数据集"><a href="#读取数据集" class="headerlink" title="读取数据集"></a>读取数据集</h2><ul>
+<li>尽管原文中AlexNet是在ImageNet上进行训练的，但本书在这里使用的是Fashion-MNIST数据集。因为即使在现代GPU上，训练ImageNet模型，同时使其收敛可能需要数小时或数天的时间。 将AlexNet直接应用于Fashion-MNIST的一个问题是，Fashion-MNIST图像的分辨率（28×28像素）低于ImageNet图像。 为了解决这个问题，我们将它们增加到224×224（通常来讲这不是一个明智的做法，但在这里这样做是为了有效使用AlexNet架构）。 这里需要使用<code>d2l.load_data_fashion_mnist</code>函数中的<code>resize</code>参数执行此调整。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">batch_size = <span class="hljs-number">128</span><br>train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=<span class="hljs-number">224</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="训练模型"><a href="#训练模型" class="headerlink" title="训练模型"></a>训练模型</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">lr, num_epochs = <span class="hljs-number">0.01</span>, <span class="hljs-number">10</span><br>d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())<br><br><span class="hljs-comment"># result</span><br>loss <span class="hljs-number">0.326</span>, train acc <span class="hljs-number">0.881</span>, test acc <span class="hljs-number">0.879</span><br><span class="hljs-number">4187.6</span> examples/sec on cuda:<span class="hljs-number">0</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h1 id="使用块的网络VGG"><a href="#使用块的网络VGG" class="headerlink" title="使用块的网络VGG"></a>使用块的网络VGG</h1><blockquote>
+<p>块儿的思想！</p>
+</blockquote>
+<h2 id="VGG块"><a href="#VGG块" class="headerlink" title="VGG块"></a>VGG块</h2><ul>
+<li><p>经典卷积神经网络的基本组成部分是下面的这个序列：</p>
+<ol>
+<li>带填充以保持分辨率的卷积层；</li>
+<li>非线性激活函数，如ReLU；</li>
+<li>汇聚层，如最大汇聚层。</li>
+</ol>
+</li>
+<li><p>一个VGG块与之类似，由一系列卷积层组成，后面再加上用于空间下采样的最大汇聚层。在下面的代码中，我们定义了一个名为<code>vgg_block</code>的函数来实现一个VGG块。</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br><br><span class="hljs-comment"># 该函数有三个参数，分别对应于卷积层的数量num_convs、输入通道的数量in_channels 和输出通道的数量out_channels.</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">vgg_block</span>(<span class="hljs-params">num_convs, in_channels, out_channels</span>):<br>    layers = []<br>    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_convs):<br>        layers.append(nn.Conv2d(in_channels, out_channels,<br>                                kernel_size=<span class="hljs-number">3</span>, padding=<span class="hljs-number">1</span>))<br>        layers.append(nn.ReLU())<br>        in_channels = out_channels<br>    layers.append(nn.MaxPool2d(kernel_size=<span class="hljs-number">2</span>,stride=<span class="hljs-number">2</span>))<br>    <span class="hljs-keyword">return</span> nn.Sequential(*layers)<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="VGG网络"><a href="#VGG网络" class="headerlink" title="VGG网络"></a>VGG网络</h2><ul>
+<li>VGG网络可以分为两部分：第一部分主要由卷积层和汇聚层组成，第二部分由全连接层组成。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308061138631.svg" srcset="/img/loading.gif" lazyload alt="../_images/vgg.svg"></p>
+<blockquote>
+<p><code>vgg_block</code>函数中有超参数变量<code>conv_arch</code>。该变量指定了每个VGG块里卷积层个数和输出通道数。全连接模块则与AlexNet中的相同。</p>
+</blockquote>
+<ul>
+<li>原始VGG网络有5个卷积块，其中前两个块各有一个卷积层，后三个块各包含两个卷积层。 第一个模块有64个输出通道，每个后续模块将输出通道数量翻倍，直到该数字达到512。由于该网络使用8个卷积层和3个全连接层，因此它通常被称为VGG-11。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">conv_arch = ((<span class="hljs-number">1</span>, <span class="hljs-number">64</span>), (<span class="hljs-number">1</span>, <span class="hljs-number">128</span>), (<span class="hljs-number">2</span>, <span class="hljs-number">256</span>), (<span class="hljs-number">2</span>, <span class="hljs-number">512</span>), (<span class="hljs-number">2</span>, <span class="hljs-number">512</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>下面的代码实现了VGG-11。可以通过在<code>conv_arch</code>上执行for循环来简单实现。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">vgg</span>(<span class="hljs-params">conv_arch</span>):<br>    conv_blks = []<br>    in_channels = <span class="hljs-number">1</span><br>    <span class="hljs-comment"># 卷积层部分</span><br>    <span class="hljs-keyword">for</span> (num_convs, out_channels) <span class="hljs-keyword">in</span> conv_arch:<br>        conv_blks.append(vgg_block(num_convs, in_channels, out_channels))<br>        in_channels = out_channels<br><br>    <span class="hljs-keyword">return</span> nn.Sequential(<br>        *conv_blks, nn.Flatten(),<br>        <span class="hljs-comment"># 全连接层部分</span><br>        nn.Linear(out_channels * <span class="hljs-number">7</span> * <span class="hljs-number">7</span>, <span class="hljs-number">4096</span>), nn.ReLU(), nn.Dropout(<span class="hljs-number">0.5</span>),<br>        nn.Linear(<span class="hljs-number">4096</span>, <span class="hljs-number">4096</span>), nn.ReLU(), nn.Dropout(<span class="hljs-number">0.5</span>),<br>        nn.Linear(<span class="hljs-number">4096</span>, <span class="hljs-number">10</span>))<br><br>net = vgg(conv_arch)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>接下来，我们将构建一个高度和宽度为224的单通道数据样本，以观察每个层输出的形状。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python">X = torch.randn(size=(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">224</span>, <span class="hljs-number">224</span>))<br><span class="hljs-keyword">for</span> blk <span class="hljs-keyword">in</span> net:<br>    X = blk(X)<br>    <span class="hljs-built_in">print</span>(blk.__class__.__name__,<span class="hljs-string">'output shape:\t'</span>,X.shape)<br>    <br><span class="hljs-comment"># result</span><br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">64</span>, <span class="hljs-number">112</span>, <span class="hljs-number">112</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">128</span>, <span class="hljs-number">56</span>, <span class="hljs-number">56</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">256</span>, <span class="hljs-number">28</span>, <span class="hljs-number">28</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">512</span>, <span class="hljs-number">14</span>, <span class="hljs-number">14</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">512</span>, <span class="hljs-number">7</span>, <span class="hljs-number">7</span>])<br>Flatten output shape:        torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">25088</span>])<br>Linear output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>ReLU output shape:   torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>Dropout output shape:        torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>Linear output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>ReLU output shape:   torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>Dropout output shape:        torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">4096</span>])<br>Linear output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">10</span>])<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>正如从代码中所看到的，我们在每个块的高度和宽度减半，最终高度和宽度都为7。最后再展平表示，送入全连接层处理。</li>
+</ul>
+<h2 id="训练模型-1"><a href="#训练模型-1" class="headerlink" title="训练模型"></a>训练模型</h2><ul>
+<li>VGG-11比AlexNet计算量更大，因此我们构建了一个通道数较少的网络，足够用于训练Fashion-MNIST数据集。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">ratio = <span class="hljs-number">4</span><br>small_conv_arch = [(pair[<span class="hljs-number">0</span>], pair[<span class="hljs-number">1</span>] // ratio) <span class="hljs-keyword">for</span> pair <span class="hljs-keyword">in</span> conv_arch]<br>net = vgg(small_conv_arch)<br><br><span class="hljs-comment"># 使用略高的学习率</span><br>lr, num_epochs, batch_size = <span class="hljs-number">0.05</span>, <span class="hljs-number">10</span>, <span class="hljs-number">128</span><br>train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=<span class="hljs-number">224</span>)<br>d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())<br><br><span class="hljs-comment"># result</span><br>loss <span class="hljs-number">0.220</span>, train acc <span class="hljs-number">0.918</span>, test acc <span class="hljs-number">0.900</span><br><span class="hljs-number">2578.4</span> examples/sec on cuda:<span class="hljs-number">0</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h1 id="网络中的网络NiN"><a href="#网络中的网络NiN" class="headerlink" title="网络中的网络NiN"></a>网络中的网络NiN</h1><ul>
+<li>LeNet、AlexNet和VGG都有一个共同的设计模式：通过一系列的卷积层与汇聚层来提取空间结构特征；然后通过全连接层对特征的表征进行处理。 AlexNet和VGG对LeNet的改进主要在于如何扩大和加深这两个模块。<em>网络中的网络</em>（<em>NiN</em>）提供了一个非常简单的解决方案：在每个像素的通道上分别使用多层感知机。</li>
+</ul>
+<h2 id="NiN块"><a href="#NiN块" class="headerlink" title="NiN块"></a>NiN块</h2><ul>
+<li>NiN的想法是在每个像素位置（针对每个高度和宽度）应用一个全连接层。 如果我们将权重连接到每个空间位置，我们可以将其视为1×1卷积层（如 <a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_convolutional-neural-networks/channels.html#sec-channels">6.4节</a>中所述），或作为在每个像素位置上独立作用的全连接层。 从另一个角度看，即将空间维度中的每个像素视为单个样本，将通道维度视为不同特征（feature）。</li>
+<li>NiN块以一个普通卷积层开始，后面是两个1×1的卷积层。这两个1×1卷积层充当带有ReLU激活函数的逐像素全连接层。 第一层的卷积窗口形状通常由用户设置。 随后的卷积窗口形状固定为1×1。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308061151975.png" srcset="/img/loading.gif" lazyload alt="image-20230806115157887"></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">nin_block</span>(<span class="hljs-params">in_channels, out_channels, kernel_size, strides, padding</span>):<br>    <span class="hljs-keyword">return</span> nn.Sequential(<br>        nn.Conv2d(in_channels, out_channels, kernel_size, strides, padding),<br>        nn.ReLU(),<br>        nn.Conv2d(out_channels, out_channels, kernel_size=<span class="hljs-number">1</span>), nn.ReLU(),<br>        nn.Conv2d(out_channels, out_channels, kernel_size=<span class="hljs-number">1</span>), nn.ReLU())<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="NiN模型"><a href="#NiN模型" class="headerlink" title="NiN模型"></a>NiN模型</h2><ul>
+<li>最初的NiN网络是在AlexNet后不久提出的，显然从中得到了一些启示。 NiN使用窗口形状为11×11、5×5和3×3的卷积层，输出通道数量与AlexNet中的相同。 每个NiN块后有一个最大汇聚层，汇聚窗口形状为3×3，步幅为2。</li>
+<li>NiN和AlexNet之间的一个显著区别是NiN完全取消了全连接层。 相反，NiN使用一个NiN块，其输出通道数等于标签类别的数量。最后放一个<em>全局平均汇聚层</em>（global average pooling layer），生成一个对数几率 （logits）。NiN设计的一个优点是，它显著减少了模型所需参数的数量。然而，在实践中，这种设计有时会增加训练模型的时间。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">net = nn.Sequential(<br>    nin_block(<span class="hljs-number">1</span>, <span class="hljs-number">96</span>, kernel_size=<span class="hljs-number">11</span>, strides=<span class="hljs-number">4</span>, padding=<span class="hljs-number">0</span>),<br>    nn.MaxPool2d(<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>),<br>    nin_block(<span class="hljs-number">96</span>, <span class="hljs-number">256</span>, kernel_size=<span class="hljs-number">5</span>, strides=<span class="hljs-number">1</span>, padding=<span class="hljs-number">2</span>),<br>    nn.MaxPool2d(<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>),<br>    nin_block(<span class="hljs-number">256</span>, <span class="hljs-number">384</span>, kernel_size=<span class="hljs-number">3</span>, strides=<span class="hljs-number">1</span>, padding=<span class="hljs-number">1</span>),<br>    nn.MaxPool2d(<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>),<br>    nn.Dropout(<span class="hljs-number">0.5</span>),<br>    <span class="hljs-comment"># 标签类别数是10</span><br>    nin_block(<span class="hljs-number">384</span>, <span class="hljs-number">10</span>, kernel_size=<span class="hljs-number">3</span>, strides=<span class="hljs-number">1</span>, padding=<span class="hljs-number">1</span>),<br>    nn.AdaptiveAvgPool2d((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)),<br>    <span class="hljs-comment"># 将四维的输出转成二维的输出，其形状为(批量大小,10)</span><br>    nn.Flatten())<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>创建一个数据样本来查看每个块的输出形状。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python">X = torch.rand(size=(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">224</span>, <span class="hljs-number">224</span>))<br><span class="hljs-keyword">for</span> layer <span class="hljs-keyword">in</span> net:<br>    X = layer(X)<br>    <span class="hljs-built_in">print</span>(layer.__class__.__name__,<span class="hljs-string">'output shape:\t'</span>, X.shape)<br>    <br><span class="hljs-comment"># result</span><br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">96</span>, <span class="hljs-number">54</span>, <span class="hljs-number">54</span>])<br>MaxPool2d output shape:      torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">96</span>, <span class="hljs-number">26</span>, <span class="hljs-number">26</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">256</span>, <span class="hljs-number">26</span>, <span class="hljs-number">26</span>])<br>MaxPool2d output shape:      torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">256</span>, <span class="hljs-number">12</span>, <span class="hljs-number">12</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">384</span>, <span class="hljs-number">12</span>, <span class="hljs-number">12</span>])<br>MaxPool2d output shape:      torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">384</span>, <span class="hljs-number">5</span>, <span class="hljs-number">5</span>])<br>Dropout output shape:        torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">384</span>, <span class="hljs-number">5</span>, <span class="hljs-number">5</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">10</span>, <span class="hljs-number">5</span>, <span class="hljs-number">5</span>])<br>AdaptiveAvgPool2d output shape:      torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">10</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>])<br>Flatten output shape:        torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">10</span>])<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="训练模型-2"><a href="#训练模型-2" class="headerlink" title="训练模型"></a>训练模型</h2><ul>
+<li>我们使用Fashion-MNIST来训练模型。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">lr, num_epochs, batch_size = <span class="hljs-number">0.1</span>, <span class="hljs-number">10</span>, <span class="hljs-number">128</span><br>train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=<span class="hljs-number">224</span>)<br>d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())<br><br><span class="hljs-comment"># result</span><br>loss <span class="hljs-number">0.322</span>, train acc <span class="hljs-number">0.881</span>, test acc <span class="hljs-number">0.865</span><br><span class="hljs-number">3226.1</span> examples/sec on cuda:<span class="hljs-number">0</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h1 id="含并行连结的网络GoogLeNet"><a href="#含并行连结的网络GoogLeNet" class="headerlink" title="含并行连结的网络GoogLeNet"></a>含并行连结的网络GoogLeNet</h1><ul>
+<li>GoogLeNet吸收了NiN中串联网络的思想，并在此基础上做了改进。 这篇论文的一个重点是解决了什么样大小的卷积核最合适的问题。 毕竟，以前流行的网络使用小到1×1，大到11×11的卷积核。 本文的一个观点是，有时使用不同大小的卷积核组合是有利的。</li>
+</ul>
+<h2 id="Inception块"><a href="#Inception块" class="headerlink" title="Inception块"></a>Inception块</h2><ul>
+<li>GoogLeNet中，基本的卷积块被称为<em>Inception块</em>（Inception block）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308061159420.svg" srcset="/img/loading.gif" lazyload alt="../_images/inception.svg"></p>
+<ul>
+<li>Inception块由四条并行路径组成。 前三条路径使用窗口大小为1×1、3×3和5×5的卷积层，从不同空间大小中提取信息。 中间的两条路径在输入上执行1×1卷积，以减少通道数，从而降低模型的复杂性。 第四条路径使用3×3最大汇聚层，然后使用1×1卷积层来改变通道数。 这四条路径都使用合适的填充来使输入与输出的高和宽一致，最后我们将每条线路的输出在通道维度上连结，并构成Inception块的输出。在Inception块中，通常调整的超参数是每层输出通道数。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> torch.nn <span class="hljs-keyword">import</span> functional <span class="hljs-keyword">as</span> F<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Inception</span>(nn.Module):<br>    <span class="hljs-comment"># c1--c4是每条路径的输出通道数</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, in_channels, c1, c2, c3, c4, **kwargs</span>):<br>        <span class="hljs-built_in">super</span>(Inception, self).__init__(**kwargs)<br>        <span class="hljs-comment"># 线路1，单1x1卷积层</span><br>        self.p1_1 = nn.Conv2d(in_channels, c1, kernel_size=<span class="hljs-number">1</span>)<br>        <span class="hljs-comment"># 线路2，1x1卷积层后接3x3卷积层</span><br>        self.p2_1 = nn.Conv2d(in_channels, c2[<span class="hljs-number">0</span>], kernel_size=<span class="hljs-number">1</span>)<br>        self.p2_2 = nn.Conv2d(c2[<span class="hljs-number">0</span>], c2[<span class="hljs-number">1</span>], kernel_size=<span class="hljs-number">3</span>, padding=<span class="hljs-number">1</span>)<br>        <span class="hljs-comment"># 线路3，1x1卷积层后接5x5卷积层</span><br>        self.p3_1 = nn.Conv2d(in_channels, c3[<span class="hljs-number">0</span>], kernel_size=<span class="hljs-number">1</span>)<br>        self.p3_2 = nn.Conv2d(c3[<span class="hljs-number">0</span>], c3[<span class="hljs-number">1</span>], kernel_size=<span class="hljs-number">5</span>, padding=<span class="hljs-number">2</span>)<br>        <span class="hljs-comment"># 线路4，3x3最大汇聚层后接1x1卷积层</span><br>        self.p4_1 = nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">1</span>, padding=<span class="hljs-number">1</span>)<br>        self.p4_2 = nn.Conv2d(in_channels, c4, kernel_size=<span class="hljs-number">1</span>)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, x</span>):<br>        p1 = F.relu(self.p1_1(x))<br>        p2 = F.relu(self.p2_2(F.relu(self.p2_1(x))))<br>        p3 = F.relu(self.p3_2(F.relu(self.p3_1(x))))<br>        p4 = F.relu(self.p4_2(self.p4_1(x)))<br>        <span class="hljs-comment"># 在通道维度上连结输出</span><br>        <span class="hljs-keyword">return</span> torch.cat((p1, p2, p3, p4), dim=<span class="hljs-number">1</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>那么为什么GoogLeNet这个网络如此有效呢？首先我们考虑一下滤波器（filter）的组合，它们可以用各种滤波器尺寸探索图像，这意味着不同大小的滤波器可以有效地识别不同范围的图像细节。 同时，我们可以为不同的滤波器分配不同数量的参数。</p>
+</blockquote>
+<h2 id="GoogLeNet模型"><a href="#GoogLeNet模型" class="headerlink" title="GoogLeNet模型"></a>GoogLeNet模型</h2><ul>
+<li>GoogLeNet一共使用9个Inception块和全局平均汇聚层的堆叠来生成其估计值。Inception块之间的最大汇聚层可降低维度。 第一个模块类似于AlexNet和LeNet，Inception块的组合从VGG继承，全局平均汇聚层避免了在最后使用全连接层。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308061205875.svg" srcset="/img/loading.gif" lazyload alt="../_images/inception-full.svg"></p>
+<ul>
+<li>第一个模块使用64个通道、7×7卷积层。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">b1 = nn.Sequential(nn.Conv2d(<span class="hljs-number">1</span>, <span class="hljs-number">64</span>, kernel_size=<span class="hljs-number">7</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">3</span>),<br>                   nn.ReLU(),<br>                   nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>第二个模块使用两个卷积层：第一个卷积层是64个通道、1×1卷积层；第二个卷积层使用将通道数量增加三倍的3×3卷积层。 这对应于Inception块中的第二条路径。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">b2 = nn.Sequential(nn.Conv2d(<span class="hljs-number">64</span>, <span class="hljs-number">64</span>, kernel_size=<span class="hljs-number">1</span>),<br>                   nn.ReLU(),<br>                   nn.Conv2d(<span class="hljs-number">64</span>, <span class="hljs-number">192</span>, kernel_size=<span class="hljs-number">3</span>, padding=<span class="hljs-number">1</span>),<br>                   nn.ReLU(),<br>                   nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>第三个模块串联两个完整的Inception块。 第一个Inception块的输出通道数为64+128+32+32=256，四个路径之间的输出通道数量比为64:128:32:32=2:4:1:1。 第二个和第三个路径首先将输入通道的数量分别减少到96/192=1/2和16/192=1/12，然后连接第二个卷积层。第二个Inception块的输出通道数增加到128+192+96+64=480，四个路径之间的输出通道数量比为128:192:96:64=4:6:3:2。 第二条和第三条路径首先将输入通道的数量分别减少到128/256=1/2和32/256=1/8。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">b3 = nn.Sequential(Inception(<span class="hljs-number">192</span>, <span class="hljs-number">64</span>, (<span class="hljs-number">96</span>, <span class="hljs-number">128</span>), (<span class="hljs-number">16</span>, <span class="hljs-number">32</span>), <span class="hljs-number">32</span>),<br>                   Inception(<span class="hljs-number">256</span>, <span class="hljs-number">128</span>, (<span class="hljs-number">128</span>, <span class="hljs-number">192</span>), (<span class="hljs-number">32</span>, <span class="hljs-number">96</span>), <span class="hljs-number">64</span>),<br>                   nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>第四模块更加复杂， 它串联了5个Inception块，其输出通道数分别是192+208+48+64=512、160+224+64+64=512、128+256+64+64=512、112+288+64+64=528和256+320+128+128=832。 这些路径的通道数分配和第三模块中的类似，首先是含3×3卷积层的第二条路径输出最多通道，其次是仅含1×1卷积层的第一条路径，之后是含5×5卷积层的第三条路径和含3×3最大汇聚层的第四条路径。 其中第二、第三条路径都会先按比例减小通道数。 这些比例在各个Inception块中都略有不同。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">b4 = nn.Sequential(Inception(<span class="hljs-number">480</span>, <span class="hljs-number">192</span>, (<span class="hljs-number">96</span>, <span class="hljs-number">208</span>), (<span class="hljs-number">16</span>, <span class="hljs-number">48</span>), <span class="hljs-number">64</span>),<br>                   Inception(<span class="hljs-number">512</span>, <span class="hljs-number">160</span>, (<span class="hljs-number">112</span>, <span class="hljs-number">224</span>), (<span class="hljs-number">24</span>, <span class="hljs-number">64</span>), <span class="hljs-number">64</span>),<br>                   Inception(<span class="hljs-number">512</span>, <span class="hljs-number">128</span>, (<span class="hljs-number">128</span>, <span class="hljs-number">256</span>), (<span class="hljs-number">24</span>, <span class="hljs-number">64</span>), <span class="hljs-number">64</span>),<br>                   Inception(<span class="hljs-number">512</span>, <span class="hljs-number">112</span>, (<span class="hljs-number">144</span>, <span class="hljs-number">288</span>), (<span class="hljs-number">32</span>, <span class="hljs-number">64</span>), <span class="hljs-number">64</span>),<br>                   Inception(<span class="hljs-number">528</span>, <span class="hljs-number">256</span>, (<span class="hljs-number">160</span>, <span class="hljs-number">320</span>), (<span class="hljs-number">32</span>, <span class="hljs-number">128</span>), <span class="hljs-number">128</span>),<br>                   nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>第五模块包含输出通道数为256+320+128+128=832和384+384+128+128=1024的两个Inception块。 其中每条路径通道数的分配思路和第三、第四模块中的一致，只是在具体数值上有所不同。 需要注意的是，第五模块的后面紧跟输出层，该模块同NiN一样使用全局平均汇聚层，将每个通道的高和宽变成1。 最后我们将输出变成二维数组，再接上一个输出个数为标签类别数的全连接层。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">b5 = nn.Sequential(Inception(<span class="hljs-number">832</span>, <span class="hljs-number">256</span>, (<span class="hljs-number">160</span>, <span class="hljs-number">320</span>), (<span class="hljs-number">32</span>, <span class="hljs-number">128</span>), <span class="hljs-number">128</span>),<br>                   Inception(<span class="hljs-number">832</span>, <span class="hljs-number">384</span>, (<span class="hljs-number">192</span>, <span class="hljs-number">384</span>), (<span class="hljs-number">48</span>, <span class="hljs-number">128</span>), <span class="hljs-number">128</span>),<br>                   nn.AdaptiveAvgPool2d((<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)),<br>                   nn.Flatten())<br><br>net = nn.Sequential(b1, b2, b3, b4, b5, nn.Linear(<span class="hljs-number">1024</span>, <span class="hljs-number">10</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>GoogLeNet模型的计算复杂，而且不如VGG那样便于修改通道数。 为了使Fashion-MNIST上的训练短小精悍，我们将输入的高和宽从224降到96，这简化了计算。下面演示各个模块输出的形状变化。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">X = torch.rand(size=(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">96</span>, <span class="hljs-number">96</span>))<br><span class="hljs-keyword">for</span> layer <span class="hljs-keyword">in</span> net:<br>    X = layer(X)<br>    <span class="hljs-built_in">print</span>(layer.__class__.__name__,<span class="hljs-string">'output shape:\t'</span>, X.shape)<br>    <br><span class="hljs-comment"># result</span><br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">64</span>, <span class="hljs-number">24</span>, <span class="hljs-number">24</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">192</span>, <span class="hljs-number">12</span>, <span class="hljs-number">12</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">480</span>, <span class="hljs-number">6</span>, <span class="hljs-number">6</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">832</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">1024</span>])<br>Linear output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">10</span>])<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="训练模型-3"><a href="#训练模型-3" class="headerlink" title="训练模型"></a>训练模型</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">lr, num_epochs, batch_size = <span class="hljs-number">0.1</span>, <span class="hljs-number">10</span>, <span class="hljs-number">128</span><br>train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=<span class="hljs-number">96</span>)<br>d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())<br><br><span class="hljs-comment"># result</span><br>loss nan, train acc <span class="hljs-number">0.100</span>, test acc <span class="hljs-number">0.100</span><br><span class="hljs-number">3589.5</span> examples/sec on cuda:<span class="hljs-number">0</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h1 id="批量规范-正则-化"><a href="#批量规范-正则-化" class="headerlink" title="批量规范(正则)化"></a>批量规范(正则)化</h1><p><em>批量规范化</em>（batch normalization）是一种流行且有效的技术，可持续加速深层网络的收敛速度。 </p>
+<h2 id="训练深层网络"><a href="#训练深层网络" class="headerlink" title="训练深层网络"></a>训练深层网络</h2><ul>
+<li><p>首先，数据预处理的方式通常会对最终结果产生巨大影响。 回想一下我们应用多层感知机来预测房价的例子（ <a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_multilayer-perceptrons/kaggle-house-price.html#sec-kaggle-house">4.10节</a>）。 使用真实数据时，我们的第一步是标准化输入特征，使其平均值为0，方差为1。 直观地说，这种标准化可以很好地与我们的优化器配合使用，因为它可以将参数的量级进行统一。</p>
+</li>
+<li><p>第二，对于典型的多层感知机或卷积神经网络。中间层中的变量可能具有更广的变化范围：不论是沿着从输入到输出的层，跨同一层中的单元，或是随着时间的推移，模型参数的随着训练更新变幻莫测。 批量规范化的发明者非正式地假设，这些变量分布中的这种偏移可能会阻碍网络的收敛。 直观地说，我们可能会猜想，如果一个层的可变值是另一层的100倍，这可能需要对学习率进行补偿调整。</p>
+</li>
+<li><p>第三，更深层的网络很复杂，容易过拟合。 这意味着正则化变得更加重要。</p>
+</li>
+<li><p>批量规范化应用于单个可选层（也可以应用到所有层），其原理如下：在每次训练迭代中，我们首先规范化输入，即通过减去其均值并除以其标准差，其中两者均基于当前小批量处理。 接下来，我们应用比例系数和比例偏移。 正是由于这个基于<em>批量</em>统计的<em>标准化</em>，才有了<em>批量规范化</em>的名称。</p>
+</li>
+<li><p>如果我们尝试使用大小为1的小批量应用批量规范化，我们将无法学到任何东西。 这是因为在减去均值之后，每个隐藏单元将为0。 所以，只有使用足够大的小批量，批量规范化这种方法才是有效且稳定的。 请注意，在应用批量规范化时，批量大小的选择可能比没有批量规范化时更重要。从形式上来说，用$\mathbf{x} \in \mathcal{B}$表示一个来自小批量$\mathcal{B}$的输入，批量规范化BN根据以下表达式转换$x$：</p>
+</li>
+</ul>
+<p>$$<br>\mathrm{BN}(\mathbf{x}) = \boldsymbol{\gamma} \odot \frac{\mathbf{x} - \hat{\boldsymbol{\mu}}_\mathcal{B}}{\hat{\boldsymbol{\sigma}}_\mathcal{B}} + \boldsymbol{\beta}.<br>$$</p>
+<blockquote>
+<p>$\hat{\boldsymbol{\mu}}_\mathcal{B}$是小批量$\mathcal{B}$的样本均值，$\hat{\boldsymbol{\sigma}}_\mathcal{B}$是小批量$\mathcal{B}$的样本标准差。 应用标准化后，生成的小批量的平均值为0和单位方差为1。 由于单位方差（与其他一些魔法数）是一个主观的选择，因此我们通常包含 <em>拉伸参数</em>（scale）$\boldsymbol{\gamma}$和<em>偏移参数</em>（shift）$\boldsymbol{\beta}$，它们的形状与x相同。 请注意，$\boldsymbol{\gamma}$和$\mathcal{B}$是需要与其他模型参数一起学习的参数。</p>
+</blockquote>
+<ul>
+<li>在训练过程中，中间层的变化幅度不能过于剧烈，而批量规范化将每一层主动居中，并将它们重新调整为给定的平均值和大小（通过$\hat{\boldsymbol{\mu}}_\mathcal{B}$和${\hat{\boldsymbol{\sigma}}_\mathcal{B}}$）。</li>
+</ul>
+<p>$$<br>\begin{split}\begin{aligned} \hat{\boldsymbol{\mu}}<em>\mathcal{B} &amp;= \frac{1}{|\mathcal{B}|} \sum</em>{\mathbf{x} \in \mathcal{B}} \mathbf{x},\<br>\hat{\boldsymbol{\sigma}}<em>\mathcal{B}^2 &amp;= \frac{1}{|\mathcal{B}|} \sum</em>{\mathbf{x} \in \mathcal{B}} (\mathbf{x} - \hat{\boldsymbol{\mu}}_{\mathcal{B}})^2 + \epsilon.\end{aligned}\end{split}<br>$$</p>
+<blockquote>
+<p> 我们在方差估计值中添加一个小的常量$\epsilon &gt; 0$，以确保我们永远不会尝试除以零，即使在经验方差估计值可能消失的情况下也是如此。估计值$\hat{\boldsymbol{\mu}}_\mathcal{B}$和${\hat{\boldsymbol{\sigma}}_\mathcal{B}}$通过使用平均值和方差的噪声（noise）估计来抵消缩放问题。 乍看起来，这种噪声是一个问题，而事实上它是有益的。</p>
+</blockquote>
+<ul>
+<li>由于尚未在理论上明确的原因，优化中的各种噪声源通常会导致更快的训练和较少的过拟合：这种变化似乎是正则化的一种形式。批量规范化层在”训练模式“（通过小批量统计数据规范化）和“预测模式”（通过数据集统计规范化）中的功能不同。 在训练过程中，我们无法得知使用整个数据集来估计平均值和方差，所以只能根据每个小批次的平均值和方差不断训练模型。 而在预测模式下，可以根据整个数据集精确计算批量规范化所需的平均值和方差。</li>
+</ul>
+<h2 id="批量规范化层"><a href="#批量规范化层" class="headerlink" title="批量规范化层"></a>批量规范化层</h2><ul>
+<li>批量规范化和其他层之间的一个关键区别是，由于批量规范化在完整的小批量上运行，因此我们不能像以前在引入其他层时那样忽略批量大小。 我们在下面讨论这两种情况：全连接层和卷积层，他们的批量规范化实现略有不同。</li>
+</ul>
+<h3 id="全连接层"><a href="#全连接层" class="headerlink" title="全连接层"></a>全连接层</h3><ul>
+<li>我们将批量规范化层置于全连接层中的仿射变换和激活函数之间。 设全连接层的输入为x，权重参数和偏置参数分别为$\mathbf{W}$和$\mathbf{b}$，激活函数为$\phi$，批量规范化的运算符为$\mathrm{BN}$。 那么，使用批量规范化的全连接层的输出的计算详情如下：</li>
+</ul>
+<p>$$<br>\mathbf{h} = \phi(\mathrm{BN}(\mathbf{W}\mathbf{x} + \mathbf{b}) ).<br>$$</p>
+<blockquote>
+<p>均值和方差是在应用变换的”相同”小批量上计算的。</p>
+</blockquote>
+<h3 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h3><ul>
+<li>对于卷积层，我们可以在卷积层之后和非线性激活函数之前应用批量规范化。 当卷积有多个输出通道时，我们需要对这些通道的“每个”输出执行批量规范化，每个通道都有自己的拉伸（scale）和偏移（shift）参数，这两个参数都是标量。 假设我们的小批量包含m个样本，并且对于每个通道，卷积的输出具有高度p和宽度q。 那么对于卷积层，我们在每个输出通道的m⋅p⋅q个元素上同时执行每个批量规范化。 因此，在计算平均值和方差时，我们会收集所有空间位置的值，然后在给定通道内应用相同的均值和方差，以便在每个空间位置对值进行规范化。</li>
+</ul>
+<h3 id="预测过程中的批量规范化"><a href="#预测过程中的批量规范化" class="headerlink" title="预测过程中的批量规范化"></a>预测过程中的批量规范化</h3><ul>
+<li>批量规范化在训练模式和预测模式下的行为通常不同。 首先，将训练好的模型用于预测时，我们不再需要样本均值中的噪声以及在微批次上估计每个小批次产生的样本方差了。 其次，例如，我们可能需要使用我们的模型对逐个样本进行预测。 一种常用的方法是通过移动平均估算整个训练数据集的样本均值和方差，并在预测时使用它们得到确定的输出。 可见，和暂退法一样，批量规范化层在训练模式和预测模式下的计算结果也是不一样的。</li>
+</ul>
+<h2 id="从零实现"><a href="#从零实现" class="headerlink" title="从零实现"></a>从零实现</h2><ul>
+<li>代码：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">batch_norm</span>(<span class="hljs-params">X, gamma, beta, moving_mean, moving_var, eps, momentum</span>):<br>    <span class="hljs-comment"># 通过is_grad_enabled来判断当前模式是训练模式还是预测模式</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> torch.is_grad_enabled():<br>        <span class="hljs-comment"># 如果是在预测模式下，直接使用传入的移动平均所得的均值和方差</span><br>        X_hat = (X - moving_mean) / torch.sqrt(moving_var + eps)<br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-keyword">assert</span> <span class="hljs-built_in">len</span>(X.shape) <span class="hljs-keyword">in</span> (<span class="hljs-number">2</span>, <span class="hljs-number">4</span>)<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(X.shape) == <span class="hljs-number">2</span>:<br>            <span class="hljs-comment"># 使用全连接层的情况，计算特征维上的均值和方差</span><br>            mean = X.mean(dim=<span class="hljs-number">0</span>)<br>            var = ((X - mean) ** <span class="hljs-number">2</span>).mean(dim=<span class="hljs-number">0</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-comment"># 使用二维卷积层的情况，计算通道维上（axis=1）的均值和方差。</span><br>            <span class="hljs-comment"># 这里我们需要保持X的形状以便后面可以做广播运算</span><br>            mean = X.mean(dim=(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>), keepdim=<span class="hljs-literal">True</span>)<br>            var = ((X - mean) ** <span class="hljs-number">2</span>).mean(dim=(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>), keepdim=<span class="hljs-literal">True</span>)<br>        <span class="hljs-comment"># 训练模式下，用当前的均值和方差做标准化</span><br>        X_hat = (X - mean) / torch.sqrt(var + eps)<br>        <span class="hljs-comment"># 更新移动平均的均值和方差</span><br>        moving_mean = momentum * moving_mean + (<span class="hljs-number">1.0</span> - momentum) * mean<br>        moving_var = momentum * moving_var + (<span class="hljs-number">1.0</span> - momentum) * var<br>    Y = gamma * X_hat + beta  <span class="hljs-comment"># 缩放和移位</span><br>    <span class="hljs-keyword">return</span> Y, moving_mean.data, moving_var.data<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>我们现在可以创建一个正确的<code>BatchNorm</code>层。 这个层将保持适当的参数：拉伸<code>gamma</code>和偏移<code>beta</code>,这两个参数将在训练过程中更新。 此外，我们的层将保存均值和方差的移动平均值，以便在模型预测期间随后使用。</li>
+<li>通常情况下，我们用一个单独的函数定义其数学原理，比如说<code>batch_norm</code>。 然后，我们将此功能集成到一个自定义层中，其代码主要处理数据移动到训练设备（如GPU）、分配和初始化任何必需的变量、跟踪移动平均线（此处为均值和方差）等问题。 为了方便起见，我们并不担心在这里自动推断输入形状，因此我们需要指定整个特征的数量。 不用担心，深度学习框架中的批量规范化API将为我们解决上述问题，我们稍后将展示这一点。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">BatchNorm</span>(nn.Module):<br>    <span class="hljs-comment"># num_features：完全连接层的输出数量或卷积层的输出通道数。</span><br>    <span class="hljs-comment"># num_dims：2表示完全连接层，4表示卷积层</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, num_features, num_dims</span>):<br>        <span class="hljs-built_in">super</span>().__init__()<br>        <span class="hljs-keyword">if</span> num_dims == <span class="hljs-number">2</span>:<br>            shape = (<span class="hljs-number">1</span>, num_features)<br>        <span class="hljs-keyword">else</span>:<br>            shape = (<span class="hljs-number">1</span>, num_features, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<br>        <span class="hljs-comment"># 参与求梯度和迭代的拉伸和偏移参数，分别初始化成1和0</span><br>        self.gamma = nn.Parameter(torch.ones(shape))<br>        self.beta = nn.Parameter(torch.zeros(shape))<br>        <span class="hljs-comment"># 非模型参数的变量初始化为0和1</span><br>        self.moving_mean = torch.zeros(shape)<br>        self.moving_var = torch.ones(shape)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, X</span>):<br>        <span class="hljs-comment"># 如果X不在内存上，将moving_mean和moving_var</span><br>        <span class="hljs-comment"># 复制到X所在显存上</span><br>        <span class="hljs-keyword">if</span> self.moving_mean.device != X.device:<br>            self.moving_mean = self.moving_mean.to(X.device)<br>            self.moving_var = self.moving_var.to(X.device)<br>        <span class="hljs-comment"># 保存更新过的moving_mean和moving_var</span><br>        Y, self.moving_mean, self.moving_var = batch_norm(<br>            X, self.gamma, self.beta, self.moving_mean,<br>            self.moving_var, eps=<span class="hljs-number">1e-5</span>, momentum=<span class="hljs-number">0.9</span>)<br>        <span class="hljs-keyword">return</span> Y<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="使用批量规范化层的-LeNet"><a href="#使用批量规范化层的-LeNet" class="headerlink" title="使用批量规范化层的 LeNet"></a>使用批量规范化层的 LeNet</h2><ul>
+<li>批量规范化是在卷积层或全连接层之后、相应的激活函数之前应用的。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">net = nn.Sequential(<br>    nn.Conv2d(<span class="hljs-number">1</span>, <span class="hljs-number">6</span>, kernel_size=<span class="hljs-number">5</span>), BatchNorm(<span class="hljs-number">6</span>, num_dims=<span class="hljs-number">4</span>), nn.Sigmoid(),<br>    nn.AvgPool2d(kernel_size=<span class="hljs-number">2</span>, stride=<span class="hljs-number">2</span>),<br>    nn.Conv2d(<span class="hljs-number">6</span>, <span class="hljs-number">16</span>, kernel_size=<span class="hljs-number">5</span>), BatchNorm(<span class="hljs-number">16</span>, num_dims=<span class="hljs-number">4</span>), nn.Sigmoid(),<br>    nn.AvgPool2d(kernel_size=<span class="hljs-number">2</span>, stride=<span class="hljs-number">2</span>), nn.Flatten(),<br>    nn.Linear(<span class="hljs-number">16</span>*<span class="hljs-number">4</span>*<span class="hljs-number">4</span>, <span class="hljs-number">120</span>), BatchNorm(<span class="hljs-number">120</span>, num_dims=<span class="hljs-number">2</span>), nn.Sigmoid(),<br>    nn.Linear(<span class="hljs-number">120</span>, <span class="hljs-number">84</span>), BatchNorm(<span class="hljs-number">84</span>, num_dims=<span class="hljs-number">2</span>), nn.Sigmoid(),<br>    nn.Linear(<span class="hljs-number">84</span>, <span class="hljs-number">10</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>训练：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">lr, num_epochs, batch_size = <span class="hljs-number">1.0</span>, <span class="hljs-number">10</span>, <span class="hljs-number">256</span><br>train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)<br>d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())<br><br><span class="hljs-comment"># result</span><br>loss <span class="hljs-number">0.267</span>, train acc <span class="hljs-number">0.900</span>, test acc <span class="hljs-number">0.860</span><br><span class="hljs-number">40878.1</span> examples/sec on cuda:<span class="hljs-number">0</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>查看从第一个批量规范化层中学到的拉伸参数<code>gamma</code>和偏移参数<code>beta</code>。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">net[<span class="hljs-number">1</span>].gamma.reshape((-<span class="hljs-number">1</span>,)), net[<span class="hljs-number">1</span>].beta.reshape((-<span class="hljs-number">1</span>,))<br><br><span class="hljs-comment"># result</span><br>(tensor([<span class="hljs-number">2.2493</span>, <span class="hljs-number">1.6559</span>, <span class="hljs-number">2.7877</span>, <span class="hljs-number">2.4000</span>, <span class="hljs-number">4.1816</span>, <span class="hljs-number">3.5716</span>], device=<span class="hljs-string">'cuda:0'</span>,<br>        grad_fn=&lt;ReshapeAliasBackward0&gt;),<br> tensor([-<span class="hljs-number">1.3887</span>, -<span class="hljs-number">0.4102</span>, -<span class="hljs-number">1.0248</span>,  <span class="hljs-number">2.1779</span>, -<span class="hljs-number">2.4067</span>, -<span class="hljs-number">3.6746</span>], device=<span class="hljs-string">'cuda:0'</span>,<br>        grad_fn=&lt;ReshapeAliasBackward0&gt;))<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="简明实现"><a href="#简明实现" class="headerlink" title="简明实现"></a>简明实现</h2><ul>
+<li>我们也可以直接使用深度学习框架中定义的<code>BatchNorm</code>。 该代码看起来几乎与我们上面的代码相同。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">net = nn.Sequential(<br>    nn.Conv2d(<span class="hljs-number">1</span>, <span class="hljs-number">6</span>, kernel_size=<span class="hljs-number">5</span>), nn.BatchNorm2d(<span class="hljs-number">6</span>), nn.Sigmoid(),<br>    nn.AvgPool2d(kernel_size=<span class="hljs-number">2</span>, stride=<span class="hljs-number">2</span>),<br>    nn.Conv2d(<span class="hljs-number">6</span>, <span class="hljs-number">16</span>, kernel_size=<span class="hljs-number">5</span>), nn.BatchNorm2d(<span class="hljs-number">16</span>), nn.Sigmoid(),<br>    nn.AvgPool2d(kernel_size=<span class="hljs-number">2</span>, stride=<span class="hljs-number">2</span>), nn.Flatten(),<br>    nn.Linear(<span class="hljs-number">256</span>, <span class="hljs-number">120</span>), nn.BatchNorm1d(<span class="hljs-number">120</span>), nn.Sigmoid(),<br>    nn.Linear(<span class="hljs-number">120</span>, <span class="hljs-number">84</span>), nn.BatchNorm1d(<span class="hljs-number">84</span>), nn.Sigmoid(),<br>    nn.Linear(<span class="hljs-number">84</span>, <span class="hljs-number">10</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>训练：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())<br><br><span class="hljs-comment"># result</span><br>loss <span class="hljs-number">0.263</span>, train acc <span class="hljs-number">0.902</span>, test acc <span class="hljs-number">0.862</span><br><span class="hljs-number">71480.6</span> examples/sec on cuda:<span class="hljs-number">0</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="争议"><a href="#争议" class="headerlink" title="争议"></a>争议</h2><ul>
+<li>在提出批量规范化的论文中，作者除了介绍了其应用，还解释了其原理：通过减少<em>内部协变量偏移</em>（internal covariate shift）。 然而，这种解释有两个问题：<ol>
+<li>这种偏移与严格定义的<em>协变量偏移</em>（covariate shift）非常不同，所以这个名字用词不当</li>
+<li>这种解释只提供了一种不明确的直觉，但留下了一个有待后续挖掘的问题：为什么这项技术如此有效？</li>
+</ol>
+</li>
+</ul>
+<h1 id="残差网络ResNet"><a href="#残差网络ResNet" class="headerlink" title="残差网络ResNet"></a>残差网络ResNet</h1><h2 id="函数类"><a href="#函数类" class="headerlink" title="函数类"></a>函数类</h2><ul>
+<li>假设有一类特定的神经网络架构$\mathcal{F}$，它包括学习速率和其他超参数设置。 对于所有$f \in \mathcal{F}$，存在一些参数集（例如权重和偏置），这些参数可以通过在合适的数据集上进行训练而获得。 现在假设$f^*$是我们真正想要找到的函数，如果是$f^* \in \mathcal{F}$，那我们可以轻而易举的训练得到它，但通常我们不会那么幸运。 相反，我们将尝试找到一个函数$f^*_\mathcal{F}$，这是我们在$\mathcal{F}$中的最佳选择。 例如，给定一个具有$\mathbf{X}$特性和$\mathbf{y}$标签的数据集，我们可以尝试通过解决以下优化问题来找到它：</li>
+</ul>
+<p>$$<br>f^*_\mathcal{F} := \mathop{\mathrm{argmin}}_f L(\mathbf{X}, \mathbf{y}, f) \text{ subject to } f \in \mathcal{F}.<br>$$</p>
+<ul>
+<li>怎样得到更近似真正$f^*$的函数呢？ 唯一合理的可能性是，我们需要设计一个更强大的架构$\mathcal{F}’$。换句话说，我们预计$f^*_{\mathcal{F}’}$比$f^*_{\mathcal{F}}$更近似”。然而，如果$\mathcal{F} \not\subseteq \mathcal{F}’$，则无法保证新的体系“更近似”。 事实上，$f^*_{\mathcal{F}’}$可能更糟：对于非嵌套函数（non-nested function）类，较复杂的函数类并不总是向“真”函数$f^*$靠拢，相反对于嵌套函数（nested function）类$\mathcal{F}_1 \subseteq \ldots \subseteq \mathcal{F}_6$，我们可以避免上述问题。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308061950822.png" srcset="/img/loading.gif" lazyload alt="image-20230806195058682"></p>
+<blockquote>
+<p>只有当较复杂的函数类包含较小的函数类时，我们才能确保提高它们的性能。 对于深度神经网络，如果我们能将新添加的层训练成<em>恒等映射</em>（identity function）$f(\mathbf{x}) = \mathbf{x}$，新模型和原模型将同样有效。 同时，由于新模型可能得出更优的解来拟合训练数据集，因此添加层似乎更容易降低训练误差。</p>
+</blockquote>
+<ul>
+<li>针对这一问题，何恺明等人提出了<em>残差网络</em>（ResNet）。残差网络的核心思想是：每个附加层都应该更容易地包含原始函数作为其元素之一。</li>
+</ul>
+<h2 id="残差块"><a href="#残差块" class="headerlink" title="残差块"></a>残差块</h2><ul>
+<li>假设我们的原始输入为$x$，而希望学出的理想映射为$f(\mathbf{x})$。左图虚线框中的部分需要直接拟合出该映射$f(\mathbf{x})$，而右图虚线框中的部分则需要拟合出残差映射$f(\mathbf{x}) - x$。 残差映射在现实中往往更容易优化。我们只需将右图虚线框内上方的加权运算（如仿射）的权重和偏置参数设成0，那么$f(\mathbf{x})$即为恒等映射。 实际中，当理想映射$f(\mathbf{x})$极接近于恒等映射时，残差映射也易于捕捉恒等映射的细微波动。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308061958635.svg" srcset="/img/loading.gif" lazyload alt="../_images/residual-block.svg"></p>
+<blockquote>
+<p>右图是ResNet的基础架构–<em>残差块</em>（residual block）。 在残差块中，输入可通过跨层数据线路更快地向前传播。</p>
+</blockquote>
+<ul>
+<li>ResNet沿用了VGG完整的3×3卷积层设计。 残差块里首先有2个有相同输出通道数的3×3卷积层。 每个卷积层后接一个批量规范化层和ReLU激活函数。 然后我们通过跨层数据通路，跳过这2个卷积运算，将输入直接加在最后的ReLU激活函数前。 这样的设计要求2个卷积层的输出与输入形状一样，从而使它们可以相加。 如果想改变通道数，就需要引入一个额外的1×1卷积层来将输入变换成需要的形状后再做相加运算。 残差块的实现如下：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> torch.nn <span class="hljs-keyword">import</span> functional <span class="hljs-keyword">as</span> F<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Residual</span>(nn.Module):  <span class="hljs-comment">#@save</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, input_channels, num_channels,</span><br><span class="hljs-params">                 use_1x1conv=<span class="hljs-literal">False</span>, strides=<span class="hljs-number">1</span></span>):<br>        <span class="hljs-built_in">super</span>().__init__()<br>        self.conv1 = nn.Conv2d(input_channels, num_channels,<br>                               kernel_size=<span class="hljs-number">3</span>, padding=<span class="hljs-number">1</span>, stride=strides)<br>        self.conv2 = nn.Conv2d(num_channels, num_channels,<br>                               kernel_size=<span class="hljs-number">3</span>, padding=<span class="hljs-number">1</span>)<br>        <span class="hljs-keyword">if</span> use_1x1conv:<br>            self.conv3 = nn.Conv2d(input_channels, num_channels,<br>                                   kernel_size=<span class="hljs-number">1</span>, stride=strides)<br>        <span class="hljs-keyword">else</span>:<br>            self.conv3 = <span class="hljs-literal">None</span><br>        self.bn1 = nn.BatchNorm2d(num_channels)<br>        self.bn2 = nn.BatchNorm2d(num_channels)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, X</span>):<br>        Y = F.relu(self.bn1(self.conv1(X)))<br>        Y = self.bn2(self.conv2(Y))<br>        <span class="hljs-keyword">if</span> self.conv3:<br>            X = self.conv3(X)<br>        Y += X<br>        <span class="hljs-keyword">return</span> F.relu(Y)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>此代码生成两种类型的网络： 一种是当<code>use_1x1conv=False</code>时，应用ReLU非线性函数之前，将输入添加到输出。 另一种是当<code>use_1x1conv=True</code>时，添加通过1×1卷积调整通道和分辨率。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308062000105.svg" srcset="/img/loading.gif" lazyload alt="../_images/resnet-block.svg"></p>
+<ul>
+<li>输入和输出形状一致</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">blk = Residual(<span class="hljs-number">3</span>,<span class="hljs-number">3</span>)<br>X = torch.rand(<span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">6</span>, <span class="hljs-number">6</span>)<br>Y = blk(X)<br>Y.shape<br><br><span class="hljs-comment"># result torch.Size([4, 3, 6, 6])</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>在增加输出通道数的同时，减半输出的高和宽。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">blk = Residual(<span class="hljs-number">3</span>,<span class="hljs-number">6</span>, use_1x1conv=<span class="hljs-literal">True</span>, strides=<span class="hljs-number">2</span>)<br>blk(X).shape<br><br><span class="hljs-comment"># result torch.Size([4, 6, 3, 3])</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="ResNet模型"><a href="#ResNet模型" class="headerlink" title="ResNet模型"></a>ResNet模型</h2><ul>
+<li>ResNet的前两层跟之前介绍的GoogLeNet中的一样： 在输出通道数为64、步幅为2的7×7卷积层后，接步幅为2的3×3的最大汇聚层。 不同之处在于ResNet每个卷积层后增加了批量规范化层。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">b1 = nn.Sequential(nn.Conv2d(<span class="hljs-number">1</span>, <span class="hljs-number">64</span>, kernel_size=<span class="hljs-number">7</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">3</span>),<br>                   nn.BatchNorm2d(<span class="hljs-number">64</span>), nn.ReLU(),<br>                   nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>GoogLeNet在后面接了4个由Inception块组成的模块。 ResNet则使用4个由残差块组成的模块，每个模块使用若干个同样输出通道数的残差块。 第一个模块的通道数同输入通道数一致。 由于之前已经使用了步幅为2的最大汇聚层，所以无须减小高和宽。 之后的每个模块在第一个残差块里将上一个模块的通道数翻倍，并将高和宽减半。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">resnet_block</span>(<span class="hljs-params">input_channels, num_channels, num_residuals,</span><br><span class="hljs-params">                 first_block=<span class="hljs-literal">False</span></span>):<br>    blk = []<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_residuals):<br>        <span class="hljs-keyword">if</span> i == <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> first_block:<br>            blk.append(Residual(input_channels, num_channels,<br>                                use_1x1conv=<span class="hljs-literal">True</span>, strides=<span class="hljs-number">2</span>))<br>        <span class="hljs-keyword">else</span>:<br>            blk.append(Residual(num_channels, num_channels))<br>    <span class="hljs-keyword">return</span> blk<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>接着在ResNet加入所有残差块，这里每个模块使用2个残差块。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">b2 = nn.Sequential(*resnet_block(<span class="hljs-number">64</span>, <span class="hljs-number">64</span>, <span class="hljs-number">2</span>, first_block=<span class="hljs-literal">True</span>))<br>b3 = nn.Sequential(*resnet_block(<span class="hljs-number">64</span>, <span class="hljs-number">128</span>, <span class="hljs-number">2</span>))<br>b4 = nn.Sequential(*resnet_block(<span class="hljs-number">128</span>, <span class="hljs-number">256</span>, <span class="hljs-number">2</span>))<br>b5 = nn.Sequential(*resnet_block(<span class="hljs-number">256</span>, <span class="hljs-number">512</span>, <span class="hljs-number">2</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>最后，与GoogLeNet一样，在ResNet中加入全局平均汇聚层，以及全连接层输出。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">net = nn.Sequential(b1, b2, b3, b4, b5,<br>                    nn.AdaptiveAvgPool2d((<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)),<br>                    nn.Flatten(), nn.Linear(<span class="hljs-number">512</span>, <span class="hljs-number">10</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>每个模块有4个卷积层（不包括恒等映射的1×1卷积层）。 加上第一个7×7卷积层和最后一个全连接层，共有18层。 因此，这种模型通常被称为ResNet-18。 通过配置不同的通道数和模块里的残差块数可以得到不同的ResNet模型，例如更深的含152层的ResNet-152。 虽然ResNet的主体架构跟GoogLeNet类似，但ResNet架构更简单，修改也更方便。这些因素都导致了ResNet迅速被广泛使用。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308062006419.svg" srcset="/img/loading.gif" lazyload alt="../_images/resnet18.svg"></p>
+<ul>
+<li>观察一下ResNet中不同模块的输入形状是如何变化的。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python">X = torch.rand(size=(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">224</span>, <span class="hljs-number">224</span>))<br><span class="hljs-keyword">for</span> layer <span class="hljs-keyword">in</span> net:<br>    X = layer(X)<br>    <span class="hljs-built_in">print</span>(layer.__class__.__name__,<span class="hljs-string">'output shape:\t'</span>, X.shape)<br>    <br><span class="hljs-comment"># result</span><br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">64</span>, <span class="hljs-number">56</span>, <span class="hljs-number">56</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">64</span>, <span class="hljs-number">56</span>, <span class="hljs-number">56</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">128</span>, <span class="hljs-number">28</span>, <span class="hljs-number">28</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">256</span>, <span class="hljs-number">14</span>, <span class="hljs-number">14</span>])<br>Sequential output shape:     torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">512</span>, <span class="hljs-number">7</span>, <span class="hljs-number">7</span>])<br>AdaptiveAvgPool2d output shape:      torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">512</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>])<br>Flatten output shape:        torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">512</span>])<br>Linear output shape:         torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">10</span>])<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="训练模型-4"><a href="#训练模型-4" class="headerlink" title="训练模型"></a>训练模型</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">lr, num_epochs, batch_size = <span class="hljs-number">0.05</span>, <span class="hljs-number">10</span>, <span class="hljs-number">256</span><br>train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=<span class="hljs-number">96</span>)<br>d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())<br><br><span class="hljs-comment"># result</span><br>loss <span class="hljs-number">0.008</span>, train acc <span class="hljs-number">0.999</span>, test acc <span class="hljs-number">0.898</span><br><span class="hljs-number">4650.1</span> examples/sec on cuda:<span class="hljs-number">0</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+
+
+
+
+<h1 id="稠密连接网络DenseNet"><a href="#稠密连接网络DenseNet" class="headerlink" title="稠密连接网络DenseNet"></a>稠密连接网络DenseNet</h1><ul>
+<li><em>稠密连接网络</em>（DenseNet）在某种程度上是ResNet的逻辑扩展。</li>
+</ul>
+<h2 id="从ResNet到DenseNet"><a href="#从ResNet到DenseNet" class="headerlink" title="从ResNet到DenseNet"></a>从ResNet到DenseNet</h2><ul>
+<li>任意函数的泰勒展开式（Taylor expansion），它把这个函数分解成越来越高阶的项。在$x$接近0时，有：</li>
+</ul>
+<p>$$<br>f(x) = f(0) + f’(0) x + \frac{f’’(0)}{2!}  x^2 + \frac{f’’’(0)}{3!}  x^3 + \ldots.<br>$$</p>
+<ul>
+<li>ResNet将函数展开为</li>
+</ul>
+<p>$$<br>f(\mathbf{x}) = \mathbf{x} + g(\mathbf{x}).<br>$$</p>
+<ul>
+<li>ResNet将$f$分解为两部分：一个简单的线性项和一个复杂的非线性项。 那么再向前拓展一步，如果我们想将$f$拓展成超过两部分的信息呢？ 一种方案便是DenseNet。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308062012867.png" srcset="/img/loading.gif" lazyload alt="image-20230806201212697"></p>
+<blockquote>
+<p>ResNet（左）与 DenseNet（右）在跨层连接上的主要区别：使用相加和使用连结。</p>
+</blockquote>
+<ul>
+<li>ResNet和DenseNet的关键区别在于，DenseNet输出是<em>连接</em>（用图中的[,]表示）而不是如ResNet的简单相加。 因此，在应用越来越复杂的函数序列后，我们执行从$x$到其展开式的映射：</li>
+</ul>
+<p>$$<br>\mathbf{x} \to \left[<br>\mathbf{x},<br>f_1(\mathbf{x}),<br>f_2([\mathbf{x}, f_1(\mathbf{x})]), f_3([\mathbf{x}, f_1(\mathbf{x}), f_2([\mathbf{x}, f_1(\mathbf{x})])]), \ldots\right].<br>$$</p>
+<ul>
+<li>将这些展开式结合到多层感知机中，再次减少特征的数量。 实现起来非常简单：我们不需要添加术语，而是将它们连接起来。 DenseNet这个名字由变量之间的“稠密连接”而得来，最后一层与之前的所有层紧密相连。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308062014368.svg" srcset="/img/loading.gif" lazyload alt="../_images/densenet.svg"></p>
+<blockquote>
+<p>稠密网络主要由2部分构成：<em>稠密块</em>（dense block）和<em>过渡层</em>（transition layer）。 前者定义如何连接输入和输出，而后者则控制通道数量，使其不会太复杂。</p>
+</blockquote>
+<h2 id="稠密块体"><a href="#稠密块体" class="headerlink" title="稠密块体"></a>稠密块体</h2><ul>
+<li>DenseNet使用了ResNet改良版的“批量规范化、激活和卷积”架构</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">conv_block</span>(<span class="hljs-params">input_channels, num_channels</span>):<br>    <span class="hljs-keyword">return</span> nn.Sequential(<br>        nn.BatchNorm2d(input_channels), nn.ReLU(),<br>        nn.Conv2d(input_channels, num_channels, kernel_size=<span class="hljs-number">3</span>, padding=<span class="hljs-number">1</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>一个<em>稠密块</em>由多个卷积块组成，每个卷积块使用相同数量的输出通道。 然而，在前向传播中，我们将每个卷积块的输入和输出在通道维上连结。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">DenseBlock</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, num_convs, input_channels, num_channels</span>):<br>        <span class="hljs-built_in">super</span>(DenseBlock, self).__init__()<br>        layer = []<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_convs):<br>            layer.append(conv_block(<br>                num_channels * i + input_channels, num_channels))<br>        self.net = nn.Sequential(*layer)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, X</span>):<br>        <span class="hljs-keyword">for</span> blk <span class="hljs-keyword">in</span> self.net:<br>            Y = blk(X)<br>            <span class="hljs-comment"># 连接通道维度上每个块的输入和输出</span><br>            X = torch.cat((X, Y), dim=<span class="hljs-number">1</span>)<br>        <span class="hljs-keyword">return</span> X<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>我们定义一个有2个输出通道数为10的<code>DenseBlock</code>。 使用通道数为3的输入时，我们会得到通道数为3+2×10=23的输出。 卷积块的通道数控制了输出通道数相对于输入通道数的增长，因此也被称为<em>增长率</em>（growth rate）。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">blk = DenseBlock(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">10</span>)<br>X = torch.randn(<span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">8</span>, <span class="hljs-number">8</span>)<br>Y = blk(X)<br>Y.shape<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="过渡层"><a href="#过渡层" class="headerlink" title="过渡层"></a>过渡层</h2><ul>
+<li>由于每个稠密块都会带来通道数的增加，使用过多则会过于复杂化模型。 而过渡层可以用来控制模型复杂度。 它通过1×1卷积层来减小通道数，并使用步幅为2的平均汇聚层减半高和宽，从而进一步降低模型复杂度。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">transition_block</span>(<span class="hljs-params">input_channels, num_channels</span>):<br>    <span class="hljs-keyword">return</span> nn.Sequential(<br>        nn.BatchNorm2d(input_channels), nn.ReLU(),<br>        nn.Conv2d(input_channels, num_channels, kernel_size=<span class="hljs-number">1</span>),<br>        nn.AvgPool2d(kernel_size=<span class="hljs-number">2</span>, stride=<span class="hljs-number">2</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>对上一个例子中稠密块的输出使用通道数为10的过渡层。 此时输出的通道数减为10，高和宽均减半。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">blk = transition_block(<span class="hljs-number">23</span>, <span class="hljs-number">10</span>)<br>blk(Y).shape<br><br><span class="hljs-comment"># result torch.Size([4, 10, 4, 4])</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="DenseNet模型"><a href="#DenseNet模型" class="headerlink" title="DenseNet模型"></a>DenseNet模型</h2><ul>
+<li>DenseNet首先使用同ResNet一样的单卷积层和最大汇聚层。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">b1 = nn.Sequential(<br>    nn.Conv2d(<span class="hljs-number">1</span>, <span class="hljs-number">64</span>, kernel_size=<span class="hljs-number">7</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">3</span>),<br>    nn.BatchNorm2d(<span class="hljs-number">64</span>), nn.ReLU(),<br>    nn.MaxPool2d(kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>类似于ResNet使用的4个残差块，DenseNet使用的是4个稠密块。 与ResNet类似，我们可以设置每个稠密块使用多少个卷积层。 这里我们设成4，从而与 <a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_convolutional-modern/resnet.html#sec-resnet">7.6节</a>的ResNet-18保持一致。 稠密块里的卷积层通道数（即增长率）设为32，所以每个稠密块将增加128个通道。</p>
+</blockquote>
+<ul>
+<li>在每个模块之间，ResNet通过步幅为2的残差块减小高和宽，DenseNet则使用过渡层来减半高和宽，并减半通道数。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># num_channels为当前的通道数</span><br>num_channels, growth_rate = <span class="hljs-number">64</span>, <span class="hljs-number">32</span><br>num_convs_in_dense_blocks = [<span class="hljs-number">4</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>]<br>blks = []<br><span class="hljs-keyword">for</span> i, num_convs <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(num_convs_in_dense_blocks):<br>    blks.append(DenseBlock(num_convs, num_channels, growth_rate))<br>    <span class="hljs-comment"># 上一个稠密块的输出通道数</span><br>    num_channels += num_convs * growth_rate<br>    <span class="hljs-comment"># 在稠密块之间添加一个转换层，使通道数量减半</span><br>    <span class="hljs-keyword">if</span> i != <span class="hljs-built_in">len</span>(num_convs_in_dense_blocks) - <span class="hljs-number">1</span>:<br>        blks.append(transition_block(num_channels, num_channels // <span class="hljs-number">2</span>))<br>        num_channels = num_channels // <span class="hljs-number">2</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>与ResNet类似，最后接上全局汇聚层和全连接层来输出结果。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">net = nn.Sequential(<br>    b1, *blks,<br>    nn.BatchNorm2d(num_channels), nn.ReLU(),<br>    nn.AdaptiveAvgPool2d((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)),<br>    nn.Flatten(),<br>    nn.Linear(num_channels, <span class="hljs-number">10</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="训练模型-5"><a href="#训练模型-5" class="headerlink" title="训练模型"></a>训练模型</h2><ul>
+<li>由于这里使用了比较深的网络，本节里我们将输入高和宽从224降到96来简化计算。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">lr, num_epochs, batch_size = <span class="hljs-number">0.1</span>, <span class="hljs-number">10</span>, <span class="hljs-number">256</span><br>train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=<span class="hljs-number">96</span>)<br>d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())<br><br><span class="hljs-comment"># result</span><br>loss <span class="hljs-number">0.140</span>, train acc <span class="hljs-number">0.950</span>, test acc <span class="hljs-number">0.882</span><br><span class="hljs-number">5544.6</span> examples/sec on cuda:<span class="hljs-number">0</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_convolutional-modern/alexnet.html">Dive Into Deep Learning</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1h54y1L7oe/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">AlexNet Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Ao4y117Pd/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">VGG Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=OIe48iAqh8E">SVD &amp; PCA</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/37777074">PCA原理</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>D2L-7-Modern Convolutional Neural Networks</div>
+      <div>http://example.com/2023/08/06/d2l-7-modern-convolutional-neural-networks/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/03/d2l-6-convolutional-neural-networks/" title="D2L-6-Convolutional Neural Networks">
+                        <span class="hidden-mobile">D2L-6-Convolutional Neural Networks</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

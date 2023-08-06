@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307231956594.jpg">
 <meta property="article:published_time" content="2023-08-03T11:47:04.000Z">
-<meta property="article:modified_time" content="2023-08-04T14:17:19.951Z">
+<meta property="article:modified_time" content="2023-08-06T02:41:27.877Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          20k 字
+          21k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          166 分钟
+          173 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：1 分钟前
+                    本文最后更新于：11 小时前
                   
                 
               </p>
@@ -555,8 +555,10 @@
 </ul>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">X = torch.tensor([[[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>], [<span class="hljs-number">3.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>], [<span class="hljs-number">6.0</span>, <span class="hljs-number">7.0</span>, <span class="hljs-number">8.0</span>]],<br>               [[<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>], [<span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">6.0</span>], [<span class="hljs-number">7.0</span>, <span class="hljs-number">8.0</span>, <span class="hljs-number">9.0</span>]]])<br>K = torch.tensor([[[<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>], [<span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>]], [[<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>], [<span class="hljs-number">3.0</span>, <span class="hljs-number">4.0</span>]]])<br><br>corr2d_multi_in(X, K)<br><br><span class="hljs-comment"># result </span><br>tensor([[ <span class="hljs-number">56.</span>,  <span class="hljs-number">72.</span>],<br>        [<span class="hljs-number">104.</span>, <span class="hljs-number">120.</span>]])<br></code></pre></td></tr></tbody></table></figure>
 
-
-
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308051124605.png" srcset="/img/loading.gif" lazyload alt="image-20230805112451511"></p>
+<blockquote>
+<p>c是channel，代表的含义是，根据不同的channel in具有各自的卷积核进行卷积操作，最后把对应位置所有的卷积结果求和。就构造了这样的一个多输入，单输出的模型。</p>
+</blockquote>
 <h2 id="多输出通道"><a href="#多输出通道" class="headerlink" title="多输出通道"></a>多输出通道</h2><ul>
 <li><p>到目前为止，不论有多少输入通道，我们还只有一个输出通道。每一层有多个输出通道是至关重要的。在最流行的神经网络架构中，随着神经网络层数的加深，我们常会增加输出通道的维数，通过减少空间分辨率以获得更大的通道深度。直观地说，我们可以将每个通道看作对不同特征的响应。而现实可能更为复杂一些，因为每个通道不是独立学习的，而是为了共同使用而优化的。因此，多输出通道并不仅是学习多个单通道的检测器。</p>
 </li>
@@ -575,8 +577,17 @@
 </ul>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">corr2d_multi_in_out(X, K)<br></code></pre></td></tr></tbody></table></figure>
 
-
-
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308051126001.png" srcset="/img/loading.gif" lazyload alt="image-20230805112615735"></p>
+<blockquote>
+<p>和上面类似，c是channel，代表的含义是，针对我们输出的每一个channel out，都有一套对应channel in的卷积核，进行上述的卷积求和操作。说白了就是多输入 -&gt; 单输出这种模式，重复了channel out次，就构造了新的多输入 -&gt; 多输出模式。</p>
+</blockquote>
+<h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>每个输出通道可以识别特定模式</li>
+<li>输入通道核识别并组合输入中的模式</li>
+</ul>
+<blockquote>
+<p>感觉就像乐高一样，下层识别局部纹理啊，特征啊之类的。上层组合这些纹理和特征，进行整体识别，大粒度！</p>
+</blockquote>
 <h2 id="1-times-1-卷积层"><a href="#1-times-1-卷积层" class="headerlink" title="$1 \times 1$卷积层"></a>$1 \times 1$卷积层</h2><ul>
 <li>$k_h = k_w = 1$看起来似乎没有多大意义。下面，让我们详细地解读一下它的实际作用。因为使用了最小窗口，1×1卷积失去了卷积层的特有能力——在高度和宽度维度上，识别相邻元素间相互作用的能力。 其实1×1卷积的唯一计算发生在通道上。</li>
 </ul>
@@ -585,6 +596,8 @@
 <p>使用1×1卷积核与3个输入通道和2个输出通道的互相关计算。 这里输入和输出具有相同的高度和宽度，输出中的每个元素都是从输入图像中同一位置的元素的线性组合。 我们可以将1×1卷积层看作在每个像素位置应用的全连接层，以$c_i$个输入值转换为$c_o$个输出值。 因为这仍然是一个卷积层，所以跨像素的权重是一致的。 同时，1×1卷积层需要的权重维度为$c_o\times c_i$，再额外加上一个偏置。</p>
 <ul>
 <li>互相关计算使用了具有3个输入通道和2个输出通道的 1×1 卷积核。其中，输入和输出具有相同的高度和宽度。</li>
+<li><strong>不识别空间模式，只是融合通道。</strong></li>
+<li>相当于输入形状为$n_{h}n_{w} \times c_{i}$，权重为$c_{o} \times c_{i}$的全连接层。<strong>没有做空间模式识别，不就是全连接层吗？既可以看作是全连接层，又可以看作是卷积层。</strong></li>
 </ul>
 </blockquote>
 <ul>
@@ -599,12 +612,33 @@
 
 
 
-<h1 id="汇聚层"><a href="#汇聚层" class="headerlink" title="汇聚层"></a>汇聚层</h1><ul>
+<h2 id="二维卷积层"><a href="#二维卷积层" class="headerlink" title="二维卷积层"></a>二维卷积层</h2><ul>
+<li><p>输入$\mathbf{X}:\ c_{i} \times n_{h} \times n_{w}$ -&gt; 3D </p>
+</li>
+<li><p>核心$\mathbf{W}:\ c_{o} \times c_{i} \times k_{h} \times k_{w}$ -&gt;  4D</p>
+</li>
+<li><p>输入$\mathbf{B}:\ c_{0} \times c_{i}$ -&gt; 2D </p>
+</li>
+<li><p>输入$\mathbf{Y}:\ c_{0} \times m_{h} \times m_{w}$ -&gt; 3D </p>
+</li>
+<li><p>计算复杂度$O(c_{i}c_{o}k_{h}k_{w}m_{h}m_{w})$</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308051148268.png" srcset="/img/loading.gif" lazyload alt="image-20230805114811965"></p>
+<ul>
+<li>总结：<ul>
+<li>输出通道数是卷积层的超参数</li>
+<li>每个输入通道有独立的二维卷积核，所有通道结果相加得到一个输出通道结果</li>
+<li>每个输出通道有独立的三维卷积核</li>
+</ul>
+</li>
+</ul>
+<h1 id="池化层（汇聚层）"><a href="#池化层（汇聚层）" class="headerlink" title="池化层（汇聚层）"></a>池化层（汇聚层）</h1><ul>
 <li>随着我们在神经网络中层叠的上升，每个神经元对其敏感的感受野（输入）就越大。</li>
 <li>我们的机器学习任务通常会跟全局图像的问题有关，所以我们最后一层的神经元应该对整个输入的全局敏感。通过逐渐聚合信息，生成越来越粗糙的映射，最终实现学习全局表示的目标，同时将卷积图层的所有优势保留在中间层。</li>
-<li><em>汇聚</em>（pooling）层，它具有双重目的：降低卷积层对位置的敏感性，同时降低对空间降采样表示的敏感性。</li>
+<li><em>汇聚</em>（pooling）层，它具有双重目的：<strong>降低卷积层对位置的敏感性，同时降低对空间降采样表示的敏感性。</strong></li>
 </ul>
-<h2 id="最大汇聚层和平均汇聚层"><a href="#最大汇聚层和平均汇聚层" class="headerlink" title="最大汇聚层和平均汇聚层"></a>最大汇聚层和平均汇聚层</h2><ul>
+<h2 id="最大池化层和平均池化层"><a href="#最大池化层和平均池化层" class="headerlink" title="最大池化层和平均池化层"></a>最大池化层和平均池化层</h2><ul>
 <li>汇聚层运算符由一个固定形状的窗口组成，该窗口根据其步幅大小在输入的所有区域上滑动，为固定形状窗口（有时称为<em>汇聚窗口</em>）遍历的每个位置计算一个输出。 然而，不同于卷积层中的输入与卷积核之间的互相关计算，汇聚层不包含参数。 相反，池运算是确定性的，我们通常计算汇聚窗口中所有元素的最大值或平均值。这些操作分别称为<em>最大汇聚层</em>（maximum pooling）和<em>平均汇聚层</em>（average pooling）。</li>
 <li>与互相关运算符一样，汇聚窗口从输入张量的左上角开始，从左往右、从上往下的在输入张量内滑动。在汇聚窗口到达的每个位置，它计算该窗口中输入子张量的最大值或平均值。计算最大值或平均值是取决于使用了最大汇聚层还是平均汇聚层。</li>
 </ul>
@@ -631,7 +665,10 @@
 
 
 
-<h2 id="填充和步幅-1"><a href="#填充和步幅-1" class="headerlink" title="填充和步幅"></a>填充和步幅</h2><ul>
+<h2 id="填充和步幅-1"><a href="#填充和步幅-1" class="headerlink" title="填充和步幅"></a>填充和步幅</h2><blockquote>
+<p><strong>和卷积类似的超参数，没有kernel，或者说学习的参数！不会融合多输入通道，每个通道做一次池化，输入和输出是一样的昂！！！</strong></p>
+</blockquote>
+<ul>
 <li>与卷积层一样，汇聚层也可以改变输出形状。和以前一样，我们可以通过填充和步幅以获得所需的输出形状。 下面，我们用深度学习框架中内置的二维最大汇聚层，来演示汇聚层中填充和步幅的使用。 我们首先构造了一个输入张量<code>X</code>，它有四个维度，其中样本数和通道数都是1。</li>
 </ul>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">X = torch.arange(<span class="hljs-number">16</span>, dtype=torch.float32).reshape((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>))<br>X<br></code></pre></td></tr></tbody></table></figure>
@@ -677,6 +714,9 @@
 <p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308042118686.svg" srcset="/img/loading.gif" lazyload alt="../_images/lenet.svg"></p>
 <blockquote>
 <p>LeNet中的数据流。输入是手写数字，输出为10种可能结果的概率。</p>
+<ul>
+<li>这里的特征图，就是我们口中所说的Feature Map</li>
+</ul>
 </blockquote>
 <ul>
 <li>每个卷积块中的基本单元是一个卷积层、一个sigmoid激活函数和平均汇聚层。请注意，虽然ReLU和最大汇聚层更有效，但它们在20世纪90年代还没有出现。每个卷积层使用5×5卷积核和一个sigmoid激活函数。这些层将输入映射到多个二维特征输出，通常同时增加通道的数量。第一卷积层有6个输出通道，而第二个卷积层有16个输出通道。每个2×2池操作（步幅2）通过空间下采样将维数减少4倍。卷积的输出形状由批量大小、通道数、高度、宽度决定。</li>
@@ -721,7 +761,10 @@
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
 <li><a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_convolutional-neural-networks/index.html">官网教程</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=D641Ucd_xuw">简单理解卷积神经网络</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1L64y1m7Nh/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">沐神的课</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1L64y1m7Nh/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">卷积层</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Th411U7UN/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">卷积填充和步幅 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://poloclub.github.io/cnn-explainer/">CNN Explainer</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1t44y1r7ct?p=3&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">LeNet Q&amp;A</a></li>
 </ol>
 
                 
@@ -812,6 +855,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/08/06/d2l-7-modern-convolutional-neural-networks/" title="D2L-7-Modern Convolutional Neural Networks">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">D2L-7-Modern Convolutional Neural Networks</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
