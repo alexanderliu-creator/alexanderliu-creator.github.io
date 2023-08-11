@@ -1,0 +1,1496 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="CPU vs GPU GPU和CPU    提升CPU利用率：  缓存： 时间：重用数据使得保持它们在缓存里 空间：按序读写数据使得它们可以预读取   并行利用所有核   提升GPU利用率：  并行：使用数千个线程 内存本地性：缓存更小，架构更简单 少用控制语句： 支持有限 同步开销很大     不要频繁在CPU和GPU之间传数据：  带宽限制 同步开销   CPU&#x2F;GPU高性能计算编程  CPU">
+<meta property="og:type" content="article">
+<meta property="og:title" content="D2L-8-Computer Vision">
+<meta property="og:url" content="http://example.com/2023/08/07/d2l-8-computer-vision/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="CPU vs GPU GPU和CPU    提升CPU利用率：  缓存： 时间：重用数据使得保持它们在缓存里 空间：按序读写数据使得它们可以预读取   并行利用所有核   提升GPU利用率：  并行：使用数千个线程 内存本地性：缓存更小，架构更简单 少用控制语句： 支持有限 同步开销很大     不要频繁在CPU和GPU之间传数据：  带宽限制 同步开销   CPU&#x2F;GPU高性能计算编程  CPU">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307231956594.jpg">
+<meta property="article:published_time" content="2023-08-07T14:13:39.000Z">
+<meta property="article:modified_time" content="2023-08-11T09:09:16.453Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307231956594.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>D2L-8-Computer Vision - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="D2L-8-Computer Vision"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-07 22:13" pubdate>
+          2023年8月7日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          26k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          214 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">D2L-8-Computer Vision</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：6 小时前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="CPU-vs-GPU"><a href="#CPU-vs-GPU" class="headerlink" title="CPU vs GPU"></a>CPU vs GPU</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1TU4y1j7Wd/?spm_id_from=autoNext&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">GPU和CPU</a></p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308080921633.png" srcset="/img/loading.gif" lazyload alt="image-20230808092103497"></p>
+<ul>
+<li><p>提升CPU利用率：</p>
+<ul>
+<li>缓存：<ul>
+<li>时间：重用数据使得保持它们在缓存里</li>
+<li>空间：按序读写数据使得它们可以预读取</li>
+</ul>
+</li>
+<li>并行利用所有核</li>
+</ul>
+</li>
+<li><p>提升GPU利用率：</p>
+<ul>
+<li>并行：使用数千个线程</li>
+<li>内存本地性：缓存更小，架构更简单</li>
+<li>少用控制语句：<ul>
+<li>支持有限</li>
+<li>同步开销很大</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>不要频繁在CPU和GPU之间传数据：</p>
+<ul>
+<li>带宽限制</li>
+<li>同步开销</li>
+</ul>
+</li>
+<li><p>CPU/GPU高性能计算编程</p>
+<ul>
+<li>CPU: cpp or 其他高性能语言，编译器成熟！</li>
+<li>GPU：<ul>
+<li>Nvidia上用CUDA：编译器和驱动成熟</li>
+<li>其他用OpenCL</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>总结：</p>
+<ul>
+<li>CPU：通用计算，性能优化考虑读写效率和多线程。</li>
+<li>GPU：大规模并行计算任务，使用更多的小核和更好的内存带宽。</li>
+</ul>
+</li>
+</ul>
+<h1 id="更多的芯片"><a href="#更多的芯片" class="headerlink" title="更多的芯片"></a>更多的芯片</h1><ul>
+<li>DSP：Digital Signal Process芯片<ul>
+<li>数字信号处理芯片，擅长卷积，傅立叶变换等。</li>
+<li>特点：性能高、功耗低。</li>
+<li>VLIW: Very long instruction word，超长指令处理很牛。</li>
+<li>编程&amp;调试困难，编译器质量良莠不齐。</li>
+</ul>
+</li>
+<li>FPGA：可编程阵列<ul>
+<li>可编程逻辑单元和可配置连接</li>
+<li>可以配置成计算复杂函数，编程语言：VHDL, Verilog</li>
+<li>通常比通用硬件更高效</li>
+<li>工具链质量良莠不齐</li>
+<li>一次“编译”需要数小时</li>
+</ul>
+</li>
+<li>AI ASIC：Application Specific Integrated Circuit<ul>
+<li>深度学习的热门领域</li>
+<li>Google TPU是标志性芯片<ul>
+<li>媲美Nvidia GPU性能</li>
+<li>在Google大量部署</li>
+<li>核心是systolic array</li>
+</ul>
+</li>
+<li>Systolic Array<ul>
+<li>计算单元（PE）阵列</li>
+<li>特别适合做矩阵乘法</li>
+<li>设计和制造相对简单。</li>
+<li>对于一般的矩阵乘法，通过切分和填充来匹配SA的大小</li>
+<li>批量输入来降低延时</li>
+<li>通常有其他硬件单元来处理别的NN操作子，例如激活层</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308090910068.png" srcset="/img/loading.gif" lazyload alt="image-20230809091040946"></p>
+<blockquote>
+<p>越专用，越难卖，但是对于特定领域性能越高，功耗越低！！！</p>
+</blockquote>
+<h1 id="单机多卡并行"><a href="#单机多卡并行" class="headerlink" title="单机多卡并行"></a>单机多卡并行</h1><ul>
+<li>单机多卡并行：<ul>
+<li>一台机器可以装多个GPU（1-16）</li>
+<li>训练和预测时，我们将一个小批量计算切分到多个GPU上来达到加速目的</li>
+<li>常用切分方案有：<ul>
+<li>数据并行</li>
+<li>模型并行</li>
+<li>通道并行（数据+模型并行）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>数据并行 vs 模型并行<ul>
+<li>数据并行：小批量分为n块，每个GPU拿到完整参数计算一块儿数据的梯度。通常性能更好。 -&gt; 单卡计算拓展到多卡计算</li>
+<li>模型并行：模型分为n块，每个GPU拿到一块儿模型计算它的前向和方向结果。通常用于模型大到单GPU放不下。 -&gt; 超大模型并行</li>
+</ul>
+</li>
+</ul>
+<h1 id="多GPU训练实现"><a href="#多GPU训练实现" class="headerlink" title="多GPU训练实现"></a>多GPU训练实现</h1><h2 id="手写"><a href="#手写" class="headerlink" title="手写"></a>手写</h2><ul>
+<li><p>allreduce方法简介实现</p>
+<ul>
+<li>在一个核上完成所有核中数据的累加</li>
+<li>将这个核上的结果，广播到其他所有核</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">allreduce</span>(<span class="hljs-params">data</span>):<br>  <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(data)):<br>    data[<span class="hljs-number">0</span>][:] += data[i].to(data[<span class="hljs-number">0</span>].device)<br>  <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(data)):<br>    data[i] = data[<span class="hljs-number">0</span>].to(data[i].device)<br></code></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>小批量数据均匀分布到多个GPU上</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">data = torch.arange(<span class="hljs-number">20</span>).reshape(<span class="hljs-number">4</span>, <span class="hljs-number">5</span>)<br>devices = [torch.device(<span class="hljs-string">'cuda:0'</span>), torch.device(<span class="hljs-string">'cuda:1'</span>)]<br>split = nn.parallel.scatter(data, devices )<br><span class="hljs-built_in">print</span>(<span class="hljs-string">'input: '</span>, data)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">'load into：'</span>, devices)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">'output: '</span> , split)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Split_batch函数：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">split_batch</span>(<span class="hljs-params">X, y, devices</span>):<br>  <span class="hljs-keyword">assert</span> X.shape[<span class="hljs-number">0</span>] == y.shape[<span class="hljs-number">0</span>]<br>  <span class="hljs-keyword">return</span> (nn.parallel.scatter(X, devices),<br>         nn.parallel.scatter(y, devices))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>训练：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">train_batch</span>(<span class="hljs-params">X, y, device_params, devices, lr</span>):<br>  X_shards, y_shards = split_batch(X, y, devices)<br>  ls = [<br>    loss(lenet(X_shard, device_W), y_shard).<span class="hljs-built_in">sum</span>()<br>    <span class="hljs-keyword">for</span> X_shard, y_shard, device_W <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(X_shards, y_shards, device_params)<br>  ]<br>  <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> ls:<br>    l.backward()<br>  <span class="hljs-keyword">with</span> torch.no_grad():<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(device_params[<span class="hljs-number">0</span>])):<br>      allreduce(<br>      	[device_params[c][i].grad <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(devices))]<br>      )<br>  <span class="hljs-keyword">for</span> param <span class="hljs-keyword">in</span> device_params:<br>    d2l.sgd(param, lr, X.shape(<span class="hljs-number">0</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="简洁实现"><a href="#简洁实现" class="headerlink" title="简洁实现"></a>简洁实现</h2><ul>
+<li>引入依赖</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>简单网络</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">resnet18</span>(<span class="hljs-params">num_classes, in_channels=<span class="hljs-number">1</span></span>):<br>    <span class="hljs-string">"""稍加修改的 ResNet-18 模型。"""</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">resnet_block</span>(<span class="hljs-params">in_channels, out_channels, num_residuals,</span><br><span class="hljs-params">                     first_block=<span class="hljs-literal">False</span></span>):<br>        blk = []<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_residuals):<br>            <span class="hljs-keyword">if</span> i == <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> first_block:<br>                blk.append(<br>                    d2l.Residual(in_channels, out_channels, use_1x1conv=<span class="hljs-literal">True</span>,<br>                                 strides=<span class="hljs-number">2</span>))<br>            <span class="hljs-keyword">else</span>:<br>                blk.append(d2l.Residual(out_channels, out_channels))<br>        <span class="hljs-keyword">return</span> nn.Sequential(*blk)<br><br>    net = nn.Sequential(<br>        nn.Conv2d(in_channels, <span class="hljs-number">64</span>, kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">1</span>, padding=<span class="hljs-number">1</span>),<br>        nn.BatchNorm2d(<span class="hljs-number">64</span>), nn.ReLU())<br>    net.add_module(<span class="hljs-string">"resnet_block1"</span>, resnet_block(<span class="hljs-number">64</span>, <span class="hljs-number">64</span>, <span class="hljs-number">2</span>, first_block=<span class="hljs-literal">True</span>))<br>    net.add_module(<span class="hljs-string">"resnet_block2"</span>, resnet_block(<span class="hljs-number">64</span>, <span class="hljs-number">128</span>, <span class="hljs-number">2</span>))<br>    net.add_module(<span class="hljs-string">"resnet_block3"</span>, resnet_block(<span class="hljs-number">128</span>, <span class="hljs-number">256</span>, <span class="hljs-number">2</span>))<br>    net.add_module(<span class="hljs-string">"resnet_block4"</span>, resnet_block(<span class="hljs-number">256</span>, <span class="hljs-number">512</span>, <span class="hljs-number">2</span>))<br>    net.add_module(<span class="hljs-string">"global_avg_pool"</span>, nn.AdaptiveAvgPool2d((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)))<br>    net.add_module(<span class="hljs-string">"fc"</span>,<br>                   nn.Sequential(nn.Flatten(), nn.Linear(<span class="hljs-number">512</span>, num_classes)))<br>    <span class="hljs-keyword">return</span> net<br><br>net = resnet18(<span class="hljs-number">10</span>)<br>devices = d2l.try_all_gpus()<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>训练</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">train</span>(<span class="hljs-params">net, num_gpus, batch_size, lr</span>):<br>    train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)<br>    devices = [d2l.try_gpu(i) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_gpus)]<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">init_weights</span>(<span class="hljs-params">m</span>):<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">type</span>(m) <span class="hljs-keyword">in</span> [nn.Linear, nn.Conv2d]:<br>            nn.init.normal_(m.weight, std=<span class="hljs-number">0.01</span>)<br><br>    net.apply(init_weights)<br>    net = nn.DataParallel(net, device_ids=devices)<br>    trainer = torch.optim.SGD(net.parameters(), lr)<br>    loss = nn.CrossEntropyLoss()<br>    timer, num_epochs = d2l.Timer(), <span class="hljs-number">10</span><br>    animator = d2l.Animator(<span class="hljs-string">'epoch'</span>, <span class="hljs-string">'test acc'</span>, xlim=[<span class="hljs-number">1</span>, num_epochs])<br>    <span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_epochs):<br>        net.train()<br>        timer.start()<br>        <span class="hljs-keyword">for</span> X, y <span class="hljs-keyword">in</span> train_iter:<br>            trainer.zero_grad()<br>            X, y = X.to(devices[<span class="hljs-number">0</span>]), y.to(devices[<span class="hljs-number">0</span>])<br>            l = loss(net(X), y)<br>            l.backward()<br>            trainer.step()<br>        timer.stop()<br>        animator.add(epoch + <span class="hljs-number">1</span>, (d2l.evaluate_accuracy_gpu(net, test_iter),))<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f'test acc: <span class="hljs-subst">{animator.Y[<span class="hljs-number">0</span>][-<span class="hljs-number">1</span>]:<span class="hljs-number">.2</span>f}</span>, <span class="hljs-subst">{timer.avg():<span class="hljs-number">.1</span>f}</span> sec/epoch '</span><br>          <span class="hljs-string">f'on <span class="hljs-subst">{<span class="hljs-built_in">str</span>(devices)}</span>'</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>训练结果：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">在单个GPU上训练网络<br>train(net, num_gpus=<span class="hljs-number">1</span>, batch_size=<span class="hljs-number">256</span>, lr=<span class="hljs-number">0.1</span>)<br>test acc: <span class="hljs-number">0.92</span>, <span class="hljs-number">14.1</span> sec/epoch on [device(<span class="hljs-built_in">type</span>=<span class="hljs-string">'cuda'</span>, index=<span class="hljs-number">0</span>)]<br><br>使用 <span class="hljs-number">2</span> 个 GPU 进行训练<br>train(net, num_gpus=<span class="hljs-number">2</span>, batch_size=<span class="hljs-number">512</span>, lr=<span class="hljs-number">0.2</span>)<br>test acc: <span class="hljs-number">0.87</span>, <span class="hljs-number">9.2</span> sec/epoch on [device(<span class="hljs-built_in">type</span>=<span class="hljs-string">'cuda'</span>, index=<span class="hljs-number">0</span>), device(<span class="hljs-built_in">type</span>=<span class="hljs-string">'cuda'</span>, index=<span class="hljs-number">1</span>)]<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Batch_size本质上是从全部样本中抽样</p>
+<ul>
+<li>由于GPU变多，我们为了增大性能，可以通过增大batch_size（一台GPU就256，两台GPU就应该512嘛），不然性能提升不明显。但是如果我们提升了batch_size，训练精度可能出现降低的情况，是可能由于：抽样的样本增多，学习率没有调整到位。样本本身太少，抽样的样本太多，重复样本多，重复的数据学不到东西捏！</li>
+<li>验证集准确率震荡较大是learning rate这个参数影响最大。</li>
+</ul>
+</blockquote>
+<h1 id="分布式训练"><a href="#分布式训练" class="headerlink" title="分布式训练"></a>分布式训练</h1><blockquote>
+<p>上面是单机多卡，这里直接就是多机，其实是类似的，本质上没有什么区别昂！！！</p>
+</blockquote>
+<ul>
+<li>GPU架构（老的架构）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308092115551.png" srcset="/img/loading.gif" lazyload alt="image-20230809211545507"></p>
+<blockquote>
+<p>尽量少的搬运数据</p>
+</blockquote>
+<ul>
+<li>层次的参数服务器：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308092116128.png" srcset="/img/loading.gif" lazyload alt="image-20230809211638051"></p>
+<blockquote>
+<p>一样的，本地尽可能完成梯度更新的加和，每个服务器对梯度求和，并更新参数。</p>
+</blockquote>
+<ul>
+<li>同步SGD<ul>
+<li>这里每个worker都是同步计算一 个批量，称为同步SGD</li>
+<li>假设有n个GPU，每个GPU每次处理b个样本，那么同步SGD等价于在单GPU运行批量大小为nb的SGD</li>
+<li>在理想情况下，n个GPU可以得到相对个单GPU的n倍加速</li>
+<li>性能：<ul>
+<li>t1=在单GPU_上计算b个样本梯度时间</li>
+<li>假设有m个参数，一个worker每次发送和接收m个参数、梯度<ul>
+<li>t2 = 发送和接收所用时间</li>
+</ul>
+</li>
+<li>每个批量的计算时间为max(t1, t2)<ul>
+<li>选取足够大的b使得t1 &gt; t2（数据计算的时间 &gt; 数据收发的时间）</li>
+<li>增加b或n导致更大的批量大小，导致需要更多计算来得到给定的模型精度</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>性能的权衡：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308092126733.png" srcset="/img/loading.gif" lazyload alt="image-20230809212636682"></p>
+<blockquote>
+<ul>
+<li>收敛指的是：需要多少个epoch，才能达到我们的训练精度。<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1jU4y1G7iu?p=2&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">沐神太强了</a>，小批量里数据多样性强，性能好。大批量数据的重复度高，对于梯度计算来说冗余，白费了计算性能。</li>
+<li>我觉得是因为batchsize越大，每个epoch里的iter数越少，iter少到一定程度，导致每个epoch更新参数不到位，所以需要更多epoch才够。那要是数据足够大呢？大到后面某些step梯度都不怎么变了呢。这里的训练有效性不是从准确率上讲的，是从计算有效性上，属于计算效率。</li>
+<li>样本多了，需要花更多的时间去计算梯度，收敛效率降低，我认为可以理解为达到某个精度需要的时间长了</li>
+</ul>
+</blockquote>
+<ul>
+<li>实践的建议：<ul>
+<li>使用一个大数据集</li>
+<li>需要好的GPU-GPU和机器-机器带宽</li>
+<li>高效的数据读取和预处理</li>
+<li>模型需要有好的计算(FLOP) 通讯(model size)<ul>
+<li>Inception &gt; ResNet &gt; AlexNet</li>
+</ul>
+</li>
+<li>使用足够大的批量大小来得到好的系统性能</li>
+<li>使用高效的优化算法对对应大批量大小</li>
+</ul>
+</li>
+</ul>
+<h1 id="数据增广"><a href="#数据增广" class="headerlink" title="数据增广"></a>数据增广</h1><ul>
+<li>增加一个已有的数据集，使得有更多的多样性<ul>
+<li>语言里面加入各种背景噪音</li>
+<li>改变图片形状，色温，亮度等</li>
+</ul>
+</li>
+<li>如何使用：在线生成！从原始数据读取图片，随机进行增强，生成不一样的图片，再进行训练。只有训练的时候用，测试的时候不用昂！！</li>
+<li>常见方法：</li>
+</ul>
+<blockquote>
+<p>翻转</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308100958503.png" srcset="/img/loading.gif" lazyload alt="image-20230810095845340"></p>
+<blockquote>
+<p>切割</p>
+</blockquote>
+<ul>
+<li>从图片中切割一块，变形到固定形状<ul>
+<li>随机高宽比</li>
+<li>随机大小</li>
+<li>随机位置</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>颜色</p>
+</blockquote>
+<ul>
+<li>色调，饱和度，明亮度</li>
+</ul>
+<blockquote>
+<p>还有几十种其他方法，photoshop能干的，都能作用于图片上面！<strong>从后往前推，测试集 or 实际情况下可能遇到某些情况，我们才去对训练集做某些调整！</strong></p>
+</blockquote>
+<ul>
+<li>上面的很重要，讲清楚了，我们什么时候应该做数据增广，如何去做！！！不能随便做哈！！！</li>
+</ul>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><ul>
+<li>Dependency:</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">%matplotlib inline<br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torchvision<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br>d2l.set_figsize()<br>img = d2l.Image.<span class="hljs-built_in">open</span>(<span class="hljs-string">'../img/cat1.jpg'</span>)<br>d2l.plt.imshow(img);<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>图片增广方法：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">apply</span>(<span class="hljs-params">img, aug, num_rows=<span class="hljs-number">2</span>, num_cols=<span class="hljs-number">4</span>, scale=<span class="hljs-number">1.5</span></span>):<br>    Y = [aug(img) <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_rows * num_cols)]<br>    d2l.show_images(Y, num_rows, num_cols, scale=scale)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>左右翻转</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">apply(img, torchvision.transforms.RandomHorizontalFlip())<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>上下翻转</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">apply(img, torchvision.transforms.RandomVerticalFlip())<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>随机裁剪</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">shape_aug = torchvision.transforms.RandomResizedCrop(<br>    (<span class="hljs-number">200</span>, <span class="hljs-number">200</span>), scale=(<span class="hljs-number">0.1</span>, <span class="hljs-number">1</span>), ratio=(<span class="hljs-number">0.5</span>, <span class="hljs-number">2</span>))<br>apply(img, shape_aug)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>随机更改图像的亮度</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">apply(<br>    img,<br>    torchvision.transforms.ColorJitter(brightness=<span class="hljs-number">0.5</span>, contrast=<span class="hljs-number">0</span>,saturation=<span class="hljs-number">0</span>, hue=<span class="hljs-number">0</span>)<br>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>随机更改图像的色调</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">apply(<br>    img,<br>    torchvision.transforms.ColorJitter(brightness=<span class="hljs-number">0</span>, contrast=<span class="hljs-number">0</span>, saturation=<span class="hljs-number">0</span>,hue=<span class="hljs-number">0.5</span>)<br>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>随机更改图像的亮度（<code>brightness</code>）、对比度（<code>contrast</code>）、饱和度（<code>saturation</code>）和色调（<code>hue</code>）</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">color_aug = torchvision.transforms.ColorJitter(brightness=<span class="hljs-number">0.5</span>, contrast=<span class="hljs-number">0.5</span>,saturation=<span class="hljs-number">0.5</span>, hue=<span class="hljs-number">0.5</span>)<br>apply(img, color_aug)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>结合多种图像增广方法</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">augs = torchvision.transforms.Compose([torchvision.transforms.RandomHorizontalFlip(), color_aug, shape_aug])<br>apply(img, augs)<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><ul>
+<li>使用图像增广进行训练</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">all_images = torchvision.datasets.CIFAR10(train=<span class="hljs-literal">True</span>, root=<span class="hljs-string">"../data"</span>,<br>                                          download=<span class="hljs-literal">True</span>)<br>d2l.show_images([all_images[i][<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">32</span>)], <span class="hljs-number">4</span>, <span class="hljs-number">8</span>, scale=<span class="hljs-number">0.8</span>);<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>只使用最简单的随机左右翻转</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">train_augs = torchvision.transforms.Compose([<br>    torchvision.transforms.RandomHorizontalFlip(),<br>    torchvision.transforms.ToTensor()])<br><br>test_augs = torchvision.transforms.Compose([<br>    torchvision.transforms.ToTensor()])<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>定义一个辅助函数，以便于读取图像和应用图像增广</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">load_cifar10</span>(<span class="hljs-params">is_train, augs, batch_size</span>):<br>    dataset = torchvision.datasets.CIFAR10(root=<span class="hljs-string">"../data"</span>, train=is_train,transform=augs, download=<span class="hljs-literal">True</span>)<br>    <br>    dataloader = torch.utils.data.DataLoader(<br>        dataset, batch_size=batch_size, shuffle=is_train,<br>        num_workers=d2l.get_dataloader_workers())<br>    <span class="hljs-keyword">return</span> dataloader<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>定义一个函数，使用多GPU对模型进行训练和评估</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">train_batch_ch13</span>(<span class="hljs-params">net, X, y, loss, trainer, devices</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(X, <span class="hljs-built_in">list</span>):<br>        X = [x.to(devices[<span class="hljs-number">0</span>]) <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> X]<br>    <span class="hljs-keyword">else</span>:<br>        X = X.to(devices[<span class="hljs-number">0</span>])<br>    y = y.to(devices[<span class="hljs-number">0</span>])<br>    net.train()<br>    trainer.zero_grad()<br>    pred = net(X)<br>    l = loss(pred, y)<br>    l.<span class="hljs-built_in">sum</span>().backward()<br>    trainer.step()<br>    train_loss_sum = l.<span class="hljs-built_in">sum</span>()<br>    train_acc_sum = d2l.accuracy(pred, y)<br>    <span class="hljs-keyword">return</span> train_loss_sum, train_acc_sum<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">train_ch13</span>(<span class="hljs-params">net, train_iter, test_iter, loss, trainer, num_epochs,</span><br><span class="hljs-params">               devices=d2l.try_all_gpus(<span class="hljs-params"></span>)</span>):<br>    timer, num_batches = d2l.Timer(), <span class="hljs-built_in">len</span>(train_iter)<br>    animator = d2l.Animator(xlabel=<span class="hljs-string">'epoch'</span>, xlim=[<span class="hljs-number">1</span>, num_epochs], ylim=[<span class="hljs-number">0</span>, <span class="hljs-number">1</span>],<br>                            legend=[<span class="hljs-string">'train loss'</span>, <span class="hljs-string">'train acc'</span>, <span class="hljs-string">'test acc'</span>])<br>    net = nn.DataParallel(net, device_ids=devices).to(devices[<span class="hljs-number">0</span>])<br>    <span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_epochs):<br>        metric = d2l.Accumulator(<span class="hljs-number">4</span>)<br>        <span class="hljs-keyword">for</span> i, (features, labels) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(train_iter):<br>            timer.start()<br>            l, acc = train_batch_ch13(net, features, labels, loss, trainer,<br>                                      devices)<br>            metric.add(l, acc, labels.shape[<span class="hljs-number">0</span>], labels.numel())<br>            timer.stop()<br>            <span class="hljs-keyword">if</span> (i + <span class="hljs-number">1</span>) % (num_batches // <span class="hljs-number">5</span>) == <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> i == num_batches - <span class="hljs-number">1</span>:<br>                animator.add(<br>                    epoch + (i + <span class="hljs-number">1</span>) / num_batches,<br>                    (metric[<span class="hljs-number">0</span>] / metric[<span class="hljs-number">2</span>], metric[<span class="hljs-number">1</span>] / metric[<span class="hljs-number">3</span>], <span class="hljs-literal">None</span>))<br>        test_acc = d2l.evaluate_accuracy_gpu(net, test_iter)<br>        animator.add(epoch + <span class="hljs-number">1</span>, (<span class="hljs-literal">None</span>, <span class="hljs-literal">None</span>, test_acc))<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f'loss <span class="hljs-subst">{metric[<span class="hljs-number">0</span>] / metric[<span class="hljs-number">2</span>]:<span class="hljs-number">.3</span>f}</span>, train acc '</span><br>          <span class="hljs-string">f'<span class="hljs-subst">{metric[<span class="hljs-number">1</span>] / metric[<span class="hljs-number">3</span>]:<span class="hljs-number">.3</span>f}</span>, test acc <span class="hljs-subst">{test_acc:<span class="hljs-number">.3</span>f}</span>'</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f'<span class="hljs-subst">{metric[<span class="hljs-number">2</span>] * num_epochs / timer.<span class="hljs-built_in">sum</span>():<span class="hljs-number">.1</span>f}</span> examples/sec on '</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>定义 <code>train_with_data_aug</code> 函数，使用图像增广来训练模型</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python">batch_size, devices, net = <span class="hljs-number">256</span>, d2l.try_all_gpus(), d2l.resnet18(<span class="hljs-number">10</span>, <span class="hljs-number">3</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">init_weights</span>(<span class="hljs-params">m</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">type</span>(m) <span class="hljs-keyword">in</span> [nn.Linear, nn.Conv2d]:<br>        nn.init.xavier_uniform_(m.weight)<br><br>net.apply(init_weights)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">train_with_data_aug</span>(<span class="hljs-params">train_augs, test_augs, net, lr=<span class="hljs-number">0.001</span></span>):<br>    train_iter = load_cifar10(<span class="hljs-literal">True</span>, train_augs, batch_size)<br>    test_iter = load_cifar10(<span class="hljs-literal">False</span>, test_augs, batch_size)<br>    loss = nn.CrossEntropyLoss(reduction=<span class="hljs-string">"none"</span>)<br>    trainer = torch.optim.Adam(net.parameters(), lr=lr)<br>    train_ch13(net, train_iter, test_iter, loss, trainer, <span class="hljs-number">10</span>, devices)<br>    <br><br>训练模型<br>train_with_data_aug(train_augs, test_augs, net)<br>loss <span class="hljs-number">0.171</span>, train acc <span class="hljs-number">0.941</span>, test acc <span class="hljs-number">0.833</span><br><span class="hljs-number">4850.8</span> examples/sec on [device(<span class="hljs-built_in">type</span>=<span class="hljs-string">'cuda'</span>, index=<span class="hljs-number">0</span>), device(<span class="hljs-built_in">type</span>=<span class="hljs-string">'cuda'</span>, index=<span class="hljs-number">1</span>)]<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>由于样本的多样性不够！我们就需要数据增广，手动增加样本的多样性！！！增广的目的本来的就是：让训练集更加像测试集！！！要是一样就更好啦！想让训练集 cover 所有测试集中的情况or现实生活中可能出现的数据。</li>
+<li>对于极度偏斜数据，也可以尝试使用重采样或者数据增广来进行数据增强！！！</li>
+<li>图片增广后，数据分布大致是不改变的，但是数据多样性增加了，variance变大了。可以理解为：均值不变，方差变大了！</li>
+<li>mix-up增广很有效！</li>
+</ul>
+<h1 id="微调（Fine-tuning）"><a href="#微调（Fine-tuning）" class="headerlink" title="微调（Fine-tuning）"></a>微调（Fine-tuning）</h1><ul>
+<li><p>网络架构：</p>
+<ul>
+<li>特征抽取将原始像素变成容易线性分割的特征（特征抽取）</li>
+<li>线性分类器来做分类（Softmax回归）</li>
+</ul>
+</li>
+<li><p>预训练模型(Pretrained-Model)：</p>
+<ul>
+<li>特征抽取的部分，我们想拿来继续复用一下！</li>
+<li>但是分类器我们要改成我们自己的捏！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308101111556.png" srcset="/img/loading.gif" lazyload alt="image-20230810111153415"></p>
+<blockquote>
+<p>复用别人训练好的，特征提取模块！</p>
+</blockquote>
+</li>
+<li><p>训练：</p>
+<ul>
+<li>是一个目标数据集上的正常训练任务，但使用更强的正则化：<ul>
+<li>更小的学习率</li>
+<li>更少的数据迭代</li>
+</ul>
+</li>
+<li>源数据集远复杂于目标数据，通常微调效果更好</li>
+</ul>
+</li>
+<li><p>重用分类器权重：</p>
+<ul>
+<li>源数据集可能也有目标数据中的部分标号</li>
+<li>可以使用预训练好分类器中对应标号对应的向量来做初始化</li>
+</ul>
+</li>
+<li><p>固定一些层</p>
+<ul>
+<li>神经网络通常学习有层次的特征表示：<ul>
+<li>低层次的特征更加通用</li>
+<li>高层次的特征则更跟数据集相关</li>
+</ul>
+</li>
+<li>可以固定底部一些层的参数，不参与更新<ul>
+<li>更强的正则</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>别人训练好的可以直接拿来用，因此！工业界非常欢迎！</p>
+</blockquote>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><ul>
+<li>dependency</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python">%matplotlib inline<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torchvision<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br>d2l.DATA_HUB[<span class="hljs-string">'hotdog'</span>] = (d2l.DATA_URL + <span class="hljs-string">'hotdog.zip'</span>,<br>                          <span class="hljs-string">'fba480ffa8aa7e0febbb511d181409f899b9baa5'</span>)<br><br>data_dir = d2l.download_extract(<span class="hljs-string">'hotdog'</span>)<br><br>train_imgs = torchvision.datasets.ImageFolder(os.path.join(data_dir, <span class="hljs-string">'train'</span>))<br>test_imgs = torchvision.datasets.ImageFolder(os.path.join(data_dir, <span class="hljs-string">'test'</span>))<br><span class="hljs-comment"># 图像的大小和纵横比各有不同</span><br><br>hotdogs = [train_imgs[i][<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">8</span>)]<br>not_hotdogs = [train_imgs[-i - <span class="hljs-number">1</span>][<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">8</span>)]<br>d2l.show_images(hotdogs + not_hotdogs, <span class="hljs-number">2</span>, <span class="hljs-number">8</span>, scale=<span class="hljs-number">1.4</span>);<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>数据增广</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">normalize = torchvision.transforms.Normalize([<span class="hljs-number">0.485</span>, <span class="hljs-number">0.456</span>, <span class="hljs-number">0.406</span>],<br>                                             [<span class="hljs-number">0.229</span>, <span class="hljs-number">0.224</span>, <span class="hljs-number">0.225</span>])<br><br>train_augs = torchvision.transforms.Compose([<br>    torchvision.transforms.RandomResizedCrop(<span class="hljs-number">224</span>),<br>    torchvision.transforms.RandomHorizontalFlip(),<br>    torchvision.transforms.ToTensor(), normalize])<br><br>test_augs = torchvision.transforms.Compose([<br>    torchvision.transforms.Resize(<span class="hljs-number">256</span>),<br>    torchvision.transforms.CenterCrop(<span class="hljs-number">224</span>),<br>    torchvision.transforms.ToTensor(), normalize])<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>定义和初始化模型:</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">pretrained_net = torchvision.models.resnet18(pretrained=<span class="hljs-literal">True</span>)<br><br>pretrained_net.fc<br><br><span class="hljs-comment"># result</span><br>Linear(in_features=<span class="hljs-number">512</span>, out_features=<span class="hljs-number">1000</span>, bias=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>构造模型：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">finetune_net = torchvision.models.resnet18(pretrained=<span class="hljs-literal">True</span>)<br>finetune_net.fc = <br><span class="hljs-comment"># 换掉最后的输出层</span><br>nn.Linear(finetune_net.fc.in_features, <span class="hljs-number">2</span>)<br>nn.init.xavier_uniform_(finetune_net.fc.weight);<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>微调模型：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">train_fine_tuning</span>(<span class="hljs-params">net, learning_rate, batch_size=<span class="hljs-number">128</span>, num_epochs=<span class="hljs-number">5</span>,</span><br><span class="hljs-params">                      param_group=<span class="hljs-literal">True</span></span>):<br>    train_iter = torch.utils.data.DataLoader(<br>        torchvision.datasets.ImageFolder(os.path.join(data_dir, <span class="hljs-string">'train'</span>),<br>                                         transform=train_augs),<br>        batch_size=batch_size, shuffle=<span class="hljs-literal">True</span>)<br>    test_iter = torch.utils.data.DataLoader(<br>        torchvision.datasets.ImageFolder(os.path.join(data_dir, <span class="hljs-string">'test'</span>),<br>                                         transform=test_augs),<br>        batch_size=batch_size)<br>    devices = d2l.try_all_gpus()<br>    loss = nn.CrossEntropyLoss(reduction=<span class="hljs-string">"none"</span>)<br>    <span class="hljs-keyword">if</span> param_group:<br>        params_1x = [<br>            param <span class="hljs-keyword">for</span> name, param <span class="hljs-keyword">in</span> net.named_parameters()<br>            <span class="hljs-keyword">if</span> name <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> [<span class="hljs-string">"fc.weight"</span>, <span class="hljs-string">"fc.bias"</span>]]<br>        trainer = torch.optim.SGD([{<br>            <span class="hljs-string">'params'</span>: params_1x}, {<br>                <span class="hljs-string">'params'</span>: net.fc.parameters(),<br>                <span class="hljs-string">'lr'</span>: learning_rate * <span class="hljs-number">10</span>}], lr=learning_rate,<br>                                  weight_decay=<span class="hljs-number">0.001</span>)<br>    <span class="hljs-keyword">else</span>:<br>        trainer = torch.optim.SGD(net.parameters(), lr=learning_rate,<br>                                  weight_decay=<span class="hljs-number">0.001</span>)<br>    d2l.train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs,<br>                   devices)<br><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>使用较小的学习率：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">train_fine_tuning(finetune_net, <span class="hljs-number">5e-5</span>)<br><br><span class="hljs-comment"># result</span><br>loss <span class="hljs-number">0.263</span>, train acc <span class="hljs-number">0.905</span>, test acc <span class="hljs-number">0.934</span><br><span class="hljs-number">841.8</span> examples/sec on [device(<span class="hljs-built_in">type</span>=<span class="hljs-string">'cuda'</span>, index=<span class="hljs-number">0</span>), device(<span class="hljs-built_in">type</span>=<span class="hljs-string">'cuda'</span>, index=<span class="hljs-number">1</span>)]<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>为了进行比较， 所有模型参数初始化为随机值</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">scratch_net = torchvision.models.resnet18()<br>scratch_net.fc = nn.Linear(scratch_net.fc.in_features, <span class="hljs-number">2</span>)<br>train_fine_tuning(scratch_net, <span class="hljs-number">5e-4</span>, param_group=<span class="hljs-literal">False</span>)<br><br><span class="hljs-comment"># result</span><br>loss <span class="hljs-number">0.416</span>, train acc <span class="hljs-number">0.819</span>, test acc <span class="hljs-number">0.750</span><br><span class="hljs-number">1570.1</span> examples/sec on [device(<span class="hljs-built_in">type</span>=<span class="hljs-string">'cuda'</span>, index=<span class="hljs-number">0</span>), device(<span class="hljs-built_in">type</span>=<span class="hljs-string">'cuda'</span>, index=<span class="hljs-number">1</span>)]<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><ul>
+<li><p><strong>建议就是fine-tuning，别从头开始。</strong>一般不会有坏处，可以先试试。</p>
+</li>
+<li><p><strong>但是如果我们用的数据，和pre-trained用的数据很不一样，建议从头开始捏！（先试试，不行就从头开始）</strong></p>
+</li>
+<li><p><strong>Fine-Tuning 本质上就是 Transfer Training 中的一种算法</strong></p>
+</li>
+<li><p>微调对学习率不敏感，选一个比较小的学习率就行了！！！人家抽特征，最重要的部分都训练好了嘛，你就拿来用就行，改一改最后的输出层！</p>
+</li>
+</ul>
+<h1 id="目标检测-Object-Detection"><a href="#目标检测-Object-Detection" class="headerlink" title="目标检测(Object Detection)"></a>目标检测(Object Detection)</h1><h2 id="边缘框"><a href="#边缘框" class="headerlink" title="边缘框"></a>边缘框</h2><blockquote>
+<p>用于表示物体的位置</p>
+</blockquote>
+<ul>
+<li>边框表示方式：<ul>
+<li>左上x，左上y，右下x，右下y</li>
+<li>左上x，左上y，宽，高</li>
+</ul>
+</li>
+<li>目标检测数据集<ul>
+<li>每行表示一个物体，图片文件名，物体类别，边缘框</li>
+<li><a target="_blank" rel="noopener" href="https://cocodataset.org/#home">Coco Dataset</a>，80物体，330k图片，1.5M物体</li>
+</ul>
+</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><ul>
+<li>Dependencies</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">%matplotlib inline<br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br>d2l.set_figsize()<br>img = d2l.plt.imread(<span class="hljs-string">'../img/catdog.jpg'</span>)<br>d2l.plt.imshow(img);<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>表示位置</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">box_corner_to_center</span>(<span class="hljs-params">boxes</span>):<br>    <span class="hljs-string">"""从（左上，右下）转换到（中间，宽度，高度）"""</span><br>    x1, y1, x2, y2 = boxes[:, <span class="hljs-number">0</span>], boxes[:, <span class="hljs-number">1</span>], boxes[:, <span class="hljs-number">2</span>], boxes[:, <span class="hljs-number">3</span>]<br>    cx = (x1 + x2) / <span class="hljs-number">2</span><br>    cy = (y1 + y2) / <span class="hljs-number">2</span><br>    w = x2 - x1<br>    h = y2 - y1<br>    boxes = torch.stack((cx, cy, w, h), axis=-<span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">return</span> boxes<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">box_center_to_corner</span>(<span class="hljs-params">boxes</span>):<br>    <span class="hljs-string">"""从（中间，宽度，高度）转换到（左上，右下）"""</span><br>    cx, cy, w, h = boxes[:, <span class="hljs-number">0</span>], boxes[:, <span class="hljs-number">1</span>], boxes[:, <span class="hljs-number">2</span>], boxes[:, <span class="hljs-number">3</span>]<br>    x1 = cx - <span class="hljs-number">0.5</span> * w<br>    y1 = cy - <span class="hljs-number">0.5</span> * h<br>    x2 = cx + <span class="hljs-number">0.5</span> * w<br>    y2 = cy + <span class="hljs-number">0.5</span> * h<br>    boxes = torch.stack((x1, y1, x2, y2), axis=-<span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">return</span> boxes<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>定义图像中狗和猫的边界框</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">dog_bbox, cat_bbox = [<span class="hljs-number">60.0</span>, <span class="hljs-number">45.0</span>, <span class="hljs-number">378.0</span>, <span class="hljs-number">516.0</span>], [<span class="hljs-number">400.0</span>, <span class="hljs-number">112.0</span>, <span class="hljs-number">655.0</span>, <span class="hljs-number">493.0</span>]<br><br>boxes = torch.tensor((dog_bbox, cat_bbox))<br>box_center_to_corner(box_corner_to_center(boxes)) == boxes<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>将边界框在图中画出</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">bbox_to_rect</span>(<span class="hljs-params">bbox, color</span>):<br>    <span class="hljs-keyword">return</span> d2l.plt.Rectangle(xy=(bbox[<span class="hljs-number">0</span>], bbox[<span class="hljs-number">1</span>]), width=bbox[<span class="hljs-number">2</span>] - bbox[<span class="hljs-number">0</span>],<br>                             height=bbox[<span class="hljs-number">3</span>] - bbox[<span class="hljs-number">1</span>], fill=<span class="hljs-literal">False</span>,<br>                             edgecolor=color, linewidth=<span class="hljs-number">2</span>)<br><br>fig = d2l.plt.imshow(img)<br>fig.axes.add_patch(bbox_to_rect(dog_bbox, <span class="hljs-string">'blue'</span>))<br>fig.axes.add_patch(bbox_to_rect(cat_bbox, <span class="hljs-string">'red'</span>));<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>怪不得要转换，matplotlib要使用嘛！！！</p>
+</blockquote>
+<h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><blockquote>
+<p>目标检测的数据集没有特别好的，特别小的数据集</p>
+</blockquote>
+<ul>
+<li>手动构造小的数据集的读入：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">%matplotlib inline<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torchvision<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br>d2l.DATA_HUB[<span class="hljs-string">'banana-detection'</span>] = (<br>    d2l.DATA_URL + <span class="hljs-string">'banana-detection.zip'</span>,<br>    <span class="hljs-string">'5de26c8fce5ccdea9f91267273464dc968d20d72'</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>读取香蕉检测数据集：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">read_data_bananas</span>(<span class="hljs-params">is_train=<span class="hljs-literal">True</span></span>):<br>    <span class="hljs-string">"""读取香蕉检测数据集中的图像和标签。"""</span><br>    data_dir = d2l.download_extract(<span class="hljs-string">'banana-detection'</span>)<br>    csv_fname = os.path.join(data_dir,<br>                             <span class="hljs-string">'bananas_train'</span> <span class="hljs-keyword">if</span> is_train <span class="hljs-keyword">else</span> <span class="hljs-string">'bananas_val'</span>,<br>                             <span class="hljs-string">'label.csv'</span>)<br>    csv_data = pd.read_csv(csv_fname)<br>    csv_data = csv_data.set_index(<span class="hljs-string">'img_name'</span>)<br>    images, targets = [], []<br>    <span class="hljs-keyword">for</span> img_name, target <span class="hljs-keyword">in</span> csv_data.iterrows():<br>        images.append(<br>            torchvision.io.read_image(<br>                os.path.join(data_dir,<br>                             <span class="hljs-string">'bananas_train'</span> <span class="hljs-keyword">if</span> is_train <span class="hljs-keyword">else</span> <span class="hljs-string">'bananas_val'</span>,<br>                             <span class="hljs-string">'images'</span>, <span class="hljs-string">f'<span class="hljs-subst">{img_name}</span>'</span>)))<br>        targets.append(<span class="hljs-built_in">list</span>(target))<br>    <span class="hljs-keyword">return</span> images, torch.tensor(targets).unsqueeze(<span class="hljs-number">1</span>) / <span class="hljs-number">256</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>创建一个自定义 <code>Dataset</code> 实例</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">BananasDataset</span>(torch.utils.data.Dataset):<br>    <span class="hljs-string">"""一个用于加载香蕉检测数据集的自定义数据集。"""</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, is_train</span>):<br>        self.features, self.labels = read_data_bananas(is_train)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">'read '</span> + <span class="hljs-built_in">str</span>(<span class="hljs-built_in">len</span>(self.features)) + (<br>            <span class="hljs-string">f' training examples'</span> <span class="hljs-keyword">if</span> is_train <span class="hljs-keyword">else</span> <span class="hljs-string">f' validation examples'</span>))<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__getitem__</span>(<span class="hljs-params">self, idx</span>):<br>        <span class="hljs-keyword">return</span> (self.features[idx].<span class="hljs-built_in">float</span>(), self.labels[idx])<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__len__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">len</span>(self.features)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>为训练集和测试集返回两个数据加载器实例</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">load_data_bananas</span>(<span class="hljs-params">batch_size</span>):<br>    <span class="hljs-string">"""加载香蕉检测数据集。"""</span><br>    train_iter = torch.utils.data.DataLoader(BananasDataset(is_train=<span class="hljs-literal">True</span>),<br>                                             batch_size, shuffle=<span class="hljs-literal">True</span>)<br>    val_iter = torch.utils.data.DataLoader(BananasDataset(is_train=<span class="hljs-literal">False</span>),<br>                                           batch_size)<br>    <span class="hljs-keyword">return</span> train_iter, val_iter<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>读取一个小批量，并打印其中的图像和标签的形状</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">batch_size, edge_size = <span class="hljs-number">32</span>, <span class="hljs-number">256</span><br>train_iter, _ = load_data_bananas(batch_size)<br>batch = <span class="hljs-built_in">next</span>(<span class="hljs-built_in">iter</span>(train_iter))<br>batch[<span class="hljs-number">0</span>].shape, batch[<span class="hljs-number">1</span>].shape<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>示范</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">imgs = (batch[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>:<span class="hljs-number">10</span>].permute(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>)) / <span class="hljs-number">255</span><br>axes = d2l.show_images(imgs, <span class="hljs-number">2</span>, <span class="hljs-number">5</span>, scale=<span class="hljs-number">2</span>)<br><span class="hljs-keyword">for</span> ax, label <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(axes, batch[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>:<span class="hljs-number">10</span>]):<br>    d2l.show_bboxes(ax, [label[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>:<span class="hljs-number">5</span>] * edge_size], colors=[<span class="hljs-string">'w'</span>])<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="锚框-Anchor-box"><a href="#锚框-Anchor-box" class="headerlink" title="锚框(Anchor box)"></a>锚框(Anchor box)</h2><ul>
+<li><p>目标检测算法是基于锚框</p>
+<ul>
+<li>提出多个被锚框的区域（边缘框）</li>
+<li>预测每个锚框里是否含有关注的物体</li>
+<li>如果是，预测从这个锚框到真实边缘框的偏移</li>
+</ul>
+</li>
+<li><p>IoU - 交并比</p>
+<ul>
+<li>用于计算框的相似度，0表示无重叠，1表示重合</li>
+<li>Jacquard指数的特殊情况：$\frac{|A\ \cap\ B|}{|A\ \cup\ B|}$</li>
+</ul>
+</li>
+<li><p>赋予锚框标号：</p>
+<ul>
+<li>每个框是一个训练样本</li>
+<li>每个框要么是背景，要么关联一个真实边缘框</li>
+<li>一个算法，可能会生成大量的框，其中大多数都是背景（负类样本）</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308111043321.png" srcset="/img/loading.gif" lazyload alt="image-20230811104325075"></p>
+<ul>
+<li><p>使用非极大值抑制(NMS)输出</p>
+<ul>
+<li>每个框预测一个边缘框</li>
+<li>NMS可以合并相似的预测<ul>
+<li>选中的非背景累的最大值</li>
+<li>去掉所有其它和它IoU值大于$\theta$的预测</li>
+<li>重复上述过程所有预测要么被选中，要么被去掉</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308111134788.png" srcset="/img/loading.gif" lazyload alt="image-20230811113428629"></p>
+</li>
+</ul>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>一类目标检测算法基于锚框来预测</li>
+<li>首先生成大量锚框，并赋予标号，每个锚框作为一个样本进行训练</li>
+<li>在预测时，使用NMS来去掉冗余的预测</li>
+</ul>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><ul>
+<li>Dependencies:</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">%matplotlib inline<br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br>torch.set_printoptions(<span class="hljs-number">2</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>锚框的宽度和高度分别是$ws\sqrt{r}$和$ws/\sqrt{r}$，我们只考虑组合：</li>
+</ul>
+<p>$$<br>(s_1, r_1), (s_1, r_2), \ldots, (s_1, r_m), (s_2, r_1), (s_3, r_1), \ldots, (s_n, r_1)<br>$$</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">multibox_prior</span>(<span class="hljs-params">data, sizes, ratios</span>):<br>    <span class="hljs-string">"""生成以每个像素为中心具有不同形状的锚框。"""</span><br>    in_height, in_width = data.shape[-<span class="hljs-number">2</span>:]<br>    device, num_sizes, num_ratios = data.device, <span class="hljs-built_in">len</span>(sizes), <span class="hljs-built_in">len</span>(ratios)<br>    boxes_per_pixel = (num_sizes + num_ratios - <span class="hljs-number">1</span>)<br>    size_tensor = torch.tensor(sizes, device=device)<br>    ratio_tensor = torch.tensor(ratios, device=device)<br><br>    offset_h, offset_w = <span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span><br>    steps_h = <span class="hljs-number">1.0</span> / in_height<br>    steps_w = <span class="hljs-number">1.0</span> / in_width<br><br>    center_h = (torch.arange(in_height, device=device) + offset_h) * steps_h<br>    center_w = (torch.arange(in_width, device=device) + offset_w) * steps_w<br>    shift_y, shift_x = torch.meshgrid(center_h, center_w)<br>    shift_y, shift_x = shift_y.reshape(-<span class="hljs-number">1</span>), shift_x.reshape(-<span class="hljs-number">1</span>)<br><br>    w = torch.cat((size_tensor * torch.sqrt(ratio_tensor[<span class="hljs-number">0</span>]),<br>                   sizes[<span class="hljs-number">0</span>] * torch.sqrt(ratio_tensor[<span class="hljs-number">1</span>:])))\<br>                   * in_height / in_width<br>    h = torch.cat((size_tensor / torch.sqrt(ratio_tensor[<span class="hljs-number">0</span>]),<br>                   sizes[<span class="hljs-number">0</span>] / torch.sqrt(ratio_tensor[<span class="hljs-number">1</span>:])))<br>    anchor_manipulations = torch.stack(<br>        (-w, -h, w, h)).T.repeat(in_height * in_width, <span class="hljs-number">1</span>) / <span class="hljs-number">2</span><br><br>    out_grid = torch.stack([shift_x, shift_y, shift_x, shift_y],<br>                           dim=<span class="hljs-number">1</span>).repeat_interleave(boxes_per_pixel, dim=<span class="hljs-number">0</span>)<br>    output = out_grid + anchor_manipulations<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>返回的锚框变量 <code>Y</code> 的形状</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">img = d2l.plt.imread(<span class="hljs-string">'../img/catdog.jpg'</span>)<br>h, w = img.shape[:<span class="hljs-number">2</span>]<br><br><span class="hljs-built_in">print</span>(h, w)<br>X = torch.rand(size=(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>, h, w))<br>Y = multibox_prior(X, sizes=[<span class="hljs-number">0.75</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.25</span>], ratios=[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0.5</span>])<br>Y.shape<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>访问以 (250, 250) 为中心的第一个锚框</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">boxes = Y.reshape(h, w, <span class="hljs-number">5</span>, <span class="hljs-number">4</span>)<br>boxes[<span class="hljs-number">250</span>, <span class="hljs-number">250</span>, <span class="hljs-number">0</span>, :]<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>显示以图像中一个像素为中心的所有锚框</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">show_bboxes</span>(<span class="hljs-params">axes, bboxes, labels=<span class="hljs-literal">None</span>, colors=<span class="hljs-literal">None</span></span>):<br>    <span class="hljs-string">"""显示所有边界框。"""</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_make_list</span>(<span class="hljs-params">obj, default_values=<span class="hljs-literal">None</span></span>):<br>        <span class="hljs-keyword">if</span> obj <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>            obj = default_values<br>        <span class="hljs-keyword">elif</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(obj, (<span class="hljs-built_in">list</span>, <span class="hljs-built_in">tuple</span>)):<br>            obj = [obj]<br>        <span class="hljs-keyword">return</span> obj<br><br>    labels = _make_list(labels)<br>    colors = _make_list(colors, [<span class="hljs-string">'b'</span>, <span class="hljs-string">'g'</span>, <span class="hljs-string">'r'</span>, <span class="hljs-string">'m'</span>, <span class="hljs-string">'c'</span>])<br>    <span class="hljs-keyword">for</span> i, bbox <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(bboxes):<br>        color = colors[i % <span class="hljs-built_in">len</span>(colors)]<br>        rect = d2l.bbox_to_rect(bbox.detach().numpy(), color)<br>        axes.add_patch(rect)<br>        <span class="hljs-keyword">if</span> labels <span class="hljs-keyword">and</span> <span class="hljs-built_in">len</span>(labels) &gt; i:<br>            text_color = <span class="hljs-string">'k'</span> <span class="hljs-keyword">if</span> color == <span class="hljs-string">'w'</span> <span class="hljs-keyword">else</span> <span class="hljs-string">'w'</span><br>            axes.text(rect.xy[<span class="hljs-number">0</span>], rect.xy[<span class="hljs-number">1</span>], labels[i], va=<span class="hljs-string">'center'</span>,<br>                      ha=<span class="hljs-string">'center'</span>, fontsize=<span class="hljs-number">9</span>, color=text_color,<br>                      bbox=<span class="hljs-built_in">dict</span>(facecolor=color, lw=<span class="hljs-number">0</span>))<br><br>d2l.set_figsize()<br>bbox_scale = torch.tensor((w, h, w, h))<br>fig = d2l.plt.imshow(img)<br>show_bboxes(fig.axes, boxes[<span class="hljs-number">250</span>, <span class="hljs-number">250</span>, :, :] * bbox_scale, [<br>    <span class="hljs-string">'s=0.75, r=1'</span>, <span class="hljs-string">'s=0.5, r=1'</span>, <span class="hljs-string">'s=0.25, r=1'</span>, <span class="hljs-string">'s=0.75, r=2'</span>, <span class="hljs-string">'s=0.75, r=0.5'</span><br>])<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>交并比(IoU)</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">box_iou</span>(<span class="hljs-params">boxes1, boxes2</span>):<br>    <span class="hljs-string">"""计算两个锚框或边界框列表中成对的交并比。"""</span><br>    box_area = <span class="hljs-keyword">lambda</span> boxes: ((boxes[:, <span class="hljs-number">2</span>] - boxes[:, <span class="hljs-number">0</span>]) *<br>                              (boxes[:, <span class="hljs-number">3</span>] - boxes[:, <span class="hljs-number">1</span>]))<br>    areas1 = box_area(boxes1)<br>    areas2 = box_area(boxes2)<br>    inter_upperlefts = torch.<span class="hljs-built_in">max</span>(boxes1[:, <span class="hljs-literal">None</span>, :<span class="hljs-number">2</span>], boxes2[:, :<span class="hljs-number">2</span>])<br>    inter_lowerrights = torch.<span class="hljs-built_in">min</span>(boxes1[:, <span class="hljs-literal">None</span>, <span class="hljs-number">2</span>:], boxes2[:, <span class="hljs-number">2</span>:])<br>    inters = (inter_lowerrights - inter_upperlefts).clamp(<span class="hljs-built_in">min</span>=<span class="hljs-number">0</span>)<br>    inter_areas = inters[:, :, <span class="hljs-number">0</span>] * inters[:, :, <span class="hljs-number">1</span>]<br>    union_areas = areas1[:, <span class="hljs-literal">None</span>] + areas2 - inter_areas<br>    <span class="hljs-keyword">return</span> inter_areas / union_areas<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>将真实边界框分配给锚框</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">assign_anchor_to_bbox</span>(<span class="hljs-params">ground_truth, anchors, device, iou_threshold=<span class="hljs-number">0.5</span></span>):<br>    <span class="hljs-string">"""将最接近的真实边界框分配给锚框。"""</span><br>    num_anchors, num_gt_boxes = anchors.shape[<span class="hljs-number">0</span>], ground_truth.shape[<span class="hljs-number">0</span>]<br>    jaccard = box_iou(anchors, ground_truth)<br>    anchors_bbox_map = torch.full((num_anchors,), -<span class="hljs-number">1</span>, dtype=torch.long,<br>                                  device=device)<br>    max_ious, indices = torch.<span class="hljs-built_in">max</span>(jaccard, dim=<span class="hljs-number">1</span>)<br>    anc_i = torch.nonzero(max_ious &gt;= <span class="hljs-number">0.5</span>).reshape(-<span class="hljs-number">1</span>)<br>    box_j = indices[max_ious &gt;= <span class="hljs-number">0.5</span>]<br>    anchors_bbox_map[anc_i] = box_j<br>    col_discard = torch.full((num_anchors,), -<span class="hljs-number">1</span>)<br>    row_discard = torch.full((num_gt_boxes,), -<span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_gt_boxes):<br>        max_idx = torch.argmax(jaccard)<br>        box_idx = (max_idx % num_gt_boxes).long()<br>        anc_idx = (max_idx / num_gt_boxes).long()<br>        anchors_bbox_map[anc_idx] = box_idx<br>        jaccard[:, box_idx] = col_discard<br>        jaccard[anc_idx, :] = row_discard<br>    <span class="hljs-keyword">return</span> anchors_bbox_map<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>给定框A和B，中心坐标分别为$(x_a,y_a)$, 和$(x_b,y_b)$,宽度分别为$w_a$和$w_b$，高度分别为$h_a$和$h_b$。 我们可以将𝐴的偏移量标记为</p>
+</blockquote>
+<p>$$<br>\left( \frac{ \frac{x_b - x_a}{w_a} - \mu_x }{\sigma_x},<br>\frac{ \frac{y_b - y_a}{h_a} - \mu_y }{\sigma_y},<br>\frac{ \log \frac{w_b}{w_a} - \mu_w }{\sigma_w},<br>\frac{ \log \frac{h_b}{h_a} - \mu_h }{\sigma_h}\right)<br>$$</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">offset_boxes</span>(<span class="hljs-params">anchors, assigned_bb, eps=<span class="hljs-number">1e-6</span></span>):<br>    <span class="hljs-string">"""对锚框偏移量的转换。"""</span><br>    c_anc = d2l.box_corner_to_center(anchors)<br>    c_assigned_bb = d2l.box_corner_to_center(assigned_bb)<br>    offset_xy = <span class="hljs-number">10</span> * (c_assigned_bb[:, :<span class="hljs-number">2</span>] - c_anc[:, :<span class="hljs-number">2</span>]) / c_anc[:, <span class="hljs-number">2</span>:]<br>    offset_wh = <span class="hljs-number">5</span> * torch.log(eps + c_assigned_bb[:, <span class="hljs-number">2</span>:] / c_anc[:, <span class="hljs-number">2</span>:])<br>    offset = torch.cat([offset_xy, offset_wh], axis=<span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">return</span> offset<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>标记锚框的类和偏移量</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">multibox_target</span>(<span class="hljs-params">anchors, labels</span>):<br>    <span class="hljs-string">"""使用真实边界框标记锚框。"""</span><br>    batch_size, anchors = labels.shape[<span class="hljs-number">0</span>], anchors.squeeze(<span class="hljs-number">0</span>)<br>    batch_offset, batch_mask, batch_class_labels = [], [], []<br>    device, num_anchors = anchors.device, anchors.shape[<span class="hljs-number">0</span>]<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(batch_size):<br>        label = labels[i, :, :]<br>        anchors_bbox_map = assign_anchor_to_bbox(label[:, <span class="hljs-number">1</span>:], anchors,<br>                                                 device)<br>        bbox_mask = ((anchors_bbox_map &gt;= <span class="hljs-number">0</span>).<span class="hljs-built_in">float</span>().unsqueeze(-<span class="hljs-number">1</span>)).repeat(<br>            <span class="hljs-number">1</span>, <span class="hljs-number">4</span>)<br>        class_labels = torch.zeros(num_anchors, dtype=torch.long,<br>                                   device=device)<br>        assigned_bb = torch.zeros((num_anchors, <span class="hljs-number">4</span>), dtype=torch.float32,<br>                                  device=device)<br>        indices_true = torch.nonzero(anchors_bbox_map &gt;= <span class="hljs-number">0</span>)<br>        bb_idx = anchors_bbox_map[indices_true]<br>        class_labels[indices_true] = label[bb_idx, <span class="hljs-number">0</span>].long() + <span class="hljs-number">1</span><br>        assigned_bb[indices_true] = label[bb_idx, <span class="hljs-number">1</span>:]<br>        offset = offset_boxes(anchors, assigned_bb) * bbox_mask<br>        batch_offset.append(offset.reshape(-<span class="hljs-number">1</span>))<br>        batch_mask.append(bbox_mask.reshape(-<span class="hljs-number">1</span>))<br>        batch_class_labels.append(class_labels)<br>    bbox_offset = torch.stack(batch_offset)<br>    bbox_mask = torch.stack(batch_mask)<br>    class_labels = torch.stack(batch_class_labels)<br>    <span class="hljs-keyword">return</span> (bbox_offset, bbox_mask, class_labels)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>在图像中绘制这些地面真相边界框和锚框</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">ground_truth = torch.tensor([[<span class="hljs-number">0</span>, <span class="hljs-number">0.1</span>, <span class="hljs-number">0.08</span>, <span class="hljs-number">0.52</span>, <span class="hljs-number">0.92</span>],<br>                             [<span class="hljs-number">1</span>, <span class="hljs-number">0.55</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.9</span>, <span class="hljs-number">0.88</span>]])<br>anchors = torch.tensor([[<span class="hljs-number">0</span>, <span class="hljs-number">0.1</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.3</span>], [<span class="hljs-number">0.15</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.4</span>, <span class="hljs-number">0.4</span>],<br>                        [<span class="hljs-number">0.63</span>, <span class="hljs-number">0.05</span>, <span class="hljs-number">0.88</span>, <span class="hljs-number">0.98</span>], [<span class="hljs-number">0.66</span>, <span class="hljs-number">0.45</span>, <span class="hljs-number">0.8</span>, <span class="hljs-number">0.8</span>],<br>                        [<span class="hljs-number">0.57</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.92</span>, <span class="hljs-number">0.9</span>]])<br><br>fig = d2l.plt.imshow(img)<br>show_bboxes(fig.axes, ground_truth[:, <span class="hljs-number">1</span>:] * bbox_scale, [<span class="hljs-string">'dog'</span>, <span class="hljs-string">'cat'</span>], <span class="hljs-string">'k'</span>)<br>show_bboxes(fig.axes, anchors * bbox_scale, [<span class="hljs-string">'0'</span>, <span class="hljs-string">'1'</span>, <span class="hljs-string">'2'</span>, <span class="hljs-string">'3'</span>, <span class="hljs-string">'4'</span>]);<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>根据狗和猫的真实边界框，标注这些锚框的分类和偏移量</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">labels = multibox_target(anchors.unsqueeze(dim=<span class="hljs-number">0</span>),<br>                         ground_truth.unsqueeze(dim=<span class="hljs-number">0</span>))<br><br>labels[<span class="hljs-number">2</span>]<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>应用逆偏移变换来返回预测的边界框坐标</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">offset_inverse</span>(<span class="hljs-params">anchors, offset_preds</span>):<br>    <span class="hljs-string">"""根据带有预测偏移量的锚框来预测边界框。"""</span><br>    anc = d2l.box_corner_to_center(anchors)<br>    pred_bbox_xy = (offset_preds[:, :<span class="hljs-number">2</span>] * anc[:, <span class="hljs-number">2</span>:] / <span class="hljs-number">10</span>) + anc[:, :<span class="hljs-number">2</span>]<br>    pred_bbox_wh = torch.exp(offset_preds[:, <span class="hljs-number">2</span>:] / <span class="hljs-number">5</span>) * anc[:, <span class="hljs-number">2</span>:]<br>    pred_bbox = torch.cat((pred_bbox_xy, pred_bbox_wh), axis=<span class="hljs-number">1</span>)<br>    predicted_bbox = d2l.box_center_to_corner(pred_bbox)<br>    <span class="hljs-keyword">return</span> predicted_bbox<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>以下 <code>nms</code> 函数按降序对置信度进行排序并返回其索引</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">nms</span>(<span class="hljs-params">boxes, scores, iou_threshold</span>):<br>    <span class="hljs-string">"""对预测边界框的置信度进行排序。"""</span><br>    B = torch.argsort(scores, dim=-<span class="hljs-number">1</span>, descending=<span class="hljs-literal">True</span>)<br>    keep = []<br>    <span class="hljs-keyword">while</span> B.numel() &gt; <span class="hljs-number">0</span>:<br>        i = B[<span class="hljs-number">0</span>]<br>        keep.append(i)<br>        <span class="hljs-keyword">if</span> B.numel() == <span class="hljs-number">1</span>: <span class="hljs-keyword">break</span><br>        iou = box_iou(boxes[i, :].reshape(-<span class="hljs-number">1</span>, <span class="hljs-number">4</span>),<br>                      boxes[B[<span class="hljs-number">1</span>:], :].reshape(-<span class="hljs-number">1</span>, <span class="hljs-number">4</span>)).reshape(-<span class="hljs-number">1</span>)<br>        inds = torch.nonzero(iou &lt;= iou_threshold).reshape(-<span class="hljs-number">1</span>)<br>        B = B[inds + <span class="hljs-number">1</span>]<br>    <span class="hljs-keyword">return</span> torch.tensor(keep, device=boxes.device)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>将非极大值抑制应用于预测边界框</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">multibox_detection</span>(<span class="hljs-params">cls_probs, offset_preds, anchors, nms_threshold=<span class="hljs-number">0.5</span>,</span><br><span class="hljs-params">                       pos_threshold=<span class="hljs-number">0.009999999</span></span>):<br>    <span class="hljs-string">"""使用非极大值抑制来预测边界框。"""</span><br>    device, batch_size = cls_probs.device, cls_probs.shape[<span class="hljs-number">0</span>]<br>    anchors = anchors.squeeze(<span class="hljs-number">0</span>)<br>    num_classes, num_anchors = cls_probs.shape[<span class="hljs-number">1</span>], cls_probs.shape[<span class="hljs-number">2</span>]<br>    out = []<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(batch_size):<br>        cls_prob, offset_pred = cls_probs[i], offset_preds[i].reshape(-<span class="hljs-number">1</span>, <span class="hljs-number">4</span>)<br>        conf, class_id = torch.<span class="hljs-built_in">max</span>(cls_prob[<span class="hljs-number">1</span>:], <span class="hljs-number">0</span>)<br>        predicted_bb = offset_inverse(anchors, offset_pred)<br>        keep = nms(predicted_bb, conf, nms_threshold)<br><br>        all_idx = torch.arange(num_anchors, dtype=torch.long, device=device)<br>        combined = torch.cat((keep, all_idx))<br>        uniques, counts = combined.unique(return_counts=<span class="hljs-literal">True</span>)<br>        non_keep = uniques[counts == <span class="hljs-number">1</span>]<br>        all_id_sorted = torch.cat((keep, non_keep))<br>        class_id[non_keep] = -<span class="hljs-number">1</span><br>        class_id = class_id[all_id_sorted]<br>        conf, predicted_bb = conf[all_id_sorted], predicted_bb[all_id_sorted]<br>        below_min_idx = (conf &lt; pos_threshold)<br>        class_id[below_min_idx] = -<span class="hljs-number">1</span><br>        conf[below_min_idx] = <span class="hljs-number">1</span> - conf[below_min_idx]<br>        pred_info = torch.cat(<br>            (class_id.unsqueeze(<span class="hljs-number">1</span>), conf.unsqueeze(<span class="hljs-number">1</span>), predicted_bb), dim=<span class="hljs-number">1</span>)<br>        out.append(pred_info)<br>    <span class="hljs-keyword">return</span> torch.stack(out)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>将上述算法应用到一个带有四个锚框的具体示例中</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">anchors = torch.tensor([[<span class="hljs-number">0.1</span>, <span class="hljs-number">0.08</span>, <span class="hljs-number">0.52</span>, <span class="hljs-number">0.92</span>], [<span class="hljs-number">0.08</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.56</span>, <span class="hljs-number">0.95</span>],<br>                        [<span class="hljs-number">0.15</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.62</span>, <span class="hljs-number">0.91</span>], [<span class="hljs-number">0.55</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.9</span>, <span class="hljs-number">0.88</span>]])<br>offset_preds = torch.tensor([<span class="hljs-number">0</span>] * anchors.numel())<br>cls_probs = torch.tensor([[<span class="hljs-number">0</span>] * <span class="hljs-number">4</span>,<br>                          [<span class="hljs-number">0.9</span>, <span class="hljs-number">0.8</span>, <span class="hljs-number">0.7</span>, <span class="hljs-number">0.1</span>],<br>                          [<span class="hljs-number">0.1</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.9</span>]])<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>在图像上绘制这些预测边界框和置信度</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">fig = d2l.plt.imshow(img)<br>show_bboxes(fig.axes, anchors * bbox_scale,<br>            [<span class="hljs-string">'dog=0.9'</span>, <span class="hljs-string">'dog=0.8'</span>, <span class="hljs-string">'dog=0.7'</span>, <span class="hljs-string">'cat=0.9'</span>])<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>返回结果的形状是（批量大小，锚框的数量，6）</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">output = multibox_detection(cls_probs.unsqueeze(dim=<span class="hljs-number">0</span>),<br>                            offset_preds.unsqueeze(dim=<span class="hljs-number">0</span>),<br>                            anchors.unsqueeze(dim=<span class="hljs-number">0</span>), nms_threshold=<span class="hljs-number">0.5</span>)<br>output<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>输出由非极大值抑制保存的最终预测边界框</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">fig = d2l.plt.imshow(img)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> output[<span class="hljs-number">0</span>].detach().numpy():<br>    <span class="hljs-keyword">if</span> i[<span class="hljs-number">0</span>] == -<span class="hljs-number">1</span>:<br>        <span class="hljs-keyword">continue</span><br>    label = (<span class="hljs-string">'dog='</span>, <span class="hljs-string">'cat='</span>)[<span class="hljs-built_in">int</span>(i[<span class="hljs-number">0</span>])] + <span class="hljs-built_in">str</span>(i[<span class="hljs-number">1</span>])<br>    show_bboxes(fig.axes, [torch.tensor(i[<span class="hljs-number">2</span>:]) * bbox_scale], label)<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h1 id="R-CNN"><a href="#R-CNN" class="headerlink" title="R-CNN"></a>R-CNN</h1><ul>
+<li>使用启发式算法来选择锚框</li>
+<li>使用预训练模型来对每个锚框抽取特征</li>
+<li>训练一个SVM来对类别分类</li>
+<li>训练一个线性回归模型来预测边缘框偏移</li>
+</ul>
+<h2 id="Rol-pooling"><a href="#Rol-pooling" class="headerlink" title="Rol pooling"></a>Rol pooling</h2><ul>
+<li><p><em>兴趣区域汇聚层</em>（RoI pooling -&gt; region of interest）</p>
+<ul>
+<li>给定一个锚框，切n x m块，输出每块里面的最大值</li>
+<li>不管锚框多大，总是输出nm个值</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308111653354.svg" srcset="/img/loading.gif" lazyload alt="../_images/roi.svg"></p>
+</li>
+</ul>
+<h2 id="Fast-R-CNN"><a href="#Fast-R-CNN" class="headerlink" title="Fast R-CNN"></a>Fast R-CNN</h2><ul>
+<li>使用CNN对图片抽取特征。</li>
+<li>使用RoI池化层，对每个锚框生成固定长度特征</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308111652710.svg" srcset="/img/loading.gif" lazyload alt="../_images/fast-rcnn.svg"></p>
+<blockquote>
+<p>用CNN对整个图片抽取特征，在用RoI pooling抽取锚框中的特征时，Selective search找出对应位置的特征。这样就不需要和CNN一样，每个锚框分别还要RoI pooling，不再对每个锚框分别抽取特征，变得fast。</p>
+</blockquote>
+<h2 id="Faster-R-CNN"><a href="#Faster-R-CNN" class="headerlink" title="Faster R-CNN"></a>Faster R-CNN</h2><ul>
+<li>使用一个区域提议网络来代替启发式搜索来获得更好的锚框。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308111652716.svg" srcset="/img/loading.gif" lazyload alt="../_images/faster-rcnn.svg"></p>
+<blockquote>
+<p> <em>Faster R-CNN</em> (<a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_references/zreferences.html#id137">Ren <em>et al.</em>, 2015</a>)提出将选择性搜索替换为<em>区域提议网络</em>（region proposal network），从而减少提议区域的生成数量，并保证目标检测的精度。</p>
+</blockquote>
+<ul>
+<li>区域提议网络的计算步骤如下：<ul>
+<li>使用填充为1的的卷积层变换卷积神经网络的输出，并将输出通道数记为$c$。这样，卷积神经网络为图像抽取的特征图中的每个单元均得到一个长度为$c$的新特征。</li>
+<li>以特征图的每个像素为中心，生成多个不同大小和宽高比的锚框并标注它们。</li>
+<li>使用锚框中心单元长度为$c$的特征，分别预测该锚框的二元类别（含目标还是背景）和边界框。</li>
+<li>使用非极大值抑制，从预测类别为目标的预测边界框中移除相似的结果。最终输出的预测边界框即是兴趣区域汇聚层所需的提议区域。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>区域提议网络作为Faster R-CNN模型的一部分，是和整个模型一起训练得到的。 换句话说，Faster R-CNN的目标函数不仅包括目标检测中的类别和边界框预测，还包括区域提议网络中锚框的二元类别和边界框预测。 作为端到端训练的结果，区域提议网络能够学习到如何生成高质量的提议区域，从而在减少了从数据中学习的提议区域的数量的情况下，仍保持目标检测的精度。</p>
+</blockquote>
+<h2 id="Mask-R-CNN"><a href="#Mask-R-CNN" class="headerlink" title="Mask R-CNN"></a>Mask R-CNN</h2><ul>
+<li>如果在训练集中还标注了每个目标在图像上的像素级位置，那么<em>Mask R-CNN</em> (<a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_references/zreferences.html#id57">He <em>et al.</em>, 2017</a>)能够有效地利用这些详尽的标注信息进一步提升目标检测的精度。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308111652341.svg" srcset="/img/loading.gif" lazyload alt="../_images/mask-rcnn.svg"></p>
+<ul>
+<li>refer to <a target="_blank" rel="noopener" href="https://cv.gluon.ai/model_zoo/detection.html">RCNN Behavior</a></li>
+</ul>
+<h2 id="R-CNN系列总结"><a href="#R-CNN系列总结" class="headerlink" title="R-CNN系列总结"></a>R-CNN系列总结</h2><ul>
+<li>R-CNN是最早、最有名的一类，基于锚框和CNN的目标检测算法</li>
+<li>Fast/Faster R-CNN持续提高性能</li>
+<li>Faster R-CNN 和 Mask R-CNN是要求高精度场景下的常用算法（可能训练速度会慢一点）</li>
+</ul>
+<h1 id="SSD"><a href="#SSD" class="headerlink" title="SSD"></a>SSD</h1><blockquote>
+<p>Single Shot Detection，一发跑完！</p>
+</blockquote>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1TU4y1j7Wd/?spm_id_from=autoNext&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">GPU和CPU</a>讲的很好，Q&amp;A可以看一下！！！</li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1VV41147PC?p=2&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">更多的芯片 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1vU4y1V7rd/?p=2&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">单机多卡并行 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1jU4y1G7iu?p=2&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">分布式训练 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17y4y1g76q/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">数据增广 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/610929646#:~:text=%E5%BE%AE%E8%B0%83%EF%BC%88Fine%2Dtuning%EF%BC%89%E6%98%AF,%E8%8E%B7%E5%BE%97%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%80%A7%E8%83%BD%E3%80%82">Fine-tuning与预训练</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Sb4y1d7CR/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">微调 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://cocodataset.org/#home">Coco Dataset</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Lh411Y7LX/?p=4&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">物体检测和数据集 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1aB4y1K7za/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">锚框 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://cv.gluon.ai/model_zoo/detection.html">RCNN Behavior</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>D2L-8-Computer Vision</div>
+      <div>http://example.com/2023/08/07/d2l-8-computer-vision/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/10/d2l-kaggle-fang-jie-yu-ce/" title="D2L-Kaggle-房价预测">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">D2L-Kaggle-房价预测</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/07/d2l-9-recurrent-neural-networks/" title="D2L-9-Recurrent Neural Networks">
+                        <span class="hidden-mobile">D2L-9-Recurrent Neural Networks</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

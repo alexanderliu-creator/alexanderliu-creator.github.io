@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307231956594.jpg">
 <meta property="article:published_time" content="2023-08-06T02:47:43.000Z">
-<meta property="article:modified_time" content="2023-08-06T13:59:49.017Z">
+<meta property="article:modified_time" content="2023-08-10T12:56:02.722Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          29k 字
+          34k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          242 分钟
+          286 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：几秒前
+                    本文最后更新于：1 天前
                   
                 
               </p>
@@ -464,6 +464,10 @@
 <li>NiN块以一个普通卷积层开始，后面是两个1×1的卷积层。这两个1×1卷积层充当带有ReLU激活函数的逐像素全连接层。 第一层的卷积窗口形状通常由用户设置。 随后的卷积窗口形状固定为1×1。</li>
 </ul>
 <p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308061151975.png" srcset="/img/loading.gif" lazyload alt="image-20230806115157887"></p>
+<blockquote>
+<p>全连接层效果很好，但是参数太多，容易过拟合，不用！ -&gt; 1x1改变通道数，从而不用全连接层。（AlexNet Plus）</p>
+<p><strong>1x1调整维度的想法很重要！！！</strong></p>
+</blockquote>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">nin_block</span>(<span class="hljs-params">in_channels, out_channels, kernel_size, strides, padding</span>):<br>    <span class="hljs-keyword">return</span> nn.Sequential(<br>        nn.Conv2d(in_channels, out_channels, kernel_size, strides, padding),<br>        nn.ReLU(),<br>        nn.Conv2d(out_channels, out_channels, kernel_size=<span class="hljs-number">1</span>), nn.ReLU(),<br>        nn.Conv2d(out_channels, out_channels, kernel_size=<span class="hljs-number">1</span>), nn.ReLU())<br></code></pre></td></tr></tbody></table></figure>
 
 
@@ -497,6 +501,9 @@
 <li>GoogLeNet中，基本的卷积块被称为<em>Inception块</em>（Inception block）</li>
 </ul>
 <p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308061159420.svg" srcset="/img/loading.gif" lazyload alt="../_images/inception.svg"></p>
+<blockquote>
+<p>白色框是用来改变通道数的，蓝色框是真的卷积的昂！先通过1x1减少通道数，再输入3x3和5x5，可以显著减少3x3和5x5中，参数的数量。</p>
+</blockquote>
 <ul>
 <li>Inception块由四条并行路径组成。 前三条路径使用窗口大小为1×1、3×3和5×5的卷积层，从不同空间大小中提取信息。 中间的两条路径在输入上执行1×1卷积，以减少通道数，从而降低模型的复杂性。 第四条路径使用3×3最大汇聚层，然后使用1×1卷积层来改变通道数。 这四条路径都使用合适的填充来使输入与输出的高和宽一致，最后我们将每条线路的输出在通道维度上连结，并构成Inception块的输出。在Inception块中，通常调整的超参数是每层输出通道数。</li>
 </ul>
@@ -574,7 +581,7 @@
 <p> 我们在方差估计值中添加一个小的常量$\epsilon &gt; 0$，以确保我们永远不会尝试除以零，即使在经验方差估计值可能消失的情况下也是如此。估计值$\hat{\boldsymbol{\mu}}_\mathcal{B}$和${\hat{\boldsymbol{\sigma}}_\mathcal{B}}$通过使用平均值和方差的噪声（noise）估计来抵消缩放问题。 乍看起来，这种噪声是一个问题，而事实上它是有益的。</p>
 </blockquote>
 <ul>
-<li>由于尚未在理论上明确的原因，优化中的各种噪声源通常会导致更快的训练和较少的过拟合：这种变化似乎是正则化的一种形式。批量规范化层在”训练模式“（通过小批量统计数据规范化）和“预测模式”（通过数据集统计规范化）中的功能不同。 在训练过程中，我们无法得知使用整个数据集来估计平均值和方差，所以只能根据每个小批次的平均值和方差不断训练模型。 而在预测模式下，可以根据整个数据集精确计算批量规范化所需的平均值和方差。</li>
+<li>由于尚未在理论上明确的原因，优化中的各种噪声源通常会导致更快的训练和较少的过拟合：这种变化似乎是正则化的一种形式。批量规范化层在”训练模式“（通过小批量统计数据规范化）和“预测模式”（通过数据集统计规范化）中的功能不同。 在训练过程中，我们无法得知使用整个数据集来估计平均值和方差，所以只能根据每个小批次的平均值和方差不断训练模型。 而在预测模式下，可以根据整个数据集精确计算批量规范化所需的平均值和方差</li>
 </ul>
 <h2 id="批量规范化层"><a href="#批量规范化层" class="headerlink" title="批量规范化层"></a>批量规范化层</h2><ul>
 <li>批量规范化和其他层之间的一个关键区别是，由于批量规范化在完整的小批量上运行，因此我们不能像以前在引入其他层时那样忽略批量大小。 我们在下面讨论这两种情况：全连接层和卷积层，他们的批量规范化实现略有不同。</li>
@@ -642,6 +649,28 @@
 <li>这种解释只提供了一种不明确的直觉，但留下了一个有待后续挖掘的问题：为什么这项技术如此有效？</li>
 </ol>
 </li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>可学习的参数为$\gamma$和$\beta$</li>
+<li>作用在<ul>
+<li>全连接层和卷积层输出上，激活函数前</li>
+<li>全连接层和卷积层输入上</li>
+</ul>
+</li>
+<li>对全连接层，作用在特征维</li>
+<li>对于卷积层，作用在通道维</li>
+<li>没必要和Dropout一起使用，可能没那么有用了！！！</li>
+</ul>
+<blockquote>
+<ul>
+<li>本质也是一个线性变换，因此在激活函数（例如ReLU前），去进行操作。</li>
+<li>通道层可以当作是卷积层的特征维度，有多少个通道，可以当作有多少个特征！！！</li>
+</ul>
+</blockquote>
+<ul>
+<li>批量归一化固定小批量中的均值和方差，然后学习出适合的偏移和缩放</li>
+<li>可以加速收敛速度，但一般不改变模型精度</li>
+<li>核心思想：把每一层的数值放在差不多的分布里面，结合可学习的参数进行合理的缩放偏移，完成了数据的进一步优化。发现：很多时候不会改变模型的精度，但可以加速收敛速度。</li>
 </ul>
 <h1 id="残差网络ResNet"><a href="#残差网络ResNet" class="headerlink" title="残差网络ResNet"></a>残差网络ResNet</h1><h2 id="函数类"><a href="#函数类" class="headerlink" title="函数类"></a>函数类</h2><ul>
 <li>假设有一类特定的神经网络架构$\mathcal{F}$，它包括学习速率和其他超参数设置。 对于所有$f \in \mathcal{F}$，存在一些参数集（例如权重和偏置），这些参数可以通过在合适的数据集上进行训练而获得。 现在假设$f^*$是我们真正想要找到的函数，如果是$f^* \in \mathcal{F}$，那我们可以轻而易举的训练得到它，但通常我们不会那么幸运。 相反，我们将尝试找到一个函数$f^*_\mathcal{F}$，这是我们在$\mathcal{F}$中的最佳选择。 例如，给定一个具有$\mathbf{X}$特性和$\mathbf{y}$标签的数据集，我们可以尝试通过解决以下优化问题来找到它：</li>
@@ -717,6 +746,8 @@
 
 
 <h2 id="训练模型-4"><a href="#训练模型-4" class="headerlink" title="训练模型"></a>训练模型</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">lr, num_epochs, batch_size = <span class="hljs-number">0.05</span>, <span class="hljs-number">10</span>, <span class="hljs-number">256</span><br>train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=<span class="hljs-number">96</span>)<br>d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())<br><br><span class="hljs-comment"># result</span><br>loss <span class="hljs-number">0.008</span>, train acc <span class="hljs-number">0.999</span>, test acc <span class="hljs-number">0.898</span><br><span class="hljs-number">4650.1</span> examples/sec on cuda:<span class="hljs-number">0</span><br></code></pre></td></tr></tbody></table></figure>
+
+
 
 
 
@@ -815,20 +846,115 @@
 
 
 
+<h1 id="设计卷积网络架构"><a href="#设计卷积网络架构" class="headerlink" title="设计卷积网络架构"></a>设计卷积网络架构</h1><ul>
+<li><p>NAS(<em>neural architecture search</em>)，它们的成本通常是巨大的，依赖于强力搜索、遗传算法、强化学习或某种其他形式的超参数优化。给定固定的搜索空间，NAS 使用搜索策略根据返回的性能估计自动选择架构。NAS 的结果是单个网络实例。EfficientNets 是这项研究的一个显着成果。</p>
+</li>
+<li><p>我们讨论一个与寻求<em>单一最佳网络</em>完全不同的想法。它的计算成本相对较低，可以带来科学见解，并且在结果质量方面非常有效。该策略结合了手动设计和 NAS 的优势。它通过在<em>网络分布</em>上运行 并优化分布来实现这一点，从而为整个网络系列获得良好的性能。它的结果是<em>RegNets</em>，特别是 RegNetX 和 RegNetY，以及一系列设计高性能 CNN 的指导原则。</p>
+</li>
+<li><p>Dependencies:</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> torch.nn <span class="hljs-keyword">import</span> functional <span class="hljs-keyword">as</span> F<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br></code></pre></td></tr></tbody></table></figure>
 
 
 
+<h2 id="AnyNet-设计空间"><a href="#AnyNet-设计空间" class="headerlink" title="AnyNet 设计空间"></a>AnyNet 设计空间</h2><ul>
+<li>我们需要一个供探索网络系列的模板。本章设计的共同点之一是网络由<em>茎</em>、 <em>体</em>和<em>头组成。</em>茎通常通过具有较大窗口尺寸的卷积来执行初始图像处理。身体由多个块组成，执行从原始图像到对象表示所需的大量转换。最后，头部将其转换为所需的输出，例如通过用于多类分类的 softmax 回归器。身体又由多个阶段组成，以降低的分辨率对图像进行操作。每个阶段都由一个或多个块组成。这种模式对于所有网络都是通用的。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308101953014.svg" srcset="/img/loading.gif" lazyload alt="../_images/anynet.svg"></p>
+<ul>
+<li><p>AnyNet 由茎、体和头组成。茎将 RGB 图像（3 个通道）作为输入，使用 3×3卷积步长为2，然后进行批量归一化，将分辨率减半$r \times r$到$r/2 \times r/2$。此外，它还生成$c_0$作为身体输入的通道。</p>
+</li>
+<li><p>我们先实现通用设计。</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">AnyNet</span>(d2l.Classifier):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">stem</span>(<span class="hljs-params">self, num_channels</span>):<br>        <span class="hljs-keyword">return</span> nn.Sequential(<br>            nn.LazyConv2d(num_channels, kernel_size=<span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>, padding=<span class="hljs-number">1</span>),<br>            nn.LazyBatchNorm2d(), nn.ReLU())<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>每个阶段由<code>depth</code>ResNeXt 块组成，其中<code>num_channels</code> 指定块宽度。请注意，第一个块将输入图像的高度和宽度减半。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@d2l.add_to_class(<span class="hljs-params">AnyNet</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">stage</span>(<span class="hljs-params">self, depth, num_channels, groups, bot_mul</span>):<br>    blk = []<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(depth):<br>        <span class="hljs-keyword">if</span> i == <span class="hljs-number">0</span>:<br>            blk.append(d2l.ResNeXtBlock(num_channels, groups, bot_mul,<br>                use_1x1conv=<span class="hljs-literal">True</span>, strides=<span class="hljs-number">2</span>))<br>        <span class="hljs-keyword">else</span>:<br>            blk.append(d2l.ResNeXtBlock(num_channels, groups, bot_mul))<br>    <span class="hljs-keyword">return</span> nn.Sequential(*blk)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>把网络的stem、body、head放在一起，我们就完成了AnyNet的实现。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@d2l.add_to_class(<span class="hljs-params">AnyNet</span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, arch, stem_channels, lr=<span class="hljs-number">0.1</span>, num_classes=<span class="hljs-number">10</span></span>):<br>    <span class="hljs-built_in">super</span>(AnyNet, self).__init__()<br>    self.save_hyperparameters()<br>    self.net = nn.Sequential(self.stem(stem_channels))<br>    <span class="hljs-keyword">for</span> i, s <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(arch):<br>        self.net.add_module(<span class="hljs-string">f'stage<span class="hljs-subst">{i+<span class="hljs-number">1</span>}</span>'</span>, self.stage(*s))<br>    self.net.add_module(<span class="hljs-string">'head'</span>, nn.Sequential(<br>        nn.AdaptiveAvgPool2d((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)), nn.Flatten(),<br>        nn.LazyLinear(num_classes)))<br>    self.net.apply(d2l.init_cnn)<br></code></pre></td></tr></tbody></table></figure>
 
 
 
+<h2 id="设计空间的分布和参数"><a href="#设计空间的分布和参数" class="headerlink" title="设计空间的分布和参数"></a>设计空间的分布和参数</h2><ul>
+<li>更好的策略是尝试确定参数选择应如何关联的一般准则。例如，瓶颈比率、通道、块、组的数量或其在层之间的变化理想情况下应该由一组简单的规则来控制。The approach in Radosavovic <em>et al.</em> (<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id456">2019</a>) relies on the following four assumptions:</li>
+</ul>
+<ol>
+<li>我们假设一般设计原则确实存在，因此满足这些要求的许多网络应该提供良好的性能。因此，识别网络上的<em>分布</em>可能是一个很好的策略。换句话说，我们假设大海捞针有很多好针。</li>
+<li>在评估网络是否良好之前，我们不需要训练网络收敛。相反，使用中间结果作为最终准确性的可靠指导就足够了。使用（近似）代理来优化目标称为多保真度优化（<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id526">Forrester<em>等</em>，2007</a>）。因此，根据仅几次通过数据集后所达到的精度来进行设计优化，从而显着降低成本。</li>
+<li>在较小规模（对于较小的网络）获得的结果可以推广到较大的网络。因此，对结构相似但块数较少、通道较少等的网络进行优化。只有最后我们才需要验证如此发现的网络是否也能在规模上提供良好的性能。</li>
+<li>设计的各个方面可以近似分解，以便可以在某种程度上独立地推断它们对结果质量的影响。换句话说，优化问题是比较容易的。</li>
+</ol>
+<ul>
+<li>这些假设使我们能够以较低的成本测试许多网络。特别是，我们可以从配置空间中均匀<em>采样并评估其性能。</em>随后，我们可以通过检查使用所述网络可以实现的误差/准确性的<em>分布</em>来评估参数选择的质量。</li>
+</ul>
+<p>$$<br>F(e, p) \stackrel{\mathrm{def}}{=} P_{\mathrm{net} \sim p} {e(\mathrm{net}) \leq e}.<br>$$</p>
+<ul>
+<li>我们现在的目标是找到一个分布$p$通过<em>网络</em>，大多数网络的错误率非常低，并且支持$p$很简洁。当然，这在计算上无法准确执行。我们求助于网络样本$\mathcal{Z} \stackrel{\mathrm{def}}{=} {\mathrm{net}_1, \ldots \mathrm{net}_n}$（有错误$e_1, \ldots, e_n$，分别）来自$p$并使用经验$\hat{F}(e, \mathcal{Z})$反而：</li>
+</ul>
+<p>$$<br>\hat{F}(e, \mathcal{Z}) = \frac{1}{n}\sum_{i=1}^n \mathbf{1}(e_i \leq e).<br>$$</p>
+<ul>
+<li>每当一组选择的 CDF 优先（或匹配）另一个 CDF 时，就可以得出其参数选择优越（或无关）。因此， Radosavovic<em>等人。</em>( <a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id227">2020</a> )尝试共享网络瓶颈比率$k_i = k$适合所有阶段$i$网络的。这样就摆脱了3的4控制瓶颈比率的参数。为了评估这是否（负面）影响性能，我们可以从受约束和不受约束的分布中绘制网络，并比较相应的 CDF。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308102046887.png" srcset="/img/loading.gif" lazyload alt="../_images/regnet-fig.png"></p>
+<blockquote>
+<p>AnyNetA是原设计空间； AnyNetB联系瓶颈比率， AnyNetC也联系组宽度， AnyNetD增加跨阶段的网络深度。从左到右：（i）绑定瓶颈比率对性能没有影响，（ii）绑定组宽度对性能没有影响，（iii）跨阶段增加网络宽度（通道）可以提高性能，（iv）增加跨阶段的网络深度阶段提高性能。图片由 Radosavovic<em>等人提供。</em>（<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id227">2020</a>）。<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_convolutional-modern/cnn-design.html#id19">¶</a></p>
+</blockquote>
+<ul>
+<li>接下来，我们寻找方法来减少舞台宽度和深度的多种潜在选择。这是一个合理的假设，随着我们深入，通道的数量应该增加，即 $w_{i+1} \geq w_i$（$w_{i+1} \geq w_i$<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_convolutional-modern/cnn-design.html#fig-regnet-fig">根据图 8.8.2</a>中的符号 ），产生$\text{AnyNetX}<em>D$。同样，同样合理的是，随着阶段的进展，它们应该变得更深，即$d_i \geq d</em>{i-1}$，产生$\text{AnyNetX}_E$。<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_convolutional-modern/cnn-design.html#fig-regnet-fig">这可以分别在图8.8.2</a>的第三和第四图中通过实验得到验证。</li>
+</ul>
+<h2 id="监管网络"><a href="#监管网络" class="headerlink" title="监管网络"></a>监管网络</h2><ul>
+<li><p>所结果的$\text{AnyNetX}_E$设计空间由简单的网络组成，遵循易于解释的设计原则：</p>
+<ul>
+<li>分享瓶颈比例$k_i = k$适合所有阶段$i$;</li>
+<li>共享组宽度$g_i = g$适合所有阶段$i$;</li>
+<li>增加跨阶段的网络宽度：$c_{i} \leq c_{i+1}$;</li>
+<li>跨阶段增加网络深度：$d_{i} \leq d_{i+1}$。</li>
+</ul>
+</li>
+<li><p>我们建议感兴趣的读者仔细阅读Radosavovic<em>等人的</em>文章，进一步了解如何为不同的计算量设计特定网络。（<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id227">2020</a>）。例如，一个有效的 32 层 RegNetX 变体由下式给出$k = 1$，$g = 16$（组宽度为16），$c_1 = 32$ 和 $c_2 = 80$第一阶段和第二阶段的通道分别选择为$d_1=4$和$d_2 = 6$块深。该设计令人惊讶的洞察力在于它即使在调查更大规模的网络时也适用。更好的是，它甚至适用于具有全局通道激活的挤压和激励 (SE) 网络设计 (RegNetY) （<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id127">Hu<em>等人</em>，2018</a>）。</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">RegNetX32</span>(<span class="hljs-title class_ inherited__">AnyNet</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, lr=<span class="hljs-number">0.1</span>, num_classes=<span class="hljs-number">10</span></span>):<br>        stem_channels, groups, bot_mul = <span class="hljs-number">32</span>, <span class="hljs-number">16</span>, <span class="hljs-number">1</span><br>        depths, channels = (<span class="hljs-number">4</span>, <span class="hljs-number">6</span>), (<span class="hljs-number">32</span>, <span class="hljs-number">80</span>)<br>        <span class="hljs-built_in">super</span>().__init__(<br>            ((depths[<span class="hljs-number">0</span>], channels[<span class="hljs-number">0</span>], groups, bot_mul),<br>             (depths[<span class="hljs-number">1</span>], channels[<span class="hljs-number">1</span>], groups, bot_mul)),<br>            stem_channels, lr, num_classes)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>我们可以看到每个 RegNetX 阶段逐渐降低分辨率并增加输出通道。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">RegNetX32().layer_summary((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">96</span>, <span class="hljs-number">96</span>))<br></code></pre></td></tr></tbody></table></figure>
 
 
+
+<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><ul>
+<li>在 Fashion-MNIST 数据集上训练 32 层 RegNetX 与之前一样。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">model = RegNetX32(lr=<span class="hljs-number">0.05</span>)<br>trainer = d2l.Trainer(max_epochs=<span class="hljs-number">10</span>, num_gpus=<span class="hljs-number">1</span>)<br>data = d2l.FashionMNIST(batch_size=<span class="hljs-number">128</span>, resize=(<span class="hljs-number">96</span>, <span class="hljs-number">96</span>))<br>trainer.fit(model, data)<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308102054136.svg" srcset="/img/loading.gif" lazyload alt="../_images/output_cnn-design_a122f2_93_0.svg"></p>
+<h2 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h2><ul>
+<li><p>凭借理想的归纳偏差（假设或偏好），例如视觉的局部性和平移不变性（<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_convolutional-neural-networks/why-conv.html#sec-why-conv">第 7.1 节</a>），CNN 已成为该领域的主导架构。自 LeNet 以来一直如此，直到最近 Transformers（<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html#sec-transformer">第 11.7 节</a>） （<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id60">Dosovitskiy <em>et al.</em> , 2021</a> , <a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id459">Touvron <em>et al.</em> , 2021</a>） 在准确性方面开始超越 CNN。虽然最近在视觉方面取得的大部分进展 Transformers 都<em>可以</em>向后移植到 CNN 中 （<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id455">Liu *et al.*，2022</a>），只有在更高的计算成本下才有可能。同样重要的是，最近的硬件优化（NVIDIA Ampere 和 Hopper）只会拉大与Transformers的差距。</p>
+</li>
+<li><p>值得注意的是，Transformers 对局部性和平移不变性的归纳偏差程度明显低于 CNN。这并不是最重要的，因为大型图像集的可用性，例如 LAION-400m 和 LAION-5B （<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id516">Schuhmann<em>等人</em>，2022</a>），拥有多达 50 亿张学习结构的图像。令人惊讶的是，在这方面一些更相关的工作甚至包括 MLP （<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id457">Tolstikhin<em>等人</em>，2021</a>）。</p>
+</li>
+<li><p>总之，视觉 Transformers（<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_attention-mechanisms-and-transformers/vision-transformer.html#sec-vision-transformer">第 11.8 节</a>）目前在大规模图像分类的最先进性能方面处于领先地位，表明可扩展<em>性胜过归纳偏差</em> （<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_references/zreferences.html#id60">Dosovitskiy<em>等人</em>，2021</a>）。这包括使用多头自注意力（<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_attention-mechanisms-and-transformers/multihead-attention.html#sec-multihead-attention">第 11.5</a>节）预训练大型 Transformer（第<a target="_blank" rel="noopener" href="https://d2l.ai/chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html#sec-large-pretraining-transformers">11.9</a>节）。</p>
+</li>
+</ul>
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
 <li><a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_convolutional-modern/alexnet.html">Dive Into Deep Learning</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1h54y1L7oe/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">AlexNet Q&amp;A</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Ao4y117Pd/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">VGG Q&amp;A</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=OIe48iAqh8E">SVD &amp; PCA</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/37777074">PCA原理</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Uv411G71b/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">NiN Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1b5411g7Xo/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">GoogLeNet Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1X44y1r77r/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">Batch Normalization Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1bV41177ap/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">ResNet Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1554y157E3?p=1&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">ResNet梯度角度更新</a></li>
 </ol>
 
                 
@@ -919,6 +1045,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/08/07/d2l-9-recurrent-neural-networks/" title="D2L-9-Recurrent Neural Networks">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">D2L-9-Recurrent Neural Networks</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
