@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202307231956594.jpg">
 <meta property="article:published_time" content="2023-08-07T11:47:21.000Z">
-<meta property="article:modified_time" content="2023-08-07T14:13:53.774Z">
+<meta property="article:modified_time" content="2023-08-14T11:43:40.928Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          14k 字
+          25k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          113 分钟
+          206 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 天前
+                    本文最后更新于：1 天前
                   
                 
               </p>
@@ -487,6 +487,7 @@
 <p>$$<br>\begin{split}\begin{aligned}<br>P(x_1, x_2, x_3, x_4) &amp;=  P(x_1) P(x_2) P(x_3) P(x_4),\<br>P(x_1, x_2, x_3, x_4) &amp;=  P(x_1) P(x_2  \mid  x_1) P(x_3  \mid  x_2) P(x_4  \mid  x_3),\<br>P(x_1, x_2, x_3, x_4) &amp;=  P(x_1) P(x_2  \mid  x_1) P(x_3  \mid  x_1, x_2) P(x_4  \mid  x_2, x_3).<br>\end{aligned}\end{split}<br>$$</p>
 <blockquote>
 <p>涉及一个、两个和三个变量的概率公式分别被称为 <em>一元语法</em>（unigram）、<em>二元语法</em>（bigram）和<em>三元语法</em>（trigram）模型。</p>
+<p><strong>本质就是$\tau = 0, \tau = 1, \tau = 2$，每个词和前面多少个词相关，因此就有这个概率了昂！</strong></p>
 </blockquote>
 <h2 id="自然语言统计"><a href="#自然语言统计" class="headerlink" title="自然语言统计"></a>自然语言统计</h2><ul>
 <li>查看出现频率最高的十个词：</li>
@@ -545,7 +546,231 @@
 </ul>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">seq_data_iter_random</span>(<span class="hljs-params">corpus, batch_size, num_steps</span>):  <span class="hljs-comment">#@save</span><br>    <span class="hljs-string">"""使用随机抽样生成一个小批量子序列"""</span><br>    <span class="hljs-comment"># 从随机偏移量开始对序列进行分区，随机范围包括num_steps-1</span><br>    corpus = corpus[random.randint(<span class="hljs-number">0</span>, num_steps - <span class="hljs-number">1</span>):]<br>    <span class="hljs-comment"># 减去1，是因为我们需要考虑标签</span><br>    num_subseqs = (<span class="hljs-built_in">len</span>(corpus) - <span class="hljs-number">1</span>) // num_steps<br>    <span class="hljs-comment"># 长度为num_steps的子序列的起始索引</span><br>    initial_indices = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, num_subseqs * num_steps, num_steps))<br>    <span class="hljs-comment"># 在随机抽样的迭代过程中，</span><br>    <span class="hljs-comment"># 来自两个相邻的、随机的、小批量中的子序列不一定在原始序列上相邻</span><br>    random.shuffle(initial_indices)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">data</span>(<span class="hljs-params">pos</span>):<br>        <span class="hljs-comment"># 返回从pos位置开始的长度为num_steps的序列</span><br>        <span class="hljs-keyword">return</span> corpus[pos: pos + num_steps]<br><br>    num_batches = num_subseqs // batch_size<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, batch_size * num_batches, batch_size):<br>        <span class="hljs-comment"># 在这里，initial_indices包含子序列的随机起始索引</span><br>        initial_indices_per_batch = initial_indices[i: i + batch_size]<br>        X = [data(j) <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> initial_indices_per_batch]<br>        Y = [data(j + <span class="hljs-number">1</span>) <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> initial_indices_per_batch]<br>        <span class="hljs-keyword">yield</span> torch.tensor(X), torch.tensor(Y)<br></code></pre></td></tr></tbody></table></figure>
 
+<ul>
+<li>下面我们生成一个从0到34的序列。 假设批量大小为2，时间步数为5，这意味着可以生成 ⌊(35−1)/5⌋=6个“特征－标签”子序列对。 如果设置小批量大小为2，我们只能得到3个小批量。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">my_seq = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">35</span>))<br><span class="hljs-keyword">for</span> X, Y <span class="hljs-keyword">in</span> seq_data_iter_random(my_seq, batch_size=<span class="hljs-number">2</span>, num_steps=<span class="hljs-number">5</span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">'X: '</span>, X, <span class="hljs-string">'\nY:'</span>, Y)<br></code></pre></td></tr></tbody></table></figure>
 
+
+
+<h3 id="顺序分区"><a href="#顺序分区" class="headerlink" title="顺序分区"></a>顺序分区</h3><ul>
+<li>除了对原始序列可以随机抽样外， 我们还可以保证两个相邻的小批量中的子序列在原始序列上也是相邻的。 这种策略在基于小批量的迭代过程中保留了拆分的子序列的顺序，因此称为顺序分区。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">seq_data_iter_sequential</span>(<span class="hljs-params">corpus, batch_size, num_steps</span>):  <span class="hljs-comment">#@save</span><br>    <span class="hljs-string">"""使用顺序分区生成一个小批量子序列"""</span><br>    <span class="hljs-comment"># 从随机偏移量开始划分序列</span><br>    offset = random.randint(<span class="hljs-number">0</span>, num_steps)<br>    num_tokens = ((<span class="hljs-built_in">len</span>(corpus) - offset - <span class="hljs-number">1</span>) // batch_size) * batch_size<br>    Xs = torch.tensor(corpus[offset: offset + num_tokens])<br>    Ys = torch.tensor(corpus[offset + <span class="hljs-number">1</span>: offset + <span class="hljs-number">1</span> + num_tokens])<br>    Xs, Ys = Xs.reshape(batch_size, -<span class="hljs-number">1</span>), Ys.reshape(batch_size, -<span class="hljs-number">1</span>)<br>    num_batches = Xs.shape[<span class="hljs-number">1</span>] // num_steps<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, num_steps * num_batches, num_steps):<br>        X = Xs[:, i: i + num_steps]<br>        Y = Ys[:, i: i + num_steps]<br>        <span class="hljs-keyword">yield</span> X, Y<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>通过顺序分区读取每个小批量的子序列的特征<code>X</code>和标签<code>Y</code>。 通过将它们打印出来可以发现： 迭代期间来自两个相邻的小批量中的子序列在原始序列中确实是相邻的。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> X, Y <span class="hljs-keyword">in</span> seq_data_iter_sequential(my_seq, batch_size=<span class="hljs-number">2</span>, num_steps=<span class="hljs-number">5</span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">'X: '</span>, X, <span class="hljs-string">'\nY:'</span>, Y)<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><ul>
+<li>我们将上面的两个采样函数包装到一个类中， 以便稍后可以将其用作数据迭代器。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SeqDataLoader</span>:  <span class="hljs-comment">#@save</span><br>    <span class="hljs-string">"""加载序列数据的迭代器"""</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, batch_size, num_steps, use_random_iter, max_tokens</span>):<br>        <span class="hljs-keyword">if</span> use_random_iter:<br>            self.data_iter_fn = d2l.seq_data_iter_random<br>        <span class="hljs-keyword">else</span>:<br>            self.data_iter_fn = d2l.seq_data_iter_sequential<br>        self.corpus, self.vocab = d2l.load_corpus_time_machine(max_tokens)<br>        self.batch_size, self.num_steps = batch_size, num_steps<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__iter__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">return</span> self.data_iter_fn(self.corpus, self.batch_size, self.num_steps)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>最后，我们定义了一个总函数<code>load_data_time_machine</code>， 它同时返回数据迭代器和词表。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">load_data_time_machine</span>(<span class="hljs-params">batch_size, num_steps,  <span class="hljs-comment">#@save</span></span><br><span class="hljs-params">                           use_random_iter=<span class="hljs-literal">False</span>, max_tokens=<span class="hljs-number">10000</span></span>):<br>    <span class="hljs-string">"""返回时光机器数据集的迭代器和词表"""</span><br>    data_iter = SeqDataLoader(<br>        batch_size, num_steps, use_random_iter, max_tokens)<br>    <span class="hljs-keyword">return</span> data_iter, data_iter.vocab<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h1 id="RNN"><a href="#RNN" class="headerlink" title="RNN"></a>RNN</h1><ul>
+<li>我们可以基于当前输入$x_{t}$和先前隐状态$h_{t-1}$来计算时间步t处的任何时间的隐状态：</li>
+</ul>
+<p>$$<br>h_t = f(x_{t}, h_{t-1}).<br>$$</p>
+<h2 id="无隐状态的神经网络"><a href="#无隐状态的神经网络" class="headerlink" title="无隐状态的神经网络"></a>无隐状态的神经网络</h2><ul>
+<li>隐藏层的输出$\mathbf{H} \in \mathbb{R}^{n \times h}$通过下式计算：</li>
+</ul>
+<p>$$<br>\mathbf{H} = \phi(\mathbf{X} \mathbf{W}_{xh} + \mathbf{b}_h).<br>$$</p>
+<ul>
+<li>输出层由下式给出：</li>
+</ul>
+<p>$$<br>\mathbf{O} = \mathbf{H} \mathbf{W}_{hq} + \mathbf{b}_q,<br>$$</p>
+<blockquote>
+<p>只要可以随机选择“特征-标签”对， 并且通过自动微分和随机梯度下降能够学习网络参数就可以了。</p>
+</blockquote>
+<h2 id="有隐状态的循环神经网络"><a href="#有隐状态的循环神经网络" class="headerlink" title="有隐状态的循环神经网络"></a>有隐状态的循环神经网络</h2><ul>
+<li>使用latent variable来总结过去的信息</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308140952186.png" srcset="/img/loading.gif" lazyload alt="image-20230814095201754"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308140953741.png" srcset="/img/loading.gif" lazyload alt="image-20230814095339544"></p>
+<blockquote>
+<p>更新输出状态：</p>
+<ul>
+<li>更新隐藏状态：$\mathbf{H}<em>t = \phi(\mathbf{X}<em>t \mathbf{W}</em>{xh} + \mathbf{H}</em>{t-1} \mathbf{W}_{hh}  + \mathbf{b}_h).$</li>
+<li>输出层的输出类似于多层感知机中的计算：$\mathbf{O}_t = \mathbf{H}<em>t \mathbf{W}</em>{hq} + \mathbf{b}_q.$</li>
+<li>步骤：<ul>
+<li>先更新隐藏状态</li>
+<li>再根据当前的隐藏状态和输入，算出输出</li>
+<li>损失就是当前输出，和下一个输入之间的不同产生的昂！</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>在任意时间步t，隐状态的计算可以被视为：<ul>
+<li>拼接当前时间步t的输入$X_t$和前一时间步t-1的隐状态$X_{t-1}$；</li>
+<li>将拼接的结果送入带有激活函数$\phi$的全连接层。 全连接层的输出是当前时间步t的隐状态$H_t$。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308141034264.svg" srcset="/img/loading.gif" lazyload alt="../_images/rnn.svg"></p>
+<h2 id="困惑度（perplexity）"><a href="#困惑度（perplexity）" class="headerlink" title="困惑度（perplexity）"></a>困惑度（perplexity）</h2><ul>
+<li>我们可以通过一个序列中所有的n个词元的交叉熵损失的平均值来衡量语言模型的好坏（准确程度），这里又涉及到交叉熵啊，Softmax的那一套，本质是一个概率的估算：</li>
+</ul>
+<p>$$<br>\frac{1}{n} \sum_{t=1}^n -\log P(x_t \mid x_{t-1}, \ldots, x_1),<br>$$</p>
+<ul>
+<li>这使得不同长度的文档的性能具有了可比性。 由于历史原因，自然语言处理的科学家更喜欢使用一个叫做<em>困惑度</em>（perplexity）的量。</li>
+</ul>
+<p>$$<br>\exp\left(-\frac{1}{n} \sum_{t=1}^n \log P(x_t \mid x_{t-1}, \ldots, x_1)\right).<br>$$</p>
+<h2 id="梯度剪裁"><a href="#梯度剪裁" class="headerlink" title="梯度剪裁"></a>梯度剪裁</h2><blockquote>
+<p>长度为$O(T)$的矩阵乘法链，导致数值不稳定。梯度剪裁可以有效预防梯度爆炸。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308141042284.png" srcset="/img/loading.gif" lazyload alt="image-20230814104238029"></p>
+<h2 id="更多应用"><a href="#更多应用" class="headerlink" title="更多应用"></a>更多应用</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308141044042.png" srcset="/img/loading.gif" lazyload alt="image-20230814104416808"></p>
+<h1 id="RNN手动实现"><a href="#RNN手动实现" class="headerlink" title="RNN手动实现"></a>RNN手动实现</h1><ul>
+<li>Dependencies：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">%matplotlib inline<br><span class="hljs-keyword">import</span> math<br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> torch.nn <span class="hljs-keyword">import</span> functional <span class="hljs-keyword">as</span> F<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br>batch_size, num_steps = <span class="hljs-number">32</span>, <span class="hljs-number">35</span><br>train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="独热编码"><a href="#独热编码" class="headerlink" title="独热编码"></a>独热编码</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">F.one_hot(torch.tensor([<span class="hljs-number">0</span>, <span class="hljs-number">2</span>]), <span class="hljs-built_in">len</span>(vocab))<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>将这些索引直接输入神经网络可能会使学习变得困难。 我们通常将每个词元表示为更具表现力的特征向量。 最简单的表示称为<em>独热编码</em>（one-hot encoding）</p>
+</blockquote>
+<ul>
+<li>我们每次采样的小批量数据形状是二维张量： （批量大小，时间步数）。 <code>one_hot</code>函数将这样一个小批量数据转换成三维张量， 张量的最后一个维度等于词表大小（<code>len(vocab)</code>）。 我们经常转换输入的维度，以便获得形状为 （时间步数，批量大小，词表大小）的输出。 这将使我们能够更方便地通过最外层的维度， 一步一步地更新小批量数据的隐状态。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">X = torch.arange(<span class="hljs-number">10</span>).reshape((<span class="hljs-number">2</span>, <span class="hljs-number">5</span>))<br>F.one_hot(X.T, <span class="hljs-number">28</span>).shape<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>转置？把时间放在第一个维度，每次访问都是连续的（batch + one_hot vector）</p>
+</blockquote>
+<h2 id="初始化模型参数"><a href="#初始化模型参数" class="headerlink" title="初始化模型参数"></a>初始化模型参数</h2><ul>
+<li>我们初始化循环神经网络模型的模型参数。 隐藏单元数<code>num_hiddens</code>是一个可调的超参数。 当训练语言模型时，输入和输出来自相同的词表。 因此，它们具有相同的维度，即词表的大小。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_params</span>(<span class="hljs-params">vocab_size, num_hiddens, device</span>):<br>    num_inputs = num_outputs = vocab_size<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">normal</span>(<span class="hljs-params">shape</span>):<br>        <span class="hljs-keyword">return</span> torch.randn(size=shape, device=device) * <span class="hljs-number">0.01</span><br><br>    <span class="hljs-comment"># 隐藏层参数</span><br>    W_xh = normal((num_inputs, num_hiddens))<br>    W_hh = normal((num_hiddens, num_hiddens))<br>    b_h = torch.zeros(num_hiddens, device=device)<br>    <span class="hljs-comment"># 输出层参数</span><br>    W_hq = normal((num_hiddens, num_outputs))<br>    b_q = torch.zeros(num_outputs, device=device)<br>    <span class="hljs-comment"># 附加梯度</span><br>    params = [W_xh, W_hh, b_h, W_hq, b_q]<br>    <span class="hljs-keyword">for</span> param <span class="hljs-keyword">in</span> params:<br>        param.requires_grad_(<span class="hljs-literal">True</span>)<br>    <span class="hljs-keyword">return</span> params<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>W_hh移掉之后，就是一个单隐藏层的MLP嘛，一个输入的W和b，一个输出的W和b。</p>
+</blockquote>
+<h2 id="循环神经网络模型"><a href="#循环神经网络模型" class="headerlink" title="循环神经网络模型"></a>循环神经网络模型</h2><ul>
+<li>我们首先需要一个<code>init_rnn_state</code>函数在初始化时返回隐状态。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">init_rnn_state</span>(<span class="hljs-params">batch_size, num_hiddens, device</span>):<br>    <span class="hljs-keyword">return</span> (torch.zeros((batch_size, num_hiddens), device=device), )<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>下面的<code>rnn</code>函数定义了如何在一个时间步内计算隐状态和输出。 循环神经网络模型通过<code>inputs</code>最外层的维度实现循环， 以便逐时间步更新小批量数据的隐状态<code>H</code>。 此外，这里使用tanh函数作为激活函数。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">rnn</span>(<span class="hljs-params">inputs, state, params</span>):<br>    <span class="hljs-comment"># inputs的形状：(时间步数量，批量大小，词表大小)</span><br>    W_xh, W_hh, b_h, W_hq, b_q = params<br>    H, = state<br>    outputs = []<br>    <span class="hljs-comment"># X的形状：(批量大小，词表大小)</span><br>    <span class="hljs-keyword">for</span> X <span class="hljs-keyword">in</span> inputs:<br>        H = torch.tanh(torch.mm(X, W_xh) + torch.mm(H, W_hh) + b_h)<br>        Y = torch.mm(H, W_hq) + b_q<br>        outputs.append(Y)<br>    <span class="hljs-keyword">return</span> torch.cat(outputs, dim=<span class="hljs-number">0</span>), (H,)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>定义了所有需要的函数之后，接下来我们创建一个类来包装这些函数， 并存储从零开始实现的循环神经网络模型的参数。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">RNNModelScratch</span>: <span class="hljs-comment">#@save</span><br>    <span class="hljs-string">"""从零开始实现的循环神经网络模型"""</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, vocab_size, num_hiddens, device,</span><br><span class="hljs-params">                 get_params, init_state, forward_fn</span>):<br>        self.vocab_size, self.num_hiddens = vocab_size, num_hiddens<br>        self.params = get_params(vocab_size, num_hiddens, device)<br>        self.init_state, self.forward_fn = init_state, forward_fn<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__call__</span>(<span class="hljs-params">self, X, state</span>):<br>        X = F.one_hot(X.T, self.vocab_size).<span class="hljs-built_in">type</span>(torch.float32)<br>        <span class="hljs-keyword">return</span> self.forward_fn(X, state, self.params)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">begin_state</span>(<span class="hljs-params">self, batch_size, device</span>):<br>        <span class="hljs-keyword">return</span> self.init_state(batch_size, self.num_hiddens, device)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>检查输出是否具有正确的形状。 例如，隐状态的维数是否保持不变。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">num_hiddens = <span class="hljs-number">512</span><br>net = RNNModelScratch(<span class="hljs-built_in">len</span>(vocab), num_hiddens, d2l.try_gpu(), get_params,<br>                      init_rnn_state, rnn)<br>state = net.begin_state(X.shape[<span class="hljs-number">0</span>], d2l.try_gpu())<br>Y, new_state = net(X.to(d2l.try_gpu()), state)<br>Y.shape, <span class="hljs-built_in">len</span>(new_state), new_state[<span class="hljs-number">0</span>].shape<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>我们可以看到输出形状是（时间步数×批量大小，词表大小）， 而隐状态形状保持不变，即（批量大小，隐藏单元数）。</p>
+</blockquote>
+<h2 id="预测-1"><a href="#预测-1" class="headerlink" title="预测"></a>预测</h2><ul>
+<li>我们首先定义预测函数来生成<code>prefix</code>之后的新字符， 其中的<code>prefix</code>是一个用户提供的包含多个字符的字符串。 在循环遍历<code>prefix</code>中的开始字符时， 我们不断地将隐状态传递到下一个时间步，但是不生成任何输出。 这被称为<em>预热</em>（warm-up）期， 因为在此期间模型会自我更新（例如，更新隐状态）， 但不会进行预测。 预热期结束后，隐状态的值通常比刚开始的初始值更适合预测， 从而预测字符并输出它们。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">predict_ch8</span>(<span class="hljs-params">prefix, num_preds, net, vocab, device</span>):  <span class="hljs-comment">#@save</span><br>    <span class="hljs-string">"""在prefix后面生成新字符"""</span><br>    state = net.begin_state(batch_size=<span class="hljs-number">1</span>, device=device)<br>    outputs = [vocab[prefix[<span class="hljs-number">0</span>]]]<br>    get_input = <span class="hljs-keyword">lambda</span>: torch.tensor([outputs[-<span class="hljs-number">1</span>]], device=device).reshape((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>))<br>    <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> prefix[<span class="hljs-number">1</span>:]:  <span class="hljs-comment"># 预热期</span><br>        _, state = net(get_input(), state)<br>        outputs.append(vocab[y])<br>    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_preds):  <span class="hljs-comment"># 预测num_preds步</span><br>        y, state = net(get_input(), state)<br>        outputs.append(<span class="hljs-built_in">int</span>(y.argmax(dim=<span class="hljs-number">1</span>).reshape(<span class="hljs-number">1</span>)))<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">''</span>.join([vocab.idx_to_token[i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> outputs])<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="梯度裁剪"><a href="#梯度裁剪" class="headerlink" title="梯度裁剪"></a>梯度裁剪</h2><ul>
+<li>对于长度为T的序列，我们在迭代中计算这T个时间步上的梯度， 将会在反向传播过程中产生长度为O(T)的矩阵乘法链。 如 <a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_multilayer-perceptrons/numerical-stability-and-init.html#sec-numerical-stability">4.8节</a>所述， 当T较大时，它可能导致数值不稳定， 例如可能导致梯度爆炸或梯度消失。 因此，循环神经网络模型往往需要额外的方式来支持稳定训练。</li>
+<li>有时梯度可能很大，从而优化算法可能无法收敛。我们可以通过降低$\eta$的学习率来解决这个问题。一个流行的替代方案是通过将梯度g投影回给定半径 （例如$\theta$）的球来裁剪梯度g。 如下式：</li>
+</ul>
+<p>$$<br>\mathbf{g} \leftarrow \min\left(1, \frac{\theta}{|\mathbf{g}|}\right) \mathbf{g}.<br>$$</p>
+<blockquote>
+<p>我们知道梯度范数永远不会超过$\theta$， 并且更新后的梯度完全与g的原始方向对齐。 它还有一个值得拥有的副作用， 即限制任何给定的小批量数据（以及其中任何给定的样本）对参数向量的影响， 这赋予了模型一定程度的稳定性。 梯度裁剪提供了一个快速修复梯度爆炸的方法， 虽然它并不能完全解决问题，但它是众多有效的技术之一。</p>
+</blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">grad_clipping</span>(<span class="hljs-params">net, theta</span>):  <span class="hljs-comment">#@save</span><br>    <span class="hljs-string">"""裁剪梯度"""</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(net, nn.Module):<br>        params = [p <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> net.parameters() <span class="hljs-keyword">if</span> p.requires_grad]<br>    <span class="hljs-keyword">else</span>:<br>        params = net.params<br>    norm = torch.sqrt(<span class="hljs-built_in">sum</span>(torch.<span class="hljs-built_in">sum</span>((p.grad ** <span class="hljs-number">2</span>)) <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> params))<br>    <span class="hljs-keyword">if</span> norm &gt; theta:<br>        <span class="hljs-keyword">for</span> param <span class="hljs-keyword">in</span> params:<br>            param.grad[:] *= theta / norm<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>全局梯度裁剪</p>
+</blockquote>
+<h2 id="训练-1"><a href="#训练-1" class="headerlink" title="训练"></a>训练</h2><ul>
+<li><p>我们定义一个函数在一个迭代周期内训练模型：</p>
+<ol>
+<li>序列数据的不同采样方法（随机采样和顺序分区）将导致隐状态初始化的差异。</li>
+<li>我们在更新模型参数之前裁剪梯度。 这样的操作的目的是，即使训练过程中某个点上发生了梯度爆炸，也能保证模型不会发散。</li>
+<li>我们用困惑度来评价模型。如 <a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_recurrent-neural-networks/rnn.html#subsec-perplexity">8.4.4节</a>所述， 这样的度量确保了不同长度的序列具有可比性。</li>
+</ol>
+</li>
+<li><p>定义一个函数在一个迭代周期内训练模型：</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#@save</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">train_epoch_ch8</span>(<span class="hljs-params">net, train_iter, loss, updater, device, use_random_iter</span>):<br>    <span class="hljs-string">"""训练网络一个迭代周期（定义见第8章）"""</span><br>    state, timer = <span class="hljs-literal">None</span>, d2l.Timer()<br>    metric = d2l.Accumulator(<span class="hljs-number">2</span>)  <span class="hljs-comment"># 训练损失之和,词元数量</span><br>    <span class="hljs-keyword">for</span> X, Y <span class="hljs-keyword">in</span> train_iter:<br>        <span class="hljs-keyword">if</span> state <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">or</span> use_random_iter:<br>            <span class="hljs-comment"># 在第一次迭代或使用随机抽样时初始化state</span><br>            state = net.begin_state(batch_size=X.shape[<span class="hljs-number">0</span>], device=device)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(net, nn.Module) <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(state, <span class="hljs-built_in">tuple</span>):<br>                <span class="hljs-comment"># state对于nn.GRU是个张量</span><br>                state.detach_()<br>            <span class="hljs-keyword">else</span>:<br>                <span class="hljs-comment"># state对于nn.LSTM或对于我们从零开始实现的模型是个张量</span><br>                <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> state:<br>                    s.detach_()<br>        y = Y.T.reshape(-<span class="hljs-number">1</span>)<br>        X, y = X.to(device), y.to(device)<br>        y_hat, state = net(X, state)<br>        l = loss(y_hat, y.long()).mean()<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(updater, torch.optim.Optimizer):<br>            updater.zero_grad()<br>            l.backward()<br>            grad_clipping(net, <span class="hljs-number">1</span>)<br>            updater.step()<br>        <span class="hljs-keyword">else</span>:<br>            l.backward()<br>            grad_clipping(net, <span class="hljs-number">1</span>)<br>            <span class="hljs-comment"># 因为已经调用了mean函数</span><br>            updater(batch_size=<span class="hljs-number">1</span>)<br>        metric.add(l * y.numel(), y.numel())<br>    <span class="hljs-keyword">return</span> math.exp(metric[<span class="hljs-number">0</span>] / metric[<span class="hljs-number">1</span>]), metric[<span class="hljs-number">1</span>] / timer.stop()<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>循环神经网络模型的训练函数既支持从零开始实现， 也可以使用高级API来实现。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#@save</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">train_ch8</span>(<span class="hljs-params">net, train_iter, vocab, lr, num_epochs, device,</span><br><span class="hljs-params">              use_random_iter=<span class="hljs-literal">False</span></span>):<br>    <span class="hljs-string">"""训练模型（定义见第8章）"""</span><br>    loss = nn.CrossEntropyLoss()<br>    animator = d2l.Animator(xlabel=<span class="hljs-string">'epoch'</span>, ylabel=<span class="hljs-string">'perplexity'</span>,<br>                            legend=[<span class="hljs-string">'train'</span>], xlim=[<span class="hljs-number">10</span>, num_epochs])<br>    <span class="hljs-comment"># 初始化</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(net, nn.Module):<br>        updater = torch.optim.SGD(net.parameters(), lr)<br>    <span class="hljs-keyword">else</span>:<br>        updater = <span class="hljs-keyword">lambda</span> batch_size: d2l.sgd(net.params, lr, batch_size)<br>    predict = <span class="hljs-keyword">lambda</span> prefix: predict_ch8(prefix, <span class="hljs-number">50</span>, net, vocab, device)<br>    <span class="hljs-comment"># 训练和预测</span><br>    <span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_epochs):<br>        ppl, speed = train_epoch_ch8(<br>            net, train_iter, loss, updater, device, use_random_iter)<br>        <span class="hljs-keyword">if</span> (epoch + <span class="hljs-number">1</span>) % <span class="hljs-number">10</span> == <span class="hljs-number">0</span>:<br>            <span class="hljs-built_in">print</span>(predict(<span class="hljs-string">'time traveller'</span>))<br>            animator.add(epoch + <span class="hljs-number">1</span>, [ppl])<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f'困惑度 <span class="hljs-subst">{ppl:<span class="hljs-number">.1</span>f}</span>, <span class="hljs-subst">{speed:<span class="hljs-number">.1</span>f}</span> 词元/秒 <span class="hljs-subst">{<span class="hljs-built_in">str</span>(device)}</span>'</span>)<br>    <span class="hljs-built_in">print</span>(predict(<span class="hljs-string">'time traveller'</span>))<br>    <span class="hljs-built_in">print</span>(predict(<span class="hljs-string">'traveller'</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>我们训练循环神经网络模型。 因为我们在数据集中只使用了10000个词元， 所以模型需要更多的迭代周期来更好地收敛。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">num_epochs, lr = <span class="hljs-number">500</span>, <span class="hljs-number">1</span><br>train_ch8(net, train_iter, vocab, lr, num_epochs, d2l.try_gpu())<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>让我们检查一下使用随机抽样方法的结果。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">net = RNNModelScratch(<span class="hljs-built_in">len</span>(vocab), num_hiddens, d2l.try_gpu(), get_params,<br>                      init_rnn_state, rnn)<br>train_ch8(net, train_iter, vocab, lr, num_epochs, d2l.try_gpu(),<br>          use_random_iter=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+<h1 id="RNN简洁实现"><a href="#RNN简洁实现" class="headerlink" title="RNN简洁实现"></a>RNN简洁实现</h1><ul>
+<li>Dependencies:</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> torch.nn <span class="hljs-keyword">import</span> functional <span class="hljs-keyword">as</span> F<br><span class="hljs-keyword">from</span> d2l <span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> d2l<br><br>batch_size, num_steps = <span class="hljs-number">32</span>, <span class="hljs-number">35</span><br>train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="定义模型"><a href="#定义模型" class="headerlink" title="定义模型"></a>定义模型</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">num_hiddens = <span class="hljs-number">256</span><br>rnn_layer = nn.RNN(<span class="hljs-built_in">len</span>(vocab), num_hiddens)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>我们使用张量来初始化隐状态，它的形状是（隐藏层数，批量大小，隐藏单元数）。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">state = torch.zeros((<span class="hljs-number">1</span>, batch_size, num_hiddens))<br>state.shape<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>通过一个隐状态和一个输入，我们就可以用更新后的隐状态计算输出。 需要强调的是，<code>rnn_layer</code>的“输出”（<code>Y</code>）不涉及输出层的计算： 它是指每个时间步的隐状态，这些隐状态可以用作后续输出层的输入。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">X = torch.rand(size=(num_steps, batch_size, <span class="hljs-built_in">len</span>(vocab)))<br>Y, state_new = rnn_layer(X, state)<br>Y.shape, state_new.shape<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>我们为一个完整的循环神经网络模型定义了一个<code>RNNModel</code>类。 注意，<code>rnn_layer</code>只包含隐藏的循环层，我们还需要创建一个单独的输出层。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#@save</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">RNNModel</span>(nn.Module):<br>    <span class="hljs-string">"""循环神经网络模型"""</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, rnn_layer, vocab_size, **kwargs</span>):<br>        <span class="hljs-built_in">super</span>(RNNModel, self).__init__(**kwargs)<br>        self.rnn = rnn_layer<br>        self.vocab_size = vocab_size<br>        self.num_hiddens = self.rnn.hidden_size<br>        <span class="hljs-comment"># 如果RNN是双向的（之后将介绍），num_directions应该是2，否则应该是1</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> self.rnn.bidirectional:<br>            self.num_directions = <span class="hljs-number">1</span><br>            self.linear = nn.Linear(self.num_hiddens, self.vocab_size)<br>        <span class="hljs-keyword">else</span>:<br>            self.num_directions = <span class="hljs-number">2</span><br>            self.linear = nn.Linear(self.num_hiddens * <span class="hljs-number">2</span>, self.vocab_size)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, inputs, state</span>):<br>        X = F.one_hot(inputs.T.long(), self.vocab_size)<br>        X = X.to(torch.float32)<br>        Y, state = self.rnn(X, state)<br>        <span class="hljs-comment"># 全连接层首先将Y的形状改为(时间步数*批量大小,隐藏单元数)</span><br>        <span class="hljs-comment"># 它的输出形状是(时间步数*批量大小,词表大小)。</span><br>        output = self.linear(Y.reshape((-<span class="hljs-number">1</span>, Y.shape[-<span class="hljs-number">1</span>])))<br>        <span class="hljs-keyword">return</span> output, state<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">begin_state</span>(<span class="hljs-params">self, device, batch_size=<span class="hljs-number">1</span></span>):<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(self.rnn, nn.LSTM):<br>            <span class="hljs-comment"># nn.GRU以张量作为隐状态</span><br>            <span class="hljs-keyword">return</span>  torch.zeros((self.num_directions * self.rnn.num_layers,<br>                                 batch_size, self.num_hiddens),<br>                                device=device)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-comment"># nn.LSTM以元组作为隐状态</span><br>            <span class="hljs-keyword">return</span> (torch.zeros((<br>                self.num_directions * self.rnn.num_layers,<br>                batch_size, self.num_hiddens), device=device),<br>                    torch.zeros((<br>                        self.num_directions * self.rnn.num_layers,<br>                        batch_size, self.num_hiddens), device=device))<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="训练与预测"><a href="#训练与预测" class="headerlink" title="训练与预测"></a>训练与预测</h2><ul>
+<li>我们基于一个具有随机权重的模型进行预测。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">device = d2l.try_gpu()<br>net = RNNModel(rnn_layer, vocab_size=<span class="hljs-built_in">len</span>(vocab))<br>net = net.to(device)<br>d2l.predict_ch8(<span class="hljs-string">'time traveller'</span>, <span class="hljs-number">10</span>, net, vocab, device)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>我们使用 <a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_recurrent-neural-networks/rnn-scratch.html#sec-rnn-scratch">8.5节</a>中 定义的超参数调用<code>train_ch8</code>，并且使用高级API训练模型。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">num_epochs, lr = <span class="hljs-number">500</span>, <span class="hljs-number">1</span><br>d2l.train_ch8(net, train_iter, vocab, lr, num_epochs, device)<br></code></pre></td></tr></tbody></table></figure>
 
 
 
@@ -557,7 +782,14 @@
 
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/643560888">LLM面试题</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/chapter_recurrent-neural-networks/index.html">d2l</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/109217883">马尔可夫链</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1L44y1m768?p=3&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">序列模型 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Fo4y1Q79L/?p=2&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">文本预处理 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1ZX4y1F7K3/?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">语音模型 Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/32829048">Introduction of n-gram</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1D64y1z7CA/?p=2&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">RNN Q&amp;A</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1kq4y1H7sw?p=3&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">RNN实现 Q&amp;A</a></li>
 </ol>
 
                 
