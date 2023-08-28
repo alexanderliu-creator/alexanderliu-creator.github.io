@@ -1,0 +1,980 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="这一章主要介绍超参数优化，HPO algorithms">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stanford Pratical Machine Learning-超参数优化">
+<meta property="og:url" content="http://example.com/2023/08/26/stanford-pratical-machine-learning-chao-can-shu-you-hua/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="这一章主要介绍超参数优化，HPO algorithms">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308231651624.png">
+<meta property="article:published_time" content="2023-08-26T09:26:05.000Z">
+<meta property="article:modified_time" content="2023-08-27T09:32:50.006Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308231651624.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Stanford Pratical Machine Learning-超参数优化 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Stanford Pratical Machine Learning-超参数优化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-26 17:26" pubdate>
+          2023年8月26日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          51 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Stanford Pratical Machine Learning-超参数优化</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：18 小时前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>这一章主要介绍超参数优化，HPO algorithms</p>
+<span id="more"></span>
+
+<h1 id="Search-Space"><a href="#Search-Space" class="headerlink" title="Search Space"></a>Search Space</h1><blockquote>
+<p>常用可服用的搜索空间</p>
+</blockquote>
+<ul>
+<li>Specify range for each hyperparameter</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308262145742.png" srcset="/img/loading.gif" lazyload alt="image-20230826214548697"></p>
+<ul>
+<li><p>The search space can be exponentially large</p>
+<ul>
+<li>Need to carefully design the space to improve efficiency</li>
+</ul>
+</li>
+<li><p>summary:</p>
+<ul>
+<li><strong>backBone</strong>：【合理的区间：MobileNetV2_0.25，MobileNetV3_small，MobileNetV3_large，ResNet18_V1b，ResNet18_V1b，ResNet34_V1b，ResNet50_V1b,ResNet101_V1b,VGG16_bn，se_ResNext50_32*4d，ResNest50，ResNest200】（从模型的小到大排序的一个categorical(从一堆东西里面随机挑一个出来)的分布）根据自己的任务来选择，要求耗时比较严的话，可以选择比较小一点的网络；要求比较好的精度的话，可以选择比较大的网络；</li>
+<li><strong>learning rate</strong>：【合理的区间：1e-6，1e-1】（是一个log-uniform(先把值做一次log，将值落到小的区间内，在这个区间内均匀的随机取，取完之后再做指数回去)）这个东西可以在比较大的区间内选取一些数；</li>
+<li><strong>batch size</strong>：【合理的区间：8，16，32，64，128，256，512】，做小批量随机梯度下降时取的批量的大小，采用的也是categorical，一般值会取2的n次方的整数，这样的话会在做计算的时候比较方便（矩阵是2的某个次方，计算的线程数也是2的某个次方，如果不能整除最后计算性能会打一点折扣），但是从优化的最后那个收敛来说其实取什么数值都差不多；</li>
+<li><strong>momentum</strong>：【合理的区间：0.85，0.98】（是一个uniform的分布，就是随机采样取一个值出来）；</li>
+<li><strong>weight decay</strong>：【合理的区间：1e-6， 1e-2】，是一个正则化的东西；</li>
+<li><strong>detector</strong>：【合理的区间：faster-rcnn，ssd，yolo-v3，center-net】，在目标检测时用的是什么算法；</li>
+</ul>
+<p>​	这些值的选取需要有领域知识才能做很好的选取</p>
+<p>​	上面这些搜索空间具有一定的通用性（换一个不同的数据集，很有可能比较好的超参数也在这个搜索空间中）</p>
+<p>​	基本上搜索空间不可以太大（搜起来比较贵，指数级增长），也不能太小（可能会找不到想要的值，导致效果比较差）</p>
+</li>
+</ul>
+<h1 id="HPO-algorithms-Black-box-or-Multi-fidelity"><a href="#HPO-algorithms-Black-box-or-Multi-fidelity" class="headerlink" title="HPO algorithms: Black-box or Multi-fidelity"></a>HPO algorithms: Black-box or Multi-fidelity</h1><ul>
+<li>Black-box: treats a training job as a black-box in HPO:<ul>
+<li>Completes the training process for each trial</li>
+</ul>
+</li>
+<li>Multi-fidelity: modifies the training job to speed up the search<ul>
+<li>Train on subsampled datasets</li>
+<li>Reduce model size (e.g less #layers, #channels)</li>
+<li>Stop bad configuration earlier</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>目的是实验，找出好用的参数！！！所以这里可以不用全部的数据，只是试一试，探索一下参数！找到好用的超参数之后，再全量训练<strong>（隐含思想：一个超参数在全量表现好的话，在子集应该也不错的捏！！！）</strong></p>
+</blockquote>
+<ul>
+<li>summary<ul>
+<li><strong>black-box</strong>：每次一个训练任务 当作一个黑盒（每挑一组超参数，然后拿去训练，然后看模型的关键的衡量指标（精度、误差），再去选下一个怎么做）【可以适用于各种机器学习算法】；</li>
+<li><strong>Multi-fidelity</strong>（讨论比较多）：因为训练一个模型太贵了（数据集很大，完整跑完很耗时间，还要试很多的话，太耗时了），所以可以不用把整个数据集给跑完（不关心最后的精度怎么样，只关心超参数之间的效果怎么样）；以下是做法：</li>
+<li>对数据集下采样（超参数如果在小数据集上效果比较好的话，在完整数据集上也不差）；</li>
+<li>将模型的变小（SGD的超参数在resnet18上效果差不多的话，在resnet152上也可能是不错的）；</li>
+<li>在训练时会对数据扫很多遍，但是对于不好的超参数来说，它训练一遍就知道它的效果怎么样了，所以不需要等到完全训练完，看到效果不好的，及时停止；</li>
+<li>上面三点就是说，通过比较比较便宜点的但又跟完整训练有关系的任务来近似一个值，然后对超参数进行排序；</li>
+<li>Black-box 虽然会贵一点但是任务计算量比较小或优化算法不知道的话，这个方法会比较好；Multi-fidelity知道一些任务的细节，可以将任务弄小一点，这样每次试验的时候成本没有那么高。</li>
+</ul>
+</li>
+</ul>
+<h1 id="HPO-algorithms"><a href="#HPO-algorithms" class="headerlink" title="HPO algorithms"></a>HPO algorithms</h1><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308262200663.png" srcset="/img/loading.gif" lazyload alt="image-20230826220056605"></p>
+<blockquote>
+<p>Image Credit: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1906.02287">Automated Machine Learning: State-of-The-Art and Open Challenges</a></p>
+</blockquote>
+<ul>
+<li><strong>Black-Box</strong>:<ul>
+<li>Grid Search:</li>
+<li>Random Search:</li>
+<li>Bayesian Optimization:</li>
+<li>Simulated Annealing</li>
+<li>Genetic Algorithms</li>
+</ul>
+</li>
+<li><strong>Multi-Fidelity</strong>:<ul>
+<li>Modeling Learning Curve</li>
+<li>Bandit Based(Successive Halving &amp; Hyperband)</li>
+</ul>
+</li>
+</ul>
+<h1 id="Two-most-common-HPO-strategies"><a href="#Two-most-common-HPO-strategies" class="headerlink" title="Two most common HPO strategies"></a>Two most common HPO strategies</h1><ul>
+<li><p>Grid search: 暴力穷举</p>
+<ul>
+<li><pre><code class="python">for config in search_space:
+ train_and_eval(config)
+return best_result
+<figure class="highlight nestedtext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs nestedtext"><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">All combinations are evaluated</span><br><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">Guarantees the best results</span><br><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">Curse of dimensionality</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-string">Random search: 随机搜索</span><br><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">```python</span><br>    <span class="hljs-attribute">for _ in range(n)</span><span class="hljs-punctuation">:</span><br>     config = random_select(search_space)<br>     train_and_eval(config)<br>    return best_result<br></code></pre></td></tr></tbody></table></figure>
+</code></pre>
+</li>
+<li><p>Random combinations are tried</p>
+</li>
+<li><p>More efficient than grid search (empirically and in theory, shown in <a target="_blank" rel="noopener" href="https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf">Random Search for Hyper-Parameter Optimization</a>)</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Grid性能要求太大，简单的可以，复杂的不行。Random实现超级简单，建议Random去搜索，尤其是机器或者性能不够的情况下。时间到了停了就行，拿目前最好的超参数来用就行昂！！！</p>
+<p>Earlier Stopping策略：当在一段时间内（比如十分钟），Random搜索到的参数，没有在同样情况下，使模型精度提升，我们就停下来。不保证能够搜索到最好的，但是这种设计实现简单有效！</p>
+</blockquote>
+<h1 id="Bayesian-Optimization-BO"><a href="#Bayesian-Optimization-BO" class="headerlink" title="Bayesian Optimization (BO)"></a>Bayesian Optimization (BO)</h1><ul>
+<li>BO: Iteratively learn a mapping <strong>from HP to objective function</strong>. Based on previous trials. Select the next trial based on the current estimation. </li>
+<li>Surrogate model<ul>
+<li>Estimate how the objective function depends on HP </li>
+<li>Probabilistic regression models: Random forest, Gaussian process, …</li>
+</ul>
+</li>
+<li>Acquisition function<ul>
+<li>Acquisition max means uncertainty and predicted objective are high.</li>
+<li>Sample the next trial according to the acquisition function</li>
+<li>Trade off exploration and exploitation</li>
+</ul>
+</li>
+<li>Limitation of BO:<ul>
+<li>In the initial stages, similar to random search</li>
+<li>Optimization process is sequential</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308262223340.png" srcset="/img/loading.gif" lazyload alt="image-20230826222358290"></p>
+<blockquote>
+<p>T = 2代表采样了两个点，图中黑色的两个点。横轴是Search Space，竖轴是我们的目标函数。</p>
+<ul>
+<li>黑色表示实际的数据，紫色代表我们的概率预测，虚线是我们预测的均值，上下的$\mu + \sigma$和$\mu - \sigma$是我们预测的置信度。</li>
+<li>见过的t，我们是确定的，因此就是具体的点。两条线之间，代表的就是我们预测不好的地方。随着采样的点越来越多，我们的预测就越来越准了昂！！！</li>
+</ul>
+</blockquote>
+<ul>
+<li>Summary:<ul>
+<li>在实际中用的不是那么多，因为相对来说比较复杂，但是是比较活跃的研究方向；</li>
+<li><strong>BO（贝叶斯优化）</strong>，是会学从一个超参数HP到目标函数（精度、损失）的一个函数【机器学习是数据到我们想要东西之间的一个映射的关系】，这里是说每一个数据点是一个模型；</li>
+<li>就每做一个实验就会得到一个数据点，然后再拟合一个曲线出来；它在选下一个超参数去试的时候，会根据当前的评估，来的出数据点；</li>
+<li><strong>Surrogate模型</strong>：就是拟合超参数与目标函数之间关系的模型，可以采用概率的一些regression模型，可以使用随机森林或者是高斯过程；</li>
+<li>随着采样的越来越多，对整个模型的进步会越来越准。</li>
+<li><strong>获取函数</strong>（Acquisition function）是贝叶斯优化中另一个要建模的模型，它会去评估下一个点应该去取谁（对每一个超参数都会去预测一个值）；</li>
+<li>如果值大说明置信度没有那么高，就需要被拟合，所以下一个采样值，就是获取函数值最大的那个点；</li>
+<li>这边是一个exploration（到未知的地方看看）和exploitation（知道某一块位置不错，在那个位置上多看看）的一个过程【很多机器学习算法都是这个两个的权衡】</li>
+<li>在一开始的时候其实跟random search差不多（获取函数还不够好，就只能随机挑值来做），再后期的时候（建模比较准）会比较好一点；</li>
+<li>随机搜索是并行的算法，贝叶斯优化是顺序的算法（采下一个点需要等上一个完成才行）</li>
+<li>到底是什么时候会好一点，如果预算不够的话（搜的质量跟随机搜索的差不多），这样是划不来的；如果贝叶斯能在前期就做的比随机搜索好，那这样的划得来的。</li>
+<li>通常贝叶斯优化比随机搜索好的时候，一般来说是模型比较简单（模型比较简单的话，随机搜索也不差），或者是超参数的那个空间不那么复杂，或者有足够多的样本（需要很多的预算）</li>
+</ul>
+</li>
+</ul>
+<h1 id="Multi-Fidelity"><a href="#Multi-Fidelity" class="headerlink" title="Multi-Fidelity"></a><strong>Multi-Fidelity</strong></h1><blockquote>
+<p>以下这两个算法在现实生活中用的比较多</p>
+</blockquote>
+<h2 id="Successive-Halving"><a href="#Successive-Halving" class="headerlink" title="Successive Halving"></a>Successive Halving</h2><ul>
+<li>Save the budget for most promising config</li>
+<li>Randomly pick configurations to train epochs</li>
+<li>Repeat until one configuration left:<ul>
+<li>Keep the best n/2 configuration to train another m epochs</li>
+<li>Keep the best n/4 configuration to train another 2m epochs</li>
+<li>……</li>
+</ul>
+</li>
+<li>Select n and m based on training budget and #epoch needed for a full training</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308271722101.png" srcset="/img/loading.gif" lazyload alt="image-20230827172249946"></p>
+<ul>
+<li>Summary:<ul>
+<li>有很多超参数的选择，但是大部分超参数没有必要把它训练完，所以只需要把最靠谱的超参数给训练完就行了，剩下的早期就被淘汰了</li>
+<li>首先选取n个超参数，然后每个超参数训练m个epoch（把数据扫个m遍）【通常n会取大一点，m取小一点】；然后把好的超参数留下一半，剩下的一半不要，epoch还是m；在下一次迭代，超参数还是留下一半，而epoch变成了原来的两倍；这样的过程一直重复，直至留下一个超参数为止。【这样也就是说靠谱的超参数我们给多点资源】</li>
+<li>n与m的选取要基于预算而言的（预算多n就取大一点）；但是n与m不好取，这其实是一个exploration和exploitation的过程，在下一个算法会做改进。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Hyperband"><a href="#Hyperband" class="headerlink" title="Hyperband"></a>Hyperband</h2><ul>
+<li><p>In Successive Halving: </p>
+<ul>
+<li>exploration</li>
+<li>exploitation</li>
+</ul>
+</li>
+<li><p>Hyperband runs multiple Successive Halving, each time decreases n and increases m</p>
+</li>
+<li><p>More exploration first, then do more exploit</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308271728580.png" srcset="/img/loading.gif" lazyload alt="image-20230827172814519"></p>
+<ul>
+<li>Summary<ul>
+<li>这个是在HPO上用的比较多的算法，所以我们在实践中是可以使用它的；</li>
+<li>在Successive Halving中n是一个exploration的过程（n越大每次试的东西就越多），而m是exploitation（m取决于每一个参数说跑的时间，跑的越长也就看的越准）；nm代表的是每一次迭代中计算复杂度的多少；在计算的预算是固定的时候，nm应该是一个固定的数，所以在SH（Successive Halving）中每次都要调这个东西；</li>
+<li>Hyperband就是跑多个SH，一开始会选大一点的n和小一点的m，但后面会逐渐的讲n变小m变大；</li>
+<li>hyperband的好处是说，对n与m的选取不会那么敏感（会多跑几次，多几个组合），这样就不用怎么操心n还有算法在exploration与exploitation的权衡，这个算法都算了一遍；</li>
+</ul>
+</li>
+</ul>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><ul>
+<li><p>Black-box HPO: grid/random search, bayesian optimization</p>
+</li>
+<li><p>Multi-fidelity HPO: Successive Halving, Hyperband</p>
+</li>
+<li><p>In practice, start with random search</p>
+</li>
+<li><p>Beware there are top performers</p>
+<ul>
+<li>You can find them by mining your training logs, or what common configurations used in paper/code</li>
+</ul>
+</li>
+<li><p>在HPO中有两种主流的算法：黑盒与Multi-fidelity</p>
+</li>
+<li><p>黑盒：一个超参数进去一个模型出来，然后知道模型的好坏，里面有暴力搜索，随机搜索（用得比较多的，没有什么特别好的方法的话，用这个准没错），和贝叶斯优化（研究的一个大方向）</p>
+</li>
+<li><p>Multi-fidelity（通常在深度学习用得比较多）：如果训练时间过长会选择一个相对来说比较小的做法，包括采样一个小数据集，小版本的网络，具体说的算法是SH与Hyperband，这些是说，在训练了一些轮数的时候，把不靠谱的给淘汰掉；</p>
+</li>
+<li><p>注意一些Top performers（看看比赛中那些做的很好的人是怎么做的，看看那些算的最高分的论文在超参数的选择都差不多），在跑过很多数据集之后，会发现总有那么几个模型和几组参数在各个地方都跑的比较好，所以很有可能试那几个就行了；</p>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_12_2.pdf">slides</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/h5/note-app/view?cvid=14411286&amp;pagefrom=comment">笔记</a>，文章中很多Summary的部分，搬了笔记，确实笔记写的很清楚，相见恨晚！！！</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Stanford Pratical Machine Learning-超参数优化</div>
+      <div>http://example.com/2023/08/26/stanford-pratical-machine-learning-chao-can-shu-you-hua/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/27/stanford-pratical-machine-learning-wang-luo-jia-gou-sou-suo/" title="Stanford Pratical Machine Learning-网络架构搜索">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Stanford Pratical Machine Learning-网络架构搜索</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/26/stanford-pratical-machine-learning-mo-xing-diao-can/" title="Stanford Pratical Machine Learning-模型调参">
+                        <span class="hidden-mobile">Stanford Pratical Machine Learning-模型调参</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

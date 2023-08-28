@@ -1,0 +1,1080 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="这一章主要介绍迁移学习，Transfer Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stanford Pratical Machine Learning-迁移学习">
+<meta property="og:url" content="http://example.com/2023/08/27/stanford-pratical-machine-learning-qian-yi-xue-xi/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="这一章主要介绍迁移学习，Transfer Learning">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308231651624.png">
+<meta property="article:published_time" content="2023-08-27T13:18:21.000Z">
+<meta property="article:modified_time" content="2023-08-28T03:16:27.386Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308231651624.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Stanford Pratical Machine Learning-迁移学习 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Stanford Pratical Machine Learning-迁移学习"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-27 21:18" pubdate>
+          2023年8月27日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          72 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Stanford Pratical Machine Learning-迁移学习</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>这一章主要介绍迁移学习，Transfer Learning</p>
+<span id="more"></span>
+
+<h1 id="Transfer-learning"><a href="#Transfer-learning" class="headerlink" title="Transfer learning"></a>Transfer learning</h1><ul>
+<li><p>Motivation</p>
+<ul>
+<li>Exploit a model trained on one task for a related task</li>
+<li>Popular in deep learning as DNNs are data hungry and training cost is high</li>
+</ul>
+</li>
+<li><p>Approaches</p>
+<ul>
+<li>Feature extraction (e.g. Word2Vec, ResNet-50 feature, I3D feature)</li>
+<li>Train a model on a related task and reuse it</li>
+<li>Fine-tuning from a pertained model (focus of this lecture)</li>
+</ul>
+</li>
+<li><p>Related to</p>
+<ul>
+<li>Semi-supervised learning</li>
+<li>In the extreme, zero-shot / few-shot learning</li>
+<li>Multi-task learning, where some labeled data is available for each task</li>
+</ul>
+</li>
+<li><p>能在一个任务上学习一个模型，然后用其来解决相关的别的任务，这样我们在一个地方花的时间，学习的一些知识，研究的一些看法可以在另外一个地方被使用到；</p>
+</li>
+<li><p>迁移学习是在深度学习出圈的，因为在深度学习中需要训练很多的深层神经网络，需要很多的数据，代价也很高；</p>
+</li>
+<li><p><strong>迁移学习的途径</strong>：</p>
+<ol>
+<li>做好一个模型将其做成一个特征提取的模块（Word2Vec【在文本上做训练一个单层神经网络，在训练好之后，每一个词对应一个特征，然后用这个特征去别的事情】，ResNet【对图片做特征，然后用这个特征来对作为另一个模型的输入，这样假设效果非常好，那么就可以代替人工去抽取特征】，I3D【用来对视频做特征】）；</li>
+<li>在一个相关的任务上训练一个模型，然后在另一个任务上直接用它；（之后的单元会讲到）</li>
+<li>训练好一个模型，然后在一个新的任务上对其做微调，使模型能更好的适应新的任务；</li>
+</ol>
+</li>
+<li><p><strong>相关的领域</strong>：</p>
+<ul>
+<li>半监督学习：利用没有标号的数据，让有标号的数据变得好</li>
+<li>在极端的条件下，可以做zero-shot（一个任务有很多的类别但不会告诉你样本）或few-shot（一个任务就给你一些样本） learning。</li>
+<li>Multi-task learning（多任务学习）：每一个任务都有它自己的数据，但是数据不是很够，可是任务之间相关，那么可以将所有的数据放在一起，然后同时训练多个任务出来，这样我们希望能从别的任务之中获益</li>
+</ul>
+</li>
+</ul>
+<h1 id="CV-Field"><a href="#CV-Field" class="headerlink" title="CV Field"></a>CV Field</h1><h2 id="Transferring-Knowledge"><a href="#Transferring-Knowledge" class="headerlink" title="Transferring Knowledge"></a>Transferring Knowledge</h2><ul>
+<li>在CV中存在了很多大规模标好的数据集（特别是分类问题，因为标号容易）；</li>
+<li>在CV的迁移学习，我们是希望存在 很多数据的一些应用上比较好的模型，能将它的知识拓展到我们自己的任务上去；</li>
+<li>通常你自己任务的数据集会比大的数据集（ImageNet）要小很多（一开始不会花太多钱去标注很多的数据，正常是，标好了一些看看模型效果怎么样，然后好的话再继续投入进去，这样是一个迭代的过程），然后我们想要快速的迭代，看看能不能用比较大的数据集来将一些学到的东西迁移到我们自己的任务上面去；</li>
+</ul>
+<h2 id="Pre-trained-Models"><a href="#Pre-trained-Models" class="headerlink" title="Pre-trained Models"></a>Pre-trained Models</h2><ul>
+<li><p>Partition a neural network into:</p>
+<ul>
+<li>A feature extractor (encoder) maps raw pixels into linearly separable features</li>
+<li>A linear classifier (decode) makes decisions</li>
+</ul>
+</li>
+<li><p>Pre-trained model</p>
+<ul>
+<li>a neural network trained on <strong>a large-scale and general enough dataset</strong></li>
+<li>The feature extractor may generalize well to<ul>
+<li>other datasets (e.g. medical/satellite images)</li>
+<li>other tasks (e.g. object detection, segmentation)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>可以将神经网络分成两块，一块编码器（特征提取器，将原始图片的原始像素转化在一个语义空间中可以线性可分的一些特征（浅表示或语义特征表示）），一块解码器（简单的线性分类器，将编码器的表示映射成想要的标号，或者做一些决策）；</p>
+</li>
+<li><p>预训练模型（Pre-train）：在一个比较大的数据上训练好的一个模型，会具有一定的泛化能力（放到新模型上或新的数据集上，这个模型还是有效果的）【虽然是用于图片分类但是也可以试试目标检测】；</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308272151021.png" srcset="/img/loading.gif" lazyload alt="image-20230827215141895"></p>
+<h2 id="Fine-Tuning-techniques"><a href="#Fine-Tuning-techniques" class="headerlink" title="Fine-Tuning techniques"></a>Fine-Tuning techniques</h2><ul>
+<li><p>Initialize the new model:</p>
+<ul>
+<li>Initialize the feature extractor with the feature extractor parameters of a pre-trained model</li>
+<li>Randomly initialize the output layer</li>
+<li>Start the parameter optimization near a local minimal</li>
+</ul>
+</li>
+<li><p>Train with a small learning rate with just a few epochs</p>
+<ul>
+<li>Regularize the search space</li>
+</ul>
+</li>
+<li><p>将预训练好的模型用在新任务上叫fine-tuning（微调）【通常在深度学习里面，微调能带来最好的效果，但是也有一定的开销】</p>
+</li>
+<li><p>微调是怎么做的：</p>
+<ul>
+<li>在新的任务上构建一个新的模型，新的模型的架构要更预训练的模型的架构是一样的；</li>
+</ul>
+</li>
+<li><p>在找到合适的预训练模型之后要初始化我们的模型（将预训练模型的除了最后一层之外（特征提取器）的权重都复制给我们的模型，最后一层的解码器用的还是随机的权重【因为我们的标号和预训练模型的标号是不一样的】）；</p>
+</li>
+<li><p>具体看例子</p>
+<ul>
+<li>在初始化之后，就可以开始学习了，这步跟我们平常的学习没有什么不同的；</li>
+</ul>
+</li>
+<li><p>有一点点小做法是，限制fine-tune后的学习率。因为我们初始的结果已经比较好了，已经在想要解的附近了，限制学习率可以使得我们可以不会走太远【一般是用1e-3】；另外是说不要训练太长的时间；这些做法都是为了缩小搜索空间；</p>
+</li>
+</ul>
+<blockquote>
+<p>微调：不要改的太多！！！</p>
+</blockquote>
+<ul>
+<li>限制搜索空间的原因：原来任务结果就已经很好的，只需要再略微调整，便可以得到最优解！</li>
+</ul>
+<h2 id="Freeze-Bottom-Layers"><a href="#Freeze-Bottom-Layers" class="headerlink" title="Freeze Bottom Layers"></a>Freeze Bottom Layers</h2><ul>
+<li><p>Neural networks learn hierarchical features</p>
+<ul>
+<li>Low-level features are universal, generalize well, e.g. curves /edges / blobs</li>
+<li>High-level features are more task and dataset specific, e.g. classification labels</li>
+</ul>
+</li>
+<li><p>Freeze bottom layers during fine tuning Train the top layers from scratch</p>
+<ul>
+<li>Keep low-level universal features intact</li>
+<li>Focus on learning task specific features</li>
+<li>A strong regularizer</li>
+</ul>
+</li>
+<li><p>神经网络通常有一个层次化的，最底层一般是学习了底层的特征，上层的更与语义相关，所以一般来说底层与上面层没有太多的关系，在换了数据集之后泛化性都很好；</p>
+</li>
+<li><p>最后一层还是随机初始化学习，然后只对某一些层进行改动，最下面那些层在微调时就不去动了（可以说是学习率为0）；</p>
+</li>
+<li><p>固定住多少层是要根据应用来看的，假设应用与预训练模型差别比较大的话，可以多训练一些层；</p>
+</li>
+</ul>
+<h2 id="Where-to-Find-Pre-trained-Models"><a href="#Where-to-Find-Pre-trained-Models" class="headerlink" title="Where to Find Pre-trained Models"></a>Where to Find Pre-trained Models</h2><ul>
+<li>首先要去找有没有我们想要的预训练模型，然后是看它是在什么样的数据集上训练好的；</li>
+<li>可以去的途径（ModelHub、ModelZoom之类的）：<ul>
+<li><strong>Tensorflow Hub</strong>: <a target="_blank" rel="noopener" href="https://tfhub.dev/%EF%BC%9B%EF%BC%88%E5%85%81%E8%AE%B8%E7%94%A8%E6%88%B7%E5%8E%BB%E6%8F%90%E4%BA%A4%E6%A8%A1%E5%9E%8B%EF%BC%89">https://tfhub.dev/；（允许用户去提交模型）</a></li>
+<li><strong>TIMM</strong>（把pytorch上能找到的各种代码实现弄过来）： <a target="_blank" rel="noopener" href="https://github.com/rwightman/pytorch-image-models%EF%BC%9B%EF%BC%88ross">https://github.com/rwightman/pytorch-image-models；（ross</a> 自己维护的一个包【文档不错，模型性能暂时一般般】）</li>
+</ul>
+</li>
+<li>TIMM使用代码介绍：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> timm<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><br>model = timm.create_model(<span class="hljs-string">'resnet18'</span>, pretrained=<span class="hljs-literal">True</span>)<br>model.fc = nn.Linear(model.fc.in_features, n_classes)<br><span class="hljs-comment"># Train model as a normal training job</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Applications"><a href="#Applications" class="headerlink" title="Applications"></a>Applications</h2><ul>
+<li><p>Fine-tuning pre-trained models (on ImageNet) is widely used in various CV applications:</p>
+<ul>
+<li>Detection/segmentation (similar images but different targets)</li>
+<li>Medical/satellite images (same task but very different images)</li>
+</ul>
+</li>
+<li><p>Fine-tuning accelerates convergence</p>
+</li>
+<li><p>Though not always improve accuracy</p>
+<ul>
+<li>Training from scratch could get a similar accuracy, especially when the target dataset is also large</li>
+</ul>
+</li>
+<li><p>在大的数据集上训练好模型再微调到自己的应用上在CV领域上广泛的应用；</p>
+<ul>
+<li>新的任务包含 目标检测、语义分割等（图片类似但是目标不一样）；</li>
+<li>在医疗领域等（同样的任务但是图片大相径庭）；</li>
+</ul>
+</li>
+<li><p>现在的观点是微调加速了收敛（微调让初始的点不再试一个随机的点而是一个离最终的目标比较近的点，使得损失比较平滑），但是不一定可以提升精度（一般不会让精度变低，因为它只是改变初始值而已，跟随机初始化没区别，只要走的足够远也能摆脱初始值的影响）；</p>
+</li>
+</ul>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><ul>
+<li>通常我们会在大数据上训练预训练好的模型，这种任务通常是图片分类；</li>
+<li>然后在关心的任务上把模型的权重初始化成预训练好的模型的权重，当然最后一层也就是解码器是要随机初始化的；</li>
+<li>微调一般用一个小一点的学习率进行细微的调整，这样通常会加速收敛，有时可以提升精度但通常不会变差；（所以通常在CV中是经常被推荐的做法）</li>
+</ul>
+<h1 id="NLP-Field"><a href="#NLP-Field" class="headerlink" title="NLP Field"></a>NLP Field</h1><h2 id="Self-supervised-pre-training"><a href="#Self-supervised-pre-training" class="headerlink" title="Self-supervised pre-training"></a>Self-supervised pre-training</h2><ul>
+<li><p>No large-scale labeled NLP dataset</p>
+</li>
+<li><p>Large quantities of unlabeled documents</p>
+<ul>
+<li>Wikipedia, ebooks, crawled webpages</li>
+</ul>
+</li>
+<li><p>Self-supervised pre-training</p>
+<ul>
+<li>Generate “pseudo label” and use supervised learning task</li>
+<li>Common tasks for NLP<ul>
+<li>Language model (LM): predict next word. e.g. I like your hat</li>
+<li>Masked language model (MLM): random masked word prediction. e.g. I like your hat</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>NLP与CV在微调中有个不一样的地方是说：NLP里面不存在特别大的标好的数据集（CV中图片分类里，有使用特别大的标注好的数据集训练好的预训练模型），在NLP中机器翻译里面有大一点的，但是在NLP中更多是说有大量的没有标注的文档（如Wikipedia、网络的电子书、爬取网站中的文字等）；</p>
+</li>
+<li><p>在NLP里面我们很容易得到大量的文档，但是比较难的是去给这些文档一个个去做标号。在早期，我们可以去分类这些文档，但是标注是非常非常难的。</p>
+</li>
+<li><p>在NLP中，我们一般会去做自监督的一个预训练（标号是由自己产生的，也就是伪标号。然后用这些伪标号来参与进 一个正常的可以监督学习的任务之中，用于完成预训练）</p>
+</li>
+<li><p>在NLP中有两个常见的应用来生成这样的伪标号</p>
+<ul>
+<li>语言模型（Language Model，LM）：给出前面的一些词，去预测下一个词；</li>
+<li>带掩码的语言模型（Masked Language Model，MLM）：在一个句子里面随机的扣掉一些字，然后让你去预测这个字，有点像是完型填空；</li>
+<li>完型填空比预测下一个字容易些，因为完型填空能看到左右的信息，而预测比较开放；</li>
+</ul>
+</li>
+</ul>
+<h2 id="Pre-trained-Models-1"><a href="#Pre-trained-Models-1" class="headerlink" title="Pre-trained Models"></a>Pre-trained Models</h2><ul>
+<li><p><strong>词嵌入</strong>（十几年前的模型）：模型会学习两个向量$u_w$和$v_w$，然后对给定掩码的词Y，用其x1……xn去预测Y</p>
+<ul>
+<li><p>具体来说，要预测的值用u来表示，上下文的词用v来表示，然后把v给加起来再与u做内积，这样就可以的到u与v之间的关系，这个算法叫CBOW；然后做预测时就从字典中选取一个y使得CBOW的值最大；<br>$$<br>argmax_yu_y^T \sum_i v_{x_i}<br>$$</p>
+</li>
+<li><p>当然，也可以用中心词去预测周围的词。具体是说，对所有的词学到了两个向量，这两个词具有一定的语义关系（两个词如果差不多同时出现的话，那么存在相似度），如果说y与$x_i$出现在一起的话，内积比较大的话，意味着说有相似性；</p>
+</li>
+</ul>
+</li>
+<li><p><strong>基于Transformer的预训练模型</strong>（BERT）：</p>
+<ul>
+<li>BERT就是一个Transformer的编码器，然后它使用的是带掩码的词预测（双向的），所以它适合一些带掩码的语言模型；</li>
+<li>GPT用的是它的一个解码器（从左到右的过程），可以用于预测下一个词；</li>
+<li>T5是一个基于编码器与解码器的架构</li>
+</ul>
+</li>
+</ul>
+<h2 id="BERT"><a href="#BERT" class="headerlink" title="BERT"></a>BERT</h2><ul>
+<li>论文精讲BERT：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1PL411M7eQ">https://www.bilibili.com/video/BV1PL411M7eQ</a></li>
+<li>BERT使用了两个预训练任务：一个是把一个词盖住去预测，另一个是为了处理NLP里多的任务，一个进去两个句子（可以是文档中确实是相连的（正例），没有相连的句子（负例））；</li>
+<li>BERT原始的论文使用的是Wikipedia和一个书的数据集；</li>
+<li>有许多的版本：Base/Large（大小不一样）；English/Multilingual（在英语上训练还是在英语上训练的）；cased/uncase（有没有大小写的区别）；</li>
+<li>看图看BERT在干什么事情</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308281027061.png" srcset="/img/loading.gif" lazyload alt="image-20230828102733911"></p>
+<ul>
+<li>BERT之后有很多变种，ALBERT，ELECTRA，RoBERTa；</li>
+</ul>
+<h2 id="BERT-Fine-tuning"><a href="#BERT-Fine-tuning" class="headerlink" title="BERT Fine-tuning"></a>BERT Fine-tuning</h2><ul>
+<li><p>Randomly initialize the last layer, train a few epochs with small lr</p>
+</li>
+<li><p>Downstream task examples</p>
+</li>
+<li><p>在训练好上面的模型之后就可以用BERT做fine-tuning了；</p>
+</li>
+<li><p>和CV很像，构造我们的任务的最后一层让它输出到我们想要的东西（BERT的最后一层要去掉，因为最后一层是输出两句子间是否相连），也就是最后一层随机初始化，训练一些epoch，用一个比较小的学习率；</p>
+</li>
+<li><p>当然这也取决于下游的任务：</p>
+<ul>
+<li><strong>对句子分类</strong>（判断句子的正面与负面）：只需要把第一个词对应输出拿出来，然后加一个输出层就可以拿到标号了；</li>
+<li><strong>做词级别的任务</strong>（实体命名（人名街道名之类的）的识别）：把整个那些词，每个词对应的输出的向量拿过去接上个全连接层做标号就行了；</li>
+<li><strong>做问答的话</strong>（给一个问题或给一段话，答案就在这一段话里面，模型需要把答案给找出来（给出答案的开始与结束的位置）），对第二个句子开始就要每个词的输出里面去看他是不是答案的开始，是不是答案的结束，</li>
+</ul>
+</li>
+<li><p>虽然在自然语言中任务有多种多样，但实际上可以通过构造输入（句子、词、一段话、甚至可以是一篇文章）使得能放入进模型里面</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308281040909.png" srcset="/img/loading.gif" lazyload alt="image-20230828104004833"></p>
+<h2 id="Practical-Considerations"><a href="#Practical-Considerations" class="headerlink" title="Practical Considerations"></a>Practical Considerations</h2><ul>
+<li><p>BERT fine-tuning on small datasets can be unstable</p>
+<ul>
+<li>BERT removed bias correction steps in Ada</li>
+<li>Too few (=3) epochs</li>
+</ul>
+</li>
+<li><p>Randomly initializing some top transformer layers help</p>
+<ul>
+<li>Features learned by top layers are too specific to the pre-training tasks</li>
+<li>The cutoff depends on downstream tasks</li>
+</ul>
+</li>
+<li><p>BERT这篇paper出来的时候，微调时结果不稳定（超参数没有弄对），因为BERT使用了Adam的改版（前期的时候去掉了整个对系数估计的不确定性），这个对BERT是没问题的（数据量很大）；但是对于微调来讲，它的数据集不大也不会跑很久，再使用改版的Adam会使得结果没那么稳定；所以推荐使用完整版的Adam；</p>
+</li>
+<li><p>BERT对哪个任务都是训练3次数据迭代，大家发现三次并没有完整的收敛，最好是训练多几个Epoch；</p>
+</li>
+<li><p>这些是比较常见的小技巧，做任何微调时都可以去调一下这些东西；</p>
+</li>
+<li><p>对于一个Transformer来讲，它跟一个CNN是没有什么本质上的不同的，就是有很多层，对底层来说是有保留一些更低的语义层次的信息，越往上的话它跟标注空间越像；在BERT中也可以像CV一样固定住下面的层只调上面的，甚至可以对上面那些层进行随机初始化（不一定要用预训练里训练好的权重）【可以不受之前语言模型的影响】</p>
+</li>
+</ul>
+<h2 id="Where-to-Find-Pre-trained-Models-1"><a href="#Where-to-Find-Pre-trained-Models-1" class="headerlink" title="Where to Find Pre-trained Models"></a>Where to Find Pre-trained Models</h2><ul>
+<li>HuggingFace: a collection of pre-trained transformer models on both PyTorch and TensorFlow</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoTokenizer<br><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoModelForSequenceClassification<br>tokenizer = AutoTokenizer.from_pretrained(<span class="hljs-string">"bert-base-cased"</span>)<br>inputs = tokenizer(sentences, padding=<span class="hljs-string">"max_length"</span>, truncation=<span class="hljs-literal">True</span>)<br>model = AutoModelForSequenceClassification.from_pretrained(<br>	“bert-base-cased<span class="hljs-string">", num_labels=2)</span><br><span class="hljs-string"># Train model on inputs as a normal training job</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Applications-1"><a href="#Applications-1" class="headerlink" title="Applications"></a>Applications</h2><ul>
+<li><p>“(BERT) obtains new state-of-the-art results on eleven natural language processing tasks”, including</p>
+<ul>
+<li>If a sequence of words is a grammatical English sentence</li>
+<li>Sentiment of sentences from movie reviews</li>
+<li>Sentences/questions in a pair are semantically equivalent, or similar</li>
+<li>If the premise entails the hypothesis</li>
+<li>Find the span of the answer for a question</li>
+</ul>
+</li>
+<li><p>“(T5) achieve state-of-the-art results on many benchmarks covering summarization, question answering, text classification, and more”</p>
+</li>
+<li><p>BERT在11门语言上取得了最好的结果：包含了去判断一个句子中的词的语法是否正确，判断评论的正负与否，判断两句话在语义上是否等价，或者两个问题在语义上是否等价，判断假设和结论是否有加强关系，在问题里面能不能找到答案；</p>
+</li>
+<li><p>BERT采用的是编码器的架构，会有局限性，在适合编码器解码器架构的任务就不会那么适用了；</p>
+</li>
+<li><p>GPT更适合给出一段话，然后生成更长的一段话；</p>
+</li>
+<li><p>T5也在很多地方取得了不错的结果，它使用的是编码器解码器的架构，可以做一些别的不一样的事情（对文章做摘要，或者是做Q&amp;A）</p>
+</li>
+<li><p>根据自己的任务来选择使用Transformer的哪个部分（BERT，GPT，T5等） -&gt; 基本上三选一</p>
+</li>
+</ul>
+<h2 id="Summary-1"><a href="#Summary-1" class="headerlink" title="Summary"></a>Summary</h2><ul>
+<li>在自然语义里面，预训练模型通常是通过自监督来完成的（因为自然语言的数据集没有那么大的标好的数据集），一个常见的应用是做语言模型或者是做带掩码的语言模型；</li>
+<li>BERT是一个特别大的Transformer的编码器，GPT就是一个特别大的解码器，T5就是一个特别大的解码器加编码器；</li>
+<li>BERT在对下游任务做微调时就跟CV很像了，一般只要改最后一层就好了，但是在输入上要有一定的构造</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1SL4y1t7ZL/?p=28&amp;spm_id_from=pageDriver">沐神Vedio</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1T7411R75a/?spm_id_from=333.788&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">MSRA 王晋东大神 迁移学习导论</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/h5/note-app/view?cvid=14694414&amp;pagefrom=comment">CV 笔记</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/h5/note-app/view?cvid=14802916&amp;pagefrom=comment">NLP 笔记</a></li>
+<li>CV Field ppt: <a target="_blank" rel="noopener" href="https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_14_1.pdf">https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_14_1.pdf</a></li>
+<li>NLP Field ppt: <a target="_blank" rel="noopener" href="https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_14_2.pdf">https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_14_2.pdf</a></li>
+<li><strong>Tensorflow Hub</strong>: <a target="_blank" rel="noopener" href="https://tfhub.dev/%EF%BC%9B%EF%BC%88%E5%85%81%E8%AE%B8%E7%94%A8%E6%88%B7%E5%8E%BB%E6%8F%90%E4%BA%A4%E6%A8%A1%E5%9E%8B%EF%BC%89">https://tfhub.dev/；（允许用户去提交模型）</a></li>
+<li><strong>TIMM</strong>（把pytorch上能找到的各种代码实现弄过来）： <a target="_blank" rel="noopener" href="https://github.com/rwightman/pytorch-image-models%EF%BC%9B%EF%BC%88ross">https://github.com/rwightman/pytorch-image-models；（ross</a> 自己维护的一个包【文档不错，模型性能暂时一般般】）</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Stanford Pratical Machine Learning-迁移学习</div>
+      <div>http://example.com/2023/08/27/stanford-pratical-machine-learning-qian-yi-xue-xi/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/27/stanford-pratical-machine-learning-shen-du-shen-jing-wang-luo-jia-gou/" title="Stanford Pratical Machine Learning-深度神经网络架构">
+                        <span class="hidden-mobile">Stanford Pratical Machine Learning-深度神经网络架构</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

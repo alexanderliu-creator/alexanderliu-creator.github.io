@@ -1,0 +1,882 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="这一章主要介绍深度神经网络架构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stanford Pratical Machine Learning-深度神经网络架构">
+<meta property="og:url" content="http://example.com/2023/08/27/stanford-pratical-machine-learning-shen-du-shen-jing-wang-luo-jia-gou/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="这一章主要介绍深度神经网络架构">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308231651624.png">
+<meta property="article:published_time" content="2023-08-27T12:09:14.000Z">
+<meta property="article:modified_time" content="2023-08-27T13:41:40.066Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202308231651624.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Stanford Pratical Machine Learning-深度神经网络架构 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Stanford Pratical Machine Learning-深度神经网络架构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-27 20:09" pubdate>
+          2023年8月27日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Stanford Pratical Machine Learning-深度神经网络架构</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：14 小时前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>这一章主要介绍深度神经网络架构</p>
+<span id="more"></span>
+
+<h1 id="Deep-Network-Tuning"><a href="#Deep-Network-Tuning" class="headerlink" title="Deep Network Tuning"></a>Deep Network Tuning</h1><ul>
+<li>DL is a programming language to extract information from data<ul>
+<li>Some values will be filled by data later</li>
+<li>Differentiable</li>
+</ul>
+</li>
+<li>Various design patterns, from layers to network architecture</li>
+<li>Here we talk about some of them</li>
+</ul>
+<h1 id="Batch-and-Layer-Normalizations"><a href="#Batch-and-Layer-Normalizations" class="headerlink" title="Batch and Layer Normalizations"></a>Batch and Layer Normalizations</h1><h2 id="Batch-Normalization"><a href="#Batch-Normalization" class="headerlink" title="Batch Normalization"></a>Batch Normalization</h2><blockquote>
+<p>对象是数据，对于数据进行归一化。按照输入和输出通道这个维度去进行归一化，说白了是按照“列”来做归一化，使一个batch中的每一个特征，对于本组所有的相同特征做归一化。</p>
+</blockquote>
+<ul>
+<li><p>在线性模型中，我们会对数据进行标准化（使得数据的每一个特征均值为0方差为1），从数学上来说，这样能使得损失函数更加平滑（特别是对于线性模型来说），实际操作是减去均值，除以方差。</p>
+</li>
+<li><p><strong>平滑</strong>是指 损失函数对x的导数与损失对y的导数之间的差的平方和，$||\nabla f(x) - \nabla f(y)|| ^ 2 \leq \beta ||x - y|| ^ 2$。会小于等于x与y之间的差的平方和的β倍。这意味的是说 x走的很远的时候，它的梯度变化得不是很大 （我走了很远但是方向没有走得太偏）</p>
+<ul>
+<li>因此，β比较小得时候，可以有一个比较大得学习率（学习率等价于步长）；small $\beta$ allows a larger learning rate</li>
+<li>但是标准化不会帮助深度神经网络，因为如果是对x做标准化的话，他只会帮助直接线性作用于x上的那个函数，也就是线性模型是可以的。但在多层的情况下，他会帮助最下面那层的线性层；</li>
+</ul>
+</li>
+<li><p><strong>批量归一化</strong>就是说，把中间那些层的输入也做标准化，这样能帮助整个函数更加平滑，使得在训练深度神经网络的时候会更加容易（这个观点还是争议的）；</p>
+<ul>
+<li>使用批量归一化之后，收敛上会更加容易，可以选用更大的一些学习率，但是一般来说不会改变最后的结果（精度跟没有差不多，但是可以快一点）</li>
+</ul>
+</li>
+<li><p>批量归一化可以拆解为四步：</p>
+<ul>
+<li><strong>变形</strong>（Reshape）：如果输入是2维的矩阵就不用改变，不是的话就要改成2维的【举个例子，假设输入是个卷积（一般是四维的，n（批量大小维）、c（RGB 通道或卷积的输出通道）、w（宽）、h（高）），我们会在这一步将其变化为2维的矩阵，由n * c * w * h变为nwh * c ，就是把通道维拉到最后，把nwh这三个维度合并在一起，可以这么理解 c 在CNN中表示的是一个识别出特征，而nwh则是样本的数据】</li>
+<li><strong>标准化</strong>（Normalization）：具体来说是对每一列标准化，也就是对变形后的矩阵的一列 减去 这一列的均值 再除以这一列的方差；</li>
+<li><strong>还原</strong>（Recover）：用我们标准化后的矩阵y 对它的一列乘上 这一列对应的γ 加上这一列对应的β，在这个地方是说虽然我们对数据减了均值后再除了方差，但是我们还是有点想要数据有一点偏差，那么这个步骤就允许这个还原回去【如果γ为方差，β为均值，那么将会还原回去】，在这里γ与β是可以学习的， 神经网络会根据需求去找谁会更好一点；</li>
+<li>最后就是将处理后的变形矩阵给变回去</li>
+</ul>
+</li>
+</ul>
+<h2 id="Batch-Normalization-Code"><a href="#Batch-Normalization-Code" class="headerlink" title="Batch Normalization Code"></a>Batch Normalization Code</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">batch_norm</span>(<span class="hljs-params">X, gamma, beta, moving_mean, moving_var, eps, momentum</span>):<br>	<span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> torch.is_grad_enabled(): <span class="hljs-comment"># In prediction mode</span><br>		X_hat = (X - moving_mean) / torch.sqrt(moving_var + eps)<br>	<span class="hljs-keyword">else</span>:<br>		<span class="hljs-keyword">assert</span> <span class="hljs-built_in">len</span>(X.shape) <span class="hljs-keyword">in</span> (<span class="hljs-number">2</span>, <span class="hljs-number">4</span>)<br>		<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(X.shape) == <span class="hljs-number">2</span>:<br>			mean = X.mean(dim=<span class="hljs-number">0</span>)<br>			var = ((X - mean)**<span class="hljs-number">2</span>).mean(dim=<span class="hljs-number">0</span>)<br>		<span class="hljs-keyword">else</span>:<br>			mean = X.mean(dim=(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>), keepdim=<span class="hljs-literal">True</span>)<br>			var = ((X - mean)**<span class="hljs-number">2</span>).mean(dim=(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>), keepdim=<span class="hljs-literal">True</span>)<br>		X_hat = (X - mean) / torch.sqrt(var + eps)<br>		moving_mean = momentum * moving_mean + (<span class="hljs-number">1.0</span> - momentum) * mean<br>		moving_var = momentum * moving_var + (<span class="hljs-number">1.0</span> - momentum) * var<br>	Y = gamma * X_hat + beta<br>	<span class="hljs-keyword">return</span> Y, moving_mean, moving_var<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>完整代码：<a target="_blank" rel="noopener" href="http://d2l.ai/chapter_convolutional-modern/batch-norm.html">http://d2l.ai/chapter_convolutional-modern/batch-norm.html</a></p>
+<p>动手学深度学习的讲解：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1X44y1r77r">https://www.bilibili.com/video/BV1X44y1r77r</a></p>
+</blockquote>
+<h2 id="Layer-Normalization"><a href="#Layer-Normalization" class="headerlink" title="Layer Normalization"></a>Layer Normalization</h2><blockquote>
+<p>对象是数据，对于数据进行归一化。按照样本维度进行归一化。说白了是按照“行”来做归一化，使一个batch中的每一行数据，进行行归一化。</p>
+</blockquote>
+<ul>
+<li><p>If apply to RNN, BN needs maintain separated moving statistics for each time step</p>
+<ul>
+<li>Problematic for very long sequences during inference</li>
+</ul>
+</li>
+<li><p>Layer normalization reshapes input $X \in R^{n \times p} \rightarrow X’ \in R^{p \times n}$ or $X \in R^{n \times c \times w \times h} \rightarrow X’ \in R^{cwh \times n}$, rest is same with BN</p>
+<ul>
+<li>Normalizing within <strong>each example</strong>, up to current time step</li>
+<li>Consistent between training and inference</li>
+<li>Popularized by Transformers</li>
+</ul>
+</li>
+<li><p><strong>层归一化</strong>主要是用在循环神经网络（RNN）里面，因为将BN用于RNN中时，每一个时间步骤都得用自己得均值方差，甚至是学到得γ与β，在每一时间步中最好不要共享这些均值与方差（在不同的时间步中，这些数值变化还是很大的，而BN需要一个比较稳定的均值方差的估计，抖动比较大的均值与方差就失去了做标准化的意义）</p>
+</li>
+<li><p>层归一化到底是在做什么：在变形的步骤上对输入矩阵做转置（2维就普通转置，4维就把cwh放在一起再做转置），其他的步骤与BN相同；如果是RNN的输入矩阵（N * P * t）的话，就把P与t放在一起</p>
+<ul>
+<li>其实这就是标准化每一个样本到当前的时间步骤，这样做的好处是说在做预测时不需要存均值方差这种全局的东西</li>
+<li>在CNN上的效果一般，在RNN特别是在Transformer上效果非常好</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>均值和方差每个样本中都是特殊的，不需要去存任何全局的信息和状态。样本之间相互独立，新的样本进行处理的时候，不需要看别的样本的数据（方差和均值），直接算一把自己的，继续进行处理就行了。</p>
+</blockquote>
+<h2 id="More-Normalizations"><a href="#More-Normalizations" class="headerlink" title="More Normalizations"></a>More Normalizations</h2><ul>
+<li>对变形这一步做修改：<ul>
+<li><strong>InstanceNorm</strong>：也是对CNN用的，就是将 输出通道数与批量数放在一起，长与宽放在一起；</li>
+<li><strong>GroupNorm</strong>：就是将 输出通道数拆成 s*g 然后s与wh放在一起，g与批量数放在一起；</li>
+<li><strong>CrossNorm</strong>：将均值与方差在算出来之后，不是弄成0和1 而是将它两交换一下；</li>
+</ul>
+</li>
+<li>对标准化这一步做修改：白化（Whitening）：不仅是将均值变0方差变1，而且使得每一个特征之间是没有关系的（做一次PCA）;</li>
+<li>对还原这一步做修改：将可学习的γ、β变为一个线性层、甚至可以把它变成MLP，来还原</li>
+<li>还有一些变种是说将其作用在层的输入上，也可以对权重或是梯度做标准化</li>
+</ul>
+<p><strong>不同的normalization 就有不同的适用性</strong>（在GAN中的 BN 效果不是很好，在Adversarial Attack 中用BN也不是很好），所以要选取适合的normalization技术</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><ul>
+<li>Normalization就是把一些中间的层的在数值上变得稳定点，让整个损失函数更加平滑，可以使得神经网络的训练更加容易，一般来说不会改变最后的精度；</li>
+<li>不用normalization的话，很多时候也没有关系的，可以通过其他方式来弥补（关键是看怎么让损失函数变得平滑点）</li>
+<li>一个normalization的layer就是将输入换成合适的形式然后把他的列进行归一化，再做一次还原步骤（如果想要一个不一样方差不一样的均值，这里的参数是可以学习的），最后就换回原来的形状<ul>
+<li>比较著名的例子是：在CNN中BN用的多一点，LN在transformer用的多一点。</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><p>本节课ppt：<a target="_blank" rel="noopener" href="https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_13_1.pdf">https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_13_1.pdf</a></p>
+</li>
+<li><p>这一章主要是关于深度神经网络里面的一些共用的设计模式：</p>
+<ol>
+<li><strong>批量与层的归一化</strong>；<a target="_blank" rel="noopener" href="https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_13_1.pdf">https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_13_1.pdf</a></li>
+<li><strong>残差连接</strong>（PPT：<a target="_blank" rel="noopener" href="https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_13_2.pdf%EF%BC%89%EF%BC%9B">https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_13_2.pdf）；</a></li>
+<li><strong>注意力机制</strong>（PPT：<a target="_blank" rel="noopener" href="https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_13_3.pdf%EF%BC%89%EF%BC%9B">https://c.d2l.ai/stanford-cs329p/_static/pdfs/cs329p_slides_13_3.pdf）；</a></li>
+</ol>
+</li>
+<li><p>本节课讲批量与层的归一化（另外两个论文精读有讲），<strong>论文精读链接</strong>：</p>
+</li>
+</ol>
+<ul>
+<li>ResNet：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1P3411y7nn">https://www.bilibili.com/video/BV1P3411y7nn</a></li>
+<li>Attention：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1pu411o7BE">https://www.bilibili.com/video/BV1pu411o7BE</a></li>
+</ul>
+<ol start="4">
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/h5/note-app/view?cvid=14601562&amp;pagefrom=comment">笔记</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Stanford Pratical Machine Learning-深度神经网络架构</div>
+      <div>http://example.com/2023/08/27/stanford-pratical-machine-learning-shen-du-shen-jing-wang-luo-jia-gou/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/27/stanford-pratical-machine-learning-qian-yi-xue-xi/" title="Stanford Pratical Machine Learning-迁移学习">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Stanford Pratical Machine Learning-迁移学习</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/27/stanford-pratical-machine-learning-wang-luo-jia-gou-sou-suo/" title="Stanford Pratical Machine Learning-网络架构搜索">
+                        <span class="hidden-mobile">Stanford Pratical Machine Learning-网络架构搜索</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
