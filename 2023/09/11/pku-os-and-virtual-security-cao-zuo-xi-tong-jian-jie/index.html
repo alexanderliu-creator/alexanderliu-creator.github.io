@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309110847525.png">
 <meta property="article:published_time" content="2023-09-11T02:36:01.000Z">
-<meta property="article:modified_time" content="2023-09-11T03:29:00.434Z">
+<meta property="article:modified_time" content="2023-09-11T12:00:48.930Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研一课程">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1k 字
+          3.5k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          9 分钟
+          30 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 小时前
+                    本文最后更新于：1 分钟前
                   
                 
               </p>
@@ -374,7 +374,7 @@
 <li>特性：并发性，共享性，异步性</li>
 <li>操作系统如何引导和控制计算机：<ul>
 <li>上电到操作系统运行：外部存储器 -&gt; OS -&gt; RAM，加载操作系统就是这么走的。</li>
-<li>具体流程：<ul>
+<li>流程概览：<ul>
 <li>Step1: 上电：加电运行，第一个状态是CPU处理机生产商的硬件电路决定的，x86设置指令寄存器为0ffff: 0000。会从这个指令寄存器跳转到BIOS（ROM）软件的入口。（信任根就可以放在这里）</li>
 <li>Step2: BIOS自检和加载引导扇区。进行自检，加载引导扇区。</li>
 <li>Step3: 把操作系统引导扇区的内容加载到内存中来，并且跳转到引导程序的第一条指令。</li>
@@ -388,7 +388,75 @@
 <blockquote>
 <p>扇区可能会被Hacker给攻破。</p>
 </blockquote>
-<h1 id="CPU管理"><a href="#CPU管理" class="headerlink" title="CPU管理"></a>CPU管理</h1>
+<h2 id="从开机加电到执行main之前的过程"><a href="#从开机加电到执行main之前的过程" class="headerlink" title="从开机加电到执行main之前的过程"></a>从开机加电到执行main之前的过程</h2><ul>
+<li>从开机到main函数的执行分三步完成，目的是实现从启动盘加载操作系统程序，完成执行main函数所需要的准备工作。<ul>
+<li>第一步， 启动BIOS，准备实模式下的中断向量表和中断服务程序;</li>
+<li>第二步，从启动盘加载操作系统程序到内存，加载操作系统程序的工作就是利用。第一步中准备的中断服务程序实现的。</li>
+<li>第三步，为执行32位的main函数做过渡工作。将详细分析这三步在计算机中是如何完成的，以及每一步在内存中都做了些什么。</li>
+</ul>
+</li>
+</ul>
+<h3 id="启动BIOS"><a href="#启动BIOS" class="headerlink" title="启动BIOS"></a>启动BIOS</h3><h4 id="BIOS启动原理"><a href="#BIOS启动原理" class="headerlink" title="BIOS启动原理"></a>BIOS启动原理</h4><blockquote>
+<p>CPU只能计算RAM中的数据，但是一开机，RAM是空的。如果要运行操作系统，就必须先把操作系统程序加载到RAM中。</p>
+</blockquote>
+<ul>
+<li>RAM: 加电后可以读写，断电后数据消失。</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/122927289">BIOS</a>: BIOS ROM芯片中装有“系统设置程序主要用来设置CMOSRAM中的各项参数。工控机开机时按某个键，这个程序就可进入设置状态，并提供良好的界面。BIOS负责完成加载软盘中操作系统的任务。</li>
+<li>ROM: 只读存储器，和硬盘差不多，断电也能存储数据。</li>
+<li>开机的时候，内存里啥都没有，如何BIOS？Secret is: 0xFFFF0，默认地址。软件不可能执行BIOS，只能硬件来实现。关键的地方是：将CPU的硬件逻辑设计为加电瞬间强行设置CS和IP，指向0xFFFF0，0xFFFF0就是BIOS的地址范围。（纯硬件完成），如果没有可执行的代码，就done了。</li>
+</ul>
+<h4 id="BIOS在内存中加载中断向量表和中断服务程序"><a href="#BIOS在内存中加载中断向量表和中断服务程序" class="headerlink" title="BIOS在内存中加载中断向量表和中断服务程序"></a>BIOS在内存中加载中断向量表和中断服务程序</h4><blockquote>
+<p>BIOS被固化在ROM中，原理大致相似。BIOS在内存中加载中断向量表和中断服务程序对于boot十分重要。</p>
+</blockquote>
+<ul>
+<li>BIOS在内存最开始的位置，1kB内存构建中断向量表，紧挨着256 bytes构建BIOS数据区。并且在后面加载了若干中断程序。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309111922446.png" srcset="/img/loading.gif" lazyload alt="image-20230911192246396"></p>
+<h2 id="加载操作系统内核并准备保护模式"><a href="#加载操作系统内核并准备保护模式" class="headerlink" title="加载操作系统内核并准备保护模式"></a>加载操作系统内核并准备保护模式</h2><h3 id="Bootsect"><a href="#Bootsect" class="headerlink" title="Bootsect"></a>Bootsect</h3><ul>
+<li>中断向量表( Interrupt Vector Table): 实模式中断机制的重要组成部分，记录所有中断号对应的中断服务程序的内存地址。</li>
+<li>中断服务(Interrupt Service)程序: 通过中断向量表的索引对中断进行响应服务，是一些具有特定功能的程序。</li>
+<li>BIOS的工作是：找到软盘 并 加载第一扇区。这就是引导程序bootsect.s，然后再执行引导程序，将后面的数据加载进入内存昂。</li>
+</ul>
+<h3 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h3><ul>
+<li>BIOS已经把bootsect，也就是引导程序放入内存，作用就是<ol>
+<li>完成内存规划，把内存管理好。</li>
+<li>把自己在内存中移一下位置，把低地址空间的位置让出来。</li>
+</ol>
+</li>
+</ul>
+<h3 id="System-Module"><a href="#System-Module" class="headerlink" title="System Module"></a>System Module</h3><ul>
+<li>bootsec借着BIOS，将system加载进系统。(int 0x13)</li>
+</ul>
+<h2 id="进入32位模式，准备调用Main函数"><a href="#进入32位模式，准备调用Main函数" class="headerlink" title="进入32位模式，准备调用Main函数"></a>进入32位模式，准备调用Main函数</h2><h3 id="关中断-amp-system移动到0x00000"><a href="#关中断-amp-system移动到0x00000" class="headerlink" title="关中断 &amp; system移动到0x00000"></a>关中断 &amp; system移动到0x00000</h3><ul>
+<li>关中断(cli) 和开中断(sti) 操作将在操作系统代码中频繁出现，其意义深刻。慢慢的你会发现，cli、 sti 总是在一个完整操作过程的两头出现，目的是避免中断在此期间的介入。接下来的代码将为操作系统进入保护模式做准备。此处即将进行实模式下中断向量表和保护模式下中断描述符表(IDT)的交接工作。试想，如果没有cli，又恰好发生中断，如用户不小心碰了一下键盘，中断就要切进来，就不得不面对实模式的中断机制已经废除、保护模式的中断机制尚未完成的尴尬局面，结果就是系统崩溃。cli、 sti 保证了这个过程中，IDT能够完整创建，以避免不可预料中断的进入造成IDT创建不完整或新老中断机制混用。甚至可以理解为cli、sti是为了保护一个新的计算机生命的完整而创建的。</li>
+<li>将内核代码复制到内存0x00000处。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309111949533.png" srcset="/img/loading.gif" lazyload alt="image-20230911194940479"></p>
+<ul>
+<li>0x00000这个位置原来存放着由BIOS建立的中断向量表及BIOS数据区。这个复制动作将BIOS中断向量表和BIOS数据区完全覆盖，使它们不复存在。直到新的中断服务体系构建完毕之前，操作系统不再具备响应并处理中断的能力。这样做能取得“一箭三雕”的效果:<ul>
+<li>废除BIOS的中断向量表，等同于废除了BIOS提供的实模式下的中断服务程序。</li>
+<li>收回刚刚结束使用寿命的程序所占内存空间。</li>
+<li>让内核代码占据内存物理地址最开始的、天然的、有利的位置。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>废除了BIOS的中断向量表，也就是废除了16位的中断机制。操作系统是不能没有中断的，对外设的使用、系统调用、进程调度都离不开中断。Linux 操作系统是32位的现代操作系统，16位的中断机制对32位的操作系统而言，显然是不合适的，这也是废除16位中断机制的根本原因。为了建立32位的操作系统，我们不但要“破旧”，还要“立新”一建 立新的中断机制。</p>
+</blockquote>
+<h3 id="设置中断描述符表和全局描述符表"><a href="#设置中断描述符表和全局描述符表" class="headerlink" title="设置中断描述符表和全局描述符表"></a>设置中断描述符表和全局描述符表</h3><ul>
+<li>Setup对IDTR和GDTR进行初始化</li>
+<li>32位的中断机制和16位的中断机制，在原理上有比较大的差别。最明显的是16位的中断机制用的是中断向量表，中断向量表的起始位置在0x00000处，这个位置是固定的: 32位的中断机制用的是中断描述符表(IDT)， 位置是不固定的，可以由操作系统的设计者根据设计要求灵活安排，由IDTR来锁定其位置。GDT是保护模式下管理段描述符的数据结构，对操作系统自身的运行以及管理、调度进<br>程有重大意义，后面的章节会有详细讲解。因为，此时此刻内核尚未真正运行起来，还没有进程，所以现在创建的GDT第一项为<br>空，第二项为内核代码段描述符，第三项为内核数据段描述符，其余项皆为空。IDT虽然已经设置，实为一张空表，原因是目前已关中断，无需调用中断服务程序。</li>
+<li>此处反映的是数据“够用即得”的思想。创建这两个表的过程可理解为是分两步进行的:<ul>
+<li>在设计内核代码时，已经将两个表写好，并且把需要的数据也写好。</li>
+<li>将专用寄存器(IDTR、GDTR)指向表。此处的数据区域是在内核源代码中设定、编译并直接加载至内存形成的一块数据区域。专用寄存器的指向由程序中的lidt和lgdt指令完成，具体操作见图1-18。</li>
+</ul>
+</li>
+<li>值得一提的是，在内存中做出数据的方法有两种:1)划分一块内存区域并初始化数据，“看住”这块内存区域，使之能被找到;2)由代码做出数据，如用push代码压栈，“做出”数据。此处采用的是第一种方法。</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li>Linux操作系统架构设计于实现原理</li>
+</ol>
+
                 
               </div>
             
