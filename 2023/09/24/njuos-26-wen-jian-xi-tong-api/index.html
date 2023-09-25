@@ -1,0 +1,1152 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="复习  对 I&#x2F;O 设备的抽象  物理层 1-bit 的存储 设备层 I&#x2F;O 设备 (寄存器) 驱动层 (可读&#x2F;写&#x2F;控制的对象) 块设备层 (block read&#x2F;write)   本次课回答的问题  Q: 如何使应用程序能共享存储设备？   本次课主要内容  文件系统需求分析  文件系统 API">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-26-文件系统API">
+<meta property="og:url" content="https://alexanderliu-creator.github.io/2023/09/24/njuos-26-wen-jian-xi-tong-api/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="复习  对 I&#x2F;O 设备的抽象  物理层 1-bit 的存储 设备层 I&#x2F;O 设备 (寄存器) 驱动层 (可读&#x2F;写&#x2F;控制的对象) 块设备层 (block read&#x2F;write)   本次课回答的问题  Q: 如何使应用程序能共享存储设备？   本次课主要内容  文件系统需求分析  文件系统 API">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309241705178.png">
+<meta property="article:published_time" content="2023-09-24T08:53:23.000Z">
+<meta property="article:modified_time" content="2023-09-24T12:01:45.789Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309241705178.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-26-文件系统API - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alexanderliu-creator.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-26-文件系统API"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-09-24 16:53" pubdate>
+          2023年9月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-26-文件系统API</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：13 小时前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>复习</p>
+<ul>
+<li><p>对 I/O 设备的抽象</p>
+<ul>
+<li>物理层 1-bit 的存储</li>
+<li>设备层 I/O 设备 (寄存器)</li>
+<li>驱动层 (可读/写/控制的对象)</li>
+<li>块设备层 (block read/write)</li>
+</ul>
+</li>
+<li><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 如何使应用程序能共享存储设备？</li>
+</ul>
+</li>
+<li><p>本次课主要内容</p>
+<ul>
+<li><p>文件系统需求分析</p>
+</li>
+<li><p>文件系统 API</p>
+</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="为什么需要文件系统？"><a href="#为什么需要文件系统？" class="headerlink" title="为什么需要文件系统？"></a>为什么需要文件系统？</h1><h2 id="设备在应用程序之间的共享"><a href="#设备在应用程序之间的共享" class="headerlink" title="设备在应用程序之间的共享"></a>设备在应用程序之间的共享</h2><ul>
+<li><p>终端</p>
+<ul>
+<li><p>多个进程并行打印，如何保证不混乱？(<a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/printf-race.c">printf-race.c</a>)</p>
+<ul>
+<li>Unicode 字符和 Escape Code 被隔断可不是闹着玩的。</li>
+<li>printf可以在一定范围内保证并发安全，而putchar会在竞态下发生问题。</li>
+<li>设备在进程间共享是有难度的捏！！！</li>
+</ul>
+</li>
+<li><p>多个进程并行读，就会发生争抢</p>
+<ul>
+<li>谁抢到谁赢 (还算可以接受)</li>
+<li>后台进程会在读终端时收到 SIGTTIN (RTFM)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>GPU (CUDA)</p>
+<ul>
+<li><p>每个 CUDA 应用程序都是一系列 CUDA API 的调用</p>
+<ul>
+<li>cudaMemcpy, kernel call</li>
+</ul>
+</li>
+<li><p>全部由设备驱动负责调度 (和隔离)</p>
+<ul>
+<li>Kernel 要等空闲 thread warp 才可以上，执行完后归还</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="设备在应用程序之间的共享-cont’d"><a href="#设备在应用程序之间的共享-cont’d" class="headerlink" title="设备在应用程序之间的共享 (cont’d)"></a>设备在应用程序之间的共享 (cont’d)</h2><ul>
+<li><p>磁盘需要支持数据的持久化</p>
+<ul>
+<li><p>程序数据</p>
+<ul>
+<li>可执行文件和动态链接库</li>
+<li>应用数据 (高清图片、过场动画、3D 模型……)</li>
+</ul>
+</li>
+<li><p>用户数据</p>
+<ul>
+<li>文档、下载、截图、replay……</li>
+</ul>
+</li>
+<li><p>系统数据</p>
+<ul>
+<li>Manpages</li>
+<li>系统配置</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>字节序列并不是磁盘的好抽象</p>
+<ul>
+<li>让所有应用共享磁盘？一个程序 bug 操作系统就没了</li>
+</ul>
+</li>
+</ul>
+<h2 id="文件系统：虚拟磁盘"><a href="#文件系统：虚拟磁盘" class="headerlink" title="文件系统：虚拟磁盘"></a>文件系统：虚拟磁盘</h2><ul>
+<li><p>文件系统：设计目标</p>
+<ol>
+<li>提供合理的 API 使多个应用程序能共享数据</li>
+<li>提供一定的隔离，使恶意/出错程序的伤害不能任意扩大</li>
+</ol>
+</li>
+<li><p>“存储设备 (字节序列) 的虚拟化”</p>
+<ul>
+<li><p>磁盘 (I/O 设备) = 一个可以读/写的字节序列</p>
+</li>
+<li><p><strong>虚拟磁盘(文件)</strong> = 一个可以读/写的动态字节序列</p>
+<ul>
+<li>命名管理<ul>
+<li>虚拟磁盘的名称、检索和遍历</li>
+</ul>
+</li>
+<li>数据管理<ul>
+<li><code>std::vector&lt;char&gt;</code> (随机读写/resize)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="虚拟磁盘：命名管理"><a href="#虚拟磁盘：命名管理" class="headerlink" title="虚拟磁盘：命名管理"></a>虚拟磁盘：命名管理</h1><h2 id="怎么找到想要的虚拟磁盘？"><a href="#怎么找到想要的虚拟磁盘？" class="headerlink" title="怎么找到想要的虚拟磁盘？"></a>怎么找到想要的虚拟磁盘？</h2><p>信息的局部性：将虚拟磁盘 (文件) 组织成层次结构</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309241847662.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="利用信息的局部性组织虚拟磁盘"><a href="#利用信息的局部性组织虚拟磁盘" class="headerlink" title="利用信息的局部性组织虚拟磁盘"></a>利用信息的局部性组织虚拟磁盘</h2><p>目录树</p>
+<ul>
+<li>逻辑相关的数据存放在相近的目录</li>
+</ul>
+<figure class="highlight asciidoc"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-bullet">.</span><br><span class="hljs-bullet"></span>└── 学习资料<br><span class="hljs-code">    ├── .学习资料(隐藏)</span><br><span class="hljs-code">    ├── 问题求解1</span><br><span class="hljs-code">    ├── 问题求解2</span><br><span class="hljs-code">    ├── 问题求解3</span><br><span class="hljs-code">    ├── 问题求解4</span><br><span class="hljs-code">    └── 操作系统</span><br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="文件系统的-“根”"><a href="#文件系统的-“根”" class="headerlink" title="文件系统的 “根”"></a>文件系统的 “根”</h2><p>树总得有个根结点</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309241904162.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>Windows: 每个设备(驱动器) 是一棵树<ul>
+<li><code>C:\ “C 盘根目录”</code><ul>
+<li><code>C:\Program Files\</code>, <code>C:\Windows</code>, <code>C:\Users</code>, …</li>
+</ul>
+</li>
+<li>优盘分配给新的盘符<ul>
+<li>为什么没有 <code>A:\</code>, <code>B:\</code>?</li>
+<li>简单、粗暴、方便，但 <code>game.iso</code> 一度非常麻烦……</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>UNIX/Linux<ul>
+<li>只有一个根/<ul>
+<li>第二个设备呢？</li>
+<li>U盘呢？？？</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="目录树的拼接"><a href="#目录树的拼接" class="headerlink" title="目录树的拼接"></a>目录树的拼接</h2><p>UNIX: 允许任意目录 “挂载 (mount)” 一个设备代表的目录树</p>
+<ul>
+<li><p>非常灵活的设计</p>
+<ul>
+<li>可以把设备挂载到任何想要的位置</li>
+<li>Linux 安装时的 “mount point”<ul>
+<li><code>/</code>, <code>/home</code>, <code>/var</code> 可以是独立的磁盘设备</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>mount 系统调用</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">mount</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *source, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *target,</span><br><span class="hljs-params">          <span class="hljs-type">const</span> <span class="hljs-type">char</span> *filesystemtype, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> mountflags,</span><br><span class="hljs-params">          <span class="hljs-type">const</span> <span class="hljs-type">void</span> *data)</span>;<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>mount /dev/sdb /mnt (RTFM)<ul>
+<li>Linux mount 工具能自动检测文件系统 (busybox 不能)</li>
+</ul>
+</li>
+</ul>
+<h2 id="真正的-Linux-启动流程"><a href="#真正的-Linux-启动流程" class="headerlink" title="真正的 Linux 启动流程"></a>真正的 Linux 启动流程</h2><p>Linux-minimal 运行在 “initramfs” 模式</p>
+<ul>
+<li><p>Initial RAM file system</p>
+</li>
+<li><p>完整的文件系统</p>
+<ul>
+<li>可以包含设备驱动等任何文件 (<a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/launcher.c">launcher.c</a>)</li>
+<li>但不具有 “持久化” 的能力</li>
+</ul>
+</li>
+<li><p>最小 “真正” Linux 的启动流程</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">export PATH=/bin<br>busybox mknod /dev/sda b 8 0<br>busybox mkdir -p /newroot<br>busybox mount -t ext2 /dev/sda /newroot<br>exec busybox switch_root /newroot/ /etc/init<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>通过 <code>pivot_root</code> (2) 实现根文件系统的切换</p>
+</blockquote>
+<h2 id="文件的挂载"><a href="#文件的挂载" class="headerlink" title="文件的挂载"></a>文件的挂载</h2><ul>
+<li><p>文件的挂载引入了一个微妙的循环</p>
+<ul>
+<li><p>文件 = 磁盘上的虚拟磁盘</p>
+</li>
+<li><p>挂载文件 = 在虚拟磁盘上虚拟出的虚拟磁盘 🤔</p>
+</li>
+</ul>
+</li>
+<li><p>Linux 的处理方式</p>
+<ul>
+<li><p>创建一个 loopback (回环) 设备</p>
+<ul>
+<li>设备驱动把设备的 read/write 翻译成文件的 read/write</li>
+</ul>
+</li>
+<li><p>观察 <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2021/demos/disk-img.tar.gz">disk-img.tar.gz</a> 的挂载</p>
+<ul>
+<li>lsblk 查看系统中的 block devices (strace)</li>
+<li>strace 观察挂载的流程<ul>
+<li><code>ioctl(3, LOOP_CTL_GET_FREE)</code></li>
+<li><code>ioctl(4, LOOP_SET_FD, 3)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Filesystem-Hierarchy-Standard-FHS"><a href="#Filesystem-Hierarchy-Standard-FHS" class="headerlink" title="Filesystem Hierarchy Standard (FHS)"></a><a target="_blank" rel="noopener" href="http://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html">Filesystem Hierarchy Standard</a> (FHS)</h2><blockquote>
+<p>FHS enables <em>software and user</em> to predict the location of installed files and directories.</p>
+</blockquote>
+<p>例子：macOS 是 UNIX 的内核 (BSD), 但不遵循 Linux FHS</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309241941097.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="目录-API-系统调用"><a href="#目录-API-系统调用" class="headerlink" title="目录 API (系统调用)"></a>目录 API (系统调用)</h1><h2 id="目录管理：创建-x2F-删除-x2F-遍历"><a href="#目录管理：创建-x2F-删除-x2F-遍历" class="headerlink" title="目录管理：创建/删除/遍历"></a>目录管理：创建/删除/遍历</h2><p>这个简单</p>
+<ul>
+<li>mkdir<ul>
+<li>创建一个目录</li>
+<li>可以设置访问权限</li>
+</ul>
+</li>
+<li>rmdir<ul>
+<li>删除一个空目录</li>
+<li>没有 “递归删除” 的系统调用<ul>
+<li>(应用层能实现的，就不要在操作系统层实现)</li>
+<li><code>rm -rf</code> 会遍历目录，逐个删除 (试试 strace)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>getdents<ul>
+<li>返回 count 个目录项 (ls, find, tree 都使用这个)<ul>
+<li>以点开头的目录会被系统调用返回，只是 ls 没有显示</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="更人类友好的目录访问方式"><a href="#更人类友好的目录访问方式" class="headerlink" title="更人类友好的目录访问方式"></a>更人类友好的目录访问方式</h2><blockquote>
+<p>合适的 API + 合适的编程语言</p>
+</blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.gnu.org/software/libc/manual/html_node/Calling-Glob.html">Globbing</a></li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">from pathlib import Path<br><br><span class="hljs-keyword">for</span> f in <span class="hljs-title function_">Path</span><span class="hljs-params">(<span class="hljs-string">'/proc'</span>)</span>.<span class="hljs-title function_">glob</span><span class="hljs-params">(<span class="hljs-string">'*/status'</span>)</span>:<br>    <span class="hljs-title function_">print</span><span class="hljs-params">(f.parts[<span class="hljs-number">-2</span>], \</span><br><span class="hljs-params">        (f.parent / <span class="hljs-string">'cmdline'</span>).read_text() or <span class="hljs-string">'[kernel]'</span>)</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>这才是人类容易使用的方式<ul>
+<li>C++17 filesystem API 那叫一个难用 😂</li>
+</ul>
+</li>
+</ul>
+<h2 id="硬-hard-链接"><a href="#硬-hard-链接" class="headerlink" title="硬 (hard) 链接"></a>硬 (hard) 链接</h2><ul>
+<li><p>需求：系统中可能有同一个运行库的多个版本</p>
+<ul>
+<li><p><code>libc-2.27.so</code>, <code>libc-2.26.so</code>, …</p>
+</li>
+<li><p>还需要一个 “当前版本的 libc”</p>
+<ul>
+<li>程序需要链接 “<code>libc.so.6</code>”，能否避免文件的一份拷贝？</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>硬连接：允许一个文件被多个目录引用</p>
+<ul>
+<li><p>目录中仅存储指向文件数据的指针</p>
+</li>
+<li><p>链接目录 ❌</p>
+</li>
+<li><p>跨文件系统 ❌</p>
+</li>
+</ul>
+</li>
+<li><p>大部分 UNIX 文件系统所有文件都是硬连接 (<code>ls -i</code> 查看)</p>
+<ul>
+<li>删除的系统调用称为 “unlink” (引用计数)</li>
+</ul>
+</li>
+</ul>
+<h2 id="软-symbolic-链接"><a href="#软-symbolic-链接" class="headerlink" title="软 (symbolic) 链接"></a>软 (symbolic) 链接</h2><blockquote>
+<p>软链接：在文件里存储一个 “跳转提示”</p>
+</blockquote>
+<ul>
+<li><p>软链接也是一个文件</p>
+<ul>
+<li>当引用这个文件时，去找另一个文件</li>
+<li>另一个文件的绝对/相对路径以文本形式存储在文件里</li>
+<li>可以跨文件系统、可以链接目录、……</li>
+</ul>
+</li>
+<li><p>类似 “快捷方式”</p>
+<ul>
+<li>链接指向的位置当前不存在也没关系</li>
+<li><code>~/usb</code> → <code>/media/jyy-usb</code></li>
+<li><code>~/Desktop</code> → <code>/mnt/c/Users/jyy/Desktop</code> (WSL)</li>
+</ul>
+</li>
+<li><p><code>ln -s</code> 创建软链接</p>
+<ul>
+<li><code>symlink</code> 系统调用</li>
+</ul>
+</li>
+</ul>
+<h2 id="软链接带来的麻烦"><a href="#软链接带来的麻烦" class="headerlink" title="软链接带来的麻烦"></a>软链接带来的麻烦</h2><p>“任意链接” 允许创建任意有向图 😂</p>
+<ul>
+<li><p>允许多次间接链接</p>
+<ul>
+<li>a → b → c (递归解析)</li>
+</ul>
+</li>
+<li><p>可以创建软连接的硬链接 (因为软链接也是文件)</p>
+<ul>
+<li><code>ls -i</code> 可以看到</li>
+</ul>
+</li>
+<li><p>允许成环</p>
+<ul>
+<li><p>fish.c</p>
+<p>自动机的目录版本：</p>
+<p>fish-dir.sh</p>
+<ul>
+<li><code>find -L A | tr -d '/'</code></li>
+<li>可以做成一个 “迷宫游戏”<ul>
+<li>ssh 进入游戏，进入名为 end 的目录胜利</li>
+<li>只允许 ls (-i), cd, pwd</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>所有处理符号链接的程序 (tree, find, …) 都要考虑递归的情况</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="进程的-“当前目录”"><a href="#进程的-“当前目录”" class="headerlink" title="进程的 “当前目录”"></a>进程的 “当前目录”</h2><p>Working/current directory</p>
+<ul>
+<li><p><code>pwd</code> 命令或 <code>$PWD</code> 环境变量可以查看</p>
+</li>
+<li><pre><code class="hljs">chdir
+</code></pre>
+<p>系统调用修改</p>
+<ul>
+<li>对应 shell 中的 cd</li>
+<li>注意 cd 是 shell 的内部命令<ul>
+<li>不存在 <code>/bin/cd</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>问题：线程是共享 working directory, 还是各自独立持有一个？</p>
+<h1 id="文件-API-系统调用"><a href="#文件-API-系统调用" class="headerlink" title="文件 API (系统调用)"></a>文件 API (系统调用)</h1><h2 id="复习：文件和文件描述符"><a href="#复习：文件和文件描述符" class="headerlink" title="复习：文件和文件描述符"></a>复习：文件和文件描述符</h2><p>文件：虚拟的磁盘</p>
+<ul>
+<li>磁盘是一个 “字节序列”</li>
+<li>支持读/写操作</li>
+</ul>
+<hr>
+<p>文件描述符：进程访问文件 (操作系统对象) 的 “指针”</p>
+<ul>
+<li>通过 open/pipe 获得</li>
+<li>通过 close 释放</li>
+<li>通过 dup/dup2 复制</li>
+<li>fork 时继承</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="文件-API-系统调用-1"><a href="#文件-API-系统调用-1" class="headerlink" title="文件 API (系统调用)"></a>文件 API (系统调用)</h1><h2 id="复习：文件和文件描述符-1"><a href="#复习：文件和文件描述符-1" class="headerlink" title="复习：文件和文件描述符"></a>复习：文件和文件描述符</h2><p>文件：虚拟的磁盘</p>
+<ul>
+<li>磁盘是一个 “字节序列”</li>
+<li>支持读/写操作</li>
+</ul>
+<hr>
+<p>文件描述符：进程访问文件 (操作系统对象) 的 “指针”</p>
+<ul>
+<li>通过 open/pipe 获得</li>
+<li>通过 close 释放</li>
+<li>通过 dup/dup2 复制</li>
+<li>fork 时继承</li>
+</ul>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/OS/2022/slides/26.slides.html#/">Slides</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1A5411R7xC/?spm_id_from=333.999.0.0">Videos</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-26-文件系统API</div>
+      <div>https://alexanderliu-creator.github.io/2023/09/24/njuos-26-wen-jian-xi-tong-api/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年9月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/09/23/njuos-25-she-bei-qu-dong-cheng-xu/" title="NJUOS-25-设备驱动程序">
+                        <span class="hidden-mobile">NJUOS-25-设备驱动程序</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
