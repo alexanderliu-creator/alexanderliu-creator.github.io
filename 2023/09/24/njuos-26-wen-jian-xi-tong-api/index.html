@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309241705178.png">
 <meta property="article:published_time" content="2023-09-24T08:53:23.000Z">
-<meta property="article:modified_time" content="2023-09-24T12:01:45.789Z">
+<meta property="article:modified_time" content="2023-09-25T10:10:50.733Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.3k 字
+          4.7k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          28 分钟
+          39 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：13 小时前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -606,7 +606,7 @@
 <ul>
 <li>当引用这个文件时，去找另一个文件</li>
 <li>另一个文件的绝对/相对路径以文本形式存储在文件里</li>
-<li>可以跨文件系统、可以链接目录、……</li>
+<li>可以跨文件系统、可以链接目录、……，可以指向任何东西，只要它存在，就能够成功访问。</li>
 </ul>
 </li>
 <li><p>类似 “快捷方式”</p>
@@ -614,6 +614,7 @@
 <li>链接指向的位置当前不存在也没关系</li>
 <li><code>~/usb</code> → <code>/media/jyy-usb</code></li>
 <li><code>~/Desktop</code> → <code>/mnt/c/Users/jyy/Desktop</code> (WSL)</li>
+<li>甚至可以套娃！</li>
 </ul>
 </li>
 <li><p><code>ln -s</code> 创建软链接</p>
@@ -624,22 +625,16 @@
 </ul>
 <h2 id="软链接带来的麻烦"><a href="#软链接带来的麻烦" class="headerlink" title="软链接带来的麻烦"></a>软链接带来的麻烦</h2><p>“任意链接” 允许创建任意有向图 😂</p>
 <ul>
-<li><p>允许多次间接链接</p>
-<ul>
+<li>允许多次间接链接<ul>
 <li>a → b → c (递归解析)</li>
 </ul>
 </li>
-<li><p>可以创建软连接的硬链接 (因为软链接也是文件)</p>
-<ul>
+<li>可以创建软连接的硬链接 (因为软链接也是文件)<ul>
 <li><code>ls -i</code> 可以看到</li>
 </ul>
 </li>
-<li><p>允许成环</p>
-<ul>
-<li><p>fish.c</p>
-<p>自动机的目录版本：</p>
-<p>fish-dir.sh</p>
-<ul>
+<li>允许成环<ul>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/fish.c">fish.c</a> 自动机的目录版本：<a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/fish-dir.sh">fish-dir.sh</a><ul>
 <li><code>find -L A | tr -d '/'</code></li>
 <li>可以做成一个 “迷宫游戏”<ul>
 <li>ssh 进入游戏，进入名为 end 的目录胜利</li>
@@ -648,19 +643,17 @@
 </li>
 </ul>
 </li>
-<li><p>所有处理符号链接的程序 (tree, find, …) 都要考虑递归的情况</p>
-</li>
+<li>所有处理符号链接的程序 (tree, find, …) 都要考虑递归的情况</li>
 </ul>
 </li>
 </ul>
+<blockquote>
+<p>自己软链接到.目录下，实现递归捏！！！</p>
+</blockquote>
 <h2 id="进程的-“当前目录”"><a href="#进程的-“当前目录”" class="headerlink" title="进程的 “当前目录”"></a>进程的 “当前目录”</h2><p>Working/current directory</p>
 <ul>
-<li><p><code>pwd</code> 命令或 <code>$PWD</code> 环境变量可以查看</p>
-</li>
-<li><pre><code class="hljs">chdir
-</code></pre>
-<p>系统调用修改</p>
-<ul>
+<li><code>pwd</code> 命令或 <code>$PWD</code> 环境变量可以查看</li>
+<li>chdir系统调用修改<ul>
 <li>对应 shell 中的 cd</li>
 <li>注意 cd 是 shell 的内部命令<ul>
 <li>不存在 <code>/bin/cd</code></li>
@@ -669,35 +662,164 @@
 </ul>
 </li>
 </ul>
-<hr>
-<p>问题：线程是共享 working directory, 还是各自独立持有一个？</p>
-<h1 id="文件-API-系统调用"><a href="#文件-API-系统调用" class="headerlink" title="文件 API (系统调用)"></a>文件 API (系统调用)</h1><h2 id="复习：文件和文件描述符"><a href="#复习：文件和文件描述符" class="headerlink" title="复习：文件和文件描述符"></a>复习：文件和文件描述符</h2><p>文件：虚拟的磁盘</p>
+<blockquote>
 <ul>
-<li>磁盘是一个 “字节序列”</li>
-<li>支持读/写操作</li>
+<li><p>问题：线程是共享 working directory, 还是各自独立持有一个 -&gt; 线程之所以存在，原因之一在于减少上下文切换开销，代价是一些变量被共享没有隔离开来；工作目录在我看来也是同理，取决于线程设计得是否足够”轻量“化，如果追求减少切换开销的话，理应共享，如果追求隔离资源，应当设置为私有。</p>
+</li>
+<li><p>简单来说，如果做过数据库的就能感觉到文件系统就是内核态的数据库，数据库其实就是用户级的文件系统</p>
+</li>
 </ul>
-<hr>
-<p>文件描述符：进程访问文件 (操作系统对象) 的 “指针”</p>
+</blockquote>
+<h1 id="文件-API-系统调用"><a href="#文件-API-系统调用" class="headerlink" title="文件 API (系统调用)"></a>文件 API (系统调用)</h1><h2 id="复习：文件和文件描述符"><a href="#复习：文件和文件描述符" class="headerlink" title="复习：文件和文件描述符"></a>复习：文件和文件描述符</h2><ul>
+<li><p>文件：虚拟的磁盘</p>
 <ul>
-<li>通过 open/pipe 获得</li>
-<li>通过 close 释放</li>
-<li>通过 dup/dup2 复制</li>
-<li>fork 时继承</li>
+<li><p>磁盘是一个 “字节序列”</p>
+</li>
+<li><p>支持读/写操作</p>
+</li>
 </ul>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="文件-API-系统调用-1"><a href="#文件-API-系统调用-1" class="headerlink" title="文件 API (系统调用)"></a>文件 API (系统调用)</h1><h2 id="复习：文件和文件描述符-1"><a href="#复习：文件和文件描述符-1" class="headerlink" title="复习：文件和文件描述符"></a>复习：文件和文件描述符</h2><p>文件：虚拟的磁盘</p>
+</li>
+<li><p>文件描述符：进程访问文件 (操作系统对象) 的 “指针”</p>
 <ul>
-<li>磁盘是一个 “字节序列”</li>
-<li>支持读/写操作</li>
+<li><p>通过 open/pipe 获得</p>
+</li>
+<li><p>通过 close 释放</p>
+</li>
+<li><p>通过 dup/dup2 复制</p>
+</li>
+<li><p>fork 时继承</p>
+</li>
 </ul>
-<hr>
-<p>文件描述符：进程访问文件 (操作系统对象) 的 “指针”</p>
+</li>
+</ul>
+<h2 id="复习：mmap"><a href="#复习：mmap" class="headerlink" title="复习：mmap"></a>复习：mmap</h2><p>使用 open 打开一个文件后</p>
 <ul>
-<li>通过 open/pipe 获得</li>
-<li>通过 close 释放</li>
-<li>通过 dup/dup2 复制</li>
-<li>fork 时继承</li>
+<li>用 <code>MAP_SHARED</code> 将文件映射到地址空间中</li>
+<li>用 <code>MAP_PRIVATE</code> 创建一个 copy-on-write 的副本</li>
 </ul>
-<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> *<span class="hljs-title function_">mmap</span><span class="hljs-params">(<span class="hljs-type">void</span> *addr, <span class="hljs-type">size_t</span> length, <span class="hljs-type">int</span> prot, <span class="hljs-type">int</span> flags,</span><br><span class="hljs-params">  <span class="hljs-type">int</span> fd, <span class="hljs-type">off_t</span> offset)</span>; <span class="hljs-comment">// 映射 fd 的 offset 开始的 length 字节</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">munmap</span><span class="hljs-params">(<span class="hljs-type">void</span> *addr, <span class="hljs-type">size_t</span> length)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">msync</span><span class="hljs-params">(<span class="hljs-type">void</span> *addr, <span class="hljs-type">size_t</span> length, <span class="hljs-type">int</span> flags)</span>;<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>小问题：<ul>
+<li>映射的长度超过文件大小会发生什么？<ul>
+<li>(RTFM, “Errors” section): SIGBUS…<ul>
+<li>bus error 的常见来源 (M5)</li>
+<li>ftruncate 可以改变文件大小</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="文件访问的游标-偏移量"><a href="#文件访问的游标-偏移量" class="headerlink" title="文件访问的游标 (偏移量)"></a>文件访问的游标 (偏移量)</h2><p>文件的读写自带 “游标”，这样就不用每次都指定文件读/写到哪里了</p>
+<ul>
+<li><p>方便了程序员顺序访问文件</p>
+</li>
+<li><p>例子</p>
+<ul>
+<li><p><code>read(fd, buf, 512);</code> - 第一个 512 字节</p>
+</li>
+<li><p><code>read(fd, buf, 512);</code> - 第二个 512 字节</p>
+</li>
+<li><p><code>lseek(fd, -1, SEEK_END)</code></p>
+</li>
+<li><p>最后一个字节</p>
+<ul>
+<li>so far, so good</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="偏移量管理：没那么简单-1"><a href="#偏移量管理：没那么简单-1" class="headerlink" title="偏移量管理：没那么简单 (1)"></a>偏移量管理：没那么简单 (1)</h2><ul>
+<li><p>mmap, lseek, ftruncate 互相交互的情况</p>
+<ul>
+<li>初始时文件大小为 0<ol>
+<li>mmap (<code>length</code> = 2 MiB)</li>
+<li>lseek to 3 MiB (<code>SEEK_SET</code>)</li>
+<li>ftruncate to 1 MiB</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>在任何时刻，写入数据的行为是什么？</p>
+<ul>
+<li><p>blog posts 不会告诉你全部</p>
+</li>
+<li><p>RTFM &amp; 做实验！</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="偏移量管理：没那么简单-2"><a href="#偏移量管理：没那么简单-2" class="headerlink" title="偏移量管理：没那么简单 (2)"></a>偏移量管理：没那么简单 (2)</h2><blockquote>
+<p>文件描述符在 fork 时会被子进程继承。</p>
+</blockquote>
+<ul>
+<li><p>父子进程应该共用偏移量，还是应该各自持有偏移量？</p>
+<ul>
+<li>这决定了 <code>offset</code> 存储在哪里</li>
+</ul>
+</li>
+<li><p>考虑应用场景</p>
+<ul>
+<li>父子进程同时写入文件<ul>
+<li>各自持有偏移量 → 父子进程需要协调偏移量的竞争<ul>
+<li>(race condition)</li>
+</ul>
+</li>
+<li>共享偏移量 → 操作系统管理偏移量<ul>
+<li>虽然仍然共享，但操作系统保证 <code>write</code> 的原子性 ✅</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="偏移量管理：行为"><a href="#偏移量管理：行为" class="headerlink" title="偏移量管理：行为"></a>偏移量管理：行为</h2><p>操作系统的每一个 API 都可能和其他 API 有交互 😂</p>
+<ol>
+<li>open 时，获得一个独立的 offset</li>
+<li>dup 时，两个文件描述符共享 offset</li>
+<li>fork 时，父子进程共享 offset</li>
+<li>execve 时文件描述符不变</li>
+<li>O_APPEND方式打开的文件，偏移量永远在最后 (无论是否 fork)<ul>
+<li>modification of the file offset and the write operation are performed as a single atomic step</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>这也是 fork 被批评的一个原因<ul>
+<li>(在当时) 好的设计可能成为系统演化过程中的包袱<ul>
+<li>今天的 fork 可谓是 “补丁满满”；<a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3317550.3321435">A <code>fork()</code> in the road</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 如何设计文件系统，使应用程序能共享存储设备？</li>
+</ul>
+</li>
+<li><p>Takeaway messages</p>
+<ul>
+<li>文件系统的两大主要部分<ul>
+<li>虚拟磁盘 (文件)<ul>
+<li>mmap, read, write, lseek, ftruncate, …</li>
+</ul>
+</li>
+<li>虚拟磁盘命名管理 (目录树和链接)<ul>
+<li>mount, chdir, mkdir, rmdir, link, unlink, symlink, open, …</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
 <li><a target="_blank" rel="noopener" href="https://jyywiki.cn/OS/2022/slides/26.slides.html#/">Slides</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1A5411R7xC/?spm_id_from=333.999.0.0">Videos</a></li>
 </ol>
@@ -790,6 +912,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/09/25/njuos-27-fat-he-unix-wen-jian-xi-tong/" title="NJUOS-27-FAT和UNIX文件系统">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">NJUOS-27-FAT和UNIX文件系统</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
