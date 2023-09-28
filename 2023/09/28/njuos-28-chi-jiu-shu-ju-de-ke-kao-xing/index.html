@@ -1,0 +1,1236 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="复习  文件系统实现：bread&#x2F;bwrite 上的数据结构 balloc&#x2F;bfree 文件：FAT (链表)&#x2F;UNIX 文件系统 (索引) 目录文件     本次课回答的问题  数据结构的另一个假设：内存可靠且可以接受断电数据丢失 Q: 持久数据是不能接受丢失的，如何保证持久数据的可靠性？   本次课主要内容  RAID (Redundant Array of Inexpensive Disks">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-28-持久数据的可靠性">
+<meta property="og:url" content="https://alexanderliu-creator.github.io/2023/09/28/njuos-28-chi-jiu-shu-ju-de-ke-kao-xing/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="复习  文件系统实现：bread&#x2F;bwrite 上的数据结构 balloc&#x2F;bfree 文件：FAT (链表)&#x2F;UNIX 文件系统 (索引) 目录文件     本次课回答的问题  数据结构的另一个假设：内存可靠且可以接受断电数据丢失 Q: 持久数据是不能接受丢失的，如何保证持久数据的可靠性？   本次课主要内容  RAID (Redundant Array of Inexpensive Disks">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309280941573.png">
+<meta property="article:published_time" content="2023-09-28T01:39:38.000Z">
+<meta property="article:modified_time" content="2023-09-28T07:17:50.899Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309280941573.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-28-持久数据的可靠性 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alexanderliu-creator.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-28-持久数据的可靠性"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-09-28 09:39" pubdate>
+          2023年9月28日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          44 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-28-持久数据的可靠性</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：4 分钟前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>复习</p>
+<ul>
+<li>文件系统实现：bread/bwrite 上的数据结构<ul>
+<li>balloc/bfree</li>
+<li>文件：FAT (链表)/UNIX 文件系统 (索引)</li>
+<li>目录文件</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>本次课回答的问题</p>
+<ul>
+<li>数据结构的另一个假设：<strong>内存可靠且可以接受断电数据丢失</strong></li>
+<li><strong>Q</strong>: 持久数据是不能接受丢失的，如何保证持久数据的可靠性？</li>
+</ul>
+<hr>
+<p>本次课主要内容</p>
+<ul>
+<li>RAID (Redundant Array of Inexpensive Disks)</li>
+<li>崩溃一致性</li>
+</ul>
+<span id="more"></span>
+
+
+
+<h1 id="Redundant-Array-of-Inexpensive-Disks-RAID"><a href="#Redundant-Array-of-Inexpensive-Disks-RAID" class="headerlink" title="Redundant Array of Inexpensive Disks (RAID)"></a>Redundant Array of Inexpensive Disks (RAID)</h1><h2 id="日渐增长的持久存储需求-1-——性能"><a href="#日渐增长的持久存储需求-1-——性能" class="headerlink" title="日渐增长的持久存储需求 (1)——性能"></a>日渐增长的持久存储需求 (1)——性能</h2><p>存储：只要 CPU (DMA) 能处理得过来，我就能提供足够的带宽！</p>
+<ul>
+<li>Computer System 的 “industry” 传统——做真实有用的系统</li>
+</ul>
+<p><img src="https://jyywiki.cn/pages/OS/img/emc-vnx5300.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="日渐增长的持久存储需求-2-——可靠性"><a href="#日渐增长的持久存储需求-2-——可靠性" class="headerlink" title="日渐增长的持久存储需求 (2)——可靠性"></a>日渐增长的持久存储需求 (2)——可靠性</h2><p>任何物理存储介质都有失效的可能</p>
+<ul>
+<li>你依然希望在存储设备失效的时候能保持数据的完整<ul>
+<li>极小概率事件：战争爆发/三体人进攻地球/世界毁灭 😂</li>
+<li>小概率事件：硬盘损坏<ul>
+<li>大量重复 = 必然发生 (但我们还是希望系统能照常运转)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309280946125.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="RAID-存储设备的虚拟化"><a href="#RAID-存储设备的虚拟化" class="headerlink" title="RAID: 存储设备的虚拟化"></a>RAID: 存储设备的虚拟化</h2><blockquote>
+<p>那么，性能和可靠性，我们能不能全都要呢？</p>
+</blockquote>
+<ul>
+<li><p>Redundant Array of Inexpensive (<em>Independent</em>) Disks (RAID)</p>
+<ul>
+<li><p>把多个 (不可靠的) 磁盘虚拟成一块</p>
+<p>非常可靠且性能极高</p>
+<p>的虚拟磁盘</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/971701.50214">A case for redundant arrays of inexpensive disks (RAID)</a> (SIGMOD’88)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>RAID 是一个 “反向” 的虚拟化</p>
+<ul>
+<li><p>进程：把一个 CPU 分时虚拟成多个虚拟 CPU</p>
+</li>
+<li><p>虚存：把一份内存通过 MMU 虚拟成多个地址空间</p>
+</li>
+<li><p>文件：把一个存储设备虚拟成多个虚拟磁盘</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="RAID-的-Fault-Model-Fail-Stop"><a href="#RAID-的-Fault-Model-Fail-Stop" class="headerlink" title="RAID 的 Fault Model: Fail-Stop"></a>RAID 的 Fault Model: Fail-Stop</h2><ul>
+<li><p>磁盘可能在某个时刻忽然彻底无法访问</p>
+<ul>
+<li><p>机械故障、芯片故障……</p>
+<ul>
+<li>磁盘好像就 “忽然消失” 了 (数据完全丢失)</li>
+<li>假设磁盘能报告这个问题 (如何报告？)</li>
+</ul>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.usenix.org/conference/fast-08/analysis-data-corruption-storage-stack">An analysis of data corruption in the storage stack</a> (FAST’08)</p>
+</li>
+</ul>
+</li>
+<li><p>在那个遍地是黄金的年代</p>
+<ul>
+<li>1988: 凑几块盘，掀翻整个产业链！<ul>
+<li>“Single Large Expensive Disks” (IBM 3380), v.s.</li>
+<li>“Redundant Array of Inexpensive Disks”</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="一个最简单的想法"><a href="#一个最简单的想法" class="headerlink" title="一个最简单的想法"></a>一个最简单的想法</h2><p>在系统里多接入一块硬盘用于 Fault Tolerance (RAID-1)</p>
+<ul>
+<li><p>假设有两块盘<em>A</em>, <em>B</em></p>
+<ul>
+<li>同样规格，共有 <em>n</em> 块</li>
+</ul>
+</li>
+<li><p>“镜像” 虚拟磁盘<em>V</em></p>
+<ul>
+<li>$V_i\ -&gt;\ {A_i, B_i}(1 \le i \le n)$</li>
+</ul>
+</li>
+<li><p>块读写</p>
+<ul>
+<li><p>bread(<em>i</em>)</p>
+<ul>
+<li>可以从 <em>A</em> 或 <em>B</em> 中的任意一个读取</li>
+</ul>
+</li>
+<li><p>bwrite(<em>i</em>)</p>
+<ul>
+<li>同时将同样的数据写入 <em>A</em>, <em>B</em> 的同一位置</li>
+</ul>
+</li>
+<li><p>容错，且读速度翻倍 (假设内存远快于磁盘)</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="RAID-Design-Space"><a href="#RAID-Design-Space" class="headerlink" title="RAID: Design Space"></a>RAID: Design Space</h2><blockquote>
+<p>RAID (虚拟化) = 虚拟磁盘块到物理磁盘块的 “映射”。</p>
+</blockquote>
+<p>两块磁盘的其他拼接方法</p>
+<ul>
+<li>顺序拼接<ul>
+<li><em>V</em>1→<em>A</em>1,V<em>2→</em>A2, ……, <em>Vn</em>→<em>An</em></li>
+<li><em>Vn</em>+1→<em>B</em>1, <em>Vn</em>+2→<em>B</em>2, ……, $V_{2n}$<em>→</em>B<em>n</em></li>
+</ul>
+</li>
+<li>交错排列 (RAID-0)<ul>
+<li><em>V</em>1→<em>A</em>1, V<em>2→</em>B1</li>
+<li><em>V</em>3→<em>A</em>2, V<em>4→</em>B2</li>
+<li>$V_{2i-1}$→$A_i$, $V_{2i}$→$B_i$</li>
+</ul>
+</li>
+<li>虽然不能容错，但可以利用好磁盘的带宽。</li>
+</ul>
+<blockquote>
+<p>跨盘读取数据，可以充分利用多盘的优势，增加读取的带宽，增加读取速度。</p>
+</blockquote>
+<h2 id="RAID-Design-Space-cont’d"><a href="#RAID-Design-Space-cont’d" class="headerlink" title="RAID: Design Space (cont’d)"></a>RAID: Design Space (cont’d)</h2><blockquote>
+<p>RAID: 允许 “多对多” 的映射 (一组映射称为 “条带”, stripe)</p>
+</blockquote>
+<p>RAID-10 = RAID-0 over RAID-1</p>
+<ul>
+<li><p><em>A</em>,<em>B</em>组成 RAID-1(容错)</p>
+<ul>
+<li>$X_1\ -&gt;{A_1, B_1}$</li>
+<li>$X_2\ -&gt;{A_2, B_2}$</li>
+</ul>
+</li>
+<li><p><em>C</em>,<em>D</em>组成 RAID-1(容错)</p>
+<ul>
+<li>$Y_1\ -&gt;{C_1, D_1}$</li>
+<li>$Y_2\ -&gt;{C_2, D_2}$</li>
+</ul>
+</li>
+<li><p><em>X</em>,<em>Y</em> 组成 RAID-0 (性能翻倍)</p>
+<ul>
+<li><em>V</em>1→<em>X</em>1→{<em>A</em>1, <em>B</em>1}, V<em>2→</em>Y*1→{*A2, B2}</li>
+<li><em>V</em>3→<em>X</em>2→{<em>A</em>2, <em>B</em>2}, V<em>4→</em>Y*2→{<em>C</em>2,*D2}</li>
+</ul>
+</li>
+<li><p>结构：((RAID-1)-0)</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309281124523.png" srcset="/img/loading.gif" lazyload alt="image-20230928112448445"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309281129649.png" srcset="/img/loading.gif" lazyload alt="image-20230928112913584"></p>
+<h2 id="RAID-Design-Space-cont’d-1"><a href="#RAID-Design-Space-cont’d-1" class="headerlink" title="RAID: Design Space (cont’d)"></a>RAID: Design Space (cont’d)</h2><blockquote>
+<p>RAID-10：有时能容忍两块盘坏，有时候却不能。如果我们有很多块盘，能否减少浪费？</p>
+</blockquote>
+<ul>
+<li><p>换一个问法</p>
+<ul>
+<li><p>给你 <em>n</em> 个 bits b<em>1,<em>b</em>2,…,<em>b</em>n</em></p>
+</li>
+<li><p>至少需要存储多少 bit 信息，使得我们可以在任意<em>bi</em>丢失 (已知<em>i</em>) 的情况下，都可以恢复出<em>bi</em>？</p>
+<ul>
+<li>纠错码</li>
+<li>相同的数异或为0</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="异或妙用"><a href="#异或妙用" class="headerlink" title="异或妙用"></a>异或妙用</h3><ul>
+<li><p>盘本质上就是一个Block Array(Bit Array)，Fault Tolerance就是当我的盘出现问题的时候，别的地方还可以拼凑 or 找出这张盘上的内容。</p>
+</li>
+<li><p>异或就可以很方便的保存信息，例如，我们假设有一块盘寄了。一开始我们获得所有内容异或起来的结果，然后把除了这一块儿盘之外的东西都异或，那么剩下的，就是损失的那块儿盘的信息！！！（简单Leetcode知识迁移到OS，甚至可以做Fault Tolerance…）</p>
+</li>
+<li><p>如果对于一个ByteArray，在只丢失一个数字的前提下，我使用多一个Byte，来存储所有Byte的异或运算结果，就可以做到Fault Tolerance。可以在任何一个Byte丢失的情况下，完成丢失数据的恢复。</p>
+</li>
+<li><p>那对于盘来说呢？假设有四个盘，完全可以三个盘存数据，最后一个盘存奇偶校验结果。</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309281415847.png" srcset="/img/loading.gif" lazyload alt="image-20230928141549727"></p>
+<h2 id="RAID-4-Parity-Disk"><a href="#RAID-4-Parity-Disk" class="headerlink" title="RAID-4: Parity Disk"></a>RAID-4: Parity Disk</h2><p>专门留一块磁盘作为奇偶校验盘。</p>
+<ul>
+<li><p>{<em>V</em>1,<em>V</em>2,<em>V</em>3}→{<em>A</em>1,<em>B</em>1,<em>C</em>1,<em>D</em>1}</p>
+<ul>
+<li><em>V</em>1→<em>A</em>1, V<em>2→</em>B1, <em>V</em>3→<em>C</em>1 (不容错)</li>
+<li><em>D1</em>=<em>V</em>1⊕<em>V</em>2⊕<em>V</em>3 (奇偶校验)</li>
+</ul>
+</li>
+<li><p>性能分析</p>
+<ul>
+<li><p>Sequential/random read: 3x (75% 总带宽)</p>
+</li>
+<li><p>Sequential write: 3x (75% 总带宽)</p>
+</li>
+<li><p>Random write (tricky)</p>
+<ul>
+<li><em>D</em>1=<em>V</em>1⊕<em>V</em>2⊕<em>V</em>3</li>
+<li>写入任意<em>V</em>1,<em>V</em>2,<em>V</em>3都需要更新<em>D</em>1<ul>
+<li>更新<em>V</em>1 需要 readb({<em>A</em>1,<em>D</em>1}), writedb({<em>A</em>1,<em>D</em>1})</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="RAID-5-Rotating-Parity"><a href="#RAID-5-Rotating-Parity" class="headerlink" title="RAID-5: Rotating Parity"></a>RAID-5: Rotating Parity</h2><p>“交错排列” parity block!</p>
+<p><img src="https://jyywiki.cn/pages/OS/img/raid5.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<blockquote>
+<p>奇偶校验，打散了放到不同的盘里面去。D是瓶颈？打散放到不同的Disk中。</p>
+</blockquote>
+<h2 id="RAID-5-性能分析"><a href="#RAID-5-性能分析" class="headerlink" title="RAID-5: 性能分析"></a>RAID-5: 性能分析</h2><p>让每一块盘都有均等的机会存储 parity</p>
+<ul>
+<li>Sequential read/write: 3x (75% 总带宽)</li>
+<li>Random read (tricky)<ul>
+<li>(read 足够大，所有磁盘都可以提供数据) 4x (100% 总带宽)</li>
+</ul>
+</li>
+<li>Random write (tricky)<ul>
+<li>D1=<em>V</em>1⊕<em>V</em>2⊕<em>V</em>3; 写入任意V1,*V2,*V3都需要更新 D1</li>
+<li>奇偶校验依然严重拖慢了随机写入<ul>
+<li>但至少 <em>n</em> 块盘可以获得 <em>n</em>/4 的随机写性能</li>
+<li>有一定的 scalability</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="RAID-讨论"><a href="#RAID-讨论" class="headerlink" title="RAID: 讨论"></a>RAID: 讨论</h2><p>更快、更可靠、近乎免费的大容量磁盘</p>
+<ul>
+<li><p>革了 “高可靠性磁盘” 的命</p>
+<ul>
+<li>成为今天服务器的标准配置</li>
+</ul>
+</li>
+<li><p>类似的里程碑</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/1165389.945450">The Google file system</a> (SOSP’03) 和 <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.5555/1251254.1251264">MapReduce: Simplified data processing on large clusters</a> (OSDI’04) 开启 “大数据” 时代</li>
+</ul>
+</li>
+<li><p>RAID 的可靠性</p>
+<ul>
+<li><p>RAID 系统发生断电？</p>
+<ul>
+<li>例子：RAID-1 镜像盘出现不一致的数据</li>
+</ul>
+</li>
+<li><p>检测到磁盘坏？</p>
+<ul>
+<li>自动重组</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Google的做法也类似，只不过这里RAID是对于磁盘来做的，Google是对于计算机来做的。本质都是虚拟化，把这么多台计算机，抽象为一台超级new bee的计算机（Program Model），然后用MapReduce来进行任务的分发和调度处理。</p>
+</blockquote>
+<ul>
+<li>Brain Storm: 神经网络行不行呢？把不可靠的东西，虚拟化为可靠的呢？是不是也可以拆大为小呢？</li>
+</ul>
+<h1 id="崩溃一致性与崩溃恢复"><a href="#崩溃一致性与崩溃恢复" class="headerlink" title="崩溃一致性与崩溃恢复"></a>崩溃一致性与崩溃恢复</h1><blockquote>
+<p>硬件没问题，软件也可能有问题啊orz</p>
+</blockquote>
+<h2 id="另一种-Fault-Model"><a href="#另一种-Fault-Model" class="headerlink" title="另一种 Fault Model"></a>另一种 Fault Model</h2><p>磁盘并没有故障</p>
+<ul>
+<li>但操作系统内核可能 crash，系统可能断电</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309281024925.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>文件系统：设备上的树结构<ul>
+<li>即便只是 append 一个字节，也涉及多处磁盘的修改<ul>
+<li>FAT、目录文件 (文件大小) 和数据</li>
+<li>磁盘本身不提供 “all or nothing” 的支持</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="崩溃一致性-Crash-Consistency"><a href="#崩溃一致性-Crash-Consistency" class="headerlink" title="崩溃一致性 (Crash Consistency)"></a>崩溃一致性 (Crash Consistency)</h2><blockquote>
+<p><strong>Crash Consistency</strong>: Move the file system from one consistent state (e.g., before the file got appended to) to another atomically (e.g., after the inode, bitmap, and new data block have been written to disk).</p>
+</blockquote>
+<p>(你们平时编程时假设不会发生的事，操作系统都要给你兜底)</p>
+<ul>
+<li><p>磁盘不提供多块读写 “all or nothing” 的支持</p>
+<ul>
+<li>甚至为了性能，没有顺序保证<ul>
+<li>bwrite 可能被乱序</li>
+<li>所以磁盘还提供了 bflush 等待已写入的数据落盘</li>
+<li>回到被并发编程支配的恐惧？<a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/peterson-barrier.c">peterson-barrier.c</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><del>那我们也可以考虑提供啊：<a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.5555/1855741.1855752">Transactional flash</a> (OSDI’08)</del></p>
+</li>
+</ul>
+<h2 id="磁盘乱序的后果"><a href="#磁盘乱序的后果" class="headerlink" title="磁盘乱序的后果"></a>磁盘乱序的后果</h2><ul>
+<li><p>为 FAT 文件追加写入一个 cluster (4KB) 需要更新</p>
+<ul>
+<li><p>目录项中的文件大小 (100 → 4196)</p>
+</li>
+<li><p>FAT 表中维护的链表 (EOF → cluster-id, FREE → EOF)</p>
+</li>
+<li><p>实际数据</p>
+</li>
+</ul>
+</li>
+<li><p>这麻烦了……</p>
+<ul>
+<li><p>任何一个子集的写入丢失都可能出现</p>
+</li>
+<li><p>文件系统就进入了 “不一致” 的状态</p>
+<ul>
+<li>可能违反 FAT 的基本假设<ul>
+<li>链表无环且长度和文件大小一致</li>
+<li>FREE 的 cluster 不能有入边</li>
+<li>……</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="File-System-Checking-FSCK"><a href="#File-System-Checking-FSCK" class="headerlink" title="File System Checking (FSCK)"></a>File System Checking (FSCK)</h2><p>根据磁盘上已有的信息，恢复出 “最可能” 的数据结构</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309281444160.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.5555/1855741.1855751">SQCK: A declarative file system checker</a> (OSDI’08)</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3281031">Towards robust file system checkers</a> (FAST’18)</p>
+<ul>
+<li>“widely used file systems (EXT4, XFS, BtrFS, and F2FS) may leave the file system in an uncorrectable state if the repair procedure is interrupted unexpectedly” 😂</li>
+</ul>
+</li>
+<li><p>针对 crash，我们需要更可靠的方法我们需要一个更可靠的方法</p>
+<ul>
+<li>文件系统不一致的根本原因是存储设备无法提供多次写入的原子性</li>
+</ul>
+</li>
+</ul>
+<h1 id="日志-Journaling"><a href="#日志-Journaling" class="headerlink" title="日志 (Journaling)"></a>日志 (Journaling)</h1><h2 id="重新思考数据结构的存储"><a href="#重新思考数据结构的存储" class="headerlink" title="重新思考数据结构的存储"></a>重新思考数据结构的存储</h2><ul>
+<li>两个 “视角”</li>
+</ul>
+<ol>
+<li>存储实际<strong>数据结构</strong><ul>
+<li>文件系统的 “直观” 表示</li>
+<li>crash unsafe</li>
+</ul>
+</li>
+<li>Append-only 记录所有<strong>历史操作</strong><ul>
+<li>“重做” 所有操作得到数据结构的当前状态</li>
+<li>容易实现崩溃一致性</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><p>二者的融合</p>
+<ul>
+<li><p>数据结构操作发生时，用 (2) append-only 记录日志</p>
+</li>
+<li><p>日志落盘后，用 (1) 更新数据结构</p>
+</li>
+<li><p>崩溃后，重放日志并清除 (称为 redo log；相应也可以 undo log)</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="实现-Atomic-Append"><a href="#实现-Atomic-Append" class="headerlink" title="实现 Atomic Append"></a>实现 Atomic Append</h2><p>用 bread, bwrite 和 bflush 实现 append()</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202309281453347.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol>
+<li>定位到 journal 的末尾 (bread)</li>
+<li>bwrite TXBegin 和所有数据结构操作</li>
+<li><strong>bflush</strong> 等待数据落盘</li>
+<li>bwrite TXEnd</li>
+<li><strong>bflush</strong> 等待数据落盘</li>
+<li>将数据结构操作写入实际数据结构区域</li>
+<li>等待数据落盘后，删除 (标记) 日志</li>
+</ol>
+<blockquote>
+<p>没看到TXEnd，就把事务前面的都扔掉。只要看到了TXEnd，这个事务就落盘了，没有任何问题！</p>
+</blockquote>
+<h2 id="Journaling-优化"><a href="#Journaling-优化" class="headerlink" title="Journaling: 优化"></a>Journaling: 优化</h2><p>现在磁盘需要写入双份的数据</p>
+<ul>
+<li>批处理 (xv6; jbd)<ul>
+<li>多次系统调用的 Tx 合并成一个，减少 log 的大小</li>
+<li>jbd: 定期 write back</li>
+</ul>
+</li>
+<li>Checksum (ext4)<ul>
+<li>不再标记 TxBegin/TxEnd</li>
+<li>直接标记 Tx 的长度和 checksum</li>
+</ul>
+</li>
+<li>Metadata journaling (ext4 default)<ul>
+<li>数据占磁盘写入的绝大部分<ul>
+<li>只对 inode 和 bitmap 做 journaling 可以提高性能（不在日志里面写数据，不然会发生写放大的情况）</li>
+</ul>
+</li>
+<li>保证文件系统的目录结构是一致的；但数据可能丢失</li>
+</ul>
+</li>
+</ul>
+<h2 id="Metadata-Journaling"><a href="#Metadata-Journaling" class="headerlink" title="Metadata Journaling"></a>Metadata Journaling</h2><ul>
+<li><p>从应用视角来看，文件系统的行为可能很怪异</p>
+<ul>
+<li><p>各类系统软件 (git, sqlite, gdbm, …) 不幸中招</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://cn.bing.com/search?q=All+file+systems+are+not+created+equal:+On+the+complexity+of+crafting+crash-consistent+applications&amp;form=APMCS1&amp;PC=APMC">All file systems are not created equal: On the complexity of crafting crash-consistent applications</a> (OSDI’14)</li>
+<li>(os-workbench 里的小秘密)</li>
+</ul>
+</li>
+<li><p>更多的应用程序可能发生 data loss</p>
+<ul>
+<li>我们的工作: GNU coreutils, gmake, gzip, … 也有问题</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/2950290.2950327">Crash consistency validation made easy</a> (FSE’16)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>更为一劳永逸的方案：TxOS</p>
+<ul>
+<li>xbegin/xend/xabort 系统调用实现跨 syscall 的 “all-or-nothing”<ul>
+<li>应用场景：数据更新、软件更新、check-use……</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/1629575.1629591">Operating systems transactions</a> (SOSP’09)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本次课回答的问题</p>
+<ul>
+<li><p>Q: 如何保证持久数据的可靠性？</p>
+<ul>
+<li>硬件冗余：RAID</li>
+<li>软件容错：fsck 和 journaling</li>
+</ul>
+</li>
+<li><p>Takeaway messages</p>
+<ul>
+<li><p>多个 bwrite 不保证顺序和原子性</p>
+</li>
+<li><p>Journaling: 数据结构的两个视角</p>
+<ul>
+<li>真实的数据结构</li>
+<li>执行的历史操作</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/OS/2022/slides/28.slides.html#/">Slides</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Y5411X7SN/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">Vedio</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-28-持久数据的可靠性</div>
+      <div>https://alexanderliu-creator.github.io/2023/09/28/njuos-28-chi-jiu-shu-ju-de-ke-kao-xing/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年9月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/09/25/njuos-27-fat-he-unix-wen-jian-xi-tong/" title="NJUOS-27-操作系统的实现">
+                        <span class="hidden-mobile">NJUOS-27-操作系统的实现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
