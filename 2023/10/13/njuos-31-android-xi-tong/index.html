@@ -1,0 +1,1006 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="复习  应用视角的操作系统  对象 + API   硬件视角的操作系统  一个控制了整个计算机硬件的程序   本次课回答的问题  Q: 一个真正 “实用” 的操作系统还需要什么？   本次课主要内容  Android 应用和系统    走向移动互联网时代我们的世界悄然发生的变化 我们已然无法想象没有手机的生活。   (把计算机变小从来不是一个新想法，但是……) Android 应用 (把计算机变小">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJUOS-31-Android系统">
+<meta property="og:url" content="https://alexanderliu-creator.github.io/2023/10/13/njuos-31-android-xi-tong/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="复习  应用视角的操作系统  对象 + API   硬件视角的操作系统  一个控制了整个计算机硬件的程序   本次课回答的问题  Q: 一个真正 “实用” 的操作系统还需要什么？   本次课主要内容  Android 应用和系统    走向移动互联网时代我们的世界悄然发生的变化 我们已然无法想象没有手机的生活。   (把计算机变小从来不是一个新想法，但是……) Android 应用 (把计算机变小">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202310130901537.png">
+<meta property="article:published_time" content="2023-10-13T01:01:20.000Z">
+<meta property="article:modified_time" content="2023-10-13T15:26:31.736Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202310130901537.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>NJUOS-31-Android系统 - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alexanderliu-creator.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="NJUOS-31-Android系统"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-10-13 09:01" pubdate>
+          2023年10月13日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NJUOS-31-Android系统</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>复习</p>
+<ul>
+<li><p>应用视角的操作系统</p>
+<ul>
+<li>对象 + API</li>
+</ul>
+</li>
+<li><p>硬件视角的操作系统</p>
+<ul>
+<li>一个控制了整个计算机硬件的程序</li>
+</ul>
+</li>
+<li><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 一个真正 “实用” 的操作系统还需要什么？</li>
+</ul>
+</li>
+<li><p>本次课主要内容</p>
+<ul>
+<li>Android 应用和系统</li>
+</ul>
+</li>
+</ul>
+<h1 id="走向移动互联网时代"><a href="#走向移动互联网时代" class="headerlink" title="走向移动互联网时代"></a>走向移动互联网时代</h1><h2 id="我们的世界悄然发生的变化"><a href="#我们的世界悄然发生的变化" class="headerlink" title="我们的世界悄然发生的变化"></a>我们的世界悄然发生的变化</h2><blockquote>
+<p>我们已然无法想象没有手机的生活。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12W411e7o8"><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202310130904898.jpg" srcset="/img/loading.gif" lazyload alt="img"></a></p>
+<p>(把计算机变小从来不是一个新想法，但是……)</p>
+<h1 id="Android-应用"><a href="#Android-应用" class="headerlink" title="Android 应用"></a>Android 应用</h1><blockquote>
+<p>(把计算机变小从来不是一个新想法，但是……)</p>
+</blockquote>
+<h2 id="一次、再一次，改变世界"><a href="#一次、再一次，改变世界" class="headerlink" title="一次、再一次，改变世界"></a>一次、再一次，改变世界</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202310130904771.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><p><a target="_blank" rel="noopener" href="https://developer.android.google.cn/">Android 官方主页</a></p>
+<ul>
+<li>Linux + Framework + JVM<ul>
+<li>在 Linux/Java 上做了个二次开发？</li>
+<li>并不完全是：Android 定义了应用模型</li>
+</ul>
+</li>
+<li>支持 Java 是一个非常高瞻远瞩的决定<ul>
+<li>Qualcomm MSM7201<ul>
+<li>ARMv6 指令集</li>
+<li>528MHz x 1CPU, 顺序八级流水线</li>
+<li>TSMC 90nm</li>
+</ul>
+</li>
+<li>“跑个地图都会卡”<ul>
+<li>但摩尔定律生效了！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Android-Apps"><a href="#Android-Apps" class="headerlink" title="Android Apps"></a>Android Apps</h2><ul>
+<li><p>一个运行在 Java 虚拟机 (<a target="_blank" rel="noopener" href="http://aospxref.com/android-12.0.0_r3/xref/art/">Android Runtime</a>) 上的应用程序</p>
+<ul>
+<li><p>Platform (Framework)</p>
+</li>
+<li><p>NDK (Native Development Kit)</p>
+</li>
+<li><p>Java Native Interface (C/C++ 代码)</p>
+</li>
+</ul>
+</li>
+<li><p>官方文档 (RTFM)</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://developer.android.google.cn/kotlin">Kotlin</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://developer.android.google.cn/reference/packages">Platform</a></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://developer.android.google.cn/reference/android/view/View">android.view.View</a>: “the basic building block for user interface components”<ul>
+<li><a target="_blank" rel="noopener" href="https://developer.android.google.cn/reference/android/webkit/WebView">android.webkit.WebView</a> - 嵌入应用的网页</li>
+<li><a target="_blank" rel="noopener" href="https://developer.android.google.cn/reference/android/hardware/camera2/package-summary">android.hardware.camera2</a> - 相机</li>
+<li><a target="_blank" rel="noopener" href="https://developer.android.google.cn/reference/android/database/sqlite/package-summary">android.database.database</a> - 数据库</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Android-应用-1"><a href="#Android-应用-1" class="headerlink" title="Android 应用"></a>Android 应用</h1><h2 id="“四大组件”"><a href="#“四大组件”" class="headerlink" title="“四大组件”"></a>“四大组件”</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202310130904860.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li><p>Activity</p>
+<ul>
+<li><p>应用程序的 UI 界面 (Event Driven)</p>
+</li>
+<li><p>存在一个 Activity Stack (应用拉起)</p>
+</li>
+</ul>
+</li>
+<li><p>Service</p>
+<ul>
+<li>无界面的后台服务</li>
+</ul>
+</li>
+<li><p>Broadcast</p>
+<ul>
+<li>接受系统消息，做出反应<ul>
+<li>例如 “插上电源”、“Wifi 断开”</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>ContentProvider</p>
+<ul>
+<li>可以在应用间共享的数据存储 (insert, update, query, …)</li>
+</ul>
+</li>
+</ul>
+<h2 id="例子：计算器"><a href="#例子：计算器" class="headerlink" title="例子：计算器"></a>例子：计算器</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202310130906993.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/platform_packages_apps_calculator-master.zip">Calculator</a></p>
+<ul>
+<li>AndroidManifest.xml - 应用的 “元数据”<ul>
+<li>例如需要的权限、监听的 Intents 等</li>
+</ul>
+</li>
+<li>res - 资源文件<ul>
+<li>各国语言的翻译</li>
+<li>图片文件 (例如图标)</li>
+</ul>
+</li>
+<li>编写应用逻辑只需要重载 Activity 的 onCreate, … 即可</li>
+</ul>
+<h1 id="Android-系统"><a href="#Android-系统" class="headerlink" title="Android 系统"></a>Android 系统</h1><h2 id="Platform-API-之下：一个-“微内核”"><a href="#Platform-API-之下：一个-“微内核”" class="headerlink" title="Platform API 之下：一个 “微内核”"></a>Platform API 之下：一个 “微内核”</h2><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202310130906045.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li><p>通过 “Binder IPC”</p>
+<ul>
+<li><p>Remote Procedure Call (RPC)</p>
+<ul>
+<li><code>remote.transact()</code></li>
+</ul>
+</li>
+<li><p>在性能优化和易用之间的权衡</p>
+<ul>
+<li>注册机制<ul>
+<li>相比之下，管道/套接字就太 “底层” 了，需要手工管理的东西太多</li>
+<li>基于共享内存实现</li>
+<li>Linux Kernel binder driver</li>
+<li>服务端线程池</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="然后……海量的代码"><a href="#然后……海量的代码" class="headerlink" title="然后……海量的代码"></a>然后……海量的代码</h2><ul>
+<li><p>例子：如何杀死一个 Android 进程？</p>
+<ul>
+<li>RTFSC: <a target="_blank" rel="noopener" href="http://aospxref.com/android-12.0.0_r3/xref/frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java#3688">ActivityManagerService.java</a><ul>
+<li>Android 每个 App 都有独立的 uid</li>
+<li>遍历进程表，找到属于 uid 的进程</li>
+<li>Process.KillProcessGroup<ul>
+<li><a target="_blank" rel="noopener" href="http://aospxref.com/android-12.0.0_r3/xref/system/core/libprocessgroup/processgroup.cpp#411">间隔 5ms，连续杀死 40 次</a>，防止数据竞争</li>
+<li>Operating System Transactions 的必要性</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>那么，我们是不是就可以利用数据竞争进程保活了呢？</p>
+<ul>
+<li><p>成为孤儿进程从而不会立即收到 SIGKILL 信号</p>
+</li>
+<li><p>在被杀死后立即唤醒另一个进程: <a target="_blank" rel="noopener" href="https://jyywiki.cn/pages/OS/2022/demos/flock-demo.c">flock-demo.c</a></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3302424.3303956">A lightweight framework for fine-grained lifecycle control of Android applications</a> (EuroSys’19); “diehard apps”</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="一个真正的-“操作系统”"><a href="#一个真正的-“操作系统”" class="headerlink" title="一个真正的 “操作系统”"></a>一个真正的 “操作系统”</h2><ul>
+<li><p>adb (Android Debug Bridge)</p>
+<ul>
+<li><p>adb push/pull/install</p>
+</li>
+<li><p>adb shell</p>
+<ul>
+<li>screencap /sdcard/screen.png</li>
+<li>sendevent</li>
+</ul>
+</li>
+<li><p>adb forward</p>
+</li>
+<li><p>adb logcat/jdwp</p>
+</li>
+</ul>
+</li>
+<li><p>一系列衍生的工具</p>
+<ul>
+<li><p>开发者选项</p>
+</li>
+<li><p>scrcpy</p>
+</li>
+<li><p>Monkey/UI Automator</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="拥抱变化的世界"><a href="#拥抱变化的世界" class="headerlink" title="拥抱变化的世界"></a>拥抱变化的世界</h2><p>我们也试着蹭一波热度 (也决定不再蹭了)</p>
+<ul>
+<li>Cross-device record and replay for Android apps (ESEC/FSE’22, Under review)</li>
+<li>Detecting non-crashing functional bugs in Android apps via deep-state differential analysis (ESEC/FSE’22, Under review)</li>
+<li>Push-button synthesis of watch companions for Android apps (ICSE’22)</li>
+<li>ComboDroid: Generating high-quality test inputs for Android apps via use case combinations (ICSE’20)</li>
+<li>Characterizing and detecting inefficient image displaying issues in Android apps (SANER’19)</li>
+<li>…</li>
+<li>User guided automation for testing mobile apps (APSEC’14)</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><p>本次课回答的问题</p>
+<ul>
+<li><strong>Q</strong>: 一个真正 “实用” 的操作系统 (生态) 是如何构成的？</li>
+</ul>
+</li>
+<li><p>Takeaway messages</p>
+<ul>
+<li><p>服务、服务、服务</p>
+<ul>
+<li>Android Platform API</li>
+<li>Google Mobile Service (GMS)</li>
+<li>海量的工程细节</li>
+</ul>
+</li>
+<li><p>复杂系统无处不在</p>
+<ul>
+<li>能驾驭整个系统复杂性的架构师<ul>
+<li>大量高水准的工程师，他们都在哪里？</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://jyywiki.cn/OS/2022/slides/31.slides.html#/">slides</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1fY4y137yh/?spm_id_from=333.999.0.0&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">vedio</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8D%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">南京大学操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>NJUOS-31-Android系统</div>
+      <div>https://alexanderliu-creator.github.io/2023/10/13/njuos-31-android-xi-tong/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年10月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/10/11/njuos-30-xian-dai-cun-chu-xi-tong/" title="NJUOS-30-现代存储系统">
+                        <span class="hidden-mobile">NJUOS-30-现代存储系统</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
