@@ -1,0 +1,1337 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="Learning how to use prompts in ChatGPT skillfully">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI-Prompt Learning">
+<meta property="og:url" content="https://alexanderliu-creator.github.io/2023/11/07/ai-prompt-learning/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="Learning how to use prompts in ChatGPT skillfully">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311072012777.png">
+<meta property="article:published_time" content="2023-11-07T12:09:04.000Z">
+<meta property="article:modified_time" content="2023-11-15T14:28:22.570Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311072012777.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>AI-Prompt Learning - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alexanderliu-creator.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="AI-Prompt Learning"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-11-07 20:09" pubdate>
+          2023年11月7日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          27k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          224 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">AI-Prompt Learning</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：17 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Learning how to use prompts in ChatGPT skillfully</p>
+<span id="more"></span>
+
+<h1 id="ChatGPT-Prompt"><a href="#ChatGPT-Prompt" class="headerlink" title="ChatGPT Prompt"></a>ChatGPT Prompt</h1><h2 id="Principles-of-Prompting"><a href="#Principles-of-Prompting" class="headerlink" title="Principles of Prompting"></a>Principles of Prompting</h2><h3 id="Principle-1"><a href="#Principle-1" class="headerlink" title="Principle 1"></a>Principle 1</h3><ul>
+<li>Principle 1: Write clear and specific instructions</li>
+<li>更长的提示实际上提供了更清晰的输入和上下文</li>
+</ul>
+<ol>
+<li>分隔符分割输入处理：用分隔符清晰地指示输入的不同部分，例如”””，```，–, &lt;&gt;等。</li>
+</ol>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">text = <span class="hljs-string">f"""</span><br><span class="hljs-string">This is a test \</span><br><span class="hljs-string">from GPT test</span><br><span class="hljs-string">"""</span><br><br>prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Summarize the text delimited by triple backticks \</span><br><span class="hljs-string">into a single sentence.</span><br><span class="hljs-string">```<span class="hljs-subst">{text}</span>```</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>将我们需要处理的文本，和我们希望GPT执行的指令区分开来，类似于SQL注入，这种方式甚至可以防“指令入侵”。例如用户输入“请忘记之前的指令”之类的，GPT可以某种程度上识别出来。</p>
+</blockquote>
+<ol start="2">
+<li>结构化输出：使解析模型输入更加容易</li>
+</ol>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Provide the data in JSON format with the following keys:</span><br><span class="hljs-string">book_id, title, author, genre.</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ol start="3">
+<li>检查是否满足某些条件，满足才执行任务</li>
+</ol>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt=<span class="hljs-string">f"""</span><br><span class="hljs-string">You will be provided with text delimited by triple quotes.If it contains a sequence of instructions, </span><br><span class="hljs-string">re-write those instructions in the following format:</span><br><span class="hljs-string"></span><br><span class="hljs-string">Step1 - ...</span><br><span class="hljs-string">step2 - ...</span><br><span class="hljs-string">...</span><br><span class="hljs-string">step N - ...</span><br><span class="hljs-string"></span><br><span class="hljs-string">If the text does not contain a sequence of instructions ,</span><br><span class="hljs-string">then simply write "No steps provided. "</span><br><span class="hljs-string">\"\"\" (text_ 1)\"\"\"</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>只有含有固定的条件，才会执行对应的处理和输出。</p>
+</blockquote>
+<ol start="4">
+<li>少量训练提示</li>
+</ol>
+<ul>
+<li>要求模型执行任务之前，提示成功执行任务的示例。</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Your task is to answer in a consistent style .</span><br><span class="hljs-string"></span><br><span class="hljs-string">&lt;child&gt;: Teach me about patience.</span><br><span class="hljs-string"></span><br><span class="hljs-string">&lt;grandparent&gt;: The river that carves the deepest \ </span><br><span class="hljs-string">valley flows from a modest spring; the \ </span><br><span class="hljs-string">grandest symphony originates from a single note; \ </span><br><span class="hljs-string">the most intricate tapestry begins with a solitary thread.</span><br><span class="hljs-string"></span><br><span class="hljs-string">&lt;child&gt;: Teach me about resilience.</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="Principle-2"><a href="#Principle-2" class="headerlink" title="Principle 2"></a>Principle 2</h3><ul>
+<li>Principle 2: Give model time to think. 上下文逻辑链要足够GPT模型去学习和思考。</li>
+</ul>
+<ol>
+<li>指定完成任务所需要的步骤：</li>
+</ol>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># example 1</span><br>prompt_1 = <span class="hljs-string">f"""</span><br><span class="hljs-string">Perform the following actions:</span><br><span class="hljs-string">1 - Summarize the following text delimited by triple \ backticks with 1 sentence .</span><br><span class="hljs-string">2 - Translate the summary into French.</span><br><span class="hljs-string">3 - List each name in the French summary .</span><br><span class="hljs-string">4 - Output a json object that contains the following \ keys: french summary, num_names.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Separate your answers with line breaks.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Text:</span><br><span class="hljs-string">```<span class="hljs-subst">{text}</span>```</span><br><span class="hljs-string">"""</span><br><br><span class="hljs-comment"># example 2, asking for output in a specified format</span><br>prompt_2 = <span class="hljs-string">f"""</span><br><span class="hljs-string">Your task is to perform the following actions :</span><br><span class="hljs-string">1 - Summarize the following text delimited by &lt;&gt; with 1 sentence . </span><br><span class="hljs-string">2 - Translate the surmary into French.</span><br><span class="hljs-string">3 - List each name in the French summary.</span><br><span class="hljs-string">4 - Output a json object that contains the following keys: french summary, num names.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Use the following format:</span><br><span class="hljs-string">Text: &lt;text to summarize&gt;</span><br><span class="hljs-string">Summary: &lt;summary&gt;</span><br><span class="hljs-string">Translation: &lt;summary translation&gt;</span><br><span class="hljs-string">Names: &lt;list of names in Italian sumumary&gt;</span><br><span class="hljs-string">Output JSON: &lt;json with summary and num names&gt;</span><br><span class="hljs-string"></span><br><span class="hljs-string">Text: &lt;<span class="hljs-subst">{text}</span>&gt;</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li>指示模型在匆忙做出结论之前，思考解决方案，并且按照正确的解决方案，指示模型去进行判断，尤其在很多没有默认指标的情况下：</li>
+</ol>
+<blockquote>
+<p>例如：一个学生解题判断，可以让模型先按照正确的处理逻辑去进行计算，并进行对比，而不是直接把学生的答案给模型。</p>
+</blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt=<span class="hljs-string">"""</span><br><span class="hljs-string">Your task is determine if the student's solution </span><br><span class="hljs-string">is correct or not .</span><br><span class="hljs-string">To solve the problem do the following:</span><br><span class="hljs-string">- First, work out your own solution to the problem.</span><br><span class="hljs-string">- Then compare your solution to the student's solution and evaluate if the student's solution is correct or not.Don't decide if the student's solution is correct unti1 you have done the problem yourself. </span><br><span class="hljs-string"></span><br><span class="hljs-string">Use the following format:</span><br><span class="hljs-string">Question:</span><br><span class="hljs-string">```</span><br><span class="hljs-string">question here</span><br><span class="hljs-string">```</span><br><span class="hljs-string">Student's solution:</span><br><span class="hljs-string">```</span><br><span class="hljs-string">student' s solution here</span><br><span class="hljs-string">```</span><br><span class="hljs-string">Actual solution:</span><br><span class="hljs-string">```</span><br><span class="hljs-string">steps to work out the solution and your solution here</span><br><span class="hljs-string">```</span><br><span class="hljs-string">Is the student's solution the same as actual solution just calculated :</span><br><span class="hljs-string">```</span><br><span class="hljs-string">yes or no</span><br><span class="hljs-string">```</span><br><span class="hljs-string">Student grade :</span><br><span class="hljs-string">```</span><br><span class="hljs-string">correct or incorrect</span><br><span class="hljs-string">```</span><br><span class="hljs-string"></span><br><span class="hljs-string">Question:</span><br><span class="hljs-string">```</span><br><span class="hljs-string">I'm building a solar power installation and I need help working out the financials.</span><br><span class="hljs-string">- Land costs $100 / square foot</span><br><span class="hljs-string">- I can buy solar panels for $250 / square foot</span><br><span class="hljs-string">- I negotiated a contract for maintenance that will cost  me a flat $l00k per year, and an additional $10 \ square foot</span><br><span class="hljs-string">What is the total cost for the first year of operations as a function of the number of square feet.</span><br><span class="hljs-string">```</span><br><span class="hljs-string">Student's solution:</span><br><span class="hljs-string">```</span><br><span class="hljs-string">Let x be the size of the installation in square feet. </span><br><span class="hljs-string">Costs:</span><br><span class="hljs-string">1. Land cost: 100x</span><br><span class="hljs-string">2. Solar panel cost: 250x</span><br><span class="hljs-string">3. Maintenance cost: 100,000 + 100x</span><br><span class="hljs-string">Total cost: 100x + 250x + 100,000 + 100x = 450x + 100, 000</span><br><span class="hljs-string">```</span><br><span class="hljs-string">Actual solution:</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="Model-Limitations"><a href="#Model-Limitations" class="headerlink" title="Model Limitations"></a>Model Limitations</h2><ul>
+<li>模型没有记住它所看到的所有信息，不了解知识边界。这意味着它可能会尝试回答关于晦涩主题的问题，并编造听起来合理但是不正确的答案。(幻觉) -&gt; Hallucination: Make statements that sound plausible but are not true.</li>
+<li>Reducing hallucination: 要求模型从文本中首先找到相关的引用，并使用引用进行解答，追溯答案回源文档通常可以帮助减少这些幻觉。</li>
+</ul>
+<h2 id="Iterative-Prompt-Development"><a href="#Iterative-Prompt-Development" class="headerlink" title="Iterative Prompt Development"></a>Iterative Prompt Development</h2><ul>
+<li><p>Iteration process</p>
+<ul>
+<li>Idea</li>
+<li>Implementation(code/data) -&gt; Prompt</li>
+<li>Experimental result(Error Analysis)</li>
+</ul>
+</li>
+<li><p>Prompt guidelines</p>
+<ul>
+<li>Be claer and specific</li>
+<li>Analyze why result does not give desired output</li>
+<li>Refine the idea and the prompt</li>
+<li>Repeat</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>一次输出如果不满足我们的条件，我们可以从中找到我们需要改进的点（例如我希望这段描述只有50个字），并更新我们的Prompt，来得到我们的答案。</p>
+</blockquote>
+<ul>
+<li>lterative Process<ul>
+<li>Try something</li>
+<li>Analyze where the result does not give what you want</li>
+<li>Clarify instructions, give more time to think</li>
+<li>Refine prompts with a batch of examples</li>
+</ul>
+</li>
+</ul>
+<h2 id="Text-Summarization"><a href="#Text-Summarization" class="headerlink" title="Text Summarization"></a>Text Summarization</h2><ul>
+<li>一份简单的Summary</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f""" </span><br><span class="hljs-string">Your task is to generate a short summary of a product </span><br><span class="hljs-string">review from an ecommerce site .</span><br><span class="hljs-string"></span><br><span class="hljs-string">Summarize the review below, delimited by triple</span><br><span class="hljs-string">backticks, in at most 30 words.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Review: ```<span class="hljs-subst">{prod_ review}</span>```</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>针对某个部分的Summary</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f""" </span><br><span class="hljs-string">Your task is to generate a short summary of a product </span><br><span class="hljs-string">review from an ecommerce site .</span><br><span class="hljs-string"></span><br><span class="hljs-string">Summarize the review below, delimited by triple</span><br><span class="hljs-string">backticks, in at most 30 words, and focusing on any aspects that mention shipping and delivery of the product.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Review: ```<span class="hljs-subst">{prod_ review}</span>```</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>指定某些ChatGPT需要关注的重要信息。</p>
+</blockquote>
+<ul>
+<li>Build a summary dashboard</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python">reviews = [review_1, review_2, review_3, review_4]<br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(reviews)):<br>  prompt = <span class="hljs-string">f""" </span><br><span class="hljs-string">  Your task is to generate a short summary of a product </span><br><span class="hljs-string">  review from an ecommerce site .</span><br><span class="hljs-string"></span><br><span class="hljs-string">  Summarize the review below, delimited by triple</span><br><span class="hljs-string">  backticks, in at most 20 words.</span><br><span class="hljs-string"></span><br><span class="hljs-string">  Review: ```<span class="hljs-subst">{reviews[i]}</span>```</span><br><span class="hljs-string">  """</span><br>  <br>  response = get_completion(prompt)<br>  <span class="hljs-built_in">print</span>(i, response, <span class="hljs-string">"\n"</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Inferring"><a href="#Inferring" class="headerlink" title="Inferring"></a>Inferring</h2><ul>
+<li>大模型all in one，只需要一个大模型，就可以解决所有的问题。只需要编写正确的提示词，就能够实现对应的功能。Fast！！！</li>
+<li>判断句子的情绪：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">"""</span><br><span class="hljs-string">What is the sentiment of the following product review,</span><br><span class="hljs-string">which is delimited with triple backticks?</span><br><span class="hljs-string"></span><br><span class="hljs-string">Give your answer as a single word, either "positive" or "negative".</span><br><span class="hljs-string"></span><br><span class="hljs-string">Review text: """</span>(review)<span class="hljs-string">"""</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>提取情绪关键词：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Identify a list of emotions that the writer of the \</span><br><span class="hljs-string">following review is expressing. Include no more than \</span><br><span class="hljs-string">five items in the list.Format your answer as a list of \</span><br><span class="hljs-string">lower-case words separated by commas.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Review text: '''<span class="hljs-subst">{review}</span>'''</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>判断用户是否愤怒：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">"""</span><br><span class="hljs-string">Is the writer of the following review expressing anger? </span><br><span class="hljs-string">The review is delimited with triple backticks. </span><br><span class="hljs-string"></span><br><span class="hljs-string">Give your answer as either yes or no.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Review text: """</span>(review)<span class="hljs-string">"""</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>提取文本中的重要内容：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Identify the following items from the review text:</span><br><span class="hljs-string">- Item purchased by reviewer</span><br><span class="hljs-string">- Company that made the item</span><br><span class="hljs-string"></span><br><span class="hljs-string">The review is delimited with triple backticks. \</span><br><span class="hljs-string">Format your response as a JSON object with \</span><br><span class="hljs-string">"Item" and "Brand" as the keys.</span><br><span class="hljs-string">If the information isn't present, use "unknown" \</span><br><span class="hljs-string">as the value.</span><br><span class="hljs-string">Make your response as short as possible.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Review text: '''<span class="hljs-subst">{lamp_ review}</span>'''</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>感觉就类似，输入，处理，输出的思想。指定输入是啥，处理逻辑是啥，然后输出要表达成怎样的格式。</p>
+</blockquote>
+<ul>
+<li>All in one:</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Identify the following items from the review text:</span><br><span class="hljs-string">- Sentiment (positive or negative) </span><br><span class="hljs-string">- Is the reviewer expressing anger? (true or false)</span><br><span class="hljs-string">- Item purchased by reviewer</span><br><span class="hljs-string">- Company that made the item</span><br><span class="hljs-string"></span><br><span class="hljs-string">The review is delimited with triple backticks. \</span><br><span class="hljs-string">Format your response as a JSON object with \</span><br><span class="hljs-string">"Sentiment", "Anger", "Item" and "Brand" as the keys.</span><br><span class="hljs-string">If the information isn't present, use "unknown" \</span><br><span class="hljs-string">as the value.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Make your response as short as possible .</span><br><span class="hljs-string">Format the Anger value as a boolean .</span><br><span class="hljs-string">Review text: '''<span class="hljs-subst">{review}</span>'''</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>提取文章主题</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Determine five topics that are being discussed in the following text, which is delimited by triple backticks.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Make each item one or two words long.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Format your response as a list of items separated by commas.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Text sample: '''<span class="hljs-subst">{story}</span>'''</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>验证某篇文章，是否拥有哪些主题</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Determine whether each item in the following list of topics is a topic in the text below, which is delimited with triple backticks.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Give your answer as list with 0 or 1 for each topic.</span><br><span class="hljs-string"></span><br><span class="hljs-string">List of topics: <span class="hljs-subst">{<span class="hljs-string">", "</span>.join(topic_list)}</span></span><br><span class="hljs-string">Text sample: '''<span class="hljs-subst">{story}</span>'''</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Zero-shot Learning</p>
+</blockquote>
+<h2 id="Transforming"><a href="#Transforming" class="headerlink" title="Transforming"></a>Transforming</h2><ul>
+<li>Translation</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt_1 = <span class="hljs-string">f"""</span><br><span class="hljs-string">Trans1ate the following English text to Spanish: \</span><br><span class="hljs-string">```Hi, I would like to order a blender```</span><br><span class="hljs-string">"""</span><br><br>prompt_2 = <span class="hljs-string">f"""</span><br><span class="hljs-string">Tell me which language this is: \</span><br><span class="hljs-string">```Hi, I would like to order a blender```</span><br><span class="hljs-string">"""</span><br><br>prompt_3 = <span class="hljs-string">f"""</span><br><span class="hljs-string">Trans1ate the following English text to Spanish and Chinese: \</span><br><span class="hljs-string">```Hi, I would like to order a blender```</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>面向不同受众</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Trans1ate the following English text to Spanish in both the \</span><br><span class="hljs-string">formal and informal forms:</span><br><span class="hljs-string">```Hi, I would like to order a blender```</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Universal Translator</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> issue <span class="hljs-keyword">in</span> user_ messages:<br>	prompt = <span class="hljs-string">f"Tell me what language this is: ```<span class="hljs-subst">{issue}</span>```</span><br><span class="hljs-string">	lang.get_completion(prompt)</span><br><span class="hljs-string">  print(f"</span>Original message ({lang}): {issue}<span class="hljs-string">")</span><br><span class="hljs-string">  prompt = f"</span><span class="hljs-string">""</span><br>  Translate the following text to English <span class="hljs-number">1</span><br>  <span class="hljs-keyword">and</span> Korean: ```{issue}```<br>  <span class="hljs-string">"""</span><br><span class="hljs-string">  response = get_completion(prompt)</span><br><span class="hljs-string">  print(response, "\n")</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>tone translation</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Translate the following from slang to a business letter:</span><br><span class="hljs-string">'Dude, This is Joe, check out this'</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Translation between formats</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">Translate the following Python dictionary from JSON to HTML</span><br><span class="hljs-string">table with column headers and title: <span class="hljs-subst">{data_json}</span></span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Spell checking &amp; Grammer checking</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">text = [<br>  <span class="hljs-string">"I working hardly"</span>,<br>  <span class="hljs-string">"I wake up late"</span><br>]<br><br><span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> text:<br>  prompt = <span class="hljs-string">f"Proofread and correct: ```<span class="hljs-subst">{t}</span>```"</span><br></code></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""Proofread and correct the following text</span><br><span class="hljs-string">and rewrite the corrected version.</span><br><span class="hljs-string">If you don't find any errors, </span><br><span class="hljs-string">just say "No errors found": ```<span class="hljs-subst">{t}</span>```</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Find difference between the old and the new one:</p>
+</blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> readlines <span class="hljs-keyword">import</span> Redlines<br>diff = Redlines(text, response)<br>display(Markdown(diff.output_markdown))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Advanced output</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">f"""</span><br><span class="hljs-string">proofread and correct this review. Make it more compelling.</span><br><span class="hljs-string">Ensure it follows APA style guide and targets an advanced reader.</span><br><span class="hljs-string">Output in markdown format.</span><br><span class="hljs-string">Text: ```<span class="hljs-subst">{text}</span>```</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Expanding"><a href="#Expanding" class="headerlink" title="Expanding"></a>Expanding</h2><ul>
+<li>根据用户情感，对于用户评论做出回复：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">"""</span><br><span class="hljs-string">You are a customer service AI assistant.</span><br><span class="hljs-string">Your task is to send an emai1 and reply to a valued customer .</span><br><span class="hljs-string">Given the customer email delimited by ```, \</span><br><span class="hljs-string">Generate a reply to thank the customer for their review .</span><br><span class="hljs-string">If the sentiment is positive or neutral, thank them for \</span><br><span class="hljs-string">their review.</span><br><span class="hljs-string">If the sentiment is negative, apologize and suggest that \</span><br><span class="hljs-string">they can reach out to customer service .</span><br><span class="hljs-string">Make sure to use specific details from the review,</span><br><span class="hljs-string">Write in a concise and professional tone.</span><br><span class="hljs-string">Sign the email as `AI customer agent`.</span><br><span class="hljs-string">Customer review: ```{review}```</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Temparature: an parameter in ChatGPT which we can pass through the APIs.</li>
+</ul>
+<blockquote>
+<p>允许我们改变模型响应的多样性，可以将温度看作模型的搜索程度或者随机性。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311091028332.png" srcset="/img/loading.gif" lazyload alt="image-20231109102845297"></p>
+<blockquote>
+<ul>
+<li>For tasks require reliability, predictability, Temperature = 0.</li>
+<li>For tasks require variety, Temperature can be higher.</li>
+</ul>
+</blockquote>
+<h2 id="ChatBot"><a href="#ChatBot" class="headerlink" title="ChatBot"></a>ChatBot</h2><ul>
+<li>角色扮演</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">messages = [<br>{<span class="hljs-string">'role'</span>:<span class="hljs-string">'system'</span>, <span class="hljs-string">'content'</span>: <span class="hljs-string">'You are a friendly chatbot.'</span>},<br>{<span class="hljs-string">'role'</span>:<span class="hljs-string">"user"</span>, <span class="hljs-string">'content'</span>: <span class="hljs-string">"Yes can you remind me, what is my name?"</span>}<br>]<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>你可以mock多个不同用户的对话</p>
+</blockquote>
+<ul>
+<li>OrderBot</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python">context = [ {<span class="hljs-string">'role'</span>: <span class="hljs-string">"system', 'content' :"</span><span class="hljs-string">""</span><br>You are OrderBot, an automated service to collect orders <span class="hljs-keyword">for</span> a pizza restaurant.You first greet the customer, then collects the order, <span class="hljs-keyword">and</span> then asks <span class="hljs-keyword">if</span> it<span class="hljs-string">'s a pickup or delivery.</span><br><span class="hljs-string">You wait to collect the entire order, then summarize it and check for a final time if the customer wants to add anything else. </span><br><span class="hljs-string">If it'</span>s a delivery, you ask <span class="hljs-keyword">for</span> an address.<br>Finaily you collect the payment. <br>Make sure to clarify <span class="hljs-built_in">all</span> options, extras <span class="hljs-keyword">and</span> sizes to uniquely identify the item <span class="hljs-keyword">from</span> the menu.<br>You respond <span class="hljs-keyword">in</span> a short, very conversational friendly style.<br>The menu includes:<br>pepperoni pizza   <span class="hljs-number">12.95</span>, <span class="hljs-number">10.00</span>, <span class="hljs-number">7.00</span><br>cheese pizza   <span class="hljs-number">10.95</span>, <span class="hljs-number">9.25</span>, <span class="hljs-number">6.50</span> <span class="hljs-number">1</span><br>eggplant pizza   <span class="hljs-number">11.95</span>, <span class="hljs-number">9.75</span>, <span class="hljs-number">6.75</span><br>fries   <span class="hljs-number">4.50</span>, <span class="hljs-number">3.50</span> <span class="hljs-number">1</span><br>greek salad   <span class="hljs-number">7.25</span> <br>Toppings: <br>extra cheese   <span class="hljs-number">2.00</span>,<br>mushrooms   <span class="hljs-number">1.50</span>,<br>sausage   <span class="hljs-number">3.00</span>,<br>canadian bacon   <span class="hljs-number">3.50</span>,<br>AI sauce   <span class="hljs-number">1.50</span>,<br>peppers   <span class="hljs-number">1.00</span>,<br>Drinks:<br>coke   <span class="hljs-number">3.00</span>, <span class="hljs-number">2.00</span>, <span class="hljs-number">1.00</span><br>sprite   <span class="hljs-number">3.00</span>, <span class="hljs-number">2.00</span>, <span class="hljs-number">1.00</span><br>bottled water   <span class="hljs-number">5.00</span><br><span class="hljs-string">"""}] # accumulate messages</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>上面这非常轻松获得了一个OrderBot，我们可以基于这个OrderBot做更多的事情，例如：也许可以继续给他一些，指令，让它帮助我们总结客户的点单，例如上面的Context + 用户实际下的单，并且以JSON的形式输出。</p>
+</blockquote>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><ul>
+<li>Principles:<ul>
+<li>Write clear and specific instructions</li>
+<li>Give the model time to “think”</li>
+</ul>
+</li>
+<li>Iterative prompt development.</li>
+<li>Capabilities: Summarizing, Inferring, Transforming, Expanding</li>
+</ul>
+<h1 id="LangChain-for-LLM"><a href="#LangChain-for-LLM" class="headerlink" title="LangChain for LLM"></a>LangChain for LLM</h1><ul>
+<li>Open-source development framework for LLM applications</li>
+<li>Python and JS packages</li>
+<li>Focused on composition and modularity</li>
+<li>key value adds<ul>
+<li>modular components</li>
+<li>Use cases: Common ways to combine components</li>
+</ul>
+</li>
+<li>Components:<ul>
+<li>Models</li>
+<li>Prompts</li>
+<li>Indexes</li>
+<li>Chains</li>
+<li>Agents</li>
+</ul>
+</li>
+</ul>
+<h2 id="Models-Prompts-and-Parsers"><a href="#Models-Prompts-and-Parsers" class="headerlink" title="Models, Prompts and Parsers"></a>Models, Prompts and Parsers</h2><ul>
+<li>Models&amp;Prompts</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.chat_models <span class="hljs-keyword">import</span> ChatOpenAI<br><span class="hljs-keyword">from</span> langchain.prompts <span class="hljs-keyword">import</span> ChatPromptTemplate<br><br>chat = ChatOpenAI(temperature=<span class="hljs-number">0.0</span>)<br><br>template_string = <span class="hljs-string">"""Translate the text that is delimited by triple backticks into a style that is {style} \</span><br><span class="hljs-string">text: ```{text}```</span><br><span class="hljs-string">"""</span><br><br>prompt_template = ChatPromptTemplate.from_template(template_string)<br><br><span class="hljs-comment"># view the prompt template message</span><br><span class="hljs-comment"># prompt_template.messages[0].prompt</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Usage</p>
+</blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">customer_style = <span class="hljs-string">"""in a calm and respectul tone"""</span><br>customer_email = <span class="hljs-string">"""Hah, I like OpenAI"""</span><br><br>customer_messages = prompt_template.format_messages(customer_style, customer_email)<br>customer_response = chat(customer_messages)<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Templates help you get a useful abstraction when you need repeatly reuse the chat.</p>
+</blockquote>
+<ul>
+<li>Parsers</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs python">customer_review = <span class="hljs-string">"""</span><br><span class="hljs-string">This leaf blower is pretty amazing. It has four settings: </span><br><span class="hljs-string">candle blower, gentle breeze, windy city, and tornado.</span><br><span class="hljs-string">It arrived in two days, just in time for my wife's anniversary present. </span><br><span class="hljs-string">I think my wife liked it so much she was speechless. </span><br><span class="hljs-string">So far I've been the only one using it, and I've been using it every other morning to clear the leaves on our 1awn.</span><br><span class="hljs-string">It's slightly more expensive than the other leaf blowers out there, but I think it's worth it for</span><br><span class="hljs-string">the extra features.</span><br><span class="hljs-string">"""</span><br><br>review_template = <span class="hljs-string">"""</span><br><span class="hljs-string">For the following text, extract the following information:</span><br><span class="hljs-string"></span><br><span class="hljs-string">gift: Was the item purchased as a gift for someone else?</span><br><span class="hljs-string">delivery_days: How many days did it take for the product to deliver?</span><br><span class="hljs-string">price_value: Extract any sentences about the value or price.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Format the output as JSON with the following keys:</span><br><span class="hljs-string">gift</span><br><span class="hljs-string">delivery days</span><br><span class="hljs-string">price value</span><br><span class="hljs-string"></span><br><span class="hljs-string">text: {text}</span><br><span class="hljs-string">"""</span><br></code></pre></td></tr></tbody></table></figure>
+<ul>
+<li>Use Parser:<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.prompts <span class="hljs-keyword">import</span> ChatPromptTemplate<br><span class="hljs-keyword">from</span> langchain.output_parsers <span class="hljs-keyword">import</span> ResponseSchema<br><span class="hljs-keyword">from</span> langchain.output_parsers <span class="hljs-keyword">import</span> StructuredOutputParser<br><br>prompt_template = ChatPromptTemplate.from_template(review_template)<br>messages = prompt_template.format_messages(text=customer_review)<br>response = chat(messages)<br><span class="hljs-built_in">type</span>(response) <span class="hljs-comment"># string</span><br><span class="hljs-built_in">print</span>(response.content) <span class="hljs-comment"># a json like str</span><br><br><span class="hljs-comment"># Parser help us analyse the response</span><br>gift_schema = ResponseSchema(name=<span class="hljs-string">"gift"</span>, <span class="hljs-string">"Was the item purchased as a gift for someone else? Answer True if yes, False if not or unknown"</span>)<br>delivery_days_schema = ResponseSchema(name=<span class="hljs-string">"delivery_days"</span>, <span class="hljs-string">"How many days did it take for the product to deliver? If this information is not found, output -1"</span>)<br>price_value_schema = ResponseSchema(name=<span class="hljs-string">"price_value"</span>, <span class="hljs-string">"Extract any sentences about the value or price, and output them as a comma separated Python list."</span>)<br><br>response_shemas = [gift_schema, delivery_days_schema, price_value_schema]<br></code></pre></td></tr></tbody></table></figure></li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">format_instructions = output_parser.get_format_instructions()<br></code></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311092246650.png" srcset="/img/loading.gif" lazyload alt="image-20231109224657556"></p>
+<ul>
+<li>New reivew template</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python">review_template_2 = <span class="hljs-string">"""</span><br><span class="hljs-string">For the following text, extract the following information:</span><br><span class="hljs-string"></span><br><span class="hljs-string">gift: Was the item purchased as a gift for someone else?</span><br><span class="hljs-string">delivery_days: How many days did it take for the product to deliver?</span><br><span class="hljs-string">price_value: Extract any sentences about the value or price.</span><br><span class="hljs-string"></span><br><span class="hljs-string">text: {text}</span><br><span class="hljs-string"></span><br><span class="hljs-string">{format_instructions}</span><br><span class="hljs-string">"""</span><br><br>prompt = ChatPromptTemplate.from_template(template = review_template_2)<br>messages = prompt.format_messages(text = customer_review, format_instructions = format_instructions)<br><span class="hljs-built_in">print</span>(messages[<span class="hljs-number">0</span>].content)<br><br>response = chat(messages)<br>output_dict = output_parser.parse(response.content)<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Memory"><a href="#Memory" class="headerlink" title="Memory"></a>Memory</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">llm = ChatOpenAI(temperature=<span class="hljs-number">0.0</span>)<br>memory = ConversationBufferMemory()<br>conversation = Conversationchain(<br>	llm = 11m,<br>	memory = memory,<br>	verbose = <span class="hljs-literal">True</span><br>)<br><br>conversation.predict(<span class="hljs-built_in">input</span> = <span class="hljs-string">"Hi, my name is Alexander"</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>when the verbose is True, it’s ok to print the memory chain. 记忆链会越来越长昂！！！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311102000586.png" srcset="/img/loading.gif" lazyload alt="image-20231110200039136"></p>
+<ul>
+<li>You can also print the memory buffer and have more advanced features</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">print</span>(memory.buffer)<br>memory.load_memory_variables({})<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Langchain使用这个buffer作为对话缓冲区，来记录对话的Context</p>
+</blockquote>
+<ul>
+<li>可以向memory中存储别的context</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">memory = ConversationBufferMemory()<br>memory.save_context({<span class="hljs-string">"input"</span>: <span class="hljs-string">"Hi"</span>}, {<span class="hljs-string">"output"</span>: <span class="hljs-string">"What's up"</span>})<br><span class="hljs-built_in">print</span>(memory.buffer)<br><span class="hljs-built_in">print</span>(memory.load_memory_variables({}))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>大模型特性：Stateless，本身是不记录对话上下文的</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311102013398.png" srcset="/img/loading.gif" lazyload alt="image-20231110201348356"></p>
+<blockquote>
+<p>LangChain provides several kinds of ‘memory’ to store and accumulate the conversation, memory如果特别长，开销很大，因为模型是根据memory的context里面的token数量来计费的捏！所以太长了不好，LangChain会帮助你做优化捏！！！</p>
+</blockquote>
+<ul>
+<li>ConversationBufferwindowMemory</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.memory <span class="hljs-keyword">import</span> ConversationBufferwindowMemory<br>memory = ConversationBufferwindowMemory(k=<span class="hljs-number">1</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>ConversationBufferwindowMemory, k=1 means just keeping one conversation(the newest). By adjusting k, you can just track the recent few conversations.</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311102018563.png" srcset="/img/loading.gif" lazyload alt="image-20231110201856504"></p>
+<blockquote>
+<p>k = 1，意味着只保存一个上下文，这个可以从测试里面看的出来昂！！！</p>
+</blockquote>
+<ul>
+<li>ConversationTokenBufferMemory</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">llm = ChatOpenAI(temperature=<span class="hljs-number">0.0</span>)<br>memory = ConversationTokenBufferMemory(llm = llm, max_token_limit = <span class="hljs-number">50</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>保留满足max_token_limit下，最多的context。不同的llm的token有不同的计数方式，因此这里要告知llm的类型。</p>
+</blockquote>
+<ul>
+<li>ConversationSummaryBufferMemory</li>
+</ul>
+<blockquote>
+<p>llm可以write summary so far to get memory</p>
+</blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">memory = ConversationSummaryBufferMemory(llm = llm, max_token_limit = <span class="hljs-number">400</span>)<br><br><span class="hljs-comment"># Set a lot of contexts in memory</span><br>memory.save_context({})<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>如果长度大于400，LangChain会自动Summary上面的内容到满足max_token_limit的要求昂！</p>
+</blockquote>
+<ul>
+<li><p>Memory Types</p>
+<ul>
+<li><p>ConversationBufferMemory: This memory allows for storing of messages and then extracts the messages in a variable.</p>
+</li>
+<li><p>ConversationBufferWindowMemory: This memory keeps a list of the interactions of the conversation over time.It only uses the last K interactions.</p>
+</li>
+<li><p>ConversationTokenBufferMemory: This memory keeps a buffer of recent interactions in memory,and uses token length rather than number of interactions to determine when to flush interactions.</p>
+</li>
+<li><p>ConversationSummaryMemory: This memory creates a summary of the conversation over time.</p>
+</li>
+<li><p>Vector data memory: Stores text(from conversation or elsewhere)in a vector database and retrieves the most relevant blocks of text.</p>
+</li>
+<li><p>Entity memories: Using an LLM,it remembers details about specific entities.</p>
+</li>
+<li><p>You can also use multiple memories at one time. E.g.,Conversation memory Entity memory to recall individuals.</p>
+</li>
+<li><p>You can also store the conversation in a conventional database (such as key-value store or SQL)</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Chains"><a href="#Chains" class="headerlink" title="Chains"></a>Chains</h2><ul>
+<li>类似于拼积木的感觉</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.chat models <span class="hljs-keyword">import</span> ChatopenAI<br><span class="hljs-keyword">from</span> langchain.prompts <span class="hljs-keyword">import</span> ChatpromptTemplate<br><span class="hljs-keyword">from</span> langchain.chains <span class="hljs-keyword">import</span> LLMChain<br><br>llm = ChatOpenAI(temperature=<span class="hljs-number">0.9</span>)<br>prompt = ChatpromptTemplate.from_template(<br><span class="hljs-string">"What is the best name to describe a company that makes the {product}?"</span><br>)<br><br>chain = LLMChain(llm=llm, prompt=prompt)<br><br>product = <span class="hljs-string">"Queen Size Sheet Set"</span><br>chain.run(product)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Sequential Chains. Sequential chain is another type of chains. The idea is to combine multiple chains where the output of the one chain is the input of the next chain.</li>
+<li>There is two type of sequential chains:<ol>
+<li>SimpleSequentialChain:Single input/output</li>
+<li>SequentialChain:multiple inputs/outputs</li>
+</ol>
+</li>
+<li>SimpleSequentialChain</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.prompts <span class="hljs-keyword">import</span> SimpleSequentialChain<br><br>first_prompt = ChatpromptTemplate.from_template(<br><span class="hljs-string">"What is the best name to describe a company that makes the {product}?"</span><br>)<br>chain_one = LLMChain(llm=llm, prompt=first_prompt)<br><br>second_prompt = ChatpromptTemplate.from_template(<br><span class="hljs-string">"Write a 20 words description for the following company: {company_name}"</span><br>)<br>chain_two = LLMChain(llm=llm, prompt=second_prompt)<br><br>overall_simple_chain = SimpleSequentialChain(chains=[chain_one, chain_two], verbose=<span class="hljs-literal">True</span>)<br>overall_simple_chain.run(product)<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>第一个的输出会作为第二个的输入</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311121727605.png" srcset="/img/loading.gif" lazyload alt="image-20231112172722499"></p>
+<ul>
+<li>SequentialChain</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.prompts <span class="hljs-keyword">import</span> SequentialChain<br><br>first_prompt = ChatpromptTemplate.from_template(<br><span class="hljs-string">"What is the best name to describe a company that makes the {product}?"</span><br>)<br>chain_one = LLMChain(llm=llm, prompt=first_prompt, output_key = <span class="hljs-string">"key_one"</span>)<br><br>prompt_two = <span class="hljs-string">"Tell me anything about {key_one}"</span><br>chain_two = LLMChain(llm=llm, prompt=first_prompt, output_key = <span class="hljs-string">"key_two"</span>)<br><br>prompt_three = <span class="hljs-string">"Tell me the differnce between {key_one} and {key_two}"</span><br>chain_three = LLMChain(llm=llm, prompt=first_prompt, output_key = <span class="hljs-string">"key_three"</span>)<br><br>overall_chain = SequentialChain(<br>	chains = [chain_one, chain_two, chain_three],<br>  input_variables=[<span class="hljs-string">'first_prompt'</span>],<br>  output_variables=[<span class="hljs-string">'key_one'</span>, <span class="hljs-string">'key_two'</span>, <span class="hljs-string">'key_three'</span>],<br>  verbose=<span class="hljs-literal">True</span><br>)<br>overall_chain.run(product)<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>感觉和变量的定义和使用一样。。。确保这些变量名完全对齐十分重要，因为很多不同的输入和输出正在进行！</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311121727522.png" srcset="/img/loading.gif" lazyload alt="image-20231112172758390"></p>
+<ul>
+<li>Router Chain</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311121732767.png" srcset="/img/loading.gif" lazyload alt="image-20231112173228713"></p>
+<blockquote>
+<p>个很好的想象方式是：如果你有多个子链。每个子链专门处理特定<br>类型的输入，你可以有一个路由链，首先决定將其传递给哪个子链，然后將其传递给对应处理的链。</p>
+</blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python">physics_template = <span class="hljs-string">"""You are a very smart physics professor. \</span><br><span class="hljs-string">You are great at answering questions about physics in a concise and easy to understand manner. \</span><br><span class="hljs-string">When you don't know the answer to a question you admit that you don't know.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Here is a question:</span><br><span class="hljs-string">{input}"""</span><br>physics_prompt = PromptTemplate.from_template(physics_template)<br><br>math_template = <span class="hljs-string">"""You are a very good mathematician. You are great at answering math questions. \</span><br><span class="hljs-string">You are so good because you are able to break down hard problems into their component parts, \</span><br><span class="hljs-string">answer the component parts, and then put them together to answer the broader question.</span><br><span class="hljs-string"></span><br><span class="hljs-string">Here is a question:</span><br><span class="hljs-string">{input}"""</span><br>math_prompt = PromptTemplate.from_template(math_template)<br><br><br>prompt_infos = [<br>    {<br>        <span class="hljs-string">"name"</span>: <span class="hljs-string">"physics"</span>,<br>        <span class="hljs-string">"description"</span>: <span class="hljs-string">"Good for answering questions about physics"</span>,<br>        <span class="hljs-string">"prompt_template"</span>: physics_template,<br>    },<br>    {<br>        <span class="hljs-string">"name"</span>: <span class="hljs-string">"math"</span>,<br>        <span class="hljs-string">"description"</span>: <span class="hljs-string">"Good for answering math questions"</span>,<br>        <span class="hljs-string">"prompt_template"</span>: math_template,<br>    },<br>]<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Router chain usage</p>
+</blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.chains.router <span class="hljs-keyword">import</span> MultiPromptChain<br><span class="hljs-keyword">from</span> langchain.prompts <span class="hljs-keyword">import</span> PromptTemplate<br><span class="hljs-keyword">from</span> langchain.chains.router.llm_router <span class="hljs-keyword">import</span> LLMRouterChain, RouterOutputParser<br><span class="hljs-keyword">from</span> langchain.chains.router.multi_prompt_prompt <span class="hljs-keyword">import</span> MULTI_PROMPT_ROUTER_TEMPLATE<br><br><br><br>llm = ChatOpenAI(temperature = <span class="hljs-number">0</span>)<br><br>destination_chains = {}<br><span class="hljs-keyword">for</span> p_info <span class="hljs-keyword">in</span> prompt_infos:<br>    name = p_info[<span class="hljs-string">"name"</span>]<br>    prompt_template = p_info[<span class="hljs-string">"prompt_template"</span>]<br>    prompt = PromptTemplate(template=prompt_template, input_variables=[<span class="hljs-string">"input"</span>])<br>    chain = LLMChain(llm=llm, prompt=prompt)<br>    destination_chains[name] = chain<br>default_chain = ConversationChain(llm=llm, output_key=<span class="hljs-string">"text"</span>)<br>                                                  <br>destinations = [<span class="hljs-string">f"<span class="hljs-subst">{p[<span class="hljs-string">'name'</span>]}</span>: <span class="hljs-subst">{p[<span class="hljs-string">'description'</span>]}</span>"</span> <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> prompt_infos]<br>destinations_str = <span class="hljs-string">"\n"</span>.join(destinations)<br>router_template = MULTI_PROMPT_ROUTER_TEMPLATE.<span class="hljs-built_in">format</span>(destinations=destinations_str)<br>router_prompt = PromptTemplate(<br>    template=router_template,<br>    input_variables=[<span class="hljs-string">"input"</span>],<br>    output_parser=RouterOutputParser(),<br>)<br>router_chain = LLMRouterChain.from_llm(llm, router_prompt)<br><br>chain = MultiPromptChain(<br>    router_chain=router_chain,<br>    destination_chains=destination_chains,<br>    default_chain=default_chain,<br>    verbose=<span class="hljs-literal">True</span>,<br>)<br><br><span class="hljs-built_in">print</span>(chain.run(<span class="hljs-string">"What is black body radiation?"</span>))<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Documents"><a href="#Documents" class="headerlink" title="Documents"></a>Documents</h2><ul>
+<li>主要解决的是一些，例如GPT没有阅读过的文档，我们想让GPT进行分析这样的问题：</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.chains <span class="hljs-keyword">import</span> RetrievalQA<br><span class="hljs-keyword">from</span> langchain.chat models <span class="hljs-keyword">import</span> ChatopenAI<br><span class="hljs-keyword">from</span> langchain.document loaders <span class="hljs-keyword">import</span> CSVLoader<br><span class="hljs-keyword">from</span> langchain.vectorstores <span class="hljs-keyword">import</span> DocArrayInMemorySearch<br><span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> display,Markdown<br><br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">from</span> dotenv <span class="hljs-keyword">import</span> load_dotenv,find dot_env<br>_ = load_dotenv(find_dotenv()) <span class="hljs-comment"># read local .env file</span><br><span class="hljs-keyword">from</span> langchain.chains <span class="hljs-keyword">import</span> RetrievalQA<br><span class="hljs-keyword">from</span> langchain.chat models <span class="hljs-keyword">import</span> ChatopenAI<br><span class="hljs-keyword">from</span> langchain.document_loaders <span class="hljs-keyword">import</span> CSVLoader<br><span class="hljs-keyword">from</span> langchain.vectorstores <span class="hljs-keyword">import</span> DocArrayInMemorysearch<br><span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> display,Markdown<br><br>file = <span class="hljs-string">'OutdoorclothingCatalog_1000.csv'</span><br>loader = CSVLoader(file_path-file)<br><br><span class="hljs-keyword">from</span> langchain.indexes <span class="hljs-keyword">import</span> VectorstoreIndexCreator<br>index = VectorstoreIndexCreator(<br>	vectorstore_cls=DocArrayInMemorySearch<br>).from_loaders([loader])<br><br>query =<span class="hljs-string">"Please list all your shirts with sun protection in a table in markdown and summarize each one."</span><br>response = index.query(query)<br>display(Markdown(response))<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>背后：LLM已经学习的知识和没有学习过的文档结合。但是LLM一次交互，有固定的Context限制（例如tokens），那么一个文档如果很大，上面这种效果是怎么实现的呢？(LLM can only inspect a few thousand words at a time.)</li>
+<li>实现：Embeddings and Vector Storage，Embeddings可以讲文档抽象成向量，然后放入Vector Storage之后，本质上起到了“压缩”的作用，可以以更少或者更精炼的方式，和LLM进行交互。</li>
+<li>交互方式评估：<ul>
+<li>Stuffing is the simplest method.You simply stuff all data into the prompt as context to pass to the language model.</li>
+<li>Pros:It makes a single call to the LLM.The LLM has access to all the data at once.</li>
+<li>Cons: LLMs have a context length, and for large documents or many documents this will not work as it will result in a prompt larger than the context length.</li>
+</ul>
+</li>
+<li>多主题多文本交互方式<ul>
+<li>MapReduce：powerful，把文档拆细，进行分析然后再进行汇总，需要更多的调用。同时由于每个部分在MapReduce的过程中被当作是“独立”的，上下文关系不好被捕捉到。（并发，需要执行时间很短）</li>
+<li>Refine：循环处理多个文档，实际是基于迭代实现的。它基于前一个文档的答案进行构建，对于合并信息和逐步构建答案非常有用。通常会导致更长的答案。（需要时间更长，后面依赖于前面，是串行的）</li>
+<li>Map re-rank：有趣并且实验性的做法，可以为每个文档执行一次语言模型调用。还可以返回一个分数，根据分数做进一步的处理，例如选择最高分数的结果作为答案。对于这个评分机制，可能也要进行指定。（与MapReduce类似，所有调用都是独立的，并行度高，批处理，速度相对较快）</li>
+</ul>
+</li>
+</ul>
+<h2 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">from</span> dotenv <span class="hljs-keyword">import</span> load_dotenv, find_dotenv<br>_ = load_dotenv(find_dotenv())<span class="hljs-comment">#read local .env file</span><br><br><span class="hljs-keyword">from</span> langchain.chains <span class="hljs-keyword">import</span> RetrievalQA<br><span class="hljs-keyword">from</span> langchain.chat models <span class="hljs-keyword">import</span> ChatopenAI<br><span class="hljs-keyword">from</span> langchain.document_loaders <span class="hljs-keyword">import</span> CSVLoader<br><span class="hljs-keyword">from</span> langchain.indexes <span class="hljs-keyword">import</span> VectorstoreIndexCreator<br><span class="hljs-keyword">from</span> langchain.vectorstores <span class="hljs-keyword">import</span> DocArrayInMemorySearch<br><br>file <span class="hljs-string">'Outdoorclothingcatalog_1000.csv'</span><br>loader = CSVLoader(file_path=file)<br>data = loader<span class="hljs-number">.1</span>oad()<br>index = VectorstoreIndexcreator(<br>	vectorstore_cls=DocArrayInMemorySearch<br>).from_loaders([loader])<br><br>11m = ChatopenAI(temperature = <span class="hljs-number">0.0</span>)<br>qa = RetrievalQA.from_chain_type(<br>	11m=11m,<br>	chain_typem<span class="hljs-string">"stuff"</span>,<br>	retriever=index.vectorstore.as_retriever(),<br>	verbose=<span class="hljs-literal">True</span><br>	chain_type_kwargs = {<br>    <span class="hljs-string">"document_separator"</span>:<span class="hljs-string">"&lt;&lt;&lt;&lt;&gt;&gt;&gt;&gt;&gt;"</span><br>  }<br>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>利用LLM 自动化生成QA测试用例</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.evaluation.ga <span class="hljs-keyword">import</span> QAGeneratechain<br><br>example_gen_chain = QAGeneratechain.from_11m(ChatopenAI())<br>new_examples = example_gen_chain.apply_and_parse(<br>	[{<span class="hljs-string">"doc"</span>:t} <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> data[:<span class="hljs-number">5</span>]]<br>)<br><br><span class="hljs-built_in">print</span>(new_examples[<span class="hljs-number">0</span>])<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>see debug info</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> langchain<br><br>langchain.debug = <span class="hljs-literal">True</span><br>qa.run(examples[<span class="hljs-number">0</span>][<span class="hljs-string">'query'</span>])<br>predictions = qa.apply(examples)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>eval behaviors:</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.evaluation.ga <span class="hljs-keyword">import</span> QAEvalChain<br><br>11m = ChatopenAI(temperature=<span class="hljs-number">0</span>)<br>eval_chain = QAEvalchain.from_11m(11m)<br><br>graded_outputs = eval_chain.evaluate(examples,predictions)<br><br><span class="hljs-keyword">for</span> i, eg <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(examples):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Example (i):"</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Question:"</span>predictions[i][<span class="hljs-string">'query'</span>])<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Real Answer:"</span>predictions[i][<span class="hljs-string">'answer'</span>]<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Predicted Arlswer:"</span>predictions[i][<span class="hljs-string">'result'</span>]<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Predicted Grade:"</span>graded_outputs[i][<span class="hljs-string">'text'</span>]<br>    <span class="hljs-built_in">print</span>()<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="Agents"><a href="#Agents" class="headerlink" title="Agents"></a>Agents</h2><blockquote>
+<p>LangChain的框架，可以帮你实现Agent</p>
+</blockquote>
+<ul>
+<li>Math Example</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python">fros langchain.agents.agent toolkits <span class="hljs-keyword">import</span> create_python_agent<br><span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> load_tools,initialize_agent<br><span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> AgentType<br><span class="hljs-keyword">from</span> langehain.tools.python.tool <span class="hljs-keyword">import</span> PythonREPLTool<br><span class="hljs-keyword">from</span> langchain.python <span class="hljs-keyword">import</span> PythonREPL<br><span class="hljs-keyword">from</span> langchain.chat_models <span class="hljs-keyword">import</span> ChatOpenAPI<br><br>11m = ChatOpenAI(temperature=<span class="hljs-number">0</span>)<br>too1s = 1oad_tools([<span class="hljs-string">"11m-math"</span>,<span class="hljs-string">"wikipedia"</span>],11m=11m)<br>agent=initialize_agent(<br>  tools,<br>	11m,<br>	agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION,<br>	handle_parsing_errors=<span class="hljs-literal">True</span>,<br>  verbose = <span class="hljs-literal">True</span>)<br><br>agent(<span class="hljs-string">"what is the 25% of 300?"</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Wekipedia Example</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">question = <span class="hljs-string">"What's the contributions from Robert Morris?"</span><br>result = agent(question)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>python agent</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">agent = create_python_agent(<br>	llm,<br>  tool=PythonREPLTool(),<br>  verbose=<span class="hljs-literal">True</span><br>)<br><br>customer_1ist=[[<span class="hljs-string">"Harrison"</span>,<span class="hljs-string">"Chase"</span>],<br>	[<span class="hljs-string">"Lang"</span>,<span class="hljs-string">"Chain"</span>]]<br>agent.run(<span class="hljs-string">f"""Sort these customers by</span><br><span class="hljs-string">last name and then first name and print the output:<span class="hljs-subst">{customer_list}</span>"""</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Use Langchain debug to track，可以让你对于Agent底层的交互和执行流程有更深入的了解。</p>
+</blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">langchain.debug = <span class="hljs-literal">True</span><br><br>agent.run(<span class="hljs-string">f"""Sort these customers by</span><br><span class="hljs-string">last name and then first name and print the output:<span class="hljs-subst">{customer_list}</span>"""</span>)<br><br>langchain.debug = <span class="hljs-literal">False</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>上面介绍了官方的一些工具，我们如果系统使用自己的数据源和自己的工具去解决问题的话，有我们自己自定义的方法。</p>
+</blockquote>
+<ul>
+<li>自定义工具</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> tool<br><span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> date<br><br><span class="hljs-meta">@tool</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">time</span>(<span class="hljs-params">text:<span class="hljs-built_in">str</span></span>)-&gt;<span class="hljs-built_in">str</span>:<br>  <span class="hljs-string">"""Returns todays date,use this for any</span><br><span class="hljs-string">  questions related to knowing todays date.\</span><br><span class="hljs-string">  The input should always be an empty string,</span><br><span class="hljs-string">  and this function will always return todays</span><br><span class="hljs-string">  date any date mathmatics should occur</span><br><span class="hljs-string">  outside this function."""</span><br>	<span class="hljs-keyword">return</span> <span class="hljs-built_in">str</span>(date.today())<br><br>agent=initialize_agent(<br>  tools+[time],<br>  11m,<br>  agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION,<br>	handle_parsing_errors=<span class="hljs-literal">True</span>,<br>	verbose=<span class="hljs-literal">True</span>)<br><br>agent.run(<span class="hljs-string">"what's the date today?"</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+
+
+<h1 id="Diffusion-Model"><a href="#Diffusion-Model" class="headerlink" title="Diffusion Model"></a>Diffusion Model</h1><h2 id="Intuition"><a href="#Intuition" class="headerlink" title="Intuition"></a>Intuition</h2><ul>
+<li><p>You want a neural network to learn what a sprite is:</p>
+<ul>
+<li>Fine details</li>
+<li>General outlines</li>
+<li>Everything in between</li>
+</ul>
+</li>
+<li><p>The neural network learns to take different noisy images and turn them back into sprites. It learns to remove the noise you added.</p>
+</li>
+<li><p>The ‘No ldea”level of noise is important because it is <strong>normally distributed</strong>.</p>
+</li>
+<li><p>So,when you ask the neural network for a new sprite:</p>
+<ul>
+<li>You can sample noise from the normal distribution</li>
+<li>Get a completely new sprite by using the net to remove the noise</li>
+</ul>
+</li>
+<li><p>You can get even more sprites, beyond your training data.</p>
+</li>
+</ul>
+<h2 id="Sampling"><a href="#Sampling" class="headerlink" title="Sampling"></a>Sampling</h2><ul>
+<li>NN tries to fully preidct the noise at each step.</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311152157298.png" srcset="/img/loading.gif" lazyload alt="image-20231115215751105"></p>
+<blockquote>
+<p>But only predicting noise cannot removes all other noise. 具体步骤：从原始噪声样本中，减去了预测的噪声，并添加一些额外的噪声。</p>
+</blockquote>
+<ul>
+<li>More Code and analysis: <a target="_blank" rel="noopener" href="https://medium.com/@sergio.leal/how-diffusion-models-work-by-deeplearning-ai-recap-c66de2e19d71#:~:text=The%20ContextUnet%20class%20is%20defined,height%20(input%20image%20height).">“How Diffusion Models Work” by DeepLearning.AI Recap</a></li>
+</ul>
+<h2 id="UNet"><a href="#UNet" class="headerlink" title="UNet"></a>UNet</h2><ul>
+<li>相同尺寸的图片，产生预测的噪声</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311152208662.png" srcset="/img/loading.gif" lazyload alt="image-20231115220842565"></p>
+<blockquote>
+<p>特别之处：输入和输出的尺寸相同</p>
+</blockquote>
+<ul>
+<li>Embedding More Information: The UNet can take in more information in the form of embeddings.<ul>
+<li>Time embedding:related to the timestep and noise level.</li>
+<li>Context embedding:related to controlling the generation, e.g. text description or factor(more later).</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311152212423.png" srcset="/img/loading.gif" lazyload alt="image-20231115221206323"></p>
+<h2 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h2><ul>
+<li><p>NN learns to predict noise-really learns the distribution of what is not noise.</p>
+</li>
+<li><p>Sample random timestep(noise level)per image to train more stably.</p>
+</li>
+<li><p>Algorithm</p>
+<ul>
+<li>Sample training image.</li>
+<li>Sample timestep t.This determines the level of noise.</li>
+<li>Sample the noise.</li>
+<li>Add noise to image.</li>
+<li>Input this into the neural network.Neural network predicts the noise.</li>
+<li>Compute loss between predicted and true noise.</li>
+<li>Backprop learn!</li>
+</ul>
+</li>
+</ul>
+<h2 id="Controlling"><a href="#Controlling" class="headerlink" title="Controlling"></a>Controlling</h2><ul>
+<li><p>Embeddings(quick)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202311152220562.png" srcset="/img/loading.gif" lazyload alt="image-20231115222051454"></p>
+<p>Embedding vector captures meaning</p>
+</li>
+<li><p>通过嵌入不同的关键词，可以利用类似于独热编码的方式，去生成具备不同特征的图片。</p>
+</li>
+</ul>
+<h2 id="Speeding-Up"><a href="#Speeding-Up" class="headerlink" title="Speeding Up"></a>Speeding Up</h2><ul>
+<li>You want more images fast. But sampling is slow because:<ul>
+<li>There are many timesteps.</li>
+<li>Each timestep is dependent on the previous one (Markovian)</li>
+</ul>
+</li>
+<li>Many new <strong>samplers</strong> address this problem of speed.</li>
+<li>One is called DDIM:Denoising Diffusion Implicit Models (just the<br>paper namel)</li>
+<li>DDIM is faster because it skips timesteps.</li>
+<li>It predicts a rough idea of the final output and then refines it with the denoising process.</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1sW4y1Q7br?p=2&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">Andrew Ng LLM Prompt Vedio Link</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.promptingguide.ai/zh">Prompt Engineering Guide</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AI-Prompt Learning</div>
+      <div>https://alexanderliu-creator.github.io/2023/11/07/ai-prompt-learning/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年11月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/10/30/pku-zi-ran-bian-zheng-fa/" title="PKU-自然辩证法">
+                        <span class="hidden-mobile">PKU-自然辩证法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
