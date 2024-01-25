@@ -1,0 +1,4255 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="这里是大模型相关的内容，是Tsinghua和OpenBMB社区合办的课程昂！！！Talk is cheap, show me the code.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tsinghua OpenBMB NLP">
+<meta property="og:url" content="https://alexanderliu-creator.github.io/2023/12/07/tsinghua-openbmb-nlp/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="这里是大模型相关的内容，是Tsinghua和OpenBMB社区合办的课程昂！！！Talk is cheap, show me the code.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202312071946425.png">
+<meta property="article:published_time" content="2023-12-07T11:44:47.000Z">
+<meta property="article:modified_time" content="2024-01-24T01:19:13.554Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202312071946425.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Tsinghua OpenBMB NLP - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alexanderliu-creator.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Tsinghua OpenBMB NLP"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-07 19:44" pubdate>
+          2023年12月7日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          78k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          655 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Tsinghua OpenBMB NLP</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>这里是大模型相关的内容，是Tsinghua和OpenBMB社区合办的课程昂！！！Talk is cheap, show me the code.</p>
+<span id="more"></span>
+
+<h1 id="Outline"><a href="#Outline" class="headerlink" title="Outline"></a>Outline</h1><ul>
+<li>课程大纲：<ul>
+<li>Basic Knowledge of Big Models<ul>
+<li>L1-NLP Big Model Basics(GPU server,Linux,Bash,Conda,…)</li>
+<li>L2-Neural Network Basics(PyTorch)</li>
+<li>L3-Transformer and PLMs(Huggingface Transformers)</li>
+</ul>
+</li>
+<li>Key Technology of Big Models<ul>
+<li>L4-Prompt Tuning Delta Tuning (OpenPrompt,OpenDelta)</li>
+<li>L5-Efficient Training Model Compression(OpenBMB suite)</li>
+<li>L6-Big-Model-based Text understanding and generation</li>
+</ul>
+</li>
+<li>Interdisciplinary Application of Big Models<ul>
+<li>L7-Big Models X Biomedical Science</li>
+<li>L8-Big Models X Legal Intelligence</li>
+<li>L9-Big Models X Brain and Cognitive Science</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="L1-NLP-Basics"><a href="#L1-NLP-Basics" class="headerlink" title="L1 NLP Basics"></a>L1 NLP Basics</h1><ul>
+<li>NLP的一些任务:<ul>
+<li>词性标注：把一句话中每个词的词性标注出来</li>
+<li>句子中的命名实体识别：一句中的命名实体</li>
+<li>共指消解：代词和哪个实体是同一个对象</li>
+<li>句子中各种句法和依赖关系的识别</li>
+<li>中文分词</li>
+<li>text matching</li>
+<li>query engine</li>
+<li>知识图谱</li>
+<li>machine reading</li>
+<li>machine translation</li>
+<li>人机对话</li>
+<li>Personal Assistant</li>
+<li>Sentiment Analysis and Opinion Mining</li>
+<li>Computational Social Science<ul>
+<li>社会变迁</li>
+<li>心理变化</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="词的表示"><a href="#词的表示" class="headerlink" title="词的表示"></a>词的表示</h2><ul>
+<li><p>基本问题：词的表示</p>
+<ul>
+<li><p>让机器了解，词的表示，词的相似度计算。</p>
+</li>
+<li><p>让机器了解，词之间的语义关系。</p>
+</li>
+</ul>
+</li>
+<li><p>one-hot representation（词表）</p>
+<ul>
+<li>All the vectors are orthogonal. No natural notion of similarity for one-hot vectors</li>
+</ul>
+</li>
+<li><p>Use context words to represent current word.（用上下文去描述当前词）</p>
+<ul>
+<li>Increase in size with vocabulary</li>
+<li>Require a lot of storage</li>
+<li>Sparsity issues for those less frequent words -&gt; Subsequent classification models will be less robust</li>
+</ul>
+</li>
+<li><p>Word Embedding: Distributed Representation</p>
+<ul>
+<li>Build a dense vector for each word learned from large-scale text corpora</li>
+<li>Learning method: Word2Vec (We will learn it in the next class)</li>
+</ul>
+</li>
+</ul>
+<h2 id="语言模型"><a href="#语言模型" class="headerlink" title="语言模型"></a>语言模型</h2><ul>
+<li>两个能力<ul>
+<li>判断一系列词出现的联合概率。</li>
+<li>通过前文，去预测后文的单词。</li>
+</ul>
+</li>
+<li>Assumption: 后文概率只受前文概率的影响，单纯概率相乘法。</li>
+<li>N-gram Model:<ul>
+<li>简单统计，利用出现频度来进行预测（哪个越多，我就选这个）。马尔可夫假设！根据这个词之前有限的词去进行统计频度，并得出结果。</li>
+<li>Not considering contexts farther than 1 or 2 words</li>
+<li>Not capturing the similarity between words</li>
+</ul>
+</li>
+<li>Neural Language Model:<ul>
+<li>A neural language model is a language model based on neural networks to learn distributed representadons of words<ul>
+<li>Associate words with distributed vectors</li>
+<li>Compute the joint probability of word sequences in terms of the feature vectors</li>
+<li>Opbmize the word feature vectors (embedding matrix E) and the parameters of the loss funcbon (map matrix W)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="大模型"><a href="#大模型" class="headerlink" title="大模型"></a>大模型</h2><ul>
+<li>Why Big Models<ul>
+<li>Size up, data up, 性能和各种功能有显著提升。</li>
+<li>能力：<ul>
+<li>World Knowledge</li>
+<li>Common Sense</li>
+<li>Logical Reasoning</li>
+</ul>
+</li>
+<li>关注度也一直在往上走</li>
+</ul>
+</li>
+<li>Why LLM works: Large-scale Unlabeled Data(Model Pre-training) -&gt; Task-specific Training Data(Model Fine-tuning) -&gt; Data(Final Model)</li>
+<li>The basic paradigm of <strong>pre-training and fine-tuning</strong> can be traced back to <strong>transfer learning</strong> Humans can apply previously learned knowledge to handle new problems faster, and we want machines to have similar abilities.</li>
+<li>Prerequisites<ul>
+<li>GPU<ul>
+<li>You own</li>
+<li>Rent</li>
+<li>Use Google colab</li>
+</ul>
+</li>
+<li>SSH</li>
+<li>Linux command</li>
+<li>Vim</li>
+<li>Tmux</li>
+<li>Virtual environment &amp; conda &amp; pip</li>
+<li>Vscode + remote connection</li>
+<li>Git</li>
+<li>Bash</li>
+</ul>
+</li>
+</ul>
+<h1 id="L2-NN-Basics"><a href="#L2-NN-Basics" class="headerlink" title="L2 NN Basics"></a>L2 NN Basics</h1><ul>
+<li><p>Outline</p>
+<ul>
+<li><p>Neural Network Components</p>
+<ul>
+<li><p>Simple Neuron; Multilayer; Feedforward; Non-linear; … </p>
+</li>
+<li><p>How to Train</p>
+<ul>
+<li>Objective; Gradients; Backpropogation</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Word Representation: Word2Vec</p>
+<ul>
+<li>Common Neural Networks<ul>
+<li>RNN<ul>
+<li>Sequential Memory; Language Model</li>
+<li>Gradient Problem for RNN</li>
+<li>Variants: GRU; LSTM; Bidirectional;</li>
+</ul>
+</li>
+<li>CNN</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>NLP Pipeline Tutorial (PyTorch)</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="How-NN-works"><a href="#How-NN-works" class="headerlink" title="How NN works"></a>How NN works</h2><ul>
+<li><p>A single layer neural network: Hooking together many simple neurons. Multilayer Neural Network: Stacking multiple layers of neural networks.</p>
+</li>
+<li><p>Forward Propagation &amp; Backward Propagation.</p>
+</li>
+<li><p>Without non-linearities, deep neural networks cannot do anything more than a linear transform. Extra layers could just be compiled down into a single linear transform. With non-linearities, neural networks can approximate more complex functions with more layers!</p>
+</li>
+<li><p>Input -&gt; Hidden -&gt; Output, Output depends on the task:</p>
+<ul>
+<li><p>Linear output: 用于预测连续的值。</p>
+</li>
+<li><p>Sigmoid output: 把输出压到0-1之间，可以用于二分类问题。</p>
+</li>
+<li><p>Softmax output：多分类问题。</p>
+</li>
+</ul>
+</li>
+<li><p>Choices of non-linearities: Sigmoid, Tang, ReLU</p>
+</li>
+<li><p>Summary</p>
+<ul>
+<li>Simple neuron</li>
+<li>Single layer neural network</li>
+<li>Multilayer neural network<ul>
+<li>Stack multiple layers of neural networks</li>
+</ul>
+</li>
+<li>Non-linearity activation function<ul>
+<li>Enable neural nets to represent more complicated features</li>
+</ul>
+</li>
+<li>Output layer<ul>
+<li>For desired output</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Training-NN"><a href="#Training-NN" class="headerlink" title="Training NN"></a>Training NN</h2><ul>
+<li>损失函数: 均方误差函数（MSE），可以用于判定回归问题的拟合效果。</li>
+<li>损失函数: 交叉熵（Cross-entropy），可以用于判定模型对于多分类问题的正确率，衡量模型分类正确的负log概率。</li>
+<li>最小化损失函数：Stochastic Gradient Descent，梯度下降法。</li>
+<li>链式法则：用于神经网络中求梯度。</li>
+<li>Backpropagation<ul>
+<li>Compute gradients algorithmically</li>
+<li>Used by deep learning frameworks (TensorFlow, PyTorch, etc.) </li>
+<li>Computational Graphs: Representing our neural net equations as a graph<ul>
+<li>Source node: inputs</li>
+<li>Interior nodes: operations</li>
+<li>Edges pass along result of the operation</li>
+</ul>
+</li>
+<li>Go backwards along edges: Pass along gradients</li>
+<li>Single Node:<ul>
+<li>Node receives an “upstream gradient”</li>
+<li>Goal is to pass on the correct “downstream gradient”</li>
+</ul>
+</li>
+<li>Each node has a local gradient: The gradient of its output with respect to its input. [downstream gradient] = [upstream gradient] x [local gradient]</li>
+</ul>
+</li>
+<li>Summary:<ul>
+<li>Forward pass: compute results of operation and save intermediate values </li>
+<li>Backpropagation: recursively apply the chain rule along computational graph to compute gradients<ul>
+<li>[downstream gradient] = [upstream gradient] x [local gradient]</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="NN-Example-Word2Vec"><a href="#NN-Example-Word2Vec" class="headerlink" title="NN Example: Word2Vec"></a>NN Example: Word2Vec</h2><ul>
+<li><p>Word2vec uses shallow neural networks that associate words to distributed representations.</p>
+</li>
+<li><p>Typical Models: Word2vec can utilize two architectures to produce distributed representations of words:</p>
+<ul>
+<li>Continuous bag-of-words (CBOW)</li>
+<li>Continuous skip-gram</li>
+</ul>
+</li>
+<li><p>Sliding Window: </p>
+<ul>
+<li><p>Word2vec uses a sliding window of a fixed size moving along a sentence</p>
+</li>
+<li><p>In each window, the middle word is the target word, other words are the context words</p>
+<ul>
+<li>Given the context words, CBOW predicts the probabilities of the target word</li>
+<li>While given a target word, skip-gram predicts the probabilities of the context words</li>
+</ul>
+<blockquote>
+<p>一个是Context -&gt; Word，另外一个是Word -&gt; Context</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>Continuous Bag-of-Words</p>
+<ul>
+<li>In CBOW architecture, the model predicts the target word given a window of surrounding context words</li>
+<li>According to the bag-of-word <strong>assumption</strong>: The order of context words does not influence the prediction</li>
+</ul>
+</li>
+<li><p>Continuous Skip-Gram: In skip-gram architecture, the model predicts the context words from the target word</p>
+</li>
+<li><p>Problems of Full Softmax: When the vocabulary size is very large</p>
+<ul>
+<li>Softmax for all the words every step depends on a huge number of model parameters, which is computationally impractical</li>
+<li>We need to improve the computation efficiency</li>
+</ul>
+</li>
+<li><p>Improving Computational Efficiency</p>
+<ul>
+<li>In fact, we do not need a full probabilistic model in word2vec</li>
+<li>There are two main improvement methods for word2vec:<ul>
+<li>Negative sampling<ul>
+<li>As we discussed before, the vocabulary is very large, which means our model has a tremendous number of weights need to be updated every step</li>
+<li>The idea of negative sampling is, to only update a small percentage of the weights every step</li>
+<li>Then we can compute the loss, and optimize the weights (not all of the weights) every step</li>
+<li>Suppose we have a weight matrix of size 300×10,000, the output size is 5</li>
+<li>We only need to update 300×5 weights, that is only 0.05% of all the weights</li>
+</ul>
+</li>
+<li>Hierarchical softmax</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Other Tips for Learning Word Embeddings</p>
+<ul>
+<li>Sub-Sampling. 平衡常见词和罕见词出现的概率</li>
+<li>Soft sliding window：非固定的滑动窗口，随机采样一个范围中的词，作为window size</li>
+</ul>
+</li>
+</ul>
+<h2 id="RNN"><a href="#RNN" class="headerlink" title="RNN"></a>RNN</h2><ul>
+<li>Key concept for RNNs: Sequential memory during processing sequence data</li>
+<li>Definition: a mechanism that makes it easier for your brain to recognize sequence patterns</li>
+<li>RNNs update the sequential memory recursively for modeling sequence data</li>
+<li>Application Scenarios<ul>
+<li>Sequence Labeling<ul>
+<li>Given a sentence, the lexical properties of each word are required</li>
+</ul>
+</li>
+<li>Sequence Prediction<ul>
+<li>Given the temperature for seven days a week, predict the weather conditions for each day</li>
+</ul>
+</li>
+<li>Photograph Description<ul>
+<li>Given a photograph, create a sentence that describes the photograph</li>
+</ul>
+</li>
+<li>Text Classification<ul>
+<li>Given a sentence, distinguish whether the sentence has a positive or negative emotion</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Advantages &amp; Disadvantages<ul>
+<li>Advantages<ul>
+<li>Can process any length input</li>
+<li>Model size does not increase for longer input</li>
+<li>Weights are shared across timesteps</li>
+<li>Computation for step i can (in theory) use information from many steps back</li>
+</ul>
+</li>
+<li>Disadvantages<ul>
+<li>Recurrent computation is slow</li>
+<li>In practice, it’s difficult to access information from many steps back.</li>
+<li>Gradient vanish or explode</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="GRU"><a href="#GRU" class="headerlink" title="GRU"></a>GRU</h2><ul>
+<li><p>Introduce gating mechanism into RNN</p>
+<ul>
+<li>Update gate</li>
+<li>Reset gate</li>
+</ul>
+<blockquote>
+<p>Gates are used to balance the influence of the past and the input</p>
+</blockquote>
+</li>
+<li><p>If reset is close to 0. Ignore previous hidden state, which indicates the current activation is irrelevant to the past.</p>
+</li>
+<li><p>Update gate controls how much of past state should matter compared to the current activation.</p>
+</li>
+</ul>
+<h2 id="LSTM"><a href="#LSTM" class="headerlink" title="LSTM"></a>LSTM</h2><ul>
+<li><p>Long Short-Term Memory network (LSTM) . LSTM is a special kind of RNN, capable of learning long-term dependencies like GRU</p>
+</li>
+<li><p>cell state <code>t</code></p>
+<ul>
+<li>Extra vector for capturing long-term dependency</li>
+<li>Runs straight through the entire chain, with only some minor linear interactions</li>
+<li>Easy to remove or add information to the cell state</li>
+</ul>
+</li>
+<li><p>Steps:</p>
+<ul>
+<li>The first step is to decide what information to throw away from the cell state: forget gate</li>
+<li>The next step is to decide what information to store in the cell state</li>
+<li>Update the old cell state. Combine the results from the previous two steps.</li>
+<li>The final step is to decide what information to output -&gt; Adjust the sentence information for a specific word representation.</li>
+</ul>
+</li>
+<li><p>Powerful especially when stacked and made even deeper (each hidden layer is already computed by a deep internal network) . Very useful if you have plenty of data.</p>
+</li>
+</ul>
+<h2 id="Bidirectional-RNNs"><a href="#Bidirectional-RNNs" class="headerlink" title="Bidirectional RNNs"></a>Bidirectional RNNs</h2><ul>
+<li><p>In traditional RNNs, the state at time t only captures information from the past. Problem: in many applications, we want to have an output depending on the whole input sequence. E.g. handwriting recognition &amp; speech recognition</p>
+</li>
+<li><p>Recurrent Neural Network</p>
+<ul>
+<li>Sequential Memory</li>
+<li>Gradient Problem for RNN</li>
+</ul>
+</li>
+<li><p>RNN Variants</p>
+<ul>
+<li>Gated Recurrent Unit (GRU)</li>
+<li>Long Short-Term Memory Network (LSTM)</li>
+<li>Bidirectional Recurrent Neural Network</li>
+</ul>
+</li>
+</ul>
+<h2 id="CNN"><a href="#CNN" class="headerlink" title="CNN"></a>CNN</h2><ul>
+<li>Convolutional Neural Networks<ul>
+<li>Generally used in Computer Vision</li>
+<li>Achieve promising results in a variety of NLP tasks:<ul>
+<li>Sentiment classification</li>
+<li>Relation classification</li>
+</ul>
+</li>
+<li>CNNs are good at extracting local and positioninvariant patterns</li>
+</ul>
+</li>
+<li>CNNs extract patterns by:<ul>
+<li>Computing representations for all possible n-gram phrases in a sentence. </li>
+<li>Without relying on external linguistic tools (e.g., dependency parser)</li>
+</ul>
+</li>
+<li>Architecture: Input Layer -&gt; Convolutional Layer -&gt; Max-pooling Layer -&gt; Non-linear Layer</li>
+<li>Input Layer: Transform words into input representations x via word embeddings</li>
+<li>Extract feature representation from input representation via a sliding convolving filter.</li>
+<li>Application Scenarios: Object Detection, Video Classification, Speech Recognition, Text Classification</li>
+<li>CNN vs RNN<ul>
+<li>CNN:<ul>
+<li>Extracting local and position-invariant features </li>
+<li>Less parameters</li>
+<li>Better parallelization within sentences</li>
+</ul>
+</li>
+<li>RNN:<ul>
+<li>Modeling long-range context dependency </li>
+<li>More parameters</li>
+<li>Cannot be parallelized within sentences</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Pytorch-Demo"><a href="#Pytorch-Demo" class="headerlink" title="Pytorch Demo"></a>Pytorch Demo</h2><ul>
+<li><p>Pipeline for Deep Learning: prepare data -&gt; build model -&gt; train model -&gt; evaluate model -&gt; test model</p>
+</li>
+<li><p>Context</p>
+<ul>
+<li>target: to predict next word<ul>
+<li>input: never too old to learn</li>
+<li>output: too old to learn English</li>
+</ul>
+</li>
+<li>model: LSTM</li>
+<li>loss: cross_entropy</li>
+</ul>
+</li>
+</ul>
+<h1 id="L3-Transformer-and-PLM"><a href="#L3-Transformer-and-PLM" class="headerlink" title="L3 Transformer and PLM"></a>L3 Transformer and PLM</h1><ul>
+<li>Transformer<ul>
+<li>Attention Mechanism</li>
+<li>Transformer Structure</li>
+</ul>
+</li>
+<li>Pretrained Language Models<ul>
+<li>Language Modeling</li>
+<li>Pre-trained Langue Models (PLMs)</li>
+<li>Fine-tuning Approaches</li>
+<li>PLMs after BERT</li>
+<li>Applications of Masked LM</li>
+<li>Frontiers of PLMs</li>
+</ul>
+</li>
+<li>Transformers Tutorial<ul>
+<li>Introduction</li>
+<li>Frequently-used APIs</li>
+<li>Quick Start</li>
+<li>Demo</li>
+</ul>
+</li>
+</ul>
+<h2 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h2><h3 id="Attention-Machanism"><a href="#Attention-Machanism" class="headerlink" title="Attention Machanism"></a>Attention Machanism</h3><ul>
+<li><p>The Bottleneck Problem</p>
+<ul>
+<li>The single vector of source sentence encoding needs to capture all information about the source sentence</li>
+<li>The single vector limits the representation capacity of the encoder: the information bottleneck</li>
+</ul>
+</li>
+<li><p>Attention</p>
+<ul>
+<li>Attention provides a solution to the bottleneck problem</li>
+<li>Core idea: at each step of the decoder, focus on a particular part of the source sequence</li>
+</ul>
+</li>
+<li><p>A more general definition of attention: Given a query vector and a set of value vectors, the attention technique computes a weighted sum of the values according to the query</p>
+</li>
+<li><p>Intuition: </p>
+<ul>
+<li>Based on the query, the weighted sum is a selective summary of the values.</li>
+<li>We can obtain a fixed-size representation of an arbitrary set of representations via the attention mechanism.</li>
+</ul>
+</li>
+<li><p>Attention Variants： Attention has a lot of variants.</p>
+</li>
+<li><p>Insights:</p>
+<ul>
+<li>Attention solves the bottleneck problem: The decoder could directly look at source </li>
+<li>Attention helps with vanishing gradient problem: By providing shortcuts to long-distance states</li>
+<li>Attention provides some interpretability:<ul>
+<li>We can find out what the decoder was focusing on by the attention map:</li>
+<li>Attention allows the network to align relevant words</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Transformer-Structure"><a href="#Transformer-Structure" class="headerlink" title="Transformer Structure"></a>Transformer Structure</h3><ul>
+<li>Motivations<ul>
+<li>Sequential computation in RNNs prevents parallelization</li>
+<li>Despite using GRU or LSTM, RNNs still need attention mechanism which provides access to anuuiy state</li>
+<li>Maybe we do not need RNNs? -&gt; Attention is all you need</li>
+</ul>
+</li>
+<li>Transformer <ul>
+<li>Architecture: encoder-decoder</li>
+<li>Input: byte pair encoding + positional encoding</li>
+<li>Model: stack of several encoder/decoder blocks</li>
+<li>Output: probability of the translated word</li>
+<li>Loss function: standard crossentropy loss over a softmax layer</li>
+</ul>
+</li>
+</ul>
+<h4 id="Input"><a href="#Input" class="headerlink" title="Input"></a>Input</h4><ul>
+<li><p>Byte Pair Encoding (BPE)</p>
+<ul>
+<li>A word segmentation algorithm</li>
+<li>Start with a vocabulary of characters</li>
+<li>Turn the most frequent n-gram to a new n-gram</li>
+</ul>
+</li>
+<li><p>Byte Pair Encoding (BPE)</p>
+<ul>
+<li>Solve the OOV (out of vocabulary) problem by encoding rare and unknown words as sequences of subword units</li>
+<li>In the example above, the OOV word “lowest” would be segmented into “low est”</li>
+<li>The relation between “low” and “lowest” can be generalized to “smart” and “smartest”</li>
+</ul>
+</li>
+<li><p>Positional Encoding</p>
+<ul>
+<li>Byte Pair Encoding (BPE): Dimension: d</li>
+<li>Positional Encoding (PE): The Transformer block is not sensitive to the same words with different positions</li>
+</ul>
+</li>
+<li><p>Input = BPE + PE</p>
+</li>
+</ul>
+<h4 id="Encoder-Block"><a href="#Encoder-Block" class="headerlink" title="Encoder Block"></a>Encoder Block</h4><ul>
+<li>Two sublayers<ul>
+<li>Multi-Head Attention</li>
+<li>Feed-Forward Network (2-layer MLP)</li>
+</ul>
+</li>
+<li>Two tricks<ul>
+<li>Residual connection</li>
+<li>Layer normalization<ul>
+<li>Changes input to have mean 0 and variance 1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>General Dot-Product Attention</li>
+<li>Inputs<ul>
+<li>A query q and a set of key-value (k, v) pairs</li>
+<li>Queries and keys are vectors with dimension</li>
+<li>Values are vectors with dimension</li>
+</ul>
+</li>
+<li>Output<ul>
+<li>Weighted sum of values</li>
+<li>Weight of each value is computed by the dot product of the query and corresponding key</li>
+<li>stack multiple queries q in a matrix Q</li>
+</ul>
+</li>
+<li>Scaled Dot-Product Attention<ul>
+<li>Problem<ul>
+<li>梯度可能会越来越小，模型更新慢</li>
+<li>The softmax gets very peaked; Gradient gets smaller</li>
+</ul>
+</li>
+<li>Solution<ul>
+<li>Scale by the length of the query/key vectors</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Self-attention<ul>
+<li>Let the word vectors themselves select each other</li>
+<li>Q, K, V are derived from the stack of word vectors from a sentence</li>
+</ul>
+</li>
+<li>Multi-head Attention<ul>
+<li>Different head: same computation component &amp; different parameters</li>
+<li>Concatenate all outputs and feed into the linear layer</li>
+</ul>
+</li>
+<li>Two sublayers<ul>
+<li>Multi-head attention</li>
+<li>2-layer feed-forward network</li>
+</ul>
+</li>
+<li>Two tricks<ul>
+<li>Residual connection</li>
+<li>Layer normalization<ul>
+<li>Changes input to have mean 0 and variance 1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>In each layer, Q, K, V are the same as the previous layer’s output</li>
+</ul>
+<h4 id="Decoder-Block"><a href="#Decoder-Block" class="headerlink" title="Decoder Block"></a>Decoder Block</h4><ul>
+<li>Two changes:<ul>
+<li>Masked self-attention: The word can only look at previous words</li>
+<li>Encoder-decoder attention: Queries come from the decoder while keys and values come from the encoder</li>
+<li>Blocks are also repeated 6 times</li>
+</ul>
+</li>
+<li>Other tricks<ul>
+<li>Checkpoint averaging</li>
+<li>ADAM optimizer</li>
+<li>Dropout during training at every layer just before adding residual</li>
+<li>Label smoothing</li>
+<li>Auto-regressive decoding with beam search and length penalties</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://poloclub.github.io/dodrio/">Multi-head Demo</a></li>
+</ul>
+<h3 id="Summary-of-Transformer"><a href="#Summary-of-Transformer" class="headerlink" title="Summary of Transformer"></a>Summary of Transformer</h3><ul>
+<li>Advantage:<ul>
+<li>The Transformer is a powerful model and proven to be effective in many NLP tasks</li>
+<li>The Transformer is suitable for parallelization</li>
+<li>It proves the effectiveness of the attention mechanism</li>
+<li>It also gives insights to recent NLP advancements such as BERT and GPT</li>
+</ul>
+</li>
+<li>Disadvantage:<ul>
+<li>The architecture is hard to optimize and sensitive to model modifications</li>
+<li>$O(n^2)$ per-layer complexity makes it hard to be used on extremely long document (usually set max length to be 512)</li>
+</ul>
+</li>
+</ul>
+<h2 id="PLM"><a href="#PLM" class="headerlink" title="PLM"></a>PLM</h2><ul>
+<li>Language Modeling</li>
+<li>Pre-trained Langue Models (PLMs)</li>
+<li>Fine-tuning Approaches<ul>
+<li>GPT and BERT</li>
+</ul>
+</li>
+<li>PLMs after BERT</li>
+<li>Applications of Masked LM<ul>
+<li>Cross-lingual and Cross-modal LM Pre-training</li>
+</ul>
+</li>
+<li>Frontiers of PLMs<ul>
+<li>GPT-3, T5 and MoE</li>
+</ul>
+</li>
+</ul>
+<h3 id="LM"><a href="#LM" class="headerlink" title="LM"></a>LM</h3><ul>
+<li>Language Modeling is the task of predicting the upcoming word</li>
+<li>Language Modeling: the most basic and important NLP task</li>
+<li>Contain a variety of knowledge for language understanding, e.g., linguistic knowledge and factual knowledge</li>
+<li>Only require the plain text without any human annotations</li>
+<li>The language knowledge learned by language models can be <strong>transferred</strong> to other NLP tasks easily</li>
+<li>There are three representative models for transfer learning of NLP<ul>
+<li>Word2vec</li>
+<li>Pre-trained RNN</li>
+<li>GPT&amp;BERT</li>
+</ul>
+</li>
+</ul>
+<h3 id="PLM-1"><a href="#PLM-1" class="headerlink" title="PLM"></a>PLM</h3><ul>
+<li>We have mentioned several PLMs in the last section: word2vec, GPT, BERT, …</li>
+<li>PLMs: language models having powerful <strong>transferability</strong> for other NLP tasks</li>
+<li>word2vec is the first PLM</li>
+<li>Nowadays, the PLMs based on Transformers are very popular (e.g. BERT)</li>
+<li>Two Mainstreams of PLMs<ul>
+<li>Feature-based approaches<ul>
+<li>The most representative model of feature-based approaches is word2vec</li>
+<li>Use the outputs of PLMs as the inputs of our downstream models</li>
+</ul>
+</li>
+<li>Fine-tuning approaches<ul>
+<li>The most representative model of fine-tuning approaches is BERT.</li>
+<li>The language models will also be the downstream models and their parameters will be updated</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="GPT"><a href="#GPT" class="headerlink" title="GPT"></a>GPT</h3><ul>
+<li><p>GPT-1:</p>
+<ul>
+<li><p>Inspired by the success of Transformers in different NLP tasks, GPT is the first work to pre-train a PLM based on Transformer</p>
+</li>
+<li><p>Transformer + left-to-right LM</p>
+</li>
+<li><p>Fine-tuned on downstream tasks</p>
+</li>
+</ul>
+</li>
+<li><p>GPT-2:</p>
+<ul>
+<li>A huge Transformer LM</li>
+<li>Trained on 40GB of text</li>
+<li>SOTA perplexities on datasets it’s not even trained on</li>
+</ul>
+</li>
+<li><p>More than LM</p>
+<ul>
+<li>Zero-Shot Learning: Ask LM to generate from a prompt</li>
+<li>Reading Comprehension</li>
+<li>Summarization</li>
+<li>Question Answering</li>
+</ul>
+</li>
+<li><p>A very powerful generative model</p>
+</li>
+<li><p>Also achieve very good transfer learning results on downstream tasks</p>
+<ul>
+<li>Outperform ELMo significantly</li>
+</ul>
+</li>
+<li><p>The key to success</p>
+<ul>
+<li>Big data (Large unsupervised corpus)</li>
+<li>Deep neural model (Transformer)</li>
+</ul>
+</li>
+</ul>
+<h3 id="Bert"><a href="#Bert" class="headerlink" title="Bert"></a>Bert</h3><ul>
+<li><p>Problem: Language models only use left context or right context, but language understanding is bidirectional</p>
+</li>
+<li><p>Why are LMs unidirectional</p>
+<ul>
+<li>Reason 1: Directionality is needed to generate a wellformed probability distribution</li>
+<li>Reason 2: Words can “see themselves” in a bidirectional encoder</li>
+</ul>
+</li>
+<li><p>Unidirectional vs.Bidirectional Models</p>
+<ul>
+<li>Unidirectional context: Build representation incrementally</li>
+<li>Bidirectional context: Words can “see themselves</li>
+</ul>
+</li>
+<li><p>Solution: Mask out k% of the input words, and then predict the masked words. k=15% in BERT</p>
+<ul>
+<li>Too little masking: too expensive to train</li>
+<li>Too much masking: not enough context</li>
+</ul>
+</li>
+<li><p>Masked LM</p>
+<ul>
+<li>Problem: [Mask] token never seen at fine-tuning</li>
+<li>Solution: 15% of the words to predict</li>
+<li>80% of the time, replace with [MASK] <ul>
+<li>went to the store → went to the [MASK]</li>
+</ul>
+</li>
+<li>10% of the time, replace with a random word <ul>
+<li>went to the store → went to the running</li>
+</ul>
+</li>
+<li>10% of the time, keep the same went to the store → went to the store</li>
+</ul>
+</li>
+<li><p>Next Sentence Prediction</p>
+<ul>
+<li>To learn relationships between sentences, predict whether Sentence B is the actual sentence that proceeds Sentence A, or just a random sentence</li>
+<li>Input Representation<ul>
+<li>Use 30,000 WordPiece vocabulary on input.</li>
+<li>Each token is the sum of three embeddings</li>
+<li>Single sequence is much more efficient.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Effect of Pre-training Task:</p>
+<ul>
+<li>Masked LM (compared to left-to-right LM) is very important on some tasks</li>
+<li>Next Sentence Prediction is important for other tasks</li>
+</ul>
+</li>
+<li><p>Effect of Model Size</p>
+<ul>
+<li>Big models help a lot</li>
+<li>Going from 110M -&gt; 340M params helps even on datasets with 3,600 labeled examples</li>
+</ul>
+</li>
+<li><p>Empirical results from BERT are great, but biggest impact on the field is: With pre-training, bigger == better, without clear limits (so far)</p>
+</li>
+<li><p>Excellent performance for researchers and companies building NLP systems</p>
+</li>
+</ul>
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><ul>
+<li><p>Feature-based approaches transfer the contextualized word embeddings for downstream tasks</p>
+</li>
+<li><p>Fine-tuning approaches transfer the whole model for downstream tasks</p>
+</li>
+<li><p>Experimental results show that fine-tuning approaches are better than feature-based approaches</p>
+</li>
+<li><p>Hence, current research mainly focuses on fine-tuning approaches </p>
+</li>
+<li><p>Is BERT really perfect?</p>
+<ul>
+<li>Any optimized pre-training paradigm?</li>
+<li>The gap between pre-training and fine-tuning<ul>
+<li>[MASK] token will not appear in fine-tuning • The efficiency of Masked Language Model</li>
+</ul>
+</li>
+<li>Only predict 15% words</li>
+</ul>
+</li>
+<li><p>RoBERTa</p>
+<ul>
+<li>Explore several pre-training approaches for a more robust BERT<ul>
+<li>Dynamic Masking</li>
+<li>Model Input Format</li>
+<li>Next Sentence Prediction</li>
+<li>Training with Large Batches</li>
+<li>Text Encoding</li>
+</ul>
+</li>
+<li>Massive experiments</li>
+</ul>
+</li>
+<li><p>ELECTRA</p>
+<ul>
+<li>Recall: the efficiency of bi-directional pre-training<ul>
+<li>Masked LM: 15% prediction</li>
+<li>Premutation LM: 1/6~1/7 prediction</li>
+</ul>
+</li>
+<li>Traditional LM: 100% prediction<ul>
+<li>Single direction</li>
+</ul>
+</li>
+<li>Replaced Token Detection<ul>
+<li>A new bi-directional pre-training task</li>
+<li>100% prediction</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="MLM"><a href="#MLM" class="headerlink" title="MLM"></a>MLM</h2><ul>
+<li>Basic idea: to use bi-direction information to predict the target token</li>
+<li>Beyond token: use multi-modal or multi-lingual information together by masking</li>
+<li>Input the objects from different domains together and predict the target object based on the input objects</li>
+</ul>
+<h3 id="Cross-lingual-LM-Pre-training"><a href="#Cross-lingual-LM-Pre-training" class="headerlink" title="Cross-lingual LM Pre-training"></a>Cross-lingual LM Pre-training</h3><ul>
+<li>Translation Language Modeling (TLM)</li>
+<li>The TLM objective extends MLM to pairs of parallel sentences (e.g., English-French)</li>
+<li>To predict a masked English word, the model can attend to both the English sentence and its French translation, and is encouraged to align English and French representations.</li>
+<li>The translation language modeling (TLM) objective improves cross-lingual language model pretraining by leveraging parallel data</li>
+</ul>
+<h3 id="Cross-Modal-LM-Pre-training"><a href="#Cross-Modal-LM-Pre-training" class="headerlink" title="Cross-Modal LM Pre-training"></a>Cross-Modal LM Pre-training</h3><ul>
+<li>Pairs of videos and texts from automatic speech recognition (ASR)</li>
+<li>Generate a sequence of “visual words” by applying hierarchical vector quantization to features derived from the video using a pre-trained model</li>
+<li>Encourages the model to focus on high-level semantics and longer-range temporal dynamics in the video</li>
+</ul>
+<h3 id="Summary-1"><a href="#Summary-1" class="headerlink" title="Summary"></a>Summary</h3><ul>
+<li>Masked LM inspired a variety of new pre-training tasks</li>
+<li>What’s your idea about transferring Masked LM?</li>
+</ul>
+<h2 id="Frontiers"><a href="#Frontiers" class="headerlink" title="Frontiers"></a>Frontiers</h2><h3 id="GPT-3"><a href="#GPT-3" class="headerlink" title="GPT-3"></a>GPT-3</h3><ul>
+<li><p>A super large-scale PLM</p>
+</li>
+<li><p>Excellent few-shot/in-context learning ability</p>
+</li>
+<li><p>GPT-3: Doesn’t know when to say “I do not know”</p>
+</li>
+<li><p>T5</p>
+<ul>
+<li><p>Reframe all NLP tasks into a unified text-to-text-format where the input and output are always text strings</p>
+</li>
+<li><p>Encoder-decoder architecture</p>
+</li>
+</ul>
+</li>
+<li><p>Larger Model with MoE</p>
+<ul>
+<li>Enhance encoder-decoder with MoE (Mixture of Experts) for billions of parameters</li>
+<li>Gshard 600B parameters</li>
+<li>Switch Transformer 1,571B parameters</li>
+</ul>
+</li>
+</ul>
+<h3 id="Summary-2"><a href="#Summary-2" class="headerlink" title="Summary"></a>Summary</h3><ul>
+<li>The technique of PLMs is very important for NLP (from word2vec to BERT).</li>
+<li>Fine-tuning approaches are widely used after BERT.</li>
+<li>The idea of Masked LM inspired the research on unsupervised learning.</li>
+<li>Consider PLMs first when you plan to construct a new NLP system.</li>
+</ul>
+<h2 id="Transformers-Tutorial"><a href="#Transformers-Tutorial" class="headerlink" title="Transformers Tutorial"></a>Transformers Tutorial</h2><h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><ul>
+<li><p>Various pre-trained language models are being proposed</p>
+</li>
+<li><p>Introduction</p>
+<ul>
+<li>Various pre-trained language models are being proposed</li>
+<li>Is there any package that helps us:<ul>
+<li>Reproduce the results easily</li>
+<li>Deploy the models quickly</li>
+<li>Customize your models freely</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Hugging Face:</p>
+<ul>
+<li>Transformers is a package: <ul>
+<li>Providing thousands of models</li>
+<li>Supporting PyTorch, TensorFlow, JAX</li>
+<li>Hosting pre-trained models for text, audio and vision</li>
+</ul>
+</li>
+<li>Fairly easy to use. Low barrier to entry for researchers.</li>
+<li>Almost all the researches on pre-trained models are built on Transformers!</li>
+</ul>
+</li>
+</ul>
+<h3 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h3><ul>
+<li>I want to directly use the off-the-shelf model on down-stream tasks -&gt; Use pipeline!</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> pipeline<br>classifier = pipeline(<span class="hljs-string">'sentiment-analysis'</span>)<br>classifier(<span class="hljs-string">'I love you! '</span>)<br><br><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> pipeline<br>question_answerer = pipeline(<span class="hljs-string">'question-answering'</span>)<br>question_answerer({<br>	<span class="hljs-string">'question'</span>: <span class="hljs-string">'What is the name of the repository ?’,</span><br><span class="hljs-string">	'</span>context<span class="hljs-string">': '</span>Pipeline has been included <span class="hljs-keyword">in</span> the huggingface transformers repository<span class="hljs-string">'</span><br><span class="hljs-string">})</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>Pipeline automatically uses a fine-tuned model and perform the downstream task.</p>
+</blockquote>
+<h3 id="Tokenization"><a href="#Tokenization" class="headerlink" title="Tokenization"></a>Tokenization</h3><ul>
+<li>Pre-trained language models have different tokenization<ul>
+<li>BPE (Byte-Pair Encoding): GPT, Roberta, …</li>
+<li>WordPiece: BERT, Electra, …</li>
+<li>SentencePiece: ALBERT, T5, …</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoTokenizer<br>tokenizer = AutoTokenizer.from_pretrained(<span class="hljs-string">'bert-base-uncased'</span>)<br>inputs = tokenizer(<span class="hljs-string">"I love you."</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>The tokenizer automatically uses the tokenization strategy of the given model to tokenize your text.</p>
+</blockquote>
+<h3 id="Frequently-used-APIs"><a href="#Frequently-used-APIs" class="headerlink" title="Frequently-used APIs"></a>Frequently-used APIs</h3><ul>
+<li>Load the pre-trained models in a few lines</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoTokenizer, AutoModelForSequenceClassification<br>tokenizer = AutoTokenizer.from_pretrained(<span class="hljs-string">'bert-base-uncased'</span>)<br>model = AutoModelForSequenceClassification.from_pretrained(<span class="hljs-string">'bert-baseuncased'</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Tokenize the texts</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">inputs = tokenizer(”Hello World!”, return_tensors=<span class="hljs-string">'pt'</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Run the model</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">outputs = model(**inputs)<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Save the fine-tuned model in one line</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">model.save_pretrained(<span class="hljs-string">"path_to_save_model"</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>from_pretrained也可以把这个预训练模型提取出来。</p>
+</blockquote>
+<ul>
+<li>Train the model with Trainer</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">trainer = Trainer(<br>  model,<br>  args,<br>  train_dataset=encoded_dataset[<span class="hljs-string">"train"</span>],<br>  eval_dataset=encoded_dataset[<span class="hljs-string">"validation"</span>],<br>  tokenizer=tokenizer,<br>  compute_metrics=compute_metrics<br>)<br>trainer.train() <span class="hljs-comment"># Start training!</span><br>trainer.evaluate()<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h3><ul>
+<li>We have provided a demo, which fine-tunes BERT for sentiment analysis task.</li>
+<li>You will be able to use Transformers after going through this demo.</li>
+<li>See <a target="_blank" rel="noopener" href="https://colab.research.google.com/drive/1tcDiyHIKgEJp4TzGbGp27HYbdFWGolU_?usp=sharing">https://colab.research.google.com/drive/1tcDiyHIKgEJp4TzGbGp27HYbdFWGolU_?usp=sharing</a>, video is: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1UG411p7zv?p=40">https://www.bilibili.com/video/BV1UG411p7zv?p=40</a></li>
+</ul>
+<h1 id="L4-Prompt-Delta"><a href="#L4-Prompt-Delta" class="headerlink" title="L4 Prompt Delta"></a>L4 Prompt Delta</h1><ul>
+<li>Background &amp; Overview</li>
+<li>Prompt -learning<ul>
+<li>Template</li>
+<li>Verbalizer</li>
+<li>Learning Strategy</li>
+<li>Applications</li>
+</ul>
+</li>
+<li>Delta Tuning<ul>
+<li>Addition -based Methods</li>
+<li>Specification -based Methods</li>
+<li>Reparameterization -based Methods</li>
+<li>Advanced Topics</li>
+</ul>
+</li>
+<li>OpenPrompt</li>
+<li>OpenDelta</li>
+<li>Pre-trained Language Models are Infrastructure in NLP. There are Plenty of NLP tasks. How to adapt PLMs to them?</li>
+</ul>
+<h2 id="Fine-Tuning"><a href="#Fine-Tuning" class="headerlink" title="Fine Tuning"></a>Fine Tuning</h2><ul>
+<li><p>Example: BERT</p>
+<ul>
+<li>Token representations for sequence tagging</li>
+<li>[CLS] for text classification</li>
+<li>Feed appropriate representations to output layers</li>
+</ul>
+</li>
+<li><p>Example: Relation Extraction</p>
+<ul>
+<li>Extract the relation between two marked entities</li>
+</ul>
+</li>
+<li><p>Example: GPT </p>
+<ul>
+<li>Feed the last hidden state to a linear output layer</li>
+</ul>
+</li>
+<li><p>Example: T5</p>
+<ul>
+<li>Encoder-decoder with 11 billion parameters</li>
+<li>Cast tasks to <strong>seq2seq</strong> manner with simple demonstrations</li>
+<li>A decoder is trained to output the desired tokens</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>不同的下游任务的分类器之类的东西 -&gt; seq2seq的任务 + 一点合适的demonstration, labels</p>
+</blockquote>
+<ul>
+<li>When it Comes to GPT-3<ul>
+<li>Huge model with 175 billion parameters</li>
+<li><strong>No parameters are updated at all</strong></li>
+<li>Descriptions (Prompts) + Few-shot examples to generate tokens</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>不去微调模型了，第一次提出了prompt的概念。in-context learning，few show/zero shot，通过prompt去让大模型微调 or 学习。</p>
+</blockquote>
+<ul>
+<li><p>An Irreversible Trend: Model Scaling, Larger PLMs Tend to Lead Better Performance.</p>
+<ul>
+<li>Better natural language understanding capability</li>
+<li>Better quality for natural language generation</li>
+<li>Better capacity to continually learn novel knowledge</li>
+</ul>
+</li>
+<li><p>An Irreversible Trend: Difficult Tuning. How to Adapt Large-scale PLMs?</p>
+<ul>
+<li>A Predominant Way — Fine-tuning</li>
+<li>Prohibitive Computing: update all the parameters;</li>
+<li>Prohibitive Storage: retaining separate instances for different tasks;</li>
+<li>Poor generalization with supervision is insufficient</li>
+<li>Results in scarce use for large-scale PLMs in research</li>
+</ul>
+</li>
+<li><p>Advanced Model Adaptation, Effective Model Adaptation.</p>
+<ul>
+<li>Task&amp;Data-wise: Use <strong>prompt-learning</strong> to enhance the few-shot learning capability by bridging the gap between model tuning and pre-training.</li>
+<li>Optimization-wise: Use <strong>delta tuning</strong> to stimulate models with billions of parameters with optimization of a small portion of parameters.</li>
+</ul>
+</li>
+</ul>
+<h2 id="Prompt-learning"><a href="#Prompt-learning" class="headerlink" title="Prompt-learning"></a>Prompt-learning</h2><ul>
+<li><p>Fine-turing</p>
+<ul>
+<li>Use PLMs as base encoders</li>
+<li>Add additional neural layers for specific tasks</li>
+<li>Tune all the parameters</li>
+<li>There is a <strong>GAP</strong> between pre-training and fine-tuning</li>
+</ul>
+</li>
+<li><p>Prompt-learning</p>
+<ul>
+<li>Use PLMs as base encoders</li>
+<li>Add additional context (<strong>template</strong>) with a [MASK] posistion</li>
+<li>Project labels to label words (<strong>verbalizer</strong>)</li>
+<li><strong>Bridge the GAP</strong> between pre-training and fine-tuning</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1UG411p7zv?p=43&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">Fill the gap between Fine-turing and Prompt-learning</a>, use prompt fill the GAP.</p>
+</blockquote>
+<ul>
+<li>Sentiment Classification<ul>
+<li>Prompting with a Template<ul>
+<li>Input: x = “I love this movie”</li>
+<li>Template: [x] Overall, it was a [z] movie</li>
+<li>Prompting: x’ = “I love this movie. Overall it was a [z] movie.”</li>
+</ul>
+</li>
+<li>Predict an answer<ul>
+<li>Predicting: x’ = “I love this movie.Overall it<br>was a fantastic movie.”</li>
+</ul>
+</li>
+<li>Map the answer to a class label with a Verbalizer<ul>
+<li>Mapping:fantastic =Positive</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Prompt-learning: Considerations<ul>
+<li>Pre-trained Model<ul>
+<li>Auto-regressive(GPT-1,GPT-2,GPT-3;OPT…)</li>
+<li>Masked Language Modeling(BERT,RoBERTa,DeBERTa)</li>
+<li>Encoder-Decoder (T5,BART)</li>
+</ul>
+</li>
+<li>Template<ul>
+<li>Manually Design</li>
+<li>Auto Generation</li>
+<li>Textual or Continuous…</li>
+</ul>
+</li>
+<li>Verbalizer<ul>
+<li>Manually Design</li>
+<li>Expanding by external knowledge…</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="PTM-Selection"><a href="#PTM-Selection" class="headerlink" title="PTM Selection"></a>PTM Selection</h2><ul>
+<li>Auto-regressive (GPT-1, GPT-2, GPT-3; OPT…) -&gt; Encoder<ul>
+<li>Suitable for super-large pre-trained models</li>
+<li>Autoregressive Prompt</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>擅长生成</p>
+</blockquote>
+<ul>
+<li>Masked Language Modeling (BERT, RoBERTa, DeBERTa) -&gt; Decoder<ul>
+<li>Suitable for natural language understanding(NLU)</li>
+<li>Cloze-style Prompt</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>擅长NLU</p>
+</blockquote>
+<ul>
+<li>Encoder-Decoder (T5, BART) -&gt; Encoder + Decoder<ul>
+<li>Bidirectional attention for encoder</li>
+<li>Autoregressive for decoder</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>通用，两种都可以。</p>
+</blockquote>
+<h2 id="Template"><a href="#Template" class="headerlink" title="Template"></a>Template</h2><ul>
+<li><p>Template Construction</p>
+<ul>
+<li>Manually Design based on the characteristics of the task</li>
+<li>Auto Generation with search or optimization</li>
+<li>Textual or Continuous</li>
+<li>Structured, incorporating with rules</li>
+</ul>
+</li>
+<li><p>Template: Extract World Knowledge</p>
+<ul>
+<li>Copy the entity in the Template</li>
+<li>Predict fine-grained entity types</li>
+<li>Extract world knowledge</li>
+</ul>
+</li>
+<li><p>Template: Incorporating Rules and Logic</p>
+<ul>
+<li>Prompt-learning with logic-enhanced templates</li>
+</ul>
+</li>
+<li><p>Structured Template</p>
+<ul>
+<li>Key-value Pairs for all the prompts</li>
+<li>Organize different tasks to a structured format</li>
+</ul>
+</li>
+<li><p>Ensembling Templates</p>
+<ul>
+<li>Use multiple different prompts for an input instance</li>
+<li>Alleviate the cost of prompt engineering</li>
+<li>Stabilize performance on tasks</li>
+</ul>
+</li>
+<li><p>Methods</p>
+<ul>
+<li>Uniform Averaging</li>
+<li>Weighted Averaging</li>
+</ul>
+</li>
+<li><p>Template: Automatic Search</p>
+<ul>
+<li>Gradient-based search of prompts based on existing words</li>
+<li>Use a encoder-decoder model to generate prompts</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>本质是：Prompt -&gt; Tokens，那很多人类不理解的，复杂的Prompt，可能对人没有含义，但是可能比人定义的Prompt更能work.</p>
+<p>也许可以训练一个模型，去训练，更好的Prompt，template比人更好？又或者生成的人能理解，并且效果好！</p>
+</blockquote>
+<ul>
+<li><p>Optimization of Continuous Prompts</p>
+<ul>
+<li>Generative models for NLU by optimizing continuous prompts</li>
+<li>P-tuning v1: prompts to the input layer (with Reparameterization)</li>
+<li>P-tuning v2: prompts to every layer (like prefix-tuning)</li>
+</ul>
+</li>
+<li><p>Performance of Prompt-learning</p>
+<ul>
+<li>Exdraordinary few-shot learning performance</li>
+<li>Huge impact from the templates</li>
+</ul>
+</li>
+</ul>
+<h2 id="Verbalizer"><a href="#Verbalizer" class="headerlink" title="Verbalizer"></a>Verbalizer</h2><ul>
+<li><p>Verbalizer</p>
+<ul>
+<li><p>Mapping: Answer -&gt; Unfixed Labels</p>
+</li>
+<li><p>Tokens: One or more tokens in the pre-trained language model vocabulary</p>
+</li>
+<li><p>Chunks: Chunks of words made up of more than one tokens</p>
+</li>
+<li><p>Sentence: Sentences in arbitrary length</p>
+</li>
+</ul>
+</li>
+<li><p>Construction</p>
+<ul>
+<li>Hand-crafted</li>
+<li>Auto-generation</li>
+</ul>
+</li>
+<li><p>Verbalizer Construction</p>
+<ul>
+<li>Manually design with human prior knowledge</li>
+<li>Start with an initial label word, paraphrase &amp; expand</li>
+<li>Start with an initial label word, use external knowledge &amp; expand</li>
+<li>Decompose the label with multiple tokens</li>
+<li>Virtual token and optimize the label embedding</li>
+</ul>
+</li>
+<li><p>Knowledgeable Prompting</p>
+<ul>
+<li>Label -&gt; Words</li>
+<li>Use External Knowledge to expand the label words</li>
+</ul>
+</li>
+<li><p>Virtual Tokens as Label Words</p>
+<ul>
+<li>Project the hidden states of [MASK] tokens to the embedding space and learn prototypes</li>
+<li>The learned prototypes constitute the verbalizer and map the PLM outputs to corresponding labels.</li>
+</ul>
+</li>
+</ul>
+<h2 id="Learning-Strategy"><a href="#Learning-Strategy" class="headerlink" title="Learning Strategy"></a>Learning Strategy</h2><ul>
+<li>The Evolvement<ul>
+<li>Traditional: Learning from scratch;</li>
+<li>After BERT: Pre-training-then-fine-tuning;</li>
+<li>T5: Pre-training-then-fine-tuning with text-to-text format;</li>
+<li>GPT: Pre-training, then use prompt &amp; in-context for zero- and few- shot;</li>
+</ul>
+</li>
+<li>Prompt-learning Introduces New Learning Strategies<ul>
+<li>Pre-training, prompting, optimizing all the parameters (middle-size models, few-shot setting)</li>
+<li>Pre-training, adding soft prompts, freezing the model and optimizing the prompt embeddings (delta tuning perspective)</li>
+<li>Pre-training with prompted data, zero-shot inference (Instruction tuning&amp; T0)</li>
+</ul>
+</li>
+<li>Prompt-Tuning<ul>
+<li>Injecting soft prompts (embeddings) to the input layer</li>
+<li>Extraordinary power of scale</li>
+<li>Comparable results to fine-tuning conditioned on 11B PLM</li>
+<li>Essentially a parameter efficient (delta tuning) method</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Delta-tuning: 不符合fine-tuning本身的intuition, 小参数驱动大模型。</p>
+</blockquote>
+<ul>
+<li><p>Prompting Prompt Tuning</p>
+<ul>
+<li>Injecting Prompts to Pre-training.</li>
+<li>Full data:fine-tuning and prompt-tuning are comparable.</li>
+<li>Few data:only tuning prompts have poor performance.</li>
+<li>The vanilla prompt tuning cannot generalize effectively in low-data situation.</li>
+<li>Injecting soft prompts to pre-training improve the generalization of prompt tuning</li>
+</ul>
+</li>
+<li><p>Fine-tuning with Prompted Data</p>
+<ul>
+<li>Multi-task Pre-training with Hand-crafted Prompts<ul>
+<li>Finetuning a 130B PLM with prompts on 60 tasks</li>
+<li>Substantially improve the zero-shot capability</li>
+</ul>
+</li>
+<li>Multi-task Pre-training with Hand-crafted Prompts<ul>
+<li>Use manually written prompts to train encoder-decoder model</li>
+</ul>
+</li>
+<li>Multi-task Pre-training with Hand-crafted Prompts<ul>
+<li>Use manually written prompts to train encoder-decoder model</li>
+<li>Zero-shot generalization on unseen tasks</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Applications"><a href="#Applications" class="headerlink" title="Applications"></a>Applications</h2><ul>
+<li><p>Biomedical Prompt-learning: Prompt-learning can support Clinical Decision</p>
+<ul>
+<li>Big models in general domain (like GPT-3) can’t perform well on specific domain like biomedical</li>
+<li>Prompt-learning shows significantly effectiveness</li>
+</ul>
+</li>
+<li><p>Cross-Modality Prompt-learning: Cross-Modal Prompt-learning</p>
+<ul>
+<li>Create colorful frames in images</li>
+<li>Add color-wise textual prompts to input data</li>
+</ul>
+</li>
+<li><p>Summary: Prompt-learning</p>
+<ul>
+<li>A comprehensive framework that considers PLMs, downstream tasks, and human prior knowledge</li>
+<li>The design of Template &amp; Verbalizer is crucial</li>
+<li>Prompt-learning has promising performance in low-data regime, and high variance with the select of templates</li>
+<li>Prompt-learning has broad applications</li>
+</ul>
+</li>
+</ul>
+<h2 id="Delta-Tuning"><a href="#Delta-Tuning" class="headerlink" title="Delta-Tuning"></a>Delta-Tuning</h2><ul>
+<li><p>How to Adapt Large-scale PLMs?</p>
+<ul>
+<li>An Efficient Way — Delta Tuning</li>
+<li>Only updating a small amount of parameters of PLMs</li>
+<li>Keeping the parameters of the PLM fixed</li>
+</ul>
+</li>
+<li><p>How to Adapt Large-scale PLMs?</p>
+<ul>
+<li>An Efficient Way — Delta Tuning</li>
+<li>Only updating a small amount of parameters of PLMs</li>
+<li>Keeping the parameters of the PLM fixed</li>
+</ul>
+</li>
+<li><p>Why Parameter Efficient Work?</p>
+<ul>
+<li>In the Past Era<ul>
+<li>Parameter efficient learning can’t be realized in the past</li>
+<li>Because all the parameters are randomly initialized</li>
+</ul>
+</li>
+<li>With Pre-training<ul>
+<li>Pre-training can learn Universal Knowledge</li>
+<li>Adaptation of downstream</li>
+<li>Imposing universal knowledge to specific tasks</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Delta Tuning: Parameter Efficient Model Tuning</p>
+<ul>
+<li>Addition-based methods introduce extra trainable neural modules or parameters that do not exist in the original model;</li>
+<li>Specification-based methods specify certain parameters in the original model or process become trainable, while others frozen;</li>
+<li>Reparameterization-based methods reparameterize existing parameters to a parameter-efficient form by transformation.</li>
+</ul>
+</li>
+</ul>
+<h3 id="Addition-based"><a href="#Addition-based" class="headerlink" title="Addition-based"></a>Addition-based</h3><ul>
+<li>Adapter<ul>
+<li>Adapter-Tuning<ul>
+<li>Injecting small neural modules (adapters) into Transformer Layer</li>
+<li>Only fine-tuning adapters and keeping other parameters frozen</li>
+<li>Adapters are down-projection and up-projection</li>
+<li>Tunable parameters: 0.5%~8% of the whole model</li>
+</ul>
+</li>
+<li>Move the Adapter Out of the Backbone<ul>
+<li>Bridge a ladder outside the backbone model</li>
+<li>Save computation of backpropagation</li>
+<li>Save memory by shrinking the hidden size</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Prefix-Tuning<ul>
+<li>Inject prefixes (soft prompts) to each layer of the Transformer</li>
+<li>Only optimizing the prefixes of the model</li>
+</ul>
+</li>
+<li>Prompt-Tuning<ul>
+<li>Injecting soft prompts (embeddings) only to the input layer</li>
+<li>Extraordinary power of scale</li>
+<li>Comparable results to fine-tuning conditioned on 11B PLM</li>
+</ul>
+</li>
+</ul>
+<h3 id="Specification-based"><a href="#Specification-based" class="headerlink" title="Specification-based"></a>Specification-based</h3><ul>
+<li>BitFit<ul>
+<li>A simple strategy: only updating the bias terms</li>
+<li>Comparable performance of full fine tuning</li>
+</ul>
+</li>
+</ul>
+<h3 id="Reparameterization-based"><a href="#Reparameterization-based" class="headerlink" title="Reparameterization-based"></a>Reparameterization-based</h3><ul>
+<li><p>Intrinsic Prompt Tuning</p>
+<ul>
+<li><p>假设：优化过程本质上可以在一个低纬的空间中完成。</p>
+</li>
+<li><p>The Model tuning is mapped into a low-dimensional subspace</p>
+</li>
+<li><p>89% of the full-parameter fine-tuning performance could be achieved in as low tasks as 5-dimensional a subspace in 120 NLP tasks</p>
+</li>
+</ul>
+</li>
+<li><p>Manipulate NLP in Low-dimension Space</p>
+<ul>
+<li>本质是一个“低秩”的，做矩阵分解，例如1000 x 1000分解为1000 x 2和2 x 1000。</li>
+<li>LoRA: Low-Rank Adaptation</li>
+<li>Freeze the model weights</li>
+<li>Injects trainable rank-decomposition matrices to each Transformer layer</li>
+<li>LoRA tunes 4.7 million paramters of the 175 billion parameters of the GPT-3 model</li>
+</ul>
+</li>
+</ul>
+<h2 id="Connections"><a href="#Connections" class="headerlink" title="Connections"></a>Connections</h2><ul>
+<li><p>The Reparameterization-based Methods Are Connected</p>
+<ul>
+<li>Based on similar hypothesis</li>
+<li>The optimization process could be transformed to a parameter efficient version</li>
+</ul>
+</li>
+<li><p>A Unified View</p>
+<ul>
+<li>Adapter, Prefix Tuning and LoRA could be connected</li>
+<li>Function form</li>
+<li>Insertion form</li>
+<li>Modified Representation</li>
+<li>Composition Function</li>
+<li>Adapter, Prefix Tuning, and LoRA could be connected in form</li>
+<li>New variants could be derived under this framework</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>大一统 -&gt; 推导更多更常见的方法</p>
+</blockquote>
+<ul>
+<li>Deep Analysis of Delta Tuning<ul>
+<li>Theoretical Analysis<ul>
+<li>From optimization</li>
+<li>Low-dimensional representation in solution space</li>
+<li>Low dimensional representation in functional space</li>
+<li>From optimal control</li>
+<li>Seek the optimal controller</li>
+</ul>
+</li>
+<li>A Rigorous Comparison of Performance<ul>
+<li>Experiments on 100+ NLP tasks</li>
+<li>There is no way to gain an absolute advantage for delta tuning, fine-tuning is still the best model tuning method;</li>
+</ul>
+</li>
+<li>Power of Scale: The power of scale is observed in all the methods, even random tuning</li>
+<li>A Rigorous Comparison of Performance<ul>
+<li>Combination of different delta tuning methods</li>
+<li>Implies the existence of <strong>Optimal Structure</strong> which is not defined manually</li>
+<li>Automatically search the structure</li>
+<li><strong>1/10000</strong> parameters could work</li>
+</ul>
+</li>
+<li>Transferability<ul>
+<li>Delta Tuning shows non-trivial task-level <strong>transferability</strong></li>
+<li>Implies the possibility to construct a sharing platform</li>
+</ul>
+</li>
+<li>Efficient Tuning with low GPU RAM<ul>
+<li>Tune T5-large on 11G single GPU (Nvidia 1080Ti, 2080, etc.)</li>
+<li>Tune T5-3b on 24G single GPU （Nvidia 3090 and V100)</li>
+<li>Tune T5-11b on 40G single GPU （Nvidia A100, with BMTrain)</li>
+</ul>
+</li>
+<li>Summary<ul>
+<li>Delta tuning could effectively work on super-large models -&gt; Optimizing only a small portion of parameters could stimulate big models.</li>
+<li>The structure may become less important as the model scaling</li>
+<li>What’s NeXT?</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Futhur-Reading"><a href="#Futhur-Reading" class="headerlink" title="Futhur Reading"></a>Futhur Reading</h2><ul>
+<li>Paper List<ul>
+<li>PromptPapers: <a target="_blank" rel="noopener" href="https://github.com/thunlp/PromptPapers">https://github.com/thunlp/PromptPapers</a></li>
+<li>DeltaPapers: <a target="_blank" rel="noopener" href="https://github.com/thunlp/DeltaPapers">https://github.com/thunlp/DeltaPapers</a></li>
+</ul>
+</li>
+<li>Programming Toolkit<ul>
+<li>OpemPrompt: <a target="_blank" rel="noopener" href="https://github.com/thunlp/OpenPrompt">https://github.com/thunlp/OpenPrompt</a></li>
+<li>OpenDelta: <a target="_blank" rel="noopener" href="https://github.com/thunlp/OpenDelta">https://github.com/thunlp/OpenDelta</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="OpenPrompt"><a href="#OpenPrompt" class="headerlink" title="OpenPrompt"></a>OpenPrompt</h2><ul>
+<li><p>Plz see the <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1UG411p7zv?p=56">Video</a> first</p>
+</li>
+<li><p>API design</p>
+<ul>
+<li>Modularity</li>
+<li>Flexibility</li>
+<li>Uniformity</li>
+</ul>
+</li>
+<li><p>How to use OpenPrompt 78 <a target="_blank" rel="noopener" href="https://github.com/thunlp/OpenPrompt">https://github.com/thunlp/OpenPrompt</a></p>
+<ul>
+<li>Step 1: Define a task<ul>
+<li>Think about what’s your data looks like and what do you want from the data!</li>
+</ul>
+</li>
+<li>Step 2: Obtain a PLM<ul>
+<li>Choose a PLM to support your task;</li>
+<li>Different models have different attributes;</li>
+<li>Essentially obtain a modeling strategy with pre-trained tasks;</li>
+<li>Support , more coming…</li>
+</ul>
+</li>
+<li>Step 3: Define a Template: A Template is a modifier of the original input text, which is also one of the most important modules in prompt-learning.</li>
+<li>Step 4: Define a Verbalizer (optional): A Verbalizer projects the original labels to a set of label words.</li>
+<li>Step 5: Define a PromptModel<ul>
+<li>A PromptModel is responsible for training and inference</li>
+<li>It defines the (complex) interactions of mentioned modules</li>
+</ul>
+</li>
+<li>Step 6: Train and Inference<ul>
+<li>Train and evaluate the PromptModel in PyTorch fashion</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Mixed Template</p>
+<ul>
+<li>Basic hard and soft template</li>
+<li>Incorporation of meta information</li>
+<li>Soft template initialized with textual tokens</li>
+<li>Post-processing</li>
+<li>Fast token duplication</li>
+</ul>
+</li>
+<li><p>Generation Verbalizer</p>
+<ul>
+<li>Label words defined as part of input -&gt; Similar fashion with mixed template</li>
+<li>Especially powerful in transforming ALL NLP tasks to generation tasks</li>
+</ul>
+</li>
+<li><p>Newly Designed Template Language - Mixed Template -&gt; Write Template in a flexible way</p>
+</li>
+<li><p>Implement All Kinds of Prompt-Learning Pipelines</p>
+<ul>
+<li>Modify separate modules and create new methods</li>
+<li>Apply existing methods to other scenarios</li>
+</ul>
+</li>
+<li><p>1.7k stars for our Github repository</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/thunlp/OpenPrompt">https://github.com/thunlp/OpenPrompt</a></li>
+</ul>
+</li>
+<li><p>Along with 2.0k stars for referenced paper list</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/thunlp/PromptPapers">https://github.com/thunlp/PromptPapers</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="OpenDelta"><a href="#OpenDelta" class="headerlink" title="OpenDelta"></a>OpenDelta</h2><ul>
+<li><p>Plz see the <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1UG411p7zv?p=57">Video</a> first</p>
+</li>
+<li><p>OpenDelta: Toolkit for Delta Tuning</p>
+<ul>
+<li>Clean: No need to edit the backbone PTM’s codes.</li>
+<li>Simple: Migrating from full-model tuning to delta-tuning needs as little as 3 lines of code.</li>
+<li>Sustainable: Evolution in external libraries doesn’t require update.</li>
+<li>Extendable: Various PTMs can share the same delta-tuning codes.</li>
+<li>Flexible: Able to apply delta-tuning to (almost) any position.</li>
+</ul>
+</li>
+<li><p>Apply OpenDelta to Various Models</p>
+<ul>
+<li>Supported models</li>
+</ul>
+</li>
+<li><p>Adapter Hub</p>
+<ul>
+<li>Need to modify the backbone code.</li>
+<li>Need reimplementation for EVERY PTM.</li>
+<li>Codes frozen at transformers version 4.12</li>
+<li>Need constant update to suit Huggingface’s update (to suit new feature)</li>
+<li>Can only apply Adapter under existing mode (e.g. not supporting adding adapters to a fraction of layers or other places in the model)</li>
+</ul>
+</li>
+<li><p>How do we achieve it?</p>
+<ul>
+<li>Key based addressing: Find the module according to the module/parameter key.</li>
+<li>Three modification operations can cover most delta tuning:<ul>
+<li>Replace, Insert after, Insert before.</li>
+</ul>
+</li>
+<li>The modified model will have the same doc &amp; I/O &amp; address &amp; Signature etc. to the original model.</li>
+<li>Create pseudo data to automatically determine the parameter size of delta models.</li>
+</ul>
+</li>
+<li><p>How do we achieve it?</p>
+<ul>
+<li>Alternating the flow of tensor.</li>
+<li>Use a wrapper function to wrap the original forward function to let the tensor pass the delta models as well.</li>
+</ul>
+</li>
+<li><p>More than aggregating delta models …</p>
+<ol>
+<li>Visualize the parameters’ location in the PTM.</li>
+<li>Insert delta modules in arbitrary layers.</li>
+<li>Delta center to save fine-tuned delta models</li>
+</ol>
+</li>
+<li><p>AutoDelta Feature</p>
+<ul>
+<li>Automatically load and define delta moduels from <strong>configuration</strong></li>
+<li>Automatically load and define delta moduels from <strong>pre-trained</strong></li>
+</ul>
+</li>
+<li><p>Multitask Serving</p>
+</li>
+</ul>
+<h2 id="Collaboration"><a href="#Collaboration" class="headerlink" title="Collaboration"></a>Collaboration</h2><ul>
+<li>Collaboration of OpenDelta &amp; OpenPrompt<ul>
+<li>OpenDelta is a toolkit for Delta Tuning</li>
+<li>Collaborated with OpenDelta, there is a loop to efficiently stimulate LMs</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Demos also exist on Github</p>
+</blockquote>
+<h1 id="L5-BMSystem"><a href="#L5-BMSystem" class="headerlink" title="L5 BMSystem"></a>L5 BMSystem</h1><h2 id="BMTrain"><a href="#BMTrain" class="headerlink" title="BMTrain"></a>BMTrain</h2><ul>
+<li>CPU vs. GPU<ul>
+<li>CPU: small number of large cores.</li>
+<li>GPU: large number of small cores.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#introduction">nvidia intro</a></p>
+</blockquote>
+<ul>
+<li>GPU Memory component<ol>
+<li>Parameter</li>
+<li>Gradient</li>
+<li>Intermediate<ul>
+<li>The input of each Linear Module needs to be saved for backward</li>
+<li>Each with Shape [Batch, SeqLen, Dim]</li>
+</ul>
+</li>
+<li>Optimizer:<ul>
+<li>Commonly used Adam Optimizer needs to store extra states. </li>
+<li>The number of states is greater than 2 times the number of parameters.</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="Data-Parallel"><a href="#Data-Parallel" class="headerlink" title="Data Parallel"></a>Data Parallel</h2><ul>
+<li><p>There is a parameter server.</p>
+</li>
+<li><p>Forward:</p>
+<ul>
+<li>The parameter is replicated on each device.</li>
+<li>Each replica handles a portion of the input.</li>
+</ul>
+</li>
+<li><p>Backward</p>
+<ul>
+<li>Gradients from each replica are averaged.</li>
+<li>Averaged gradients are used to update the parameter server.</li>
+</ul>
+</li>
+<li><p>Collective Communication.</p>
+<ul>
+<li>Broadcast: Send data from one GPU to other GPUs</li>
+<li>Reduce: Reduce (Sum/Average) data of all GPUs, send to one GPU.</li>
+<li>All Reduce: Reduce (Sum/Average) data of all GPUs, send to all GPUs.</li>
+<li>Reduce Scatter: Reduce (Sum/Average) data of all GPUs, send portions to all GPUs.</li>
+<li>All Gather: Gather data of all GPUs, send all GPUs.</li>
+</ul>
+</li>
+<li><p>Methods;</p>
+<ol>
+<li>Data Parallel</li>
+<li>Model Parallel</li>
+<li>ZeRO</li>
+<li>Pipeline Parallel</li>
+</ol>
+</li>
+</ul>
+<h3 id="Data-Parallel-1"><a href="#Data-Parallel-1" class="headerlink" title="Data Parallel"></a>Data Parallel</h3><ol>
+<li>There is a parameter server. </li>
+<li>Forward:<ul>
+<li>The parameter is replicated on each device.</li>
+<li>Each replica handles a portion of the input.</li>
+</ul>
+</li>
+<li>Backward:<ul>
+<li>Gradients from each replica are averaged.</li>
+<li>Averaged gradients are used to update the parameter server.</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><p>Distributed Data Parallel</p>
+<ul>
+<li>There is no parameter server.</li>
+<li>Forward:<ul>
+<li>Each replica handles a portion of the input.</li>
+</ul>
+</li>
+<li>Backward:<ul>
+<li>Gradients from each replica are averaged using All Reduce.</li>
+<li>Each replica owns optimizer and update parameters itself.</li>
+<li>Since gradients are shared, parameters are synced.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>The input of each Linear Module needs to be saved for backward. Each with Shape:</p>
+<ol>
+<li>Without Data Parallel [Batch, Len, Dim]</li>
+<li>With Data Parallel -&gt; [Batch/n, Len, Dim]</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>Batch/n &gt;= 1</p>
+</blockquote>
+<h3 id="Model-Parallel"><a href="#Model-Parallel" class="headerlink" title="Model Parallel"></a>Model Parallel</h3><ul>
+<li>Partition the matrix parameter into sub-matrices.</li>
+<li>Sub-matrices are separated into different GPUs.</li>
+<li>Each GPU handle the sample input.</li>
+</ul>
+<blockquote>
+<p>Intermediates are not partitioned.</p>
+</blockquote>
+<h3 id="ZeRO"><a href="#ZeRO" class="headerlink" title="ZeRO"></a>ZeRO</h3><blockquote>
+<p>Zero Redundancy Optimizer</p>
+</blockquote>
+<ul>
+<li><p>ZeRO-Stage 1:</p>
+<ul>
+<li>Each replica handles a portion of the input.</li>
+<li>Forward</li>
+<li>Backward</li>
+<li>Average all gradients using Reduce Scatter</li>
+<li>Each replica owns part of optimizer &amp; update part of params</li>
+<li>Updated parameter are synced using All Gather</li>
+</ul>
+</li>
+<li><p>ZeRO-Stage 2:</p>
+<ul>
+<li>Each replica handles a portion of the input.</li>
+<li>Forward.</li>
+<li><strong>Backward (Average gradients using Reduce Scatter).</strong></li>
+<li></li>
+<li>Each replica owns part of optimizer &amp; update part of params.</li>
+<li>Updated parameter are synced using All Gather.</li>
+</ul>
+</li>
+<li><p>ZeRO-Stage 3</p>
+<ul>
+<li>Each replica handles a portion of the input.</li>
+<li><strong>Forward (Share parameters using All Gather).</strong></li>
+<li><strong>Backward (Average gradients using Reduce Scatter).</strong></li>
+<li></li>
+<li>Each replica owns part of optimizer &amp; update part of params.</li>
+</ul>
+</li>
+</ul>
+<h3 id="Pipeline-Parallel"><a href="#Pipeline-Parallel" class="headerlink" title="Pipeline Parallel"></a>Pipeline Parallel</h3><ul>
+<li>Transformer are partitioned layer by layer.</li>
+<li>Different layers are put on different GPUs.</li>
+<li>Forward : Layer i -&gt; Layer i+1</li>
+<li>Backward: Layer i -&gt; Layer i-1</li>
+</ul>
+<h2 id="Techniques"><a href="#Techniques" class="headerlink" title="Techniques"></a>Techniques</h2><ul>
+<li>Mixed precision</li>
+<li>Offloading</li>
+<li>Overlapping</li>
+<li>Checkpointing</li>
+</ul>
+<h3 id="Mixed-Precision"><a href="#Mixed-Precision" class="headerlink" title="Mixed Precision"></a>Mixed Precision</h3><p>FP32: 1.18e-38~3.40e38 with 6–9 significant decimal digits precision. FP16: 6.10e−5 ~65504 with 4 significant decimal digits precision. -</p>
+<ul>
+<li><p>Advantages: </p>
+<ul>
+<li>Math operations run much faster.</li>
+<li>Math operations run even more faster with Tensor Core support.</li>
+<li>Data transfer operations require less memory bandwidth.</li>
+<li>Smaller range but not overflow.</li>
+</ul>
+</li>
+<li><p>Disadvantages:</p>
+<ul>
+<li>Weight update ≈ gradient x lr Smaller range, especially underflow</li>
+</ul>
+</li>
+<li><p>Keep a master FP32 parameters in optimizer.</p>
+</li>
+</ul>
+<blockquote>
+<p>训练的时候多存一个FP32，并进行训练累积。可以累积到一定的数量之后，再作用于FP16。也可以在后续推理的时候，就用FP16推理，这样速度快一些昂！！！</p>
+</blockquote>
+<h3 id="Offloading"><a href="#Offloading" class="headerlink" title="Offloading"></a>Offloading</h3><ul>
+<li>Bind each GPU with multiple CPUs.</li>
+<li>Offload the partitioned optimizer states to CPU.<ol>
+<li>Send Gradients from GPU to CPU.</li>
+<li>Update optimizer states on CPU ( using OpenMP + SIMD ).</li>
+<li>Send back updated parameters from CPU to GPU.</li>
+</ol>
+</li>
+</ul>
+<h3 id="Overlapping"><a href="#Overlapping" class="headerlink" title="Overlapping"></a>Overlapping</h3><ol>
+<li>Memory operations are asynchronous.</li>
+<li>Thus, we can overlap Memory operations with Calculations.</li>
+</ol>
+<h3 id="Checkpointing"><a href="#Checkpointing" class="headerlink" title="Checkpointing"></a>Checkpointing</h3><ul>
+<li>Forward:<ul>
+<li>Some hidden states (checkpoint) are reserved.</li>
+<li>All other intermediate results are immediately freed.</li>
+</ul>
+</li>
+<li>Backward:<ul>
+<li>Freed intermediates are recomputed.</li>
+<li>And released again after obtaining gradient states.</li>
+</ul>
+</li>
+</ul>
+<h2 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h2><ul>
+<li><p>Speedup, Simple replacement, </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://colab.research.google.com/drive/1H-T7PmTjdcgwYUFfMikfxZ4_bMWRKu8h?usp=sharing">Demo</a></p>
+</li>
+</ul>
+<h2 id="BMCook"><a href="#BMCook" class="headerlink" title="BMCook"></a>BMCook</h2><ul>
+<li><p>The model size of PLMs has been growing at a rate of about 10x per year</p>
+</li>
+<li><p>Huge Computational Cost: The growing size comes with huge computational overhead</p>
+<ul>
+<li>Limits the application of large PLMs in real-world scenarios</li>
+<li>Leads to large carbon emissions</li>
+</ul>
+</li>
+<li><p>Towards Efficient PLMs</p>
+<ul>
+<li>Model Compression: Compress big models to small ones to meet the demand of real-world scenarios</li>
+<li>Existing Methods<ul>
+<li>Knowledge Distillation</li>
+<li>Model Quantization</li>
+<li>Model Pruning</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Knowledge Distillation</p>
+<ul>
+<li>Proposed by Hinton on NIPS 2014 Deep Learning Workshop</li>
+<li>Problem of Ensemble Model<ul>
+<li>Cumbersome and may be too computationally expensive</li>
+<li>Similar to current PLMs</li>
+</ul>
+</li>
+<li>Solution<ul>
+<li>The knowledge acquired by a large ensemble of models can be transferred to a single small model</li>
+<li>We call “distillation” to transfer the knowledge from the cumbersome model to a small model that is more suitable for deployment.</li>
+</ul>
+</li>
+<li>What is knowledge: In a more abstract view, knowledge is a learned mapping from input vectors to output vectors.</li>
+</ul>
+</li>
+</ul>
+<h3 id="Knowledge-Distillation"><a href="#Knowledge-Distillation" class="headerlink" title="Knowledge Distillation"></a>Knowledge Distillation</h3><ul>
+<li>Proposed by Hinton on NIPS 2014 Deep Learning Workshop</li>
+<li>Problem of Ensemble Model<ul>
+<li>Cumbersome and may be too computationally expensive</li>
+<li>Similar to current PLMs</li>
+</ul>
+</li>
+<li>Solution<ul>
+<li>The knowledge acquired by a large ensemble of models can be transferred to a single small model</li>
+<li>We call “distillation” to transfer the knowledge from the <strong>cumbersome model</strong> to a <strong>small model</strong> that is more suitable for deployment.</li>
+</ul>
+</li>
+<li>What is knowledge -&gt; In a more abstract view, knowledge is a learned mapping from input vectors to output vectors.</li>
+<li>Soft targets provide more information than gold labels.</li>
+<li>Key research question: how to build more soft targets -&gt; Previous methods only use the output from the last layer</li>
+<li>Learn from <strong>multiple intermediate layers</strong> of the teacher model</li>
+<li>Mean-square loss between the normalized hidden states</li>
+<li>Learn from multiple intermediate layers</li>
+<li>Learn from the embedding layer and output layer</li>
+<li>Learn from attention matrices</li>
+</ul>
+<h3 id="Model-Pruning"><a href="#Model-Pruning" class="headerlink" title="Model Pruning"></a>Model Pruning</h3><blockquote>
+<p>模型剪枝</p>
+</blockquote>
+<ul>
+<li>Remove the <strong>redundant parts of</strong> the parameter matrix according to their important scores</li>
+<li>Unstructured pruning and structured pruning</li>
+<li>Weight pruning (unstructured)<ul>
+<li>30-40% of the weights can be discarded without affecting BERT’s universality (prune pre-train)</li>
+<li>Fine-tuning on downstream tasks does not change the nature (prune downstream)</li>
+</ul>
+</li>
+<li>Attention head pruning (structured)<ul>
+<li>Ablating one head</li>
+<li>Define the importance scores of attention heads</li>
+<li>Iteratively prune heads on different models(blue line)</li>
+</ul>
+</li>
+<li>Layer pruning (structured)<ul>
+<li>Extend dropout from weights to layers</li>
+<li>Training: randomly drop layers</li>
+<li>Test: Select sub-networks with any desired depth</li>
+</ul>
+</li>
+</ul>
+<h3 id="Model-Quantization"><a href="#Model-Quantization" class="headerlink" title="Model Quantization"></a>Model Quantization</h3><ul>
+<li>Reduce the number of bits used to represent a value -&gt; Floating point representation -&gt; Fixed point representation</li>
+<li>Three steps: 1. Linear scaling 2. Quantize 3. Scaling back</li>
+<li>Models with different precisions -&gt; Extreme quantization (1 bit) is difficult</li>
+<li>Loss landscapes are sharper</li>
+<li>Train a half-sized ternary model</li>
+<li>Initialize a binary model with the ternary model by weight splitting</li>
+<li>Fine-tune the binary model</li>
+</ul>
+<h3 id="Other-Methods"><a href="#Other-Methods" class="headerlink" title="Other Methods"></a>Other Methods</h3><h4 id="Weight-Sharing"><a href="#Weight-Sharing" class="headerlink" title="Weight Sharing"></a>Weight Sharing</h4><ul>
+<li>ALBERT: Two parameter reduction techniques<ul>
+<li>Decompose the large vocabulary embedding matrix into two small matrices</li>
+<li>Cross-layer parameter sharing</li>
+</ul>
+</li>
+</ul>
+<h4 id="Low-rank-Approximation"><a href="#Low-rank-Approximation" class="headerlink" title="Low-rank Approximation"></a>Low-rank Approximation</h4><ul>
+<li>Low-rank Approximation</li>
+<li>Difficult to directly conduct low-rank approximation</li>
+<li>View more at: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1UG411p7zv?p=72&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">Here</a></li>
+</ul>
+<h4 id="Architecture-Search"><a href="#Architecture-Search" class="headerlink" title="Architecture Search"></a>Architecture Search</h4><ul>
+<li>Is the architecture of Transformer perfect?</li>
+<li>Neural architecture search based on Transformer<ul>
+<li>Pre-define several simple modules</li>
+<li>Training several hours with each architecture</li>
+</ul>
+</li>
+<li>Two effective modifications<ul>
+<li>Multi-DConv-Head Attention(MDHA)</li>
+<li>Squared ReLU in Feed Forward Block</li>
+</ul>
+</li>
+<li>Primer learns faster and better</li>
+</ul>
+<h3 id="Summary-3"><a href="#Summary-3" class="headerlink" title="Summary"></a>Summary</h3><ul>
+<li>Large-scale PLMs are extremely <strong>over-parameterized</strong></li>
+<li>Several methods to improve model efficiency<ul>
+<li>Knowledge Distillation</li>
+<li>Model Pruning</li>
+<li>Model Quantization</li>
+<li>…</li>
+</ul>
+</li>
+<li>Our model compression toolkit: BMCook -&gt; Includes these methods for extreme acceleration of big models</li>
+</ul>
+<h3 id="Usage-Intro"><a href="#Usage-Intro" class="headerlink" title="Usage Intro"></a>Usage Intro</h3><blockquote>
+<p>Github link is <a target="_blank" rel="noopener" href="https://github.com/OpenBMB/BMCook">Here</a></p>
+</blockquote>
+<ul>
+<li><p>Compared to existing compression toolkits, BMCook supports all mainstream acceleration methods for PLMs</p>
+</li>
+<li><p>Implement different compression methods with just a few lines of codes</p>
+</li>
+<li><p>Compression methods can be combined in any way towards extreme acceleration</p>
+</li>
+<li><p>Core of BMCook: Compression Configuration File</p>
+</li>
+<li><p>Implement various methods with few lines. The GitHub demos have multiple demos about how to use BMCook to supports all mainstream acceleration methods for PLMs.</p>
+</li>
+</ul>
+<h2 id="BMInf"><a href="#BMInf" class="headerlink" title="BMInf"></a>BMInf</h2><ul>
+<li><p>BMInf is the first toolkit released by OpenBMB. </p>
+</li>
+<li><p>Github repo: <a target="_blank" rel="noopener" href="https://github.com/OpenBMB/BMInf">https://github.com/OpenBMB/BMInf</a> </p>
+</li>
+<li><p>BMInf has received 270 stars (hope more after this course XD).</p>
+</li>
+<li><p>In June 2021, we released CPM-2 with 10 billion parameters. </p>
+</li>
+<li><p>It is powerful in many downstream tasks.</p>
+</li>
+</ul>
+<h3 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h3><ul>
+<li>high hardware requirements<ul>
+<li>For each demo we used 4xA100s for inference.</li>
+</ul>
+</li>
+<li>inefficient<ul>
+<li>Each request takes about 10 seconds to handle.</li>
+</ul>
+</li>
+<li>costly<ul>
+<li>The cost of 4xA100s is ¥1200 per day.</li>
+</ul>
+</li>
+<li>Another thought: serve demo on our server -&gt; make it possible for everyone to run big models on their own computers.</li>
+</ul>
+<h3 id="Difficulties"><a href="#Difficulties" class="headerlink" title="Difficulties"></a>Difficulties</h3><ul>
+<li>How difficult is it?<ul>
+<li>High Memory Footprint <ul>
+<li>The checkpoint size of CPM-2 model is <strong>22GB</strong>. </li>
+<li>It takes about <strong>2 minutes</strong> to load the model from disk.</li>
+</ul>
+</li>
+<li>High Computing Power<ul>
+<li>Generating 1 token with A100 takes <strong>0.5 seconds</strong>.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Linear-Layer"><a href="#Linear-Layer" class="headerlink" title="Linear Layer"></a>Linear Layer</h3><ul>
+<li>The linear layer is actually matrix multiplication.</li>
+<li>using lower precision for speedup. -&gt; FP64 -&gt; FP32 -&gt; FP16 -&gt; FP8? INT8</li>
+<li>INT 8<ul>
+<li>samller range</li>
+<li>precise value</li>
+</ul>
+</li>
+</ul>
+<h3 id="Quantization"><a href="#Quantization" class="headerlink" title="Quantization"></a>Quantization</h3><ul>
+<li><p>Using integers to simulate floating-point matrix multiplication</p>
+<ul>
+<li><p>find the largest value in the matrix</p>
+</li>
+<li><p>scale to 127 for quantification</p>
+</li>
+<li><p>multiply scaling factor for dequantization</p>
+</li>
+</ul>
+</li>
+<li><p>Matrix multiplication after quantization</p>
+</li>
+<li><p>Row-wise matrix quantization:</p>
+<ul>
+<li>calculate the scaling factor for <strong>each row/column</strong></li>
+<li>scale each row/column to -127~127</li>
+</ul>
+</li>
+<li><p>We quantized the linear layer parameters of CPM-2</p>
+<ul>
+<li>model size is reduced by <strong>half</strong></li>
+<li>22GB -&gt; 11 GB</li>
+<li>still <strong>too large</strong> for GTX 1060 ( 6GB memory )</li>
+</ul>
+</li>
+</ul>
+<h3 id="Memory-Scheduling"><a href="#Memory-Scheduling" class="headerlink" title="Memory Scheduling"></a>Memory Scheduling</h3><blockquote>
+<p>虚拟内存的想法，只将当前用到的参数，加在到CPU/GPU上。</p>
+</blockquote>
+<ul>
+<li><p>Not all parameters need to be placed on GPU.</p>
+<ul>
+<li>Move parameters that won’t be used in a short time to CPU.</li>
+<li>Load parameters from CPU before use.</li>
+<li>Calculation and loading are performed in parallel.</li>
+</ul>
+</li>
+<li><p>Implemented in CUDA 6: Unified Memory</p>
+</li>
+<li><p>We only need to store two layers of parameters in the GPU.</p>
+<ul>
+<li>one for calculating</li>
+<li>the other for loading</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>It’s about 500MB for CPM-2 .</p>
+</blockquote>
+<ul>
+<li>In fact, it is much slower to load than to calculate.<ul>
+<li>It takes a long time if we only place two layers on GPU.</li>
+<li>Put as many layers as possible on the GPU.</li>
+</ul>
+</li>
+<li>Assuming that up to n layers can be placed on the GPU.<ul>
+<li>n - 2 layers are fixed on GPU that will not be moved to the CPU.</li>
+<li>2 layers are used for scheduling.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Which layers are fixed on GPU?</p>
+</blockquote>
+<ul>
+<li>Consider two layers need to be placed on the CPU.<ul>
+<li>A larger interval is always better than smaller one.</li>
+<li><strong>Maximize the interval</strong> between two layers.</li>
+</ul>
+</li>
+</ul>
+<h3 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h3><ul>
+<li><p>BMInf runs up CPM-2 on GTX 1060. It also achieves good performance on better GPUs.</p>
+</li>
+<li><p>Installation: pip install bminf</p>
+</li>
+<li><p>Hardware Requirements: GTX 1060 or later </p>
+</li>
+<li><p>OS: both Windows and Linux</p>
+</li>
+</ul>
+<h1 id="L6-BM-Application-in-NLP"><a href="#L6-BM-Application-in-NLP" class="headerlink" title="L6 BM Application in NLP"></a>L6 BM Application in NLP</h1><h2 id="Big-model-based-Text-Understanding-and-Generation"><a href="#Big-model-based-Text-Understanding-and-Generation" class="headerlink" title="Big-model-based Text Understanding and Generation"></a>Big-model-based Text Understanding and Generation</h2><ul>
+<li><p>Introduction</p>
+<ul>
+<li>Typical NLP applications: understanding and generation</li>
+<li>Big models bring revolutions</li>
+<li>NLP Key applications:<ul>
+<li>NLU(Natural Language Understanding): Information Retrieval</li>
+<li>NLG(Natural Language Generation): Text Generation</li>
+<li>NLU + NLG: Question Answering</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Information retrieval</p>
+<ul>
+<li>Find relevant documents given queries.</li>
+<li>Big models can provide more intelligent and accurate search results.</li>
+<li>PLM-based methods ranked high</li>
+</ul>
+</li>
+<li><p>Question answering</p>
+<ul>
+<li>Big models can answer more complex questions</li>
+</ul>
+</li>
+<li><p>Text generation</p>
+<ul>
+<li>Machine translation; poetry generation; dialogue systems…</li>
+<li>Big models can generate more fluent and natural texts</li>
+</ul>
+</li>
+</ul>
+<h2 id="Information-Retrieval-IR"><a href="#Information-Retrieval-IR" class="headerlink" title="Information Retrieval(IR)"></a>Information Retrieval(IR)</h2><ul>
+<li><p>Background</p>
+<ul>
+<li>Information explosion: <ul>
+<li>Amount: 40ZB, 50% annual growth rate</li>
+<li>Variety: Update period in minutes</li>
+</ul>
+</li>
+<li>Rising demand for automatic information retrieval<ul>
+<li>4.39 billion information users</li>
+<li>Annual growth rate of 6~21%</li>
+</ul>
+</li>
+<li>Requirement: Query -&gt; A sea of information -&gt; A few relevant information</li>
+<li>Application<ul>
+<li>Typical application: Search Engine. Public opinion analysis / Fact verification, QA system, Retrieval-Augment Text Generation</li>
+<li>Examples<ul>
+<li>Document Ranking Query</li>
+<li>Question Answering</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Formulation</p>
+<ul>
+<li><p>How to formulate?</p>
+<ul>
+<li>Given a query</li>
+<li>Given a document collection</li>
+<li>IR system computes the relevance score and ranks all documents based on the scores</li>
+</ul>
+<blockquote>
+<p>Retrieval -&gt; Re-Ranking</p>
+</blockquote>
+</li>
+<li><p>Evaluation Metrics</p>
+<ul>
+<li>MRR@k</li>
+<li>MAP@k</li>
+<li>NDCG@k</li>
+</ul>
+<blockquote>
+<p>Only care the k the system retrieves.</p>
+</blockquote>
+</li>
+<li><p>MRR (Mean Reciprocal Rank): MRR is the average of the reciprocal ranks of the first relevant results for a query set.</p>
+</li>
+<li><p>MAP (Mean Average Precision): MAP is the mean of the average precision score for a set of queries.</p>
+</li>
+<li><p>NDCG (Normalized Discounted Cumulative Gain): divides docs into different levels according to the relevance with the query.</p>
+</li>
+<li><p>Discounted Cumulative Gain (DCG): You get five results for a query search and classify them into three grades: Good (3), Fair (2) and Bad (1)</p>
+</li>
+</ul>
+</li>
+<li><p>Traditional IR</p>
+<ul>
+<li>BM25 (Best Matching 25)<ul>
+<li>Lexical exact-match model</li>
+<li>Given a query and a document collection</li>
+<li>BM25 computes the relevance score</li>
+</ul>
+</li>
+<li>TF (Term Frequency): The weight of a term that occurs in a document is simply proportional to the term frequency.</li>
+<li>IDF (Inverse Document Frequency): The specificity of a term can be quantified as an inverse function of the number of documents in which term t appears.</li>
+<li>Problems:<ul>
+<li>Vocabulary mismatch: Different vocabulary, same semantics</li>
+<li>Semantic mismatch: Same vocabulary, different semantics</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Neural IR</p>
+<ul>
+<li>Neural IR can mitigate traditional IR problems</li>
+<li>Query + Document -&gt; Neural Network -&gt; Vector Space -&gt; Relevance Score</li>
+<li>Neural IR outperform traditional IR significantly</li>
+<li>Being neural has become a tendency for IR</li>
+<li>Architecture<ul>
+<li>Re-ranking, Cross-encoder, Model finer semantics of qry and doc; Superior performance; Higher computational cost</li>
+<li>Retrieval, Dual-encoder, Independent representations for qry/doc; Reduce computation cost</li>
+</ul>
+</li>
+<li>Cross-Encoder<ul>
+<li>Given a query q and a document d</li>
+<li>They are encoded to the token-level representations H</li>
+<li>Get the ranking score</li>
+<li>Training: Training data + Training loss</li>
+</ul>
+</li>
+<li>Dual-Encoder<ul>
+<li>DPR: embed query and documents using dual encoders</li>
+<li>Negative log likelihood (NLL) training loss</li>
+<li>Offline computation of doc representations</li>
+<li>Nearest neighbor search supported by FAISS: Batching &amp; GPU can greatly improve retrieval speed (~1ms per q for 10M documents, KNN)</li>
+<li>Retrieval Performance<ul>
+<li>More training examples (from 1k to 59k) further improves the retrieval accuracy consistently</li>
+<li>Bigger model size, better retrieval performance</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Advanced Topics</p>
+<ul>
+<li>How to mine negative?<ul>
+<li>In-batch negative</li>
+<li>Random negative</li>
+<li>BM25 negative</li>
+<li>Self-retrieved hard negative (ICLR 2021)</li>
+</ul>
+</li>
+<li>Negative-enhanced Fine-tuning<ul>
+<li>ANCE (Approximate nearest neighbor Negative Contrastive Learning) -&gt; Asynchronous Index Refresh: document index goes stale after every gradient update → Refresh the index every k steps</li>
+<li>ANCE (Approximate nearest neighbor Negative Contrastive Learning) -&gt; Performance Beat other dense retrieval</li>
+<li>RocketQA (NAACL 2021) -&gt; Uses cross-encoder to filter hard negatives. Performance beats ANCE.</li>
+</ul>
+</li>
+<li>IR-oriented Pretraining<ul>
+<li>SEED-Encoder (EMNLP 2021)<ul>
+<li>pre-trains the autoencoder using a weak decoder to push the encoder to provide better text representations.</li>
+<li>The encoder and decoder are connected only via [CLS]. The decoder is restricted in both param size and attention span.</li>
+<li>beats standard pretrained models.</li>
+</ul>
+</li>
+<li>ICT (Inverse Cloze Task)<ul>
+<li>Given a passage consisting of n sentences</li>
+<li>The query is a sentence randomly drawn from the passage, and the document is the rest of sentences</li>
+<li>ICT pre-training improves retrieval performance</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Few-Shot IR<ul>
+<li>Many real-world scenarios are “few-shot” where large supervision is hard to obtain</li>
+<li>Weak supervision generation</li>
+<li>Weak supervision selection<ul>
+<li>Reinforcement data selection (ReinfoSelect) -&gt; Learn to select training pairs that best weakly supervise the neural ranker</li>
+<li>Meta-learning data selection (MetaAdaptRank) -&gt; Learn to reweight training pairs that best weakly supervise the neural ranker</li>
+<li>MetaAdaptRank beats ReinfoSelect</li>
+<li>Generalizable T5-based dense Retrievers (GTR)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Conversational IR -&gt; Models multiple rounds of query</li>
+<li>How to use big model to retrieve long documents? -&gt; Long-range dependency</li>
+</ul>
+</li>
+<li><p>Demo: <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1UG411p7zv?p=87&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">Vedio</a>, Load Document Representations -&gt; Load Query Representations -&gt; Batch Search -&gt; Visualize retrieved results.</p>
+</li>
+</ul>
+<h2 id="Question-Answering-QA"><a href="#Question-Answering-QA" class="headerlink" title="Question Answering(QA)"></a>Question Answering(QA)</h2><ul>
+<li><p>Background</p>
+<ul>
+<li><p>Why do we need question answering (QA) ?</p>
+<ul>
+<li>When we search for something in Google, it’s usually hard to find answers from the document list</li>
+<li>With QA systems, answers are automatically found from large amount of data</li>
+</ul>
+</li>
+<li><p>Better search experience</p>
+</li>
+<li><p>Applications of QA</p>
+<ul>
+<li>IBM Watson: 2011 Winner in Jeopardy</li>
+<li>Defeat two human players (Ken and Brad)</li>
+<li>Intelligent assistants</li>
+</ul>
+</li>
+<li><p>History</p>
+<ul>
+<li>Template-based QA Expert System</li>
+<li>IR-based QA</li>
+<li>Community QA</li>
+<li>Machine Reading Comprehension KBQA</li>
+</ul>
+</li>
+<li><p>Types of QA</p>
+<ul>
+<li>Machine Reading Comprehension: Read specific documents and answer questions</li>
+<li>Open-domain QA: Search and read relevant documents to answer questions</li>
+<li>Knowledge-based QA: Answer questions based on knowledge graph</li>
+<li>Conversational QA and dialog: Answer questions according to dialog history</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Reading-Comprehension-RC"><a href="#Reading-Comprehension-RC" class="headerlink" title="Reading Comprehension(RC)"></a>Reading Comprehension(RC)</h2><ul>
+<li>Reading Comprehension<ul>
+<li>Task Definition and Dataset<ul>
+<li>Definition of RC<ul>
+<li>Documents, Questions, Candidate answers</li>
+</ul>
+</li>
+<li>Types of RC<ul>
+<li>Cloze test: CNN/Daily Mail (93k CNN articles, 220k Daily Mail articles)</li>
+<li>Cloze test: CBT (Children’s Book Test), Context: 20 continuous sentences, Question: the 21st sentence, with an entity masked, Answer: the masked entity, 10 candidates</li>
+<li>Multiple choice -&gt; RACE: 100k multiple choice questions collected from English exams in China.</li>
+<li>Extractive RC: Predict a span in documents -&gt; SQuAD: 10k human-annotated questions and 536 articles from Wikipedia. Every answer is a span in the article</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Datasets</li>
+</ul>
+</li>
+<li>Traditional Pipeline<ul>
+<li>Model Framework -&gt; General framework in RC: embed, encode, interact, and predict</li>
+<li>Bilinear, Pointer Network. Attention: d2q, q2d. LSTM, GRU, Attention. GloVe, ELMo, Char Embedding.</li>
+<li>An Example of RC Model: BiDAF. Four layers<ul>
+<li>Prediction Layer</li>
+<li>Attention Based Interaction Layer</li>
+<li>Context-aware Encoding Layer</li>
+<li>Word Embedding Layer</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Big-model-based Methods<ul>
+<li>Use PLMs (like BERT) to replace the first three layers -&gt; BERT model has no RNN modules</li>
+<li>Model chang: Pre-trained Representation Model -&gt; Prediction Layer</li>
+<li>Using BERT for RC: <ul>
+<li>Feed the concatenation of the question and the context to BERT. Get the question-aware context representation to predict the start/end of answers.</li>
+<li>Excellent performance on SQuAD</li>
+</ul>
+</li>
+<li>UnifiedQA, Unifying different QA formats<ul>
+<li>Four types: extractive, abstractive, multiple-choice, yes/no</li>
+<li>Text-to-text format</li>
+<li>Single QA system is on-par with, and often out-performs dedicated models</li>
+<li>Using prompt, we can do it easily!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Open-domain-QA"><a href="#Open-domain-QA" class="headerlink" title="Open-domain QA"></a>Open-domain QA</h2><ul>
+<li><p>Task Definition</p>
+<ul>
+<li><p>RC assumes that any question has a short piece of relevant text, which is not always true</p>
+<ul>
+<li>In open-domain QA, the model should be able to find relevant texts from a <strong>corpus</strong> and read them<ul>
+<li>Wikipedia can be viewed as a large-scale corpus for factoid question</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Goal: build an end-to-end QA system that can use <strong>full</strong> Wikipedia to answer any factoid question</p>
+</li>
+</ul>
+</li>
+<li><p>Generation-based Methods</p>
+<ul>
+<li>Answer Questions with Big Models: <ul>
+<li>GPT-3, T5, etc. can generate answers directly</li>
+<li>Fine-tune T5 on open-domain QA</li>
+<li>Achieve competitive performance</li>
+<li>Bigger models perform better</li>
+<li>“Power of scale”</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Retrieval-based Methods</p>
+<ul>
+<li><p>Document Retriever + Document Reader</p>
+<ul>
+<li>Document retriever: finding relevant articles from 5 million Wikipedia articles</li>
+<li>Document reader (reading comprehension system): identifying the answer spans from those articles</li>
+</ul>
+</li>
+<li><p>Document Retriever</p>
+<ul>
+<li>Return 5 Wikipedia articles given any question</li>
+<li>Features:<ul>
+<li>TF-IDF bag-of-words vectors</li>
+<li>Efficient bigram hashing (Weinberger et al., 2009)</li>
+</ul>
+</li>
+<li>Better performance than Wikipedia search: (hit@5)</li>
+</ul>
+</li>
+<li><p>Document Reader</p>
+<ul>
+<li>Simple reading comprehension model</li>
+<li>Features:<ul>
+<li>Word embeddings</li>
+<li>Exact match features: whether the word appears in question</li>
+<li>Token features: POS, NER, term frequency</li>
+<li>Aligned question embedding</li>
+</ul>
+</li>
+<li>Using Shared-Norm for multiple documents</li>
+</ul>
+</li>
+<li><p>Distance Supervision: For a given question, automatically associate paragraphs including the answer span to this question.</p>
+</li>
+<li><p>Results</p>
+<ul>
+<li>Reasonable performance across all four datasets</li>
+<li>Models using DS outperform models trained on SQuAD -&gt; Multi-task: Training on SQuAD + DS data</li>
+</ul>
+</li>
+<li><p>Retrieval-Augmented Language Model PreTraining, REALM:</p>
+<ul>
+<li>Augment language pre-training with a neural knowledge retriever that retrieves knowledge from a textual knowledge corpus (e.g., Wikipedia)</li>
+<li>Allow the model to attend documents from a large corpus during pre-training, fine-tuning and inference</li>
+<li>Pre-training of REALM: The knowledge retriever and knowledge-augmented encoder are jointly pre-trained on the unsupervised language modeling task</li>
+<li>Fine-tuning of REALM: The pre-trained retriever (θ) and encoder (φ) are fine-tuned on a task of primary interest, in a supervised way</li>
+<li>Excellent performance for open-domain QA</li>
+</ul>
+</li>
+<li><p>Document Retrieval and Synthesis with GPT3</p>
+<ul>
+<li>WebGPT<ul>
+<li>Outsource document retrieval to the Microsoft Bing Web Search API</li>
+<li>Utilize unsupervised pre-training to achieve high-quality document synthesis by fine-tuning GPT-3</li>
+<li>Create a text-based web-browsing environment that both humans and language models can interact with</li>
+</ul>
+</li>
+<li>Pipeline:<ul>
+<li>Fine-tune GPT-3 to imitate human behaviors when using the web-browser</li>
+<li>Write down key references when browsing</li>
+<li>After browsing, generate answers with references</li>
+</ul>
+</li>
+<li>WebGPT-produced answers are more preferred than human-generated ones</li>
+<li>Better <strong>coherence</strong> and <strong>factual accuracy</strong></li>
+</ul>
+</li>
+<li><p>Demo</p>
+<ul>
+<li>QA with T5 using OpenPrompt: Zero-shot inference. <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1UG411p7zv?p=90&amp;spm_id_from=pageDriver&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">vedio</a> is here.</li>
+<li>QA with T5 using OpenPrompt and OpenDelta: Delta tuning.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Text-Generation-TG"><a href="#Text-Generation-TG" class="headerlink" title="Text Generation(TG)"></a>Text Generation(TG)</h2><h3 id="TG"><a href="#TG" class="headerlink" title="TG"></a>TG</h3><ul>
+<li><p>Introduction to text generation</p>
+<ul>
+<li>Formal Definition: Produce understandable texts in human languages from some underlying non-linguistic representation of information. [Reiter et al., 1997]</li>
+<li>Text-to-text generation and data-to-text generation are both instances of TG [Reiter et al., 1997]</li>
+<li>Applications under umbrella of text generation</li>
+</ul>
+</li>
+<li><p>Tasks of text generation: Data-To-Text (image, table, graph), Dialogue, Machine Translation, Poetry Generation, Style Transfer, Storytelling, Summarization</p>
+<ul>
+<li><p>Data-to-Text -&gt; Various of data forms: image; table; graph……</p>
+</li>
+<li><p>Dialogue -&gt; Generate conversations that meet the purpose in response to specific user input</p>
+</li>
+<li><p>Machine Translation -&gt; Translate natural language sentences into a target language</p>
+</li>
+<li><p>Poetry Generation -&gt; Generate texts that meet the rhythmic requirements of the poem, based on keywords, or emotional control, etc</p>
+</li>
+<li><p>Style Transfer -&gt; Control the style of input text while preserve the the meaning</p>
+</li>
+<li><p>Storytelling -&gt; Generate a story that meets the attribute requirements based on the given keywords, story line, etc. </p>
+</li>
+<li><p>Summarization -&gt; Summarize the input text with selected part of input text (extractive) or with generated text (abstractive)</p>
+</li>
+</ul>
+</li>
+<li><p>Neural text generation</p>
+<ul>
+<li>Language Modeling<ul>
+<li>Predict next word given the words so far</li>
+<li>A system that produces this probability distribution is called a Language Model</li>
+<li>We use language models every day, such as …</li>
+</ul>
+</li>
+<li>Conditional Language Modeling<ul>
+<li>The task of predicting the next word, given the words so far, and also some other input</li>
+<li>x input/source</li>
+<li>y output/target sequence</li>
+</ul>
+</li>
+<li>Seq2seq(Encoder -&gt; Decoder)<ul>
+<li>Seq2seq is an example of conditional language model</li>
+<li>Encoder produces a representation of the source sentence</li>
+<li>Decoder is a language model that generates target sentence conditioned on encoding</li>
+<li>seq2seq can be easily modeled using a single neural network and trained in an end-to-end fashion</li>
+<li>seq2seq training by teacher forcing</li>
+<li>Training: predict next word based on previous ground-truth tokens, instead of predicted tokens</li>
+<li>Testing: predict next word based on previous predicted tokens</li>
+<li>Exposure Bias: The gap between training &amp; testing distribution</li>
+</ul>
+</li>
+<li>Text-to-Text-Transfer-Transformer (T5): <ul>
+<li>A Shared Text-To-Text Framework: reframing all NLP tasks into a unified text-to-text-format where the input and output are always text strings</li>
+<li>Training objective -&gt; Colossal Clean Crawled Corpus (C4) dataset, a cleaned version of Common Crawl (deduplication, discarding incomplete sentences, and removing offensive or noisy content), Unlabeled data.</li>
+</ul>
+</li>
+<li>Autoregressive Generation: Generate future values from past values.</li>
+<li>Generative Pre-Trained Transformer (GPT)<ul>
+<li>GPT-1: Improving language understanding by generative pretraining</li>
+<li>GPT-2: Language models are unsupervised multitask learners</li>
+<li>GPT-3: Language models are few shot learners</li>
+</ul>
+</li>
+<li>GPT-2<ul>
+<li>GPT-2: Language models are unsupervised multitask learners</li>
+<li>Train the language model with unlabeled data, then fine-tune the model with labeled data according to corresponding tasks</li>
+</ul>
+</li>
+<li>Non-Autoregressive Generation: Given a source, Generate in parallel.</li>
+</ul>
+</li>
+<li><p>Decoding</p>
+<ul>
+<li>Greedy decoding</li>
+<li>Beam search</li>
+<li>Sampling methods<ul>
+<li>Pure sampling</li>
+<li>Top-n sampling</li>
+<li>Nucleus sampling</li>
+</ul>
+</li>
+<li>Greedy Decoding: Generate the target sentence by taking <strong>argmax</strong> on each step of the decoder.</li>
+<li>Beam Search Decoding：<ul>
+<li>Find a high-probability sequence</li>
+<li>Beam search<ul>
+<li>On each step of decoder, keep track of the k <strong>most probable</strong> partial sequences</li>
+<li>After you reach some stopping criterion, choose the sequence with the <strong>highest probability</strong></li>
+<li><strong>Not</strong> necessarily the <strong>optimal</strong> sequence</li>
+</ul>
+</li>
+<li>What’s the effect of changing beam size k<ul>
+<li>Small k has similar problems to greedy decoding<ul>
+<li>Ungrammatical, unnatural, nonsensical, incorrect</li>
+</ul>
+</li>
+<li>Larger k means you consider more hypotheses<ul>
+<li>Reduces some of the problems above</li>
+<li>More computationally expensive</li>
+</ul>
+</li>
+<li>But increasing k can introduce other problems<ul>
+<li>For neural machine translation (NMT): Increasing k too much decreases BLEU score (Tu et al., Koehn et al.)</li>
+<li>chit-chat dialogue: Large k can make output more generic</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Sampling-based Decoding: <ul>
+<li>Pure sampling: On each step t, randomly sample from the probability distribution $P_{t}$ to obtain your next word</li>
+<li>Top-n sampling: <ul>
+<li>On each step t, randomly sample from $P_{t}$, <strong>restricted to just the top-n most probable words</strong></li>
+<li>$n = 1$ is <strong>greedy search</strong>, $n = V$ is pure sampling</li>
+</ul>
+</li>
+<li>Nucleus sampling (Top-p sampling)<ul>
+<li>On each step t, randomly sample from $P_{t}$, restricted to the top words that cover probability ≥ $p$</li>
+<li>$p = 1$ is <strong>pure sampling</strong></li>
+</ul>
+</li>
+<li>Sample with temperature: Before applying the final softmax, its inputs are divided by the temperature τ</li>
+<li>Increase n/p/temperature to get more diverse/risky output </li>
+<li>Decrease n/p/temperature to get more generic/safe output </li>
+<li>Both of these are more efficient than Beam search</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>In summary</p>
+<ul>
+<li>Greedy decoding<ul>
+<li>A simple method</li>
+<li>Gives low quality output</li>
+</ul>
+</li>
+<li>Beam search<ul>
+<li>Delivers better quality than greedy</li>
+<li>If beam size is too high, it will return unsuitable output (e.g. Generic, short)</li>
+</ul>
+</li>
+<li>Sampling methods<ul>
+<li>Get more diversity and randomness</li>
+<li>Good for open-ended/creative generation (poetry, stories)</li>
+<li>Top-n/p/temperature sampling allows you to control diversity</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Controllable-Text-Generation"><a href="#Controllable-Text-Generation" class="headerlink" title="Controllable Text Generation"></a>Controllable Text Generation</h3><ul>
+<li>Control text generation: <strong>avoid repeating, more diverse, …</strong></li>
+<li><strong>Prompt methods</strong><ul>
+<li>Horror xxx</li>
+<li>Reviews xxx</li>
+<li>加个prefix，去训练这个prefix。P-tuning, Prefix + LM，训练prefix。</li>
+</ul>
+</li>
+<li>Modifying probability distribution：贴近天使模型，远离魔鬼模型，进行概率控制。</li>
+<li>Reconstructing model architecture：<ul>
+<li>修改模型结构，添加部分transformer结构，专门用于编码控制信号/关系。在对source的文本进行cross-attention之前，首先和guidance signal进行cross-attention，线对于控制信号进行感知。</li>
+<li>Specialized encoder for guidance signal</li>
+<li>Decoder: self-attention -&gt; (+guidance signal)cross-attention -&gt; (+source document)cross-attention -&gt; FFN</li>
+</ul>
+</li>
+</ul>
+<h3 id="Text-generation-evaluation"><a href="#Text-generation-evaluation" class="headerlink" title="Text generation evaluation"></a>Text generation evaluation</h3><ul>
+<li>Common metrics<ul>
+<li>BLEU (Bilingual evaluation understudy)<ul>
+<li>easy to compute</li>
+<li>doesn’t consider semantics &amp; sentence structure</li>
+</ul>
+</li>
+<li>PPL (perplexity)<ul>
+<li>Evaluate how well a probability model predicts a sample.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Overlap-based Metric<ul>
+<li>ROUGE (Recall-Oriented Understudy for Gisting Evaluation): solve the problem of missed flipping (low recall rate)</li>
+<li>NIST: consider the amount of n-gram information</li>
+<li>METEOR: based on the harmonic mean of precision and recall</li>
+</ul>
+</li>
+<li>Distance-based Metrics<ul>
+<li>Edit Dist(cosine similarity);SMD(embedding distance);<br>YISI (weighted similarity)</li>
+</ul>
+</li>
+<li>Diversity Metrics<ul>
+<li>Distinct (n-gram diversity);Entropy;KL_divergence</li>
+</ul>
+</li>
+<li>Task-oriented Metrics<ul>
+<li>SPICE(Semantic propositional image caption evaluation)</li>
+</ul>
+</li>
+<li>Human Evaluation<ul>
+<li>Intrinsic (fluency,internal relevance,correctness)</li>
+<li>Extrinsic(performance on the downstream subtasks)</li>
+</ul>
+</li>
+</ul>
+<h3 id="TG-Tasks-Challenges"><a href="#TG-Tasks-Challenges" class="headerlink" title="TG Tasks: Challenges"></a>TG Tasks: Challenges</h3><ul>
+<li><p>Challenges</p>
+<ul>
+<li><p>Training model strategy</p>
+<ul>
+<li>Always generate repeated words</li>
+<li>Exposure bias</li>
+</ul>
+</li>
+<li><p>Commonsense</p>
+<ul>
+<li>Lack of logical consistency</li>
+</ul>
+</li>
+<li><p>Controllability</p>
+<ul>
+<li>Difficult to ensure both language quality and control quality</li>
+</ul>
+</li>
+<li><p>Evaluation:Reasonable metrics and datasets</p>
+</li>
+</ul>
+</li>
+<li><p>Demo: GPT-2</p>
+<ul>
+<li>Task<ul>
+<li>The WebNLG challenge consists in mapping data to text</li>
+<li>The training data consists of Data/Text pairs where the data is a set of triples extracted from DBpedia and the text is a verbalization of these triples.</li>
+<li>Example:<ul>
+<li>a. (John_E_Blaha birthDate 1942_08_26) (John_E_Blaha birthPlace San_Antonio) (John_E_Blaha occupation Fighter_pilot) b. John E Blaha, born in San Antonio on 1942-08-26, worked as a fighter pilot</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Text generated with untuned GPT-2</li>
+<li>Loss</li>
+<li>Text generated with tuned GPT-2</li>
+</ul>
+</li>
+</ul>
+<h1 id="L7-BM-in-Biomedical"><a href="#L7-BM-in-Biomedical" class="headerlink" title="L7 BM in Biomedical"></a>L7 BM in Biomedical</h1><h2 id="Introduction-1"><a href="#Introduction-1" class="headerlink" title="Introduction"></a>Introduction</h2><ul>
+<li><p>Outline</p>
+<ul>
+<li>Brief Introduction of Biomedical NLP </li>
+<li>Biomedical Text Mining: Tasks, PLMs, Knowledge, Application </li>
+<li>Diagnosis Assistance: Text Classification, Conversation </li>
+<li>Substance Representation: DNA, Protein, Chemicals </li>
+<li>Project: BioSeq PLMs and Benchmark </li>
+<li>Biomedical NLP: Future Directions</li>
+</ul>
+</li>
+<li><p>What does biomedical NLP study?</p>
+<ul>
+<li>Search and read long literature in large number? → Obtain ready-made knowledge directly!</li>
+<li>Line up at the door of consulting room? → Ask automatic diagnosis system for efficiency!</li>
+<li>Predict the properties of some organic substance? → Use AI model to get deeper insights into biomedical substances!</li>
+</ul>
+</li>
+<li><p>What does biomedical NLP study?</p>
+<ul>
+<li>For knowledge and efficiency: biomedical literature, drug instructions, clinical records, experimental operation guide, …</li>
+<li>For practical applications: diagnosis assistance, meta-analysis, exploration for new drugs, pharmacy, …</li>
+<li>For insights into domain-specific data: molecules, proteins, DNA, …</li>
+</ul>
+<blockquote>
+<p>Biomedical NLP can go far beyond the traditional ‘language’.</p>
+</blockquote>
+</li>
+<li><p>What characteristics does biomedical NLP have?</p>
+<ul>
+<li>Mass of raw data / Little golden annotated data</li>
+<li>Unsupervised and Weakly supervised / Supervised</li>
+<li>Resources: PubMed, ChemProt</li>
+</ul>
+</li>
+<li><p>What characteristics does biomedical NLP have?</p>
+<ul>
+<li>High knowledge threshold</li>
+<li><strong>knowledge-enhanced learning</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="Text-Mining-Tasks"><a href="#Text-Mining-Tasks" class="headerlink" title="Text Mining: Tasks"></a>Text Mining: Tasks</h2><ul>
+<li><p>Entities, Entities -&gt; BioNER/BioNEN</p>
+<ul>
+<li><p>Traditional: Dictionary-based; Semantic; Statistical. DL-based: End2end. <a target="_blank" rel="noopener" href="https://www.ncbi.nlm.nih.gov/research/pubtator/">https://www.ncbi.nlm.nih.gov/research/pubtator/</a> </p>
+</li>
+<li><p>Rule-based; CRF…</p>
+</li>
+</ul>
+<blockquote>
+<p>Highlighted words are recognized entity mentions.</p>
+</blockquote>
+<ul>
+<li>Link entities to various KBs.</li>
+</ul>
+</li>
+<li><p>Literatures, Literatures -&gt; topic recognition/indexing</p>
+<ul>
+<li>Supervised machine learning models;</li>
+<li>Ranking models; Ontology matching models.</li>
+<li>PubMed literature search interface</li>
+</ul>
+</li>
+<li><p>Relations &amp; Events, Relations &amp; Events -&gt; BioRE/RD, Event Extraction</p>
+<ul>
+<li>Template/rule-based; Statistical</li>
+<li>NLP(parsing)-based; Sequence Labeling</li>
+</ul>
+</li>
+<li><p>Pathways &amp; Hypothesis, Pathways &amp; Hypothesis -&gt; pathway extraction/literature-based discovery</p>
+<ul>
+<li>Rule-based; ML-based; Hybrid.</li>
+<li>ABC co-occurrence model based</li>
+</ul>
+</li>
+<li><p><strong>A common pipeline of biomedical text mining</strong></p>
+<ul>
+<li><strong>Named entity recognition (NER)</strong> -&gt; <strong>Named entity normalization (NEN)</strong> -&gt; Relation Extraction (RE)</li>
+<li>Simple but work baselines for NER (include <strong>entity typing</strong>):CNNs,BiLSTM CRF</li>
+<li>With PLMs as backbone:BERTs CRF, BERTs + <strong>Prompt</strong></li>
+<li>Common scenario of NEN:representation “distance”</li>
+<li>Key for NEN: <strong>entity disambiguation</strong> (context + <strong>knowledge</strong> in KB)</li>
+<li>SciSpacy: a python package tailored for biomedical semantic analysis, including NER and NEN pipelines</li>
+<li>PubTator: a Web-based system providing automatic NER and NEN annotations (PubMed + PMC)</li>
+</ul>
+</li>
+<li><p>BERT + BiLSTM + CRF (A common Method for NER)</p>
+<ul>
+<li>BERT + Prompt (Entity Typing)</li>
+</ul>
+</li>
+<li><p>A common pipeline of biomedical text mining</p>
+<ul>
+<li>Named entity recognition (NER) → Named entity normalization (NEN) → Relation Extraction (RE)</li>
+<li>RE: sentence-level / document-level</li>
+<li>Benchmarks: ChemProt, PPI / BC5CDR, GDA</li>
+<li>Common Methods: BERT-based and graph-based methods</li>
+<li>Relation types: from binary to complex</li>
+</ul>
+</li>
+<li><p>A simple BERT-based document-level RE model</p>
+</li>
+<li><p>A GCN-based document-level RE model</p>
+</li>
+<li><p>Data characteristics of biomedical text mining</p>
+<ul>
+<li>The cost of professional data labeling is extremely high</li>
+<li>Problems concerned with data: <strong>small scale</strong> and <strong>incomplete categories</strong></li>
+<li>ChemProt: chemical – proteins, 1820 / BC5CDR: chemical – diseases, 1500</li>
+<li>Unsupervised: PLMs; <strong>Weakly Supervised</strong>: distant supervision (<strong>denoise</strong>)</li>
+<li>An example of labeling PubMed with CTD</li>
+<li>Common labeling strategy: NER + NEN tools + KG; model-based methods</li>
+</ul>
+</li>
+<li><p>Model-based denoising</p>
+</li>
+<li><p>Self-Training denoising</p>
+</li>
+</ul>
+<h2 id="Text-Mining-PLMs"><a href="#Text-Mining-PLMs" class="headerlink" title="Text Mining: PLMs"></a>Text Mining: PLMs</h2><ul>
+<li><strong>PLMs</strong> have shown their power in various of tasks (the power of <strong>unsupervised learning</strong>)</li>
+<li>Domain-specific PLM: <ul>
+<li><strong>domain corpus</strong> (Sci-BERT, BioBERT, clinical BERT, …)</li>
+<li><strong>special pretraining task</strong> (MC-BERT, KeBioLM, …)</li>
+</ul>
+</li>
+</ul>
+<h2 id="Text-Mining-Knowledge"><a href="#Text-Mining-Knowledge" class="headerlink" title="Text Mining: Knowledge"></a>Text Mining: Knowledge</h2><ul>
+<li><strong>Knowledge Bases (KBs)/Knowledge Graphs (KGs)</strong></li>
+<li>An important <strong>application</strong> of text mining: <strong>unstructured -&gt; structured</strong></li>
+<li>Famous KBs:MeSH,UMLS,NCBI Gene,UniProt,..</li>
+<li>KGs:CTD,DisGeNet,HuRl,..</li>
+<li>Challenges:KBs all have their own limitations and are far from unified;KGs are small in scale and incomplete</li>
+<li>Conversely, KBs/KGs can also help the model to better handle downstream tasks</li>
+<li><strong>Knowledge-Enhanced</strong>:<ul>
+<li>shallow (entity disambiguation)</li>
+<li>deep (semantic information in intricate KGs)</li>
+</ul>
+</li>
+<li>Methods to integrate knowledge into PLMs: Adapters, Customized pretraining tasks, Prompt Tuning, Delta Tuning, …</li>
+<li>Enhanced NER for proteins and genes</li>
+<li>SMedBERT: Enhanced PLM</li>
+</ul>
+<h2 id="Text-Mining-Application"><a href="#Text-Mining-Application" class="headerlink" title="Text Mining: Application"></a>Text Mining: Application</h2><ul>
+<li><p>NER and NEN:</p>
+<ul>
+<li>Easy access to knowledge when reading literature</li>
+<li>Bridge the gap between documents and KBs/KGs</li>
+<li>Correspond colloquial expressions (e.g. patient consultation) to standard technical terminology</li>
+<li>triage / QA assistance</li>
+</ul>
+</li>
+<li><p>Building of KBs/KGs:</p>
+<ul>
+<li>Obtain Knowledge within several clicks</li>
+<li>Is that enough?</li>
+<li>Search for entity “aspirin” in CTD</li>
+<li>Diseases and evidences related to “aspirin”</li>
+</ul>
+</li>
+<li><p>Relation Extraction:</p>
+<ul>
+<li>Building of knowledge graphs</li>
+<li>Relation-aware literature retrieval</li>
+</ul>
+</li>
+<li><p>NER + NEN + RE (sometimes Event Extraction, …):</p>
+<ul>
+<li>Clinical analysis: Automatically extract and analyze valid information from clinical records and integrate experimental conclusions</li>
+<li>Lead to new biomedical discovery and hypothesis</li>
+</ul>
+<blockquote>
+<p>30 patients with type 2 diabetes mellitus who showed poor glycemic control with glimepiride (4 mg/d) were randomized to rosiglitazone (4 mg/d) and metformin (500 mg bid) treatment groups. The plasma concentrations of resistin were measured at baseline and at 6 months of treatment for both groups. The resistin levels decreased in rosiglitazone group (2.49 F 1.93 vs 1.95 F 1.59 ng/ml; P b .05) but increased in metformin group (2.61 F 1.69 vs 5.13 F 2.81 ng/ml; Pb.05)…</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Diagnosis-Assistance"><a href="#Diagnosis-Assistance" class="headerlink" title="Diagnosis Assistance"></a>Diagnosis Assistance</h2><ul>
+<li>Biomedical NLP for the <strong>crowd</strong></li>
+<li>Scarce medical resources / Flourishing online services</li>
+<li>Reduce the pressure on doctors and improve the work efficiency of hospital systems</li>
+</ul>
+<h3 id="Diagnosis-Assistance-Text-Classification"><a href="#Diagnosis-Assistance-Text-Classification" class="headerlink" title="Diagnosis Assistance: Text Classification"></a>Diagnosis Assistance: Text Classification</h3><ul>
+<li>Common tasks: automatic triage&amp;medicine prescription</li>
+<li>Datasets: annotated entities prediction</li>
+<li>Backbones: SVM, LSTM; BERT; GPT…</li>
+<li>Common tasks: automatic triage&amp;medicine prescription</li>
+<li>Classify as a matching/retrieval process</li>
+</ul>
+<blockquote>
+<p>we may try to inject more knowledge (e.g. description from KBs)</p>
+</blockquote>
+<h3 id="Diagnosis-Assistance-Dialogue"><a href="#Diagnosis-Assistance-Dialogue" class="headerlink" title="Diagnosis Assistance: Dialogue"></a>Diagnosis Assistance: Dialogue</h3><ul>
+<li><p>AI systems: replace the doctor’s role to complete more operations including communicating with the patients</p>
+</li>
+<li><p>Datasets: MedDialog ( large-scale Chinese dataset )</p>
+</li>
+<li><p>Dialogue as a typical text generation task:</p>
+<ul>
+<li>Different from QA: usually multi-turn; no candidate answer</li>
+<li>Chat-box; task-oriented …… many practical systems</li>
+<li>Dialogue as a typical <strong>text generation</strong> task:<ul>
+<li>Different from QA: usually multi-turn; no candidate answer</li>
+<li>Chat-box; task-oriented …… many practical systems</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Retrieval-based</strong> Dialogue System: traditional method</p>
+</li>
+<li><p>Fluent but not always related</p>
+</li>
+<li><p>Combine with generation-based DS</p>
+</li>
+<li><p>Knowledge-based Dialogue System: More logical</p>
+</li>
+<li><p>In the real world: …</p>
+</li>
+<li><p>Incorporate knowledge</p>
+</li>
+<li><p>Human thinking process</p>
+<ul>
+<li>Language models capture knowledge and generate language</li>
+<li>Dialogue Generation from KGs with Graph Transformers</li>
+</ul>
+</li>
+<li><p>Medical Dialogue: Safety( Plenty of knowledge + Interpretability)</p>
+</li>
+<li><p>A typical application for medical knowledge interactivity:</p>
+<ul>
+<li>Users-&gt;Models: extract emperical knowledge</li>
+<li>Models-&gt;Users: query existing knowledge</li>
+</ul>
+</li>
+<li><p>Stylized language: gap between colloquial style of patients and thestandard terms and structured items in KB/KGs</p>
+<ul>
+<li><strong>Entity Linking / Standarlization</strong> for diagnosis</li>
+<li>Privacy protection</li>
+</ul>
+</li>
+<li><p>Summarize the key concepts</p>
+</li>
+<li><p>Ready for the further KB enhancing</p>
+</li>
+<li><p>Patient <strong>states</strong> &amp; Physician <strong>policies</strong></p>
+</li>
+<li><p>KL loss for state distribution</p>
+</li>
+<li><p>Clear and understandable</p>
+<ul>
+<li>1st: States training</li>
+<li>2nd: States+Actions training</li>
+</ul>
+</li>
+<li><p>Our exploration:</p>
+<ul>
+<li>Multi-task &amp; soft prompt learning during pre-training</li>
+<li>2-stage framework for the medical dialogue task</li>
+</ul>
+</li>
+</ul>
+<h2 id="Diagnosis-Assistance-1"><a href="#Diagnosis-Assistance-1" class="headerlink" title="Diagnosis Assistance"></a>Diagnosis Assistance</h2><ul>
+<li>Something about Big Models:<ul>
+<li>Externally,we integrate KB/KGs during the encoding of medical dialogue text</li>
+<li>Internally, we <strong>regard the PLM itself as a KB</strong>,hoping to query corresponding information from it</li>
+<li>Prompt/Cloze?CoT?</li>
+<li>How to protect privacy?</li>
+</ul>
+</li>
+</ul>
+<h2 id="Substance-Representation"><a href="#Substance-Representation" class="headerlink" title="Substance Representation"></a>Substance Representation</h2><ul>
+<li>NLP systems can process natural language text</li>
+<li>What if we want to process <strong>biomedical substances</strong>?</li>
+<li>NLP systems can process <strong>not only</strong> natural language text</li>
+<li>To represent biomedical substances as <strong>linear text</strong></li>
+<li>Background knowledge review</li>
+<li>Nucleic acid sequence: A, G, C, T (U)</li>
+<li>Amino acid sequence: 20 for human</li>
+<li>Protein: Quaternary structure</li>
+</ul>
+<h3 id="Substance-Representation-DNA"><a href="#Substance-Representation-DNA" class="headerlink" title="Substance Representation: DNA"></a>Substance Representation: DNA</h3><ul>
+<li><p>Major research object: <strong>non-coding DNA</strong></p>
+</li>
+<li><p>Tasks:</p>
+<ul>
+<li><strong>predict gene expression</strong></li>
+<li>predict proximal and core promoter regions</li>
+<li>identify transcription factor binding sites</li>
+<li>figure out important regions, contexts and sequence motifs</li>
+<li>…</li>
+</ul>
+</li>
+<li><p>Datasets: plenty of open-access resources</p>
+<ul>
+<li>Homo sapiens genome assembly (CRCh38/hg38)</li>
+<li>Cap Analysis Gene Expression (CAGE) Databases</li>
+<li>Descartes: Human Chromatin Accessibility During Development</li>
+<li>……</li>
+</ul>
+</li>
+<li><p>Natural language models are good at <strong>capturing patterns</strong> from mass of sequence data</p>
+</li>
+<li><p>From simple frameworks (e.g. CNN&amp;LSTM) to Transformer</p>
+</li>
+<li><p>“Tokens” are fewer than natural language -&gt; less information in word embeddings</p>
+<ul>
+<li><strong>position</strong> is important</li>
+<li><strong>k-mer</strong> sliding window input</li>
+</ul>
+</li>
+</ul>
+<h3 id="Substance-Representation-Protein"><a href="#Substance-Representation-Protein" class="headerlink" title="Substance Representation: Protein"></a>Substance Representation: Protein</h3><ul>
+<li>We mainly focus on the <strong>amino acid sequences</strong></li>
+<li>Tasks:<ul>
+<li>Structure Prediction</li>
+<li>Evolutionary Understanding</li>
+<li>Protein Engineering</li>
+<li>…</li>
+</ul>
+</li>
+<li>Datasets:<ul>
+<li>Uniref: provide clustered sets of sequences from the UniProt Knowledgebase</li>
+<li>GO annotations: capture statements about how a gene functions at the molecular level</li>
+<li>Protein Data Bank……</li>
+</ul>
+</li>
+<li>Methods: BiLSTM + CRFs, Autoencoder models …</li>
+<li>Big Model:<ul>
+<li>Models with larger-scale parameters are better at capturing the features from the biologic sequences.</li>
+<li><strong>Pre-training</strong> is proved to be especially helpful!</li>
+</ul>
+</li>
+<li><strong>Alpha-Fold</strong>: One of the most inspiring research results!</li>
+<li>Predict 3D structure with the help of molecular dynamics</li>
+<li>MSA + EvoFormer +End2end training: perfect combination for biomedical knowledge and NLP technique</li>
+<li>A breakthrough for the 3D structure prediction accuracy (comparable to human level)</li>
+<li>Inspired by AlphaFold: <strong>MSA Transformer</strong></li>
+<li>Column/Row attention structure</li>
+<li>Mean attention better than individual?<ul>
+<li>EvoFormer: unsupervised MSA mask learning for initialization</li>
+<li>Structure: annotated data for the initial network; predict the unannotated data and noisestudent training</li>
+<li>MSA row/column attention; templates</li>
+<li>A representation for each pair of residues</li>
+<li>pairwise repr graph iterative update</li>
+<li>single repr and pair repr; blackhole initialize; Peptide bond angles and distances</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb">Interaction is here</a></li>
+</ul>
+<h3 id="Substance-Expression-Chemicals"><a href="#Substance-Expression-Chemicals" class="headerlink" title="Substance Expression: Chemicals"></a>Substance Expression: Chemicals</h3><ul>
+<li>Molecular fingerprints:essential cheminformatics tools for virtual screening and mapping chemical space</li>
+<li>Get fingerprint representation by deep-learning models?</li>
+<li>Molecular <strong>graphs</strong> -GCNs; SMILES <strong>strings</strong> -LMs</li>
+<li>Tasks:molecule property classification,chemical reaction classification,…</li>
+<li>Datasets:MoleculeNet,USPTO 1k TPL,..</li>
+<li>Case:KV-PLM</li>
+<li><strong>Bridging</strong> chemicals with general text<ul>
+<li>Complementary features of heterogeneous data</li>
+<li>Inspired by human observing and learning mapping correlation</li>
+</ul>
+</li>
+<li>PLM intergrating chemical sturcture &amp; text</li>
+<li>Comprehensively processing both SMILES strings and general text</li>
+<li>Model finishing chemical exam: <strong>property prediction</strong></li>
+<li>Conversely, it provides help for <strong>drug discovery</strong></li>
+</ul>
+<h2 id="Project-BioSeq-PLMs-and-Benchmark"><a href="#Project-BioSeq-PLMs-and-Benchmark" class="headerlink" title="Project: BioSeq PLMs and Benchmark"></a>Project: BioSeq PLMs and Benchmark</h2><ul>
+<li>Background<ol>
+<li>NLP technologies are widely introduced to processing biological sequences</li>
+<li>There exist differences between natural language and Bio-Seq.Better PLMs are expected to be proposed.</li>
+</ol>
+</li>
+<li>Long-term Goals<ol>
+<li>Propose a robust and comprehensive benchmark for DNA data process</li>
+<li>Explore better model structure and pre-train method for DNAs</li>
+</ol>
+</li>
+<li>Projects<ol>
+<li>Reproduce and improve DNA pre-trained baseline methods</li>
+<li>Build down-stream DNA tasks from open-source databases</li>
+</ol>
+</li>
+</ul>
+<h2 id="Biomedical-NLP-Future-Directions"><a href="#Biomedical-NLP-Future-Directions" class="headerlink" title="Biomedical NLP: Future Directions"></a>Biomedical NLP: Future Directions</h2><ul>
+<li><strong>Knowledgeable big model</strong>: models with more <strong>expert knowledge</strong> achieving better performance</li>
+<li><strong>Al for science</strong>: <strong>user-friendly assistant tools</strong> with lower barriers to entry;unleash human researcher productivity</li>
+<li><strong>Cross-modal processing</strong>: bridging vision language information or <strong>different forms of data</strong> (e.g.graphs)</li>
+<li><strong>Low-resource learning</strong>: lack of annotated data</li>
+</ul>
+<h1 id="L8-BM-x-Legal-Intelligence"><a href="#L8-BM-x-Legal-Intelligence" class="headerlink" title="L8 BM x Legal Intelligence"></a>L8 BM x Legal Intelligence</h1><h2 id="Background-1"><a href="#Background-1" class="headerlink" title="Background"></a>Background</h2><ul>
+<li><p>Challenges</p>
+<ul>
+<li>In US, roughly 86% of low-income individuals with civil legal problems report receiving inadequate or no legal help</li>
+<li>In China, roughly 80% of cases have no access to the support of lawyers</li>
+</ul>
+</li>
+<li><p>Legal Artificial Intelligence (LegalAI)</p>
+<ul>
+<li>AI for Law: Apply the technology of artificial intelligence, especially natural language processing, to benefit tasks in the legal domain</li>
+<li>Law for AI: Use laws to regulate the development, deployment, and use of AI</li>
+</ul>
+</li>
+<li><p>AI for Law</p>
+<ul>
+<li>Reduce the time consumption of tedious jobs and improve work efficiency for legal professionals</li>
+<li>Provide a reliable reference to those who are unfamiliar with the legal domain</li>
+</ul>
+</li>
+<li><p>Challenges</p>
+<ul>
+<li>Lack of labeled data -&gt; There are only limited high-quality human-annotated data for legal tasks, and data labeling is costly</li>
+<li>High demand for professional knowledge -&gt; Legal tasks usually involve many legal concepts and knowledge</li>
+</ul>
+</li>
+</ul>
+<h2 id="Legal-Intelligence-Applications"><a href="#Legal-Intelligence-Applications" class="headerlink" title="Legal Intelligence Applications"></a>Legal Intelligence Applications</h2><ul>
+<li><p>Legal Judgement Prediction -&gt; Given the fact description, legal judgement prediction aims to predict the judgement results, such as relevant law articles, charges, prison terms</p>
+</li>
+<li><p>Legal Judgement Prediction</p>
+<ul>
+<li>Multiple subtasks<ul>
+<li>Criminal cases: relevant law article prediction, charge prediction, prison term prediction, fine prediction …</li>
+<li>Civil cases: relevant law article prediction, cause of action prediction, ……</li>
+</ul>
+</li>
+<li>Task formalization<ul>
+<li>Inputs: the fact description</li>
+<li>Relevant law article: classification</li>
+<li>Charge/Cause of action: classification</li>
+<li>Prison term/Fine: regression</li>
+</ul>
+</li>
+<li>Challenges<ul>
+<li>Confusing charges</li>
+<li>Interpretability</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Similar Case Retrieval</p>
+<ul>
+<li>Given a query case, similar case retrieval aims to retrieve relevant supporting cases</li>
+<li>Task formalization<ul>
+<li>Query case: q</li>
+<li>Candidate cases: C </li>
+<li>Outputs: relevance score for each query-candidate pair $(q, c_i)$</li>
+</ul>
+</li>
+<li>Challenges<ul>
+<li>Long document matching</li>
+<li>Relevance definition</li>
+<li>Diverse user intention</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Legal Question Answering</p>
+<ul>
+<li>Legal question answering aims to provide explanations, advice, or answers for legal questions.</li>
+<li>Task formalization<ul>
+<li>Inputs: question</li>
+<li>Step 1: retrieve the relevant knowledge (law articles, legal concepts) from the knowledge base</li>
+<li>Step 2: answer the question based on the relevant knowledge</li>
+</ul>
+</li>
+<li>Challenges<ul>
+<li>Concept-Fact Matching</li>
+<li>Multi-hop reasoning</li>
+<li>Numerical reasoning</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Court View Generation</p>
+<ul>
+<li>Given the fact description and plaintiff’s claim, court view generation aims to generate the rationales and results of the cases.</li>
+<li>Task formalization<ul>
+<li>Inputs: claim and fact description</li>
+<li>Outputs: The decisions (Accept/Reject) and the corresponding reasons</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Other applications</p>
+<ul>
+<li>Legal Cases Retrieval</li>
+<li>Legal Information Recommendation</li>
+<li>Risk Warning</li>
+<li>Legal Judgment Prediction</li>
+<li>Legal Documents Translation</li>
+<li>Legal Text Mining</li>
+<li>Legal Documents Generation</li>
+<li>Legal Question-Answering</li>
+<li>Compliance Review</li>
+</ul>
+</li>
+<li><p>Two Lines of Research</p>
+<ul>
+<li>Data-Driven Methods<ul>
+<li>Legal cases</li>
+<li>Trademarks Patents</li>
+<li>Court Trial</li>
+</ul>
+</li>
+<li>Knowledge-Guided Methods<ul>
+<li>Legal Regulations</li>
+<li>Judicial Interpretation</li>
+<li>Legal Literatures</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Data-Driven-Methods"><a href="#Data-Driven-Methods" class="headerlink" title="Data-Driven Methods"></a>Data-Driven Methods</h2><ul>
+<li>Utilize deep neural networks to capture semantic representations from large-scale data</li>
+<li>Large-scale open-source legal corpora<ul>
+<li>130 millions legal case documents</li>
+<li>160 millions patents/trademarks documents</li>
+<li>19 millions court trial data</li>
+</ul>
+</li>
+<li>Typical data-driven methods<ul>
+<li>Word embeddings</li>
+<li>Pre-trained language models</li>
+</ul>
+</li>
+<li>Open-domain PLMs is suboptimal for the legal domain<ul>
+<li>Differences in narrative habits and writing styles</li>
+<li>Many terminology and concepts in legal documents</li>
+</ul>
+</li>
+<li>Train PLMs based on large-scale unlabeled legal documents<ul>
+<li>Masked Language Model</li>
+</ul>
+</li>
+<li>PLMs in the legal domain<ul>
+<li>Don’t stop pre-training!</li>
+<li>Additional pre-training on target corpora can lead to performance improvement</li>
+<li>Legal-BERT: pretrained on English legal documents</li>
+<li>OpenCLaP: pretrained on Chinese legal documents</li>
+</ul>
+</li>
+<li>PLMs for <strong>long documents</strong> in the legal domain<ul>
+<li>Legal documents usually involve complex facts and consist of 1260.2 tokens on average</li>
+<li>Most existing PLMs can only handle documents with no more than 512 tokens</li>
+</ul>
+</li>
+<li>PLMs for <strong>legal long documents</strong> in the legal domain<ul>
+<li>Lawformer utilizes the sparse self-attention mechanism instead of full self-attention mechanism to encode the long documents</li>
+<li>Pre-training Data, Model Parameters, Tasks</li>
+<li>Lawformer can achieve significant performance improvement</li>
+</ul>
+</li>
+<li>Legal PLMs: Learning Responsible Data Filtering from the Law<ul>
+<li>Privacy Filtering<ul>
+<li>the law provides a number of useful heuristics that researchers could deploy to sanitize data</li>
+<li>juvenile names, dates of birth, account, and identity number</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Knowledge-Guided-Methods"><a href="#Knowledge-Guided-Methods" class="headerlink" title="Knowledge-Guided Methods"></a>Knowledge-Guided Methods</h2><ul>
+<li><p>Knowledge-Guided Methods</p>
+<ul>
+<li>Enhance the data-driven neural models with the legal domain knowledge to improve the performance and interpretability on downstream tasks</li>
+<li>Knowledge in open-domain<ul>
+<li>Knowledge Graphs</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Typical legal knowledge</p>
+<ul>
+<li>Events occurred in the cases</li>
+<li>Decision-making elements</li>
+<li>Legal logic</li>
+<li>Legal regulations</li>
+</ul>
+</li>
+<li><p>LegalAI Applications</p>
+<ul>
+<li>Legal Judgement Prediction -&gt; Given the fact description, legal judgement prediction aims to predict the judgement results, such as relevant law articles, charges, prison terms</li>
+<li>Legal Event Knowledge<ul>
+<li>Key of Legal Case Analysis: Identifying occurred events and causal relations between these events</li>
+<li>Legal events can serve as high-quality case representations</li>
+</ul>
+</li>
+<li>Existing Legal Event Datasets<ul>
+<li>Incomprehensive event schema<ul>
+<li>Limited coverage: only contain tens of event types with a narrow scope of charges</li>
+<li>Inappropriately defined: only contain charge-oriented charges and ignore general events</li>
+</ul>
+</li>
+<li>Limited data annotations<ul>
+<li>Only contain thousands of event mentions</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Our Goal</p>
+<ul>
+<li>Large-scale: 8,116 legal documents with 118 criminal charges and 150,977 mentions</li>
+<li>High coverage: 108 event types, including 64 chargeoriented events and 44 general events</li>
+</ul>
+</li>
+<li><p>Legal Events for Downstream Tasks</p>
+<ul>
+<li>Combine the pretrained models with the legal event knowledge</li>
+<li>Add occurred events as additional features to generate the document representation</li>
+</ul>
+</li>
+<li><p>Legal Events for Judgement Prediction</p>
+<ul>
+<li>Combine the pretrained models with the legal event knowledge</li>
+<li>Utilize occurred events as features to represent legal cases<ul>
+<li>low-resource setting</li>
+<li>full-data setting</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Legal Events for Similar Case Retrieval</p>
+<ul>
+<li>Combine the pretrained models with the legal event knowledge</li>
+<li>Utilize occurred events as features to represent legal cases<ul>
+<li>unsupervised setting </li>
+<li>supervised setting</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Legal Element Knowledge</p>
+<ul>
+<li>Legal elements refer to crucial attributes of legal cases, which are summarized by legal experts</li>
+<li>Long-tail distribution -&gt; Top 10 charges cover 78.1% cases</li>
+<li>Confusing charges -&gt; Theft vs. Robbery</li>
+</ul>
+</li>
+<li><p>Legal Elements for few-shot and confusing charges</p>
+<ul>
+<li>Combine data-driven deep learning methods with legal element knowledge</li>
+<li>Utilize elements as additional supervision signals to improve the performance on low-frequency charges</li>
+</ul>
+</li>
+<li><p>Legal Elements for interpretable prediction</p>
+<ul>
+<li>Existing methods usually suffer from the lack of interpretability, which may lead to ethical issues</li>
+<li>Following the principle of elemental trial, QAJudge is proposed to visualize the prediction process and give interpretable judgments</li>
+<li>QAJudge can achieve comparable results with SOTA models, and provide explanation for the prediction results</li>
+</ul>
+</li>
+<li><p>Legal Logic Knowledge</p>
+<ul>
+<li>Topological dependencies between subtasks</li>
+<li>There exists a strict order among the subtasks of legal judgment</li>
+<li>Capture the dependencies with recurrent neural network unit</li>
+</ul>
+</li>
+<li><p>Legal Regulations</p>
+<ul>
+<li>Legal regulations are one of the most important knowledge bases for legal intelligence systems</li>
+<li>Compared to structured legal knowledge, unstructured legal regulations do not require manual knowledge summarization, so the cost of acquiring such knowledge is much lower</li>
+</ul>
+</li>
+<li><p>Legal Regulations for Judgement Prediction</p>
+<ul>
+<li>The judgement results are predicted based on both the fact descriptions and relevant law articles</li>
+<li>The aggregation is performed via the attention mechanism</li>
+</ul>
+</li>
+<li><p>Legal Regulations for Question Answering</p>
+<ul>
+<li>Textual legal regulations and cognitive reasoning are required for legal QA</li>
+<li>Cognitive reasoning are required for legal QA</li>
+<li>Semantic retrieval and cognitive reasoning are required for legal QA</li>
+</ul>
+</li>
+<li><p>Legal Knowledge-Guided Methods</p>
+<ul>
+<li>Legal Event Knowledge</li>
+<li>Legal Element Knowledge</li>
+<li>Legal Logic Knowledge</li>
+<li>Legal Regulation Knowledge</li>
+<li>……</li>
+</ul>
+</li>
+<li><p>Advantages</p>
+<ul>
+<li>Learn from limited labelled data</li>
+<li>Improve the reasoning ability</li>
+</ul>
+</li>
+<li><p>Demo: <a target="_blank" rel="noopener" href="https://law.thunlp.org/">https://law.thunlp.org/</a></p>
+</li>
+</ul>
+<h2 id="Quantitative-Analysis-for-Legal-Theory"><a href="#Quantitative-Analysis-for-Legal-Theory" class="headerlink" title="Quantitative Analysis for Legal Theory"></a>Quantitative Analysis for Legal Theory</h2><ul>
+<li><p>Mining patterns from a large number of case documents to improve or supplement legal theory</p>
+</li>
+<li><p>Common Law System</p>
+<ul>
+<li>The outcome of a new case is determined mostly by precedent cases, rather than by existing statutes</li>
+<li>Halsbury believes that the arguments of the precedent are the main determinant of the outcome.</li>
+<li>Goodhart believes that what matters most is the precedent’s facts.</li>
+</ul>
+</li>
+<li><p>Mutual information test</p>
+</li>
+<li><p>Legal Fairness Analysis</p>
+<ul>
+<li>Motivation: Fairness is one of the most important principles of justice. The ability to quantitatively analyze the fairness of cases can help to implement judicial supervision and promote fairness and justice.</li>
+<li>Goal: To perform fairness analysis on large-scale realworld data</li>
+<li>Similar cases should be judged similarly!</li>
+<li>Train different virtual judges (sentence prediction models) and calculate their disagreements using standard deviations</li>
+<li>Synthetic datasets: we construct biased datasets by keeping facts the same and perturbing the term of penalty randomly with $\beta$ as the inconsistency factor</li>
+<li>The proposed method can achieve high correlation between the golden inconsistency factor</li>
+<li>Inconsistency is negatively correlated with the severity of the charges, i.e., felonies are sentenced more consistently than misdemeanors</li>
+</ul>
+</li>
+</ul>
+<h2 id="Future-Directions"><a href="#Future-Directions" class="headerlink" title="Future Directions"></a>Future Directions</h2><ul>
+<li><p>More Data </p>
+<ul>
+<li>Legal Case Documents 120 Millions</li>
+<li>Trademarks and Patents Tens of millions</li>
+<li>Legal Consultation Tens of millions of LegalQA</li>
+</ul>
+</li>
+<li><p>More Knowledge</p>
+<ul>
+<li>Laws and Regulations 1000+</li>
+<li>Judicial Interpretations 1000+ </li>
+<li>Legal Literature Hundreds of legal journals</li>
+</ul>
+</li>
+<li><p>More Interpretability: Providing explanation for answers</p>
+</li>
+<li><p>More Intelligence: Manipulating tools for cognitive intelligence</p>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1UG411p7zv/">清华大模型公开课</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ninehills/blog/issues/97">NLP学习路线</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Tsinghua OpenBMB NLP</div>
+      <div>https://alexanderliu-creator.github.io/2023/12/07/tsinghua-openbmb-nlp/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/12/25/pku-cao-zuo-xi-tong-yu-xu-ni-hua-an-quan/" title="PKU-操作系统与虚拟化安全">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PKU-操作系统与虚拟化安全</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/11/07/ai-prompt-learning/" title="AI-Prompt Learning">
+                        <span class="hidden-mobile">AI-Prompt Learning</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

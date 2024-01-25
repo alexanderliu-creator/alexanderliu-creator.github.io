@@ -1,0 +1,1216 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="最近做的一些内容偏向Stable Diffusion的应用，也用到了类似于WebUI和ComfyUI这样的UI工具。网上的教程多、杂、乱，就寻思的记录下自己摸索过程中的学习内容吧！这里很多东西都是参考网上的哈，只不过是摘抄+学习，具体用到的网站会放到References下面。另外，SD is the short of Stable Diffusion.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stable Diffusion and ComfyUI Tutorial">
+<meta property="og:url" content="https://alexanderliu-creator.github.io/2024/01/25/stable-diffusion-and-comfyui-tutorial/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="最近做的一些内容偏向Stable Diffusion的应用，也用到了类似于WebUI和ComfyUI这样的UI工具。网上的教程多、杂、乱，就寻思的记录下自己摸索过程中的学习内容吧！这里很多东西都是参考网上的哈，只不过是摘抄+学习，具体用到的网站会放到References下面。另外，SD is the short of Stable Diffusion.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202401251541279.png">
+<meta property="article:published_time" content="2024-01-25T07:39:03.000Z">
+<meta property="article:modified_time" content="2024-01-25T09:29:21.737Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202401251541279.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Stable Diffusion and ComfyUI Tutorial - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alexanderliu-creator.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Stable Diffusion and ComfyUI Tutorial"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-01-25 15:39" pubdate>
+          2024年1月25日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          61 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Stable Diffusion and ComfyUI Tutorial</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：6 小时前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>最近做的一些内容偏向Stable Diffusion的应用，也用到了类似于WebUI和ComfyUI这样的UI工具。网上的教程多、杂、乱，就寻思的记录下自己摸索过程中的学习内容吧！这里很多东西都是参考网上的哈，只不过是摘抄+学习，具体用到的网站会放到References下面。另外，SD is the short of Stable Diffusion.</p>
+<span id="more"></span>
+
+
+
+
+
+
+
+<h1 id="Beginners-Guide"><a href="#Beginners-Guide" class="headerlink" title="Beginners Guide"></a>Beginners Guide</h1><h2 id="How-to-use-Stable-Diffusion"><a href="#How-to-use-Stable-Diffusion" class="headerlink" title="How to use Stable Diffusion"></a>How to use Stable Diffusion</h2><h3 id="SD-Introduction"><a href="#SD-Introduction" class="headerlink" title="SD Introduction"></a>SD Introduction</h3><blockquote>
+<p>This beginner’s guide is for newbies with zero experience with Stable Diffusion or other AI image generators. You will get an overview of Stable Diffusion and some basic useful tips. <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/beginners-guide/">SD beginners-guide</a></p>
+</blockquote>
+<ul>
+<li><p>SD是一种用于生成 AI 图像的潜在扩散模型。这些图像可以是逼真的，就像相机拍摄的图像一样，也可以是艺术风格的，就像由专业艺术家制作的一样。SD的好处有：</p>
+<ul>
+<li>开源：许多爱好者创建了免费的工具和模型。</li>
+<li>专为低功耗计算机设计：免费或运行成本低廉。</li>
+</ul>
+</li>
+<li><p>如何使用SD? Prompt!</p>
+</li>
+<li><p>SD能做什么？</p>
+<ul>
+<li>text2img</li>
+<li>img2img</li>
+<li>inpainting</li>
+<li>make vedioes<ul>
+<li>text2vedio</li>
+<li>vedio2vedio(Stylize, …)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>如何使用SD</p>
+<ul>
+<li>在线生成器</li>
+<li>GUI</li>
+</ul>
+</li>
+<li><p>GUI能够带给你的好处：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/prompt-guide/">Advanced prompting techniques</a>.</li>
+<li>Regenerate a small part of an image with <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-remove-a-person-with-ai-inpainting/">Inpainting</a>.</li>
+<li>Generate images based on an input image (<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-use-img2img-to-turn-an-amateur-drawing-to-professional-with-stable-diffusion-image-to-image/">Image-to-image</a>)</li>
+<li>Edit an image by <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/instruct-pix2pix/">giving an instruction</a>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="Prompt-Matters"><a href="#Prompt-Matters" class="headerlink" title="Prompt Matters"></a>Prompt Matters</h3><ul>
+<li>如何建立一个好的Prompt<ul>
+<li>使用<a target="_blank" rel="noopener" href="https://andrewongai.gumroad.com/l/stable_diffusion_prompt_generator">提示生成器</a>是学习分步过程和重要关键字的好方法。对于初学者来说，学习一组强大的关键字及其预期效果至关重要。这就像学习新语言的词汇一样。<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-come-up-with-good-prompts-for-ai-image-generation/#Some_good_keywords_for_you">您还可以在这里</a>找到关键字和注释的简短列表。</li>
+<li>生成高质量图像的捷径是重用现有提示。前往提示集合，选择您喜欢的图像，然后窃取提示！缺点是您可能不明白为什么它会生成高质量的图像。阅读注释并更改提示即可查看效果。</li>
+<li>使用PlaygroundAI等图像收集网站。选择您喜欢的图像并重新混合提示。但这可能就像大海捞针一样寻找高质量的提示。 将提示视为起点。修改以满足您的需求。</li>
+</ul>
+</li>
+<li>一些Prompt的经验法则<ul>
+<li>详细且具体：街上的一个女人 -&gt; 一位年轻的女士，棕色的眼睛，头发亮点，微笑，穿着时尚的商务休闲装，坐在外面，安静的城市街道，边缘照明</li>
+<li>使用强大的关键词：有些关键字比其他关键字更强大。名人名字（例如艾玛·沃特森）、艺术家姓名（例如梵高）、艺术媒介（例如插图、绘画、照片）</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-come-up-with-good-prompts-for-ai-image-generation/">您可以在构建提示的基础知识</a>中了解有关提示构建和示例关键字的更多信息。想作弊吗？就像做作业一样，您可以使用<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/chatgpt-prompt/">ChatGPT</a>来生成提示！</li>
+</ul>
+<h3 id="Picture-Gen-Params"><a href="#Picture-Gen-Params" class="headerlink" title="Picture Gen Params"></a>Picture Gen Params</h3><ul>
+<li>生成图片的时候，一些参数和其作用：<ul>
+<li>**<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/know-these-important-parameters-for-stunning-ai-images/#Image_size">图像尺寸</a>**：输出图像的尺寸。标准尺寸为512×512像素。将其更改为纵向或横向尺寸会对图像产生很大影响。例如，使用<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/common-problems-in-ai-images-and-how-to-fix-them/#Not_showing_full_body_problems">肖像尺寸</a>生成全身图像。</li>
+<li>**<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/know-these-important-parameters-for-stunning-ai-images/#Sampling_steps">采样步骤</a>**：至少使用 20 个步骤。如果您看到模糊的图像，请增加。</li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/know-these-important-parameters-for-stunning-ai-images/#CFG_Scale"><strong>CFG 比例</strong></a>：典型值为 7。如果您希望图像更多地遵循提示，请增加值。</li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/know-these-important-parameters-for-stunning-ai-images/#Seed"><strong>种子值</strong></a>：-1 生成随机图像。如果您想要相同的图像，请指定一个值。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>强烈推荐，参阅<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/know-these-important-parameters-for-stunning-ai-images/">其他设置的建议</a>。</p>
+</blockquote>
+<ul>
+<li>生成图像数量？我会一次生成 2-4 个图像，以便加快搜索速度。当进行小的更改以增加看到可用内容的机会时，我会一次生成 4 个。有些提示只能在一半或更少的时间内起作用。因此，不要根据一张图像就取消提示。</li>
+</ul>
+<h3 id="Picture-Images-Defects"><a href="#Picture-Images-Defects" class="headerlink" title="Picture Images Defects"></a>Picture Images Defects</h3><blockquote>
+<p>当你看到社交媒体上分享的令人惊叹的人工智能图像时，它们很可能经过了一系列的后处理步骤。</p>
+</blockquote>
+<ul>
+<li>面部修复：SD不擅长生成面部。很多时候，生成的面孔存在伪影。我们经常使用经过训练来恢复人脸的图像 AI 模型，例如<a target="_blank" rel="noopener" href="https://github.com/sczhou/CodeFormer">CodeFormer</a>，AUTOMATIC1111 GUI 具有内置支持。看看<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/common-problems-in-ai-images-and-how-to-fix-them/#Garbled_faces_and_eyes_problems">如何打开它</a>。您知道 v1.4 和 v1.5 模型有修复眼睛的更新吗？查看如何安装<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-use-vae/">VAE</a>。</li>
+<li>修复Inpainting小瑕疵: 第一次尝试很难获得您想要的图像。更好的方法是生成具有良好构图的图像。<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/inpainting_basics/">然后用修补法</a>修复缺陷。</li>
+<li>还有其他技术可以解决问题。阅读有关解决<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/common-problems-in-ai-images-and-how-to-fix-them/">常见问题的</a>更多信息。</li>
+</ul>
+<h3 id="Custom-Models"><a href="#Custom-Models" class="headerlink" title="Custom Models"></a>Custom Models</h3><ul>
+<li><p>模型介绍</p>
+<ul>
+<li><p>Stability AI及其合作伙伴发布的官方模型称为<strong>基础模型</strong>。基本模型的一些示例包括稳定<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/install-stable-diffusion-2-1/">扩散</a><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/models/#Stable_diffusion_v14">1.4、1.5、2.0</a><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-run-stable-diffusion-2-0/">和</a>2.1 <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/models/#Stable_diffusion_v15">…</a>。<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/models/">自定义模型</a>是根据基本模型进行训练的。目前，大多数模型都是从 v1.4 或 v1.5 开始训练的。他们接受额外数据的训练，以生成特定样式或对象的图像。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/models/#Merging_two_models">合并两个模型</a>以创建介于两者之间的样式也很容易。</p>
+</li>
+</ul>
+</li>
+<li><p>使用哪种型号？</p>
+<ul>
+<li>如果您刚开始，请坚持使用<strong>基本模型。</strong>有很多值得学习和玩耍的东西，可以让你忙上几个月。</li>
+<li>Stable Diffusion 的三个主要版本是 v1、v2 和 Stable Diffusion XL (SDXL)。<ul>
+<li>v1 型号为 1.4 和 1.5。</li>
+<li>v2 型号为 2.0 和 2.1。</li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/sdxl-model/">SDXL 1.0</a></li>
+</ul>
+</li>
+<li>您可能认为应该从较新的 v2 型号开始。人们仍在试图弄清楚如何使用 v2 模型。v2 的图像不一定比 v1 的图像好。发布了一系列SDXL模型：<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/sdxl-beta/">SDXL beta</a>、SDXL 0.9和最新的SDXL 1.0。如果您是稳定扩散的新手，我建议您使用<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/models/#Stable_diffusion_v15">v1.5和 SDXL 1.0 模型。</a></li>
+</ul>
+</li>
+<li><p>如何训练新模型</p>
+<ul>
+<li>使用SD的优点是您可以完全控制模型。如果您愿意，您可以创建具有独特风格的自己的模型。训练模型的两种主要方法：（1）<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/dreambooth/">Dreambooth</a>和（2）<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/embedding/">Embedding</a>。</li>
+<li><strong>Dreambooth</strong>被认为更强大，因为它微调了整个模型的重量。<strong>Embedding</strong>使模型保持不变，但找到描述新主题或风格的关键字。</li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/dreambooth/">您可以在dreambooth</a>文章中尝试使用 Colab 笔记本。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Negative-Prompts"><a href="#Negative-Prompts" class="headerlink" title="Negative Prompts"></a>Negative Prompts</h3><ul>
+<li><p>您在提示中输入您想看到的内容。你把你不想看到的东西放在否定提示中。并非所有稳定扩散服务都支持负面提示。但它对于 v1 模型来说很有价值，对于 v2 模型来说是必须的。对于初学者来说，使用通用的否定提示并没有什么坏处。阅读有关负面提示的更多信息：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-negative-prompt-work/">负面提示如何发挥作用？</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-use-negative-prompts/">如何使用负面提示？</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="SD-Make-Large-Prints"><a href="#SD-Make-Large-Prints" class="headerlink" title="SD Make Large Prints"></a>SD Make Large Prints</h3><ul>
+<li><p>对于 v1 模型，稳定扩散的原始分辨率为 512×512 像素。您不应生成宽度和高度与 512 像素偏差太大的图像。使用以下尺寸设置生成初始图像。</p>
+<ul>
+<li><strong>横向</strong>图像：将高度设置为 512 像素。将宽度设置得更高，例如 768 像素（2:3 宽高比）</li>
+<li><strong>纵向</strong>图像：将宽度设置为 512 像素。将高度设置得更高，例如 768 像素（3:2 宽高比）</li>
+<li>如果您将初始宽度和高度设置得太高，您将看到重复的主题。</li>
+</ul>
+</li>
+<li><p>下一步是放大图像。免费的 AUTOMATIC1111 GUI 附带一些流行的 AI 升级器。</p>
+<ul>
+<li><p>阅读<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/ai-upscaler/">本教程</a>了解 AI 升级器的初学者指南。</p>
+</li>
+<li><p>阅读<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/controlnet-upscale/">本教程</a>以获取更高级的用法。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Control-Image-Composition"><a href="#Control-Image-Composition" class="headerlink" title="Control Image Composition"></a>Control Image Composition</h3><ul>
+<li>Image-to-image: 您可以要求稳定扩散在生成新图像时大致遵循输入图像。这称为<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-use-img2img-to-turn-an-amateur-drawing-to-professional-with-stable-diffusion-image-to-image/">图像到图像</a>。下面是使用鹰的输入图像生成龙的示例。输出图像的组成遵循输入。</li>
+<li>ControlNet: <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/controlnet/">ControlNet</a>类似地使用输入图像来指导输出。但它可以提取特定信息，例如人体姿势。下面是使用 ControlNet 从输入图像复制人体姿势的示例。除了人体姿势之外，ControlNet 还可以提取其他信息，例如轮廓。</li>
+<li>Regional prompting: <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/regional-prompter/">您可以使用名为Regional Prompter 的</a>扩展指定图像某些部分的提示。此技术对于仅在图像的某些部分绘制对象非常有帮助。阅读<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/regional-prompter/">区域提示器</a>教程以了解更多使用方法。</li>
+<li>Depth-to-image: <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/depth-to-image/">图像深度</a>是通过输入图像控制构图的另一种方法。它可以检测输入图像的前景和背景。输出图像将遵循相同的前景和背景。下面是一个例子。</li>
+</ul>
+<h3 id="Generating-Specific-Subjects"><a href="#Generating-Specific-Subjects" class="headerlink" title="Generating Specific Subjects"></a>Generating Specific Subjects</h3><ul>
+<li>现实的人：您可以使用稳定扩散来生成照片风格的逼真人物。是使用正确的提示和经过训练的特殊模型来产生照片风格的逼真人类。<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/realistic-people/">在生成真实人物</a>的教程中了解更多信息。</li>
+<li>动物：动物是SD用户中最受欢迎的主题。 阅读生成动物的教程以了解如何操作。</li>
+</ul>
+<h2 id="Good-Prompts-for-SD"><a href="#Good-Prompts-for-SD" class="headerlink" title="Good Prompts for SD"></a>Good Prompts for SD</h2><h3 id="Prompt-Guide"><a href="#Prompt-Guide" class="headerlink" title="Prompt Guide"></a>Prompt Guide</h3><blockquote>
+<p>快速构建是任何SD用户都应该掌握的基本技能。通过了解如何构建清晰简洁的提示，您可以解锁 Stable Diffusion 提供的全部风格。为了擅长提示构建，您应该从一个特定的主题开始，并添加关键字以达到特定的效果。<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-come-up-with-good-prompts-for-ai-image-generation/">SD prompts</a></p>
+</blockquote>
+<ul>
+<li><p>如果您想练习快速构建但尚未设置稳定扩散，您可以在线使用<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/free-ai-image-generator-sites/">免费的稳定扩散生成器</a>。如果您想自行设置，请阅读<a target="_blank" rel="noopener" href="https://andrewongai.gumroad.com/l/stable_diffusion_quick_start">快速入门指南。</a>使用<a target="_blank" rel="noopener" href="https://andrewongai.gumroad.com/l/stable_diffusion_prompt_generator?_gl=1*9sumr3*_ga*MTAxNjEwMDgyMi4xNzA0MjkyMDUy*_ga_YHRX2WJZH7*MTcwNjE2OTA5MC42LjEuMTcwNjE3MTUyMi4yNy4wLjA.">提示生成器</a> 以系统的方法来制作提示。这篇文章旨在成为您的第一门提示课程。请参阅此<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/prompt-guide/">提示指南</a>以了解高级技术。</p>
+</li>
+<li><p>这是一种经过验证的技术，可以生成高质量的特定图像。您的提示应该涵盖大部分（如果不是全部）这些区域。</p>
+<ul>
+<li>Subject (required)</li>
+<li>Medium</li>
+<li>Style</li>
+<li>Artist</li>
+<li>Website</li>
+<li>Resolution</li>
+<li>Additional details</li>
+<li>Color</li>
+<li>Lighting</li>
+</ul>
+</li>
+<li><p>Subject：</p>
+<ul>
+<li>初学者的一个常见错误是没有足够详细地描述图像。她穿什么衣服？她的发型是什么？这些看似微不足道的元素可以对所传达的整体形象做出重大贡献。如果不指定这些详细信息，您就将它们留给 AI 生成器，您可能会对得到的结果感到失望。</li>
+<li>包含通用的否定提示是一个好习惯。ugly, deform, disfigured。</li>
+</ul>
+</li>
+<li><p>Medium：</p>
+<ul>
+<li>我们可以更具体。让我们添加一个Medium，即创作艺术品的材料。一些例子是<em>digital painting</em>, <em>photography</em>, and <em>oil painting</em>。<strong>Digital painting of</strong> a young woman with light blue dress sitting next to a wooden window reading a book</li>
+</ul>
+</li>
+<li><p>其余</p>
+<ul>
+<li>Artist– 指定创作艺术的艺术家来引导风格。 by Stanley Artgerm Lau</li>
+<li>Website– 网站名称可用于特定类型。 artstation</li>
+<li>Resolution– 这些是控制图像清晰度的关键字。8k</li>
+<li><code>Additional details</code>– 这些关键词更像是甜味剂，例如添加一些有趣的细节。extremely detailed, ornate</li>
+<li><code>Lighting</code>–<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/control-lighting/">控制光线</a>对于获得良好的图像非常重要。cinematic lighting, rim lighting</li>
+<li><code>color</code>– 图像的配色方案。vivid</li>
+</ul>
+</li>
+<li><p>Putting them all together, the prompt is: Digital painting of a young woman with light blue dress sitting next to a wooden window reading a book, by Stanley Artgerm Lau, artstation, 8k, extremely detailed, ornate, cinematic lighting, rim lighting, vivid.</p>
+</li>
+</ul>
+<blockquote>
+<p>我们可以通过在提示中添加特定的关键字来设计图像以获得我们想要的样式。</p>
+</blockquote>
+<ul>
+<li>Tips for good prompts<ul>
+<li>描述主题时要详细、具体。</li>
+<li>使用多个括号 () 可以增加其强度，使用 [] 可以减少强度。</li>
+<li>使用与艺术家一致的适当媒介类型。例如，照片不应该与梵高一起使用。</li>
+<li>艺术家的名字是一个非常强烈的风格修饰符。明智地使用。</li>
+<li>尝试混合风格。</li>
+<li>前往<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/prompts/">Workflow section</a>研究高质量的提示。如果您喜欢特定图像，请使用提示作为起点。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Good-Prompt-List"><a href="#Good-Prompt-List" class="headerlink" title="Good Prompt List"></a>Good Prompt List</h3><ul>
+<li><p>Some good keywords: You can find the full list in the <a target="_blank" rel="noopener" href="https://andrewongai.gumroad.com/l/stable_diffusion_prompt_generator">prompt builder</a>.</p>
+</li>
+<li><p>Medium: Medium defines a category of artwork.</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>keyword</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Portrait</strong></td>
+<td>Very realistic drawings. Good to use with people.</td>
+</tr>
+<tr>
+<td><strong>Digital painting</strong></td>
+<td>Digital art style.</td>
+</tr>
+<tr>
+<td><strong>Concept art</strong></td>
+<td>Illustration style, 2D.</td>
+</tr>
+<tr>
+<td><strong>Ultra realistic illustration</strong></td>
+<td>Drawings that are very realistic. Good to use with people.</td>
+</tr>
+<tr>
+<td><strong>Underwater portrait</strong></td>
+<td>Use with people. Underwater. Hair floating.</td>
+</tr>
+<tr>
+<td><strong>Underwater steampunk</strong></td>
+<td>Very realistic drawings. Good to use with people.</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Style: These keywords further refine the art style.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>keyword</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>hyperrealistic</strong></td>
+<td>Increases details and resolution</td>
+</tr>
+<tr>
+<td><strong>pop-art</strong></td>
+<td>Pop-art style</td>
+</tr>
+<tr>
+<td><strong>Modernist</strong></td>
+<td>vibrant color, high contrast</td>
+</tr>
+<tr>
+<td><strong>art nouveau</strong></td>
+<td>Add ornaments and details, building style</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Artist: Mentioning the artist in the prompt is a strong effect. Study their work and choose wisely.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>keyword</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>John Collier</strong></td>
+<td>19th century portrait painter. Add elegancy</td>
+</tr>
+<tr>
+<td><strong>Stanley Artgerm Lau</strong></td>
+<td>Good to use with woman portrait, generate 19th delicate clothing, some impressionism</td>
+</tr>
+<tr>
+<td><strong>Frida Kahlo</strong></td>
+<td>Quite strong effect following Kahlo’s portrait style. Sometimes result in picture frame</td>
+</tr>
+<tr>
+<td><strong>John Singer Sargent</strong></td>
+<td>Good to use with woman portraits, generate 19th delicate clothing, some impressionism</td>
+</tr>
+<tr>
+<td><strong>Alphonse Mucha</strong></td>
+<td>2D portrait painting in style of Alphonse Mucha</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Website: Mentioning an art or photo site is a strong effect, probably because each site has its niche genre.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>keyword</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>pixiv</strong></td>
+<td>Japanese anime style</td>
+</tr>
+<tr>
+<td><strong>pixabay</strong></td>
+<td>Commercial stock photo style</td>
+</tr>
+<tr>
+<td><strong>artstation</strong></td>
+<td>Modern illustration, fantasy</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Resolution</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>keyword</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>unreal engine</strong></td>
+<td>Very realistic and detailed 3D</td>
+</tr>
+<tr>
+<td><strong>sharp focus</strong></td>
+<td>Increase resolution</td>
+</tr>
+<tr>
+<td><strong>8k</strong></td>
+<td>Increase resolution, though can lead to it looking more fake. Makes the image more camera like and realistic</td>
+</tr>
+<tr>
+<td><strong>vray</strong></td>
+<td>3D rendering best for objects, landscape and building.</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Lighting</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>keyword</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>rim lighting</strong></td>
+<td>light on edge of an object</td>
+</tr>
+<tr>
+<td><strong>cinematic lighting</strong></td>
+<td>A generic term to improve contrast by using light</td>
+</tr>
+<tr>
+<td><strong>crepuscular rays</strong></td>
+<td>sunlight breaking through the cloud</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Additional details: Add specific details to your image.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>keyword</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>dramatic</strong></td>
+<td>shot from a low angle</td>
+</tr>
+<tr>
+<td><strong>silk</strong></td>
+<td>Add silk to clothing</td>
+</tr>
+<tr>
+<td><strong>expansive</strong></td>
+<td>More open background, smaller subject</td>
+</tr>
+<tr>
+<td><strong>low angle shot</strong></td>
+<td>shot from low angle</td>
+</tr>
+<tr>
+<td><strong>god rays</strong></td>
+<td>sunlight breaking through the cloud</td>
+</tr>
+<tr>
+<td><strong>psychedelic</strong></td>
+<td>vivid color with distortion</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Color: Add an additional color scheme to the image.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>keyword</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>iridescent gold</strong></td>
+<td>Shinny gold</td>
+</tr>
+<tr>
+<td><strong>silver</strong></td>
+<td>Silver color</td>
+</tr>
+<tr>
+<td><strong>vintage</strong></td>
+<td>vintage effect</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>We have gone through the basic structure of a good prompt. This should be used as a guide rather than rule. The Stable Diffusion model is very flexible. Let it surprise you with some creative combination of keywords!</p>
+</blockquote>
+<h2 id="SD-Inpainting"><a href="#SD-Inpainting" class="headerlink" title="SD Inpainting"></a>SD Inpainting</h2><p><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/inpainting_basics/">SD inpainting basics</a></p>
+<h2 id="SD-glossary"><a href="#SD-glossary" class="headerlink" title="SD glossary"></a>SD glossary</h2><p><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/glossary/">SD glossary</a></p>
+<h2 id="How-SD-works"><a href="#How-SD-works" class="headerlink" title="How SD works"></a>How SD works</h2><p><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-stable-diffusion-work/">How SD works</a></p>
+<h2 id="How-to-use-ComfyUI"><a href="#How-to-use-ComfyUI" class="headerlink" title="How to use ComfyUI"></a>How to use ComfyUI</h2><p><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/comfyui/">Beginner’s Guide to ComfyUI</a></p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/beginners-guide/">SD beginners-guide</a></li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-come-up-with-good-prompts-for-ai-image-generation/">SD prompts guides</a></li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/inpainting_basics/">SD inpainting basics</a></li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/models/">SD models</a></li>
+<li><a target="_blank" rel="noopener" href="https://andrewongai.gumroad.com/l/stable_diffusion_quick_start">SD quick-start guide</a></li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/glossary/">SD glossary</a></li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-stable-diffusion-work/">How SD works</a></li>
+<li><a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/comfyui/">Beginner’s Guide to ComfyUI</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Stable Diffusion and ComfyUI Tutorial</div>
+      <div>https://alexanderliu-creator.github.io/2024/01/25/stable-diffusion-and-comfyui-tutorial/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年1月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/25/pku-cao-zuo-xi-tong-yu-xu-ni-hua-an-quan/" title="PKU-操作系统与虚拟化安全">
+                        <span class="hidden-mobile">PKU-操作系统与虚拟化安全</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
