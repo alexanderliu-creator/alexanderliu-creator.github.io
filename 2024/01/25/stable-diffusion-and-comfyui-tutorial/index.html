@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202401251541279.png">
 <meta property="article:published_time" content="2024-01-25T07:39:03.000Z">
-<meta property="article:modified_time" content="2024-01-26T13:41:43.960Z">
+<meta property="article:modified_time" content="2024-01-27T03:01:49.190Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          16k 字
+          19k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          130 分钟
+          155 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：11 小时前
+                    本文最后更新于：16 天前
                   
                 
               </p>
@@ -951,7 +951,7 @@
 <h1 id="How-to-use-ComfyUI"><a href="#How-to-use-ComfyUI" class="headerlink" title="How to use ComfyUI"></a>How to use ComfyUI</h1><blockquote>
 <p>ComfyUI is a node-based GUI for Stable Diffusion. <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/comfyui/">Beginner’s Guide to ComfyUI</a></p>
 </blockquote>
-<ul>
+<h2 id="Components-in-ComfyUI"><a href="#Components-in-ComfyUI" class="headerlink" title="Components in ComfyUI"></a>Components in ComfyUI</h2><ul>
 <li>ComfyUI 是一个基于节点的Stable Diffusion GUI。<strong>您可以通过将不同的块（称为节点</strong>）链接在一起来构建图像生成工作流程。</li>
 <li>一些常用的块包括加载检查点模型、输入提示、指定采样器等。ComfyUI 将工作流程分解为可重新排列的元素，以便您可以轻松创建自己的元素。您需要一个可用的 ComfyUI 才能遵循本指南。本地安装请参见<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-install-comfyui/">安装指南</a>。</li>
 <li>ComfyUI 的<strong>好与坏</strong>：<ul>
@@ -995,14 +995,14 @@
 <ol>
 <li><strong>模型</strong>：潜在空间中的噪声预测模型。</li>
 <li><strong>CLIP</strong>：语言模型对正面和负面提示进行预处理。</li>
-<li><strong>VAE</strong>：<strong>变</strong>分自动<strong>编码****器</strong>在像素和潜在空间之间转换图像。</li>
+<li><strong>VAE</strong>：变分自动<strong>编码器</strong>在像素和潜在空间之间转换图像。</li>
 </ol>
 </li>
 </ul>
 <blockquote>
 <p>MODEL 输出连接到<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/samplers/">采样器</a>，在采样器中完成反向扩散过程。</p>
 <p>CLIP 输出连接到提示，因为提示需要经过 CLIP 模型处理才能有用。CLIP<strong>文本编码</strong>节点获取提示并将其输入 CLIP 语言模型。CLIP 是 OpenAI 的语言模型，将提示中的每个单词转换为<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/embedding/">Embedding</a>。</p>
-<p>在文本到图像中，VAE仅用于最后一步：将图像从潜在空间转换到像素空间。换句话说，我们只使用自动编码器的<strong>解码器</strong>部分。</p>
+<p>在txt2img中，VAE仅用于最后一步：将图像从潜在空间转换到像素空间。换句话说，我们只使用自动编码器的<strong>解码器</strong>部分。</p>
 </blockquote>
 <ul>
 <li>Empty latent image: 文本<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-stable-diffusion-work/#Text-to-image">到图像的</a>过程从潜在空间中的随机图像开始。潜像的大小与像素空间中的实际图像成正比。因此，如果您想更改图像的大小，请更改潜在图像的大小。<ul>
@@ -1017,6 +1017,113 @@
 <li>Sampler_name: 在这里，您可以设置采样算法。请阅读<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/samplers/">采样器文章</a>以获取入门知识。</li>
 <li>Scheduler: 控制每个步骤中噪声级别的变化方式。</li>
 <li>Denoise: 去噪过程应消除多少初始噪声。1 表示全部。</li>
+</ul>
+</li>
+</ul>
+<h2 id="ComfyUI-Manager"><a href="#ComfyUI-Manager" class="headerlink" title="ComfyUI Manager"></a>ComfyUI Manager</h2><ul>
+<li>Install:</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd ComfyUI/custom_nodes<br>git clone https://github.com/ltdrdata/ComfyUI-Manager<br></code></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>Usage<ul>
+<li>安装/卸载custom nodes。</li>
+<li>安装当前工作流程中缺少的节点。</li>
+<li>安装<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/models/">checkpoint models</a>, <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/ai-upscaler/">AI upscalers</a>, <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/how-to-use-vae/">VAEs</a>, <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/train-lora/">LoRA</a>, <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/controlnet/">ControlNet models</a>, etc.</li>
+<li>更新 ComfyUI UI</li>
+<li>阅读社区手册。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>The <strong>Install Missing Nodes</strong> function is especially useful for finding what custom nodes that are required in the current workflow.</p>
+<p>The <strong>Install Custom Nodes</strong> menu lets you manage custom nodes. You can uninstall or disable an installed node or install a new one.</p>
+</blockquote>
+<ul>
+<li>如何更新ComfyUI或者是某个custom node？<ul>
+<li>通过ComfyUI Manger的UI来更新</li>
+<li>切到对应的目录，然后git pull</li>
+</ul>
+</li>
+</ul>
+<h2 id="Upscaling-1"><a href="#Upscaling-1" class="headerlink" title="Upscaling"></a>Upscaling</h2><ul>
+<li><p>There are several ways to upscale in Stable Diffusion. For teaching purposes, let’s go through upscaling with: <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/ai-upscaler/">AI upscaler</a>, <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/automatic1111/#Hires_fix">Hi-res fix</a>, <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/controlnet-upscale/">Ultimate Upscale</a></p>
+</li>
+<li><p>AI upscale: AI <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/ai-upscaler/">upscaler</a>是一种用于放大图像(Pixel)并填充细节的 AI 模型。它们不是Stable Diffusion Model，而是经过训练以放大图像的神经网络。<a target="_blank" rel="noopener" href="https://comfyanonymous.github.io/ComfyUI_examples/upscale_models/">Example</a></p>
+</li>
+</ul>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://upscale.wiki/w/index.php?title=Model_Database&amp;oldid=1571">Upscaler Model Wiki</a>, <a target="_blank" rel="noopener" href="https://openmodeldb.info/">The Best Place To Find AI Upscaling Models</a></p>
+</blockquote>
+<ul>
+<li><p>Hi-res fix: <a target="_blank" rel="noopener" href="https://comfyanonymous.github.io/ComfyUI_examples/2_pass_txt2img/">Example</a>, 第一部分与文本到图像相同：您使用采样器对潜在图像进行去噪，并以正面和负面提示为条件。 然后，工作流程会放大潜在空间中的图像并执行一些额外的采样步骤。它给图像添加一些初始噪声，并以一定的去噪强度对其进行去噪。 然后，VAE 解码器对较大的潜在图像进行解码以生成放大的图像。</p>
+</li>
+<li><p>SD Ultimate upscale, <a target="_blank" rel="noopener" href="https://github.com/ssitu/ComfyUI_UltimateSDUpscale">Github Page of SD Ultimate upscale for ComfyUI</a></p>
+<ul>
+<li><p>This is a good exercise for installing a custom node.</p>
+</li>
+<li><p>A good exercise is to start with the AI upscaler workflow. Add SD Ultimate Upscale and compare the result. Right-click on an empty space. Select Add Node &gt; image &gt; upscaling &gt; Ultimate SD Upscale.</p>
+</li>
+<li><p>Parameters</p>
+<ul>
+<li><p><strong>image</strong> to VAE Decode’s IMAGE.</p>
+</li>
+<li><p><strong>model</strong> to Load Checkpoint’s MODEL.</p>
+</li>
+<li><p><strong>positive</strong> to CONDITIONING of the positive prompt box.</p>
+</li>
+<li><p><strong>negative</strong> to CONDITIONING of the negative prompt box.</p>
+</li>
+<li><p><strong>vae</strong> to Load Checkpoint’s VAE.</p>
+</li>
+<li><p><strong>upscale_model</strong> to Load Upscale Model’s UPSCALE_MODEL.</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Others"><a href="#Others" class="headerlink" title="Others"></a>Others</h2><ul>
+<li><p>ComfyUI Inpainting: You can use ComfyUI for <a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/inpainting_basics/">inpainting</a>. It is a basic technique to regenerate a part of the image.</p>
+</li>
+<li><p>ComfyUI Impact Pack: <a target="_blank" rel="noopener" href="https://github.com/ltdrdata/ComfyUI-Impact-Pack">ComfyUI Impact pack</a> is a pack of free custom nodes that greatly enhance what ComfyUI can do. There are more custom nodes in the Impact Pact. See the <a target="_blank" rel="noopener" href="https://github.com/ltdrdata/ComfyUI-extension-tutorials/tree/Main">official tutorials</a> to learn them one by one. Read through the beginner tutorials if you want to use this set of nodes effectively.</p>
+</li>
+<li><p>Regenerate faces with Face Detailer (SDXL)</p>
+<ul>
+<li><p>You can use <a target="_blank" rel="noopener" href="https://github.com/ltdrdata/ComfyUI-extension-tutorials/blob/Main/ComfyUI-Impact-Pack/workflow/sdxl-detailer.json">this workflow</a> in the Impact Pack to regenerate faces with the <strong>Face Detailer</strong> custom node and SDXL base and refiner models. Download and drop the JSON file into ComfyUI.</p>
+</li>
+<li><p>To use this workflow, you will need to set</p>
+<ul>
+<li>The initial image in the <strong>Load Image</strong> node.</li>
+<li>An SDXL base model in the upper <strong>Load Checkpoint</strong> node.</li>
+<li>An SDXL refiner model in the lower <strong>Load Checkpoint</strong> node.</li>
+<li>The <strong>prompt</strong> and <strong>negative</strong> prompt for the new images.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>使用 Face Detailer (SDXL) 重新生成面部</p>
+</li>
+<li><p>使用 Face Detailer (SD v1.5) 重新生成面部</p>
+</li>
+<li><p>Embeddings: 要在 ComfyUI 中使用<a target="_blank" rel="noopener" href="https://stable-diffusion-art.com/embedding/">Embeddings</a>（也称为<strong>文本反转</strong><code>embedding:</code>），请在肯定或否定提示框中键入。ComfyUI 将搜索文件夹<strong>ComfyUI &gt; models &gt; embeddings</strong>中具有相同文件名的Embeddings。</p>
+</li>
+<li><p>Embedding with autocomplete: 查找文件名需要做很多工作。相反，您可以通过安装ComfyUI-Custom-Scripts自定义节点来启用嵌入名称的自动完成功能。 您可以使用 ComfyUI 管理器安装它。单击管理器 &gt; 安装自定义节点。搜索“ComfyUI-Custom-Scripts”并安装它。重新启动 ComfyUI。 embedding:输入提示后，应该会出现可用嵌入的列表。选择您要使用的一个。</p>
+</li>
+<li><p>Lora: LoRA是一个修改检查点模型的小模型文件。它经常用于修改样式或将人物注入模型中。 LoRA模型改变了检查点模型的MODEL和CLIP，但保持VAE不变。<a target="_blank" rel="noopener" href="https://comfyanonymous.github.io/ComfyUI_examples/lora/lora.png">下载简单的 LoRA 工作流程</a></p>
+<ul>
+<li>选择检查点模型。</li>
+<li>选择 LoRA。</li>
+<li>修改提示和否定提示。</li>
+<li>单击<strong>队列提示</strong>。</li>
+</ul>
+</li>
+<li><p>多个 LoRA: 您可以在同一文本到图像工作流程中使用两个 LoRA。 <a target="_blank" rel="noopener" href="https://comfyanonymous.github.io/ComfyUI_examples/lora/lora_multiple.png">下载两个 LoRA 工作流程</a>，用法与一个 LoRA 类似，但现在您必须选择两个，两个LoRA相继应用(one after the other)。</p>
+</li>
+<li><p>Joining two strings: </p>
+<ul>
+<li>To join two strings, you will use a node called <strong>String Function</strong> from the <a target="_blank" rel="noopener" href="https://github.com/pythongosssss/ComfyUI-Custom-Scripts">ComfyUI-Custom-Scripts</a> custom node.</li>
+<li>You should have installed this custom node to enable autocomplete of the textual inversion. Install it in the ComfyUI Manager if not.</li>
 </ul>
 </li>
 </ul>
@@ -1126,6 +1233,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2024/01/28/li-hong-yi-shen-du-xue-xi-ke-cheng/" title="李宏毅深度学习课程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">李宏毅深度学习课程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
