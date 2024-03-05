@@ -1,0 +1,1036 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="Agents入门，记录一点自己读过的论文和资料。AI infrastructure matters.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agents Learning-A Survey on Large Language Model based Autonomous Agents">
+<meta property="og:url" content="https://alexanderliu-creator.github.io/2024/03/02/agents-learning/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="Agents入门，记录一点自己读过的论文和资料。AI infrastructure matters.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403021421084.jpg">
+<meta property="article:published_time" content="2024-03-02T06:18:12.000Z">
+<meta property="article:modified_time" content="2024-03-04T13:39:31.993Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="研0自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403021421084.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Agents Learning-A Survey on Large Language Model based Autonomous Agents - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alexanderliu-creator.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Agents Learning-A Survey on Large Language Model based Autonomous Agents"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-03-02 14:18" pubdate>
+          2024年3月2日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          26k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          217 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Agents Learning-A Survey on Large Language Model based Autonomous Agents</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：17 小时前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Agents入门，记录一点自己读过的论文和资料。AI infrastructure matters.</p>
+<span id="more"></span>
+
+
+
+
+
+
+
+<h1 id="A-Survey-on-Large-Language-Model-based-Autonomous-Agents"><a href="#A-Survey-on-Large-Language-Model-based-Autonomous-Agents" class="headerlink" title="A Survey on Large Language Model based Autonomous Agents"></a>A Survey on Large Language Model based Autonomous Agents</h1><h2 id="LLM-based-Autonomous-Agent-Construction"><a href="#LLM-based-Autonomous-Agent-Construction" class="headerlink" title="LLM-based Autonomous Agent Construction"></a>LLM-based Autonomous Agent Construction</h2><blockquote>
+<p>Paper is <a target="_blank" rel="noopener" href="https://browse.arxiv.org/pdf/2308.11432.pdf">here</a>, a repo to track LLM-based agent is <a target="_blank" rel="noopener" href="https://github.com/Paitesanshi/LLM-Agent-Survey">here</a>.</p>
+</blockquote>
+<ul>
+<li>基于LLM Agent，可以LLM的类人功能来有效地执行各种任务。两个重要的方面：<ul>
+<li>第一个方面：应该设计哪种架构才能更好地利用LLM</li>
+<li>第二个方面：给出设计的架构，如何使智能体获得完成特定任务的能力。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>在架构设计的背景下，我们对现有研究进行系统综合，最终形成一个全面的统一框架。针对第二个方面，我们根据是否对LLM进行微调，总结了Agent能力获取的策略。将基于LLM Agent与传统机器学习进行比较时，设计Agent架构类似于确定网络结构，而Agent能力获取类似于学习网络参数。下面我们就这两方面进行更详细的介绍。</p>
+</blockquote>
+<h3 id="Agent-Architecture-Design"><a href="#Agent-Architecture-Design" class="headerlink" title="Agent Architecture Design"></a>Agent Architecture Design</h3><ul>
+<li>构建Agent与LLM所支持的简单的QA能力相去甚远，因为它们需要履行特定的角色并自主感知和学习环境，以像人类一样进化自己。为了弥合LLM和Agent之间的差距，一个关键方面是设计合理的Agent架构，以帮助LLM最大限度地发挥其能力。</li>
+<li>我们提出一个统一的框架来总结这些模块。具体来说，我们框架的整体结构如图2所示，它由Profile、Memory、Planning和Action四个模块组成。Profile目的是识别Agent的角色。Memory、Planning将Agent置于动态环境中，使其能够回忆过去的行为并计划未来的行动。Action负责将智能体的决策转化为具体的输出。在这些模块中，Profile影响Memory和Planning模块，这三个模块共同影响Action模块。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403022029089.png" srcset="/img/loading.gif" lazyload alt="Agent Architecture Design"></p>
+<h4 id="Profiling-Module"><a href="#Profiling-Module" class="headerlink" title="Profiling Module"></a>Profiling Module</h4><ul>
+<li>Agent通常通过承担特定角色来执行任务，例如编码员、教师和领域专家。Profile模块旨在指示Agent角色的概要信息，通常将其写入提示中以影响LLM行为。Agent通常包含年龄、性别和职业等基本信息，以及反映Agent人个性的心理信息和详细说明Agent人之间关系的社会信息。用于描述Agent的信息的选择很大程度上取决于具体的应用场景。例如，如果应用程序旨在研究人类认知过程，那么心理学信息就变得至关重要。在确定了Profile信息的类型之后，下一个重要问题是为Agent创建特定的Profiles。<ul>
+<li>Handcrafting Method: Agent Profile是手动指定的。例如，如果想设计不同性格的Agent，可以用“你是一个外向的人”或“你是一个内向的人”来描述Agent人。之前的许多工作都利用手工方法来指示Profile。例如，通过名称、目标以及与其他Agent的关系等信息来描述Agent。 MetaGPT、ChatDev和自协作预定义了软件开发中的各种角色及其相应的职责，手动为每个Agent分配不同的Profile以促进协作。 一般来说，Handcrafting非常灵活，因为人们可以将任何配置文件信息分配给Agent。然而，在与大量Agents打交道时，工作量是非常大的。</li>
+<li>LLM-generation Method: 在此方法中，Profile是根据 LLM 自动生成的。通常，它首先指出Profile生成规则，阐明目标Profile的组成和属性。然后，可以选择指定多个种子agent profile作为少数样本示例。最后，利用LLM来生成所有Profile。例如，RecAgent 首先通过手动创建一些Agent的背景（例如年龄、性别、个人特征和电影偏好）来为一些Agent创建种子配置文件。然后，它利用 ChatGPT 根据种子信息生成更多Agent配置文件。当Agent数量很大时，LLM 生成方法可以节省大量时间，但它可能缺乏对生成的配置文件的精确控制。</li>
+<li>Dataset Alignment Method: 在这种方法中，Agent Profile是从现实世界的数据集中获得的。通常，人们可以首先将数据集中有关真实人类的信息组织成自然语言提示，然后利用它来分析Agent。数据集对齐方法准确地捕获了真实人群的属性，从而使Agent行为更有意义并反映了现实世界的场景。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>虽然之前的大多数工作独立地利用上述Profile生成策略，但我们认为将它们结合起来可能会产生额外的好处。例如，为了通过Agent模拟来预测社会发展，可以利用现实世界的数据集来描述Agent的子集，从而准确地反映当前的社会状态。随后，可以将现实世界中不存在但未来可能出现的角色手动分配给其他智能体，从而实现对未来社会发展的预测。Profile作为智能体设计的基础，对智能体的记忆、规划和行动过程产生重大影响。</p>
+</blockquote>
+<h4 id="Memory-Module"><a href="#Memory-Module" class="headerlink" title="Memory Module"></a>Memory Module</h4><ul>
+<li><p>Memory在Agent中起着非常重要的作用。它存储从环境中感知到的信息，并利用记录的记忆来促进未来的行动。记忆模块可以帮助智能体积累经验、自我进化，并以更加一致、合理、有效的方式行事。本节全面概述内存模块，重点介绍其结构、格式和操作。</p>
+</li>
+<li><p>Meomry Structures：基于LLM的Agent通常结合源自人类记忆过程认知科学研究的原理和机制。人类记忆遵循从记录感知输入的感觉记忆到短暂保存信息的短期记忆，再到长期巩固信息的长期记忆的一般进展。在设计Agent记忆结构时，研究人员从人类记忆的这些方面获得灵感。具体来说，短期记忆类似于受 Transformer 架构约束的上下文窗口内的输入信息。长期记忆类似于外部向量存储，Agent可以根据需要快速查询和检索。下面，我们介绍两种常用的基于短期记忆和长期记忆的记忆结构。</p>
+<ul>
+<li>Unified Memory: 这种结构仅模拟了人类的短期记忆，通常通过上下文学习来实现，并将记忆信息直接写入提示中。</li>
+<li>Hybrid Memory: 这种结构明确地模拟了人类的短期和长期记忆。短期记忆暂时缓冲最近的感知，而长期记忆则随着时间的推移巩固重要信息。在实践中，整合短期和长期记忆可以增强智能体的长期推理和积累宝贵经验的能力，这对于在复杂环境中完成任务至关重要。</li>
+</ul>
+<blockquote>
+<p>细心的读者可能会发现，可能还存在另一种类型的记忆结构，即仅基于长期记忆的记忆结构。然而，我们发现文献中很少记录这种类型的记忆。我们的推测是，智能体总是处于连续和动态的环境中，连续的动作表现出高度的相关性。因此，短期记忆的捕捉非常重要，通常不能忽视。</p>
+</blockquote>
+</li>
+<li><p>Memory Formats: 除了Memory Structures之外，分析Memory的另一个角度是基于Memory存储的格式，例如自然语言存储器或嵌入存储器。不同的Memory格式具有不同的优势并且适合不同的应用。</p>
+<ul>
+<li>Natural Languages: 在这种格式中，Agent行为和观察之类的记忆信息是使用原始自然语言直接描述的。这种格式具有多种优势。首先，记忆信息能够以灵活易懂的方式表达。此外，它保留了丰富的语义信息，可以提供全面的信号来指导Agent行为。</li>
+<li>Embeddings: 在这种格式中，记忆信息被编码为嵌入向量，可以提高记忆检索和读取效率。例如，MemoryBank将每个内存片段编码为嵌入向量，从而创建用于检索的索引语料库。 GITM将参考计划表示为嵌入，以方便匹配和重用。此外，ChatDev将对话历史编码为向量以供检索。</li>
+<li>Databases: 在这种格式中，记忆信息存储在数据库中，允许智能体高效、全面地操作记忆。例如，ChatDB使用数据库作为符号内存模块。 Agent可以利用SQL语句精确地添加、删除和修改内存信息。在DB-GPT中，内存模块是基于数据库构建的。为了更直观地操作内存信息，Agent经过微调以理解和执行 SQL 查询，使它们能够直接使用自然语言与数据库交互。</li>
+<li>Structured List在这种格式中，记忆信息被组织成列表，并且可以以高效、简洁的方式传达记忆的语义。例如，GITM 在分层树结构中存储子目标的操作列表。层次结构明确地捕捉了目标和相应计划之间的关系。 RET-LLM 首先将自然语言句子转换为三联短语，然后将它们存储在内存中。</li>
+</ul>
+<blockquote>
+<p>这里我们只展示了几种有代表性的内存格式，但值得注意的是，还有许多未被发现的内存格式，应该强调的是，这些格式并不相互排斥；许多模型结合了多种格式以同时利用各自的优势。一个值得注意的例子是 GITM 的内存模块，它利用键值列表结构。在此结构中，键由嵌入向量表示，而值由原始自然语言组成。嵌入向量的使用可以有效地检索内存记录。通过利用自然语言，记忆内容变得高度全面，从而使Agent能够采取更明智的行动。</p>
+</blockquote>
+</li>
+<li><p>Memory Operations: Memory在允许智能体通过与环境交互来获取、积累和利用重要知识方面发挥着关键作用。智能体与环境之间的交互是通过三个关键的内存操作来完成的：Memory读取、Memory写入和Memory反射。</p>
+<ul>
+<li>Memory Reading: 目的是从记忆中提取有意义的信息以增强智能体的行动。例如，利用以前成功的行动来实现类似的目标。Memory Reading的关键在于如何提取有价值的信息。通常，信息提取常用三个标准，即新近度、相关性和重要性。最近的、相关的、重要的记忆更有可能被提取。形式上，我们从内存信息提取的现有文献中得出以下等式： $m* = arg min_{m∈M}\ αsrec(q, m) + βsrel(q, m) + γsimp(m)$, 其中 q 是查询，例如，Agent应该处理的任务或Agent所处的上下文。 M是所有记忆的集合。 srec(·)、srel(·) 和 simp(·) 是用于测量记忆 m 的新近度、相关性和重要性的评分函数。这些评分函数可以采用多种方法实现，例如srel(q, m)可以基于LSH、ANNOY、HNSW、FAISS等实现。需要注意的是，simp仅反映内存本身的字符，因此与查询q无关。 α、β和γ是平衡参数。通过给它们赋予不同的值，可以获得多种内存读取策略。例如，通过设置α = γ = 0，许多研究只考虑记忆阅读的相关性得分srel。通过指定 α = β = γ = 1.0，对上述所有三个指标进行同等加权，以从内存中提取信息。</li>
+<li>Memory Writing: 目的是将感知环境的信息存储在记忆中。在 Memory 中存储有价值的信息为将来检索信息丰富的记忆奠定了基础，使智能体能够更高效、更合理地行动。在 Memory 写入过程中，有两个潜在问题需要仔细解决。一方面，解决如何存储与现有记忆相似的信息（即记忆重复）至关重要。另一方面，重要的是要考虑当内存达到其存储限制（即内存溢出）时如何删除信息。<ul>
+<li>内存重复: 为了整合类似的信息，人们开发了各种方法来整合新的和以前的记录。例如，与同一子目标相关的成功动作序列存储在列表中。一旦列表的大小达到 N(=5)，其中的所有序列都会使用 LLM 压缩为统一的计划解决方案。内存中的原始序列将被新生成的序列替换。增强型LLM通过计数累加聚合重复信息，避免冗余存储。 </li>
+<li>内存溢出: 为了在内存满时将信息写入内存，人们设计了不同的方法来删除现有信息以继续记忆过程。例如，在ChatDB中，可以根据用户命令显式删除内存。RET-LLM使用固定大小的内存缓冲区，以先进先出（FIFO）的方式覆盖最旧的条目。</li>
+</ul>
+</li>
+<li>Memory Reflection: 记忆反射模仿人类见证和评估自己的认知、情感和行为过程的能力。当应用于智能体时，目标是为智能体提供独立总结和推断更抽象、复杂和高级信息的能力。更具体地说，在Generative Agent中，Agent有能力将其存储在内存中的过去经验总结为更广泛和更抽象的见解。<ul>
+<li>首先，Agent根据其最近的记忆生成三个关键问题。然后，用这些问题来查询记忆以获得相关信息。根据所获取的信息，Agent会生成五种见解，反映Agent的高层想法。例如，低级记忆“Klaus Mueller 正在写一篇研究论文”、“Klaus Mueller 正在与图书馆员合作进一步研究”、“Klaus Mueller 正在与 Ayesha Khan 讨论他的研究”可以诱发高层次记忆。水平洞察力“Klaus Mueller 致力于他的研究”。</li>
+<li>此外，反思过程可以分层发生，这意味着可以根据现有见解生成见解。在 GITM 中，成功完成子目标的操作存储在列表中。当列表包含五个以上元素时，Agent将它们汇总为通用且抽象的模式并替换所有元素。在 ExpeL 中，引入了两种方法让Agent获取反射。首先，智能体比较同一任务中成功或失败的轨迹。其次，智能体从一系列成功的轨迹中学习以获取经验。</li>
+<li>传统LLM和Agent之间的一个显着区别是后者必须具备在动态环境中学习和完成任务的能力。如果我们认为记忆模块负责管理智能体过去的行为，那么有另一个重要的模块来帮助智能体规划未来的行为就变得至关重要。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Planning-Module"><a href="#Planning-Module" class="headerlink" title="Planning Module"></a>Planning Module</h4><ul>
+<li><p>当面对复杂的任务时，人类倾向于将其解构为更简单的子任务并单独解决。Planning旨在赋予智能体这种人类能力，期望使智能体的行为更加合理、强大、可靠。具体来说，我们根据智能体在规划过程中能否收到反馈来总结现有的研究，具体如下：</p>
+</li>
+<li><p>Planning without Feedback: 在这种方法中，Agent在采取行动后不会收到可能影响其未来行为的反馈。下面我们将介绍几种具有代表性的策略。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403031515695.png" srcset="/img/loading.gif" lazyload alt="image-20240303151509959"></p>
+<ul>
+<li>Single-path Reasoning: <ul>
+<li>在此策略中，最终任务被分解为几个中间步骤。这些步骤以级联方式连接，每个步骤仅导致一个后续步骤。LLM遵循以下步骤来实现最终目标。具体来说，思想链（CoT）建议将解决复杂问题的推理步骤输入到提示中。这些步骤作为示例，激励LLM按步骤进行计划和行动。在这种方法中，计划是根据提示中示例的灵感创建的。 Zero-shot-CoT 使LLM能够通过使用“一步一步思考”等触发语句来提示他们来生成任务推理过程。与 CoT 不同，此方法不将推理步骤作为提示中的示例纳入其中。</li>
+<li>Re-Prompting: 涉及在生成计划之前检查每个步骤是否满足必要的先决条件。如果某个步骤未能满足先决条件，则会引入先决条件错误消息并提示LLM重新生成计划。 ReWOO引入了一种将计划与外部观察分离的范例，其中Agent首先独立地生成计划并获得观察，然后将它们组合在一起以获得最终结果。 HuggingGPT 首先将任务分解为许多子目标，然后基于 Huggingface 解决每个子目标。与 CoT 和 Zero-shot-CoT 一次性输出所有推理步骤不同，ReWOO 和 HuggingGPT 通过递归多次访问 LLM 来产生结果。</li>
+</ul>
+</li>
+<li>Multi-path Reasoning: 在该策略中，生成最终计划的推理步骤被组织成树状结构。每个中间步骤可以有多个后续步骤。这种方法类似于人类思维，因为个人在每个推理步骤可能有多种选择。具体来说，自洽CoT（CoT-SC）认为每个复杂问题都有多种思维方式来推导出最终答案。因此，它首先使用 CoT 生成各种推理路径和相应的答案。随后，选择频率最高的答案作为最终输出。思想树（ToT）旨在使用树状推理结构生成计划。在这种方法中，树中的每个节点代表一个“想法”，对应于中间推理步骤。这些中间步骤的选择是基于LLM的评估。最终计划是使用广度优先搜索（BFS）或深度优先搜索（DFS）策略生成的。与 CoT-SC 一起生成所有计划步骤相比，ToT 需要查询每个推理步骤的 LLM。在RecMind中，作者设计了一种自我启发机制，其中规划过程中丢弃的历史信息也被利用来得出新的推理步骤。在GoT中，作者将ToT中的树状推理结构扩展为图结构，从而产生了更强大的提示策略。在 AoT 中，作者设计了一种新颖的方法，通过将算法示例合并到提示中来增强LLM的推理过程。值得注意的是，这种方法只需要查询 LLM 一次或几次。在每个计划步骤中，他们首先生成多个可能的后续步骤，然后根据距可接受的行动的距离确定最终步骤。通过合并与提示中的查询类似的示例进一步改进了。 </li>
+<li>External Planner: 尽管LLM在零样本规划方面展现出了强大的能力，但有效地为特定领域的问题生成计划仍然极具挑战性。为了应对这一挑战，研究人员求助于外部规划者。这些工具经过精心开发，采用高效的搜索算法来快速识别正确甚至最佳的计划。具体来说，LLM+P首先将任务描述转换为正式的规划领域定义语言（PDDL），然后使用外部规划器来处理PDDL。最后，LLM将生成的结果转换回自然语言。类似地，LLM-DP 利用 LLM 将观察结果、当前世界状态和目标转换为 PDDL。随后，转换后的数据被传递给外部规划器，该规划器有效地确定最终的动作序列。 CO-LLM 表明，LLM 擅长制定高层计划，但难以应对低层控制。为了解决这一限制，采用启发式设计的外部低级规划器来根据高级计划有效地执行操作。</li>
+</ul>
+</li>
+<li><p>Planning with Feedback: 在许多现实场景中，智能体需要制定长期规划来解决复杂的任务。在面对这些任务时，上述没有反馈的计划模块的效果可能会较差，原因如下：首先，从一开始就直接生成一个完美的计划是极其困难的，因为它需要考虑各种复杂的前提条件。因此，仅仅遵循最初的计划往往会导致失败。此外，计划的执行可能会受到不可预测的过渡动态的阻碍，导致初始计划无法执行。同时，在研究人类如何处理复杂任务时，我们发现个人可能会根据外部反馈迭代地制定和修改他们的计划。为了模拟人类的这种能力，研究人员设计了许多规划模块，智能体在采取行动后可以收到反馈。反馈可以从环境、人类和模型获得，具体如下。</p>
+<ul>
+<li>Environmental Feedback: 这种反馈是从客观世界或虚拟环境中获得的。例如，它可能是游戏的任务完成信号或Agent采取行动后所做的观察。具体来说，ReAct 提出使用思想-行为-观察三元组构建提示，思维组件旨在促进指导Agent行为的高级推理和规划。该行为代表Agent采取的特定操作。观察结果对应于通过外部反馈获得的操作结果，例如搜索引擎结果。接下来的想法受到之前观察的影响，这使得生成的计划更适应环境。 </li>
+<li>Human Feedback: 除了从环境中获取反馈之外，直接与人类交互也是增强智能体规划能力的一种非常直观的策略。人类反馈是一种主观信号。它可以有效地使智能体符合人类的价值观和偏好，也有助于缓解幻觉问题。它具有主动征求人类有关场景描述的反馈的能力。然后，Agent将人类反馈纳入其提示中，从而实现更明智的规划和推理。在上述案例中，我们可以看到，可以结合不同类型的反馈来增强智能体的规划能力。</li>
+<li>Model Feedback: 除了前面提到的环境和人类反馈（这些外部信号）之外，研究人员还研究了智能体本身内部反馈的利用。这种类型的反馈通常是基于预先训练的模型生成的。具体来说，有的研究提出了一种自我优化机制。该机制由三个关键组成部分组成：输出、反馈和细化。首先，Agent生成输出。然后，它利用LLM提供有关输出的反馈，并提供有关如何改进输出的指导。最后，通过反馈和细化来提高输出。这个输出反馈细化过程不断迭代，直到达到一些所需的条件。 SelfCheck 允许智能体检查和评估在各个阶段生成的推理步骤。然后他们可以通过比较结果来纠正任何错误。 InterAct 使用不同的语言模型（例如ChatGPT和InstructGPT）作为辅助角色，例如检查器和排序器，以帮助主要语言模型避免错误和低效的操作。 ChatCoT 利用模型反馈来提高其推理过程的质量。模型反馈由监控Agent推理步骤的评估模块生成。反射的开发是为了通过详细的口头反馈来增强Agent的规划能力。在该模型中，智能体首先根据其记忆产生动作，然后评估器以智能体轨迹作为输入来生成反馈。与以前的研究相比，反馈以标量值的形式给出，该模型利用LLM提供更详细的口头反馈，这可以为Agent计划提供更全面的支持。</li>
+</ul>
+<blockquote>
+<p>没有反馈的规划模块的实施相对简单。然而，它主要适用于仅需要少量推理步骤的简单任务。相反，带有反馈的规划策略需要更仔细的设计来处理反馈。然而，它的功能要强大得多，能够有效地解决涉及远程推理的复杂任务。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="Action-Module"><a href="#Action-Module" class="headerlink" title="Action Module"></a>Action Module</h4><ul>
+<li><p>Action Module负责将智能体的决策转化为具体的结果。该模块位于最下游位置，直接与环境交互。它受配置文件、内存和规划模块的影响。本节从四个角度介绍行动模块：行动目标：行动的预期结果是什么？动作产生：动作是如何产生的？行动空间：有哪些可用的行动？行动影响：行动的后果是什么？在这些观点中，前两个重点关注行动之前的方面（“行动之前”方面），第三个重点关注行动本身（“行动中”方面），第四个强调行动的影响（行动后”方面）。</p>
+</li>
+<li><p>Action Goal: Agent可以执行具有各种目标的操作。在这里，我们举几个有代表性的例子：（1）任务完成。在这种情况下，Agent的行为旨在完成特定任务，例如在 Minecraft 中制作铁镐或完成软件开发中的功能。这些行动通常有明确的目标，每个行动都有助于完成最终任务。针对此类目标的行动在现有文献中非常常见。 (2)沟通。在这种情况下，采取行动与其他Agent或真人进行通信以共享信息或协作。例如，ChatDev 中的Agent可以相互通信以共同完成软件开发任务。智能体主动与人类进行交流，并根据人类反馈调整其行动策略。 (3)环境探索。在这个例子中，智能体的目标是探索不熟悉的环境，以扩大其感知，并在探索和利用之间取得平衡。例如，Voyager中的智能体可以在任务完成过程中探索未知的技能，并通过试错根据环境反馈不断完善技能执行代码。</p>
+</li>
+<li><p>Action Production: 与模型输入和输出直接关联的普通LLM不同，Agent可以通过不同的策略和来源采取行动。下面我们介绍两种常用的动作制作策略。</p>
+<ul>
+<li>通过Memory 采取行动。在该策略中，动作是根据当前任务从Agent内存中提取信息来生成的。任务和提取的记忆用作触发Agent动作的提示。例如，在生成Agent中，Agent维护一个内存流，在采取每个操作之前，它从内存流中检索最近的、相关的和重要的信息来指导Agent的操作。在GITM中，为了实现低级子目标，Agent查询其内存以确定是否有与任务相关的成功经验。如果之前已经完成了类似的任务，则Agent调用之前成功的操作来直接处理当前任务。在 ChatDev 和 MetaGPT 等协作Agent中，不同的Agent可以相互通信。在此过程中，对话中的对话历史记录会被记住在Agent内存中。Agent生成的每个话语都会受到其记忆的影响。 </li>
+<li>通过遵循计划采取行动。在此策略中，Agent按照预先生成的计划采取行动。例如，在 DEPS 中，对于给定的任务，智能体首先制定行动计划。如果没有信号表明计划失败，Agent商将严格遵守这些计划。在 GITM 中，智能体通过将任务分解为许多子目标来制定高级计划。根据这些计划，智能体采取行动依次解决每个子目标，以完成最终任务。</li>
+</ul>
+</li>
+<li><p>Action Space: 动作空间是指Agent可以执行的一组可能的动作。一般来说，我们可以将这些行为大致分为两类：（1）外部工具和（2）LLM的内部知识。</p>
+<ul>
+<li><p>External Tools: LLM可能不适用于需要全面专业知识的领域。此外，LLM还可能遇到幻觉问题，这些问题很难自行解决。为了缓解上述问题，Agent被赋予了调用外部工具来执行操作的能力。在下文中，我们介绍了文献中已利用的几种代表性工具。</p>
+<ul>
+<li><p>APIs: 利用外部 API 来补充和扩展操作空间是近年来的流行范例。例如，HuggingGPT 利用 HuggingFace 上的模型来完成复杂的用户任务。 在响应用户请求时自动生成查询以从外部网页中提取相关内容。 TPTU 与 Python 解释器和 LaTeX 编译器连接以执行复杂的计算，例如平方根、阶乘和矩阵运算。另一种类型的 API 是可以由 LLM 基于自然语言或代码输入直接调用的 API。例如，Gorilla 是一个经过微调的 LLM，旨在为 API 调用生成准确的输入参数，并减轻外部 API 调用期间的幻觉问题。 ToolFormer 是一种基于 LLM 的工具转换系统，可以根据自然语言指令自动将给定工具转换为具有不同功能或格式的另一种工具。 API-Bank 是一个基于 LLM 的 API 推荐Agent，可以自动搜索并生成针对各种编程语言和领域的适当 API 调用。 API-Bank还提供交互界面，供用户轻松修改和执行生成的API调用。 ToolBench是一个基于LLM的工具生成系统，可以根据自然语言需求自动设计和实现各种实用工具。 ToolBench 生成的工具包括计算器、单位转换器、日历、地图、图表等。RestGPT 将 LLM 与 RESTful API 连接起来，这些 API 遵循广泛接受的 Web 服务开发标准，使生成的程序与实际应用程序更加兼容。TaskMatrix.AI 将 LLM 与数百万个 API 连接起来以支持任务执行。其核心是多模式会话基础模型，该模型与用户交互，了解他们的目标和上下文，然后为特定任务生成可执行代码。所有这些Agent都利用外部API作为其外部工具，并为用户提供交互界面以方便地修改和执行生成或转换的工具。</p>
+</li>
+<li><p>Databases &amp; Knowledge Bases: 数据库和知识库。连接到外部数据库或知识库可以帮助智能体获取特定领域信息以生成更现实的动作。例如，ChatDB 使用 SQL 语句来查询数据库，以逻辑方式促进Agent的操作。 MRKL 和 OpenAGI 结合了各种专家系统，例如知识库和规划器来访问特定领域的信息。</p>
+</li>
+<li><p>External Models: 以前的研究经常利用外部模型来扩大可能行动的范围。与 API 相比，外部模型通常处理更复杂的任务。每个外部模型可能对应多个API。例如，为了增强文本检索能力，MemoryBank结合了两种语言模型：一种用于对输入文本进行编码，另一种负责匹配查询语句。 ViperGPT首先使用基于语言模型实现的Codex从文本描述生成Python代码，然后执行代码完成给定的任务。 TPTU 结合了各种 LLM 来完成广泛的语言生成任务，例如生成代码、制作歌词等。 ChemCrow 是一种基于LLM的化学试剂，旨在执行有机合成、药物发现和材料设计中的任务。它利用十七个专家设计的模型来协助其运营。 MM-REACT集成了各种外部模型，例如用于图像生成的X-decoder、用于视频摘要的VideoBERT和用于音频处理的SpeechBERT，增强了其在多种多模态场景中的能力。</p>
+</li>
+</ul>
+</li>
+<li><p>Internal Knowledge: 除了利用外部工具之外，许多Agent仅依靠LLM的内部知识来指导他们的行动。我们现在介绍LLM的几个关键功能，可以支持Agent合理有效地行事。</p>
+<ul>
+<li>Planning Capability: 之前的工作已经证明LLM可以用作不错的规划器，将复杂的任务分解为更简单的任务。LLM的这种能力甚至可以在提示中不包含示例的情况下触发。基于LLM的规划能力，DEPS开发了一个MinecraftAgent，它可以通过子目标分解来解决复杂的任务。 GITM 和 Voyager 等类似的Agent也严重依赖 LLM 的规划能力来成功完成不同的任务。</li>
+<li>Conversation Capability: LLM通常可以产生高质量的对话。此功能使Agent的行为更像人类。在之前的工作中，许多智能体都是基于LLM强大的会话能力来采取行动的。例如，在ChatDev中，不同的Agent可以讨论软件开发过程，甚至可以对自己的行为进行反思。在 RLP 中，Agent可以根据听众对Agent话语的潜在反馈与听众进行交流。</li>
+<li>Common Sense Understanding Capability: LLM的另一个重要能力是他们能够很好地理解人类常识。基于这种能力，许多智能体可以模拟人类的日常生活并做出类似人类的决策。例如，在生成Agent中，Agent可以准确地了解其当前状态、周围环境，并根据基本观察总结出高层想法。如果没有LLM的常识理解能力，这些行为就无法可靠地模拟。类似的结论也可能适用于 RecAgent 和 S3 ，其中Agent旨在模拟用户推荐和社交行为。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Agent-Capability-Acquisition"><a href="#Agent-Capability-Acquisition" class="headerlink" title="Agent Capability Acquisition"></a>Agent Capability Acquisition</h3><ul>
+<li>在上面的章节中，我们主要关注如何设计Agent架构，以更好地激发LLM的能力，使其有资格像人类一样完成任务。该架构充当Agent的“硬件”。然而，仅仅依靠硬件不足以实现有效的任务性能。这是因为Agent可能缺乏必要的特定任务能力、技能和经验，这些可以被视为“软件”资源。为了给Agent配备这些资源，人们设计了各种策略。一般来说，我们根据是否需要对LLM进行微调，将这些策略分为两类。</li>
+</ul>
+<h4 id="Capability-Acquisition-with-Fine-tuning"><a href="#Capability-Acquisition-with-Fine-tuning" class="headerlink" title="Capability Acquisition with Fine-tuning"></a>Capability Acquisition with Fine-tuning</h4><ul>
+<li><p>Capability Acquisition with Fine-tuning: 增强Agent完成任务能力的一种直接方法是根据任务相关数据集微调Agent。一般来说，数据集可以基于人工注释、LLM 生成或从现实世界的应用程序收集来构建。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403032055847.png" srcset="/img/loading.gif" lazyload alt="image-20240303205518814"></p>
+<ul>
+<li><p>Fine-tuning with Human Annotated Datasets: 使用人工注释数据集进行微调。为了微调Agent，利用人工注释数据集是一种通用方法，可用于各种应用场景。在这种方法中，研究人员首先设计注释任务，然后招募工作人员来完成它们。例如，在 CoH 中，作者的目标是使LLM与人类价值观和偏好保持一致。与其他模型以简单和符号的方式利用人类反馈不同，该方法将人类反馈转换为自然语言形式的详细比较信息。LLM是根据这些自然语言数据集直接进行微调的。</p>
+</li>
+<li><p>Fine-tuning with LLM Generated Datasets: 构建人工注释数据集需要招募人员，这可能成本高昂，尤其是当需要注释大量样本时。考虑到LLM可以在广泛的任务中实现类似人类的能力，一个自然的想法是使用LLM来完成注释任务。虽然用这种方法生成的数据集可能不如人工注释的数据集那么完美，但它便宜得多，并且可以用来生成更多样本。例如，在 ToolBench 中，为了增强开源 LLM 的工具使用能力，作者从 RapidAPI Hub 收集了跨越 49 个类别的 16,464 个真实世界 API。他们使用这些 API 来提示 ChatGPT 生成各种指令，涵盖单工具和多工具场景。基于获得的数据集，作者对 LLaMA 进行了微调，并在工具使用方面获得了显着的性能提升。在一些研究中，为了赋予Agent社交能力，作者设计了一个沙箱，并部署多个Agent来相互交互。给定一个社会问题，中央Agent首先生成初始响应。然后，它会将响应分享给附近的Agent来收集他们的反馈。根据反馈及其详细解释，中央Agent修改其最初的响应，使它们更符合社会规范。在此过程中，作者收集了大量Agent社交互动数据，然后利用这些数据对LLM进行微调。</p>
+</li>
+<li><p>Fine-tuning with Real-world Datasets: 除了基于人类或LLM注释构建数据集之外，直接使用现实世界的数据集来微调Agent也是一种常见的策略。例如，在 MIND2WEB 中，作者收集了大量的真实数据集来增强 Web 领域的Agent能力。与之前的研究相比，本文提出的数据集包含不同的任务、真实场景和全面的用户交互模式。具体来说，作者从跨越 31 个领域的 137 个真实网站收集了 2,000 多个开放式任务。使用该数据集，作者对LLM进行了微调，以提高其在网络相关任务上的表现，包括电影发现和门票预订等。在 SQL-PALM 中，研究人员基于名为 Spider 的跨域大规模文本到 SQL 数据集对 PaLM-2 进行了微调。所获得的模型可以在文本到SQL任务上实现显着的性能提升。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Capability-Acquisition-without-Fine-tuning"><a href="#Capability-Acquisition-without-Fine-tuning" class="headerlink" title="Capability Acquisition without Fine-tuning"></a>Capability Acquisition without Fine-tuning</h4><ul>
+<li><p>Capability Acquisition without Fine-tuning: 在传统机器学习时代，模型能力主要是通过数据集学习获得的，将知识编码为模型参数。在LLM时代，模型能力可以通过训练/微调模型参数或设计精致的提示（即提示工程师）来获得。在提示工程师中，需要将有价值的信息写入提示中，以增强模型能力或释放现有的LLM能力。在智能体时代，模型能力可以通过三种策略获得：（1）模型微调，（2）提示工程师和（3）设计适当的智能体进化机制（我们称之为机制工程）。机制工程是一个广泛的概念，涉及开发专门的模块、引入新颖的工作规则以及其他增强Agent能力的策略。下面介绍Agent能力获取的激励工程和机制工程。</p>
+<ul>
+<li><p>Prompting Engineering: 由于强大的语言理解能力，人们可以使用自然语言直接与LLM进行互动。这引入了一种增强Agent能力的新策略，即可以使用自然语言描述所需的能力，然后将其用作影响 LLM 行动的提示。例如，在 CoT 中，为了赋予智能体复杂任务推理的能力，作者在提示中将中间推理步骤以少镜头示例的形式呈现。类似的技术也用于 CoT-SC 和 ToT 。在SocialAGI中，为了增强对话中Agent的自我意识能力，作者向LLM提示Agent对听众及其自身心理状态的信念，这使得生成的话语更具吸引力和适应性。此外，作者还融入了听众的目标心理状态，这使得Agent人能够制定更具战略性的计划。 Retroformer 提出了一个回顾性模型，使Agent能够对其过去的失败进行反思。这些反思被整合到LLM的提示中，以指导Agent未来的行动。此外，该模型利用强化学习迭代改进回顾性模型，从而完善LLM提示。</p>
+</li>
+<li><p>Mechanism Engineering: 与模型微调和提示工程不同，机制工程是一种独特的增强智能体能力的策略。下面，我们提出了几种有代表性的机制工程方法。</p>
+<ul>
+<li><p>Trial-and-error: 在该方法中，Agent首先执行一个动作，然后调用预定义的批评者来判断该动作。如果行动被认为不满意，那么Agent会通过纳入批评者的反馈来做出反应。在 RAH 中，Agent充当推荐系统中的用户助手。Agent的关键角色之一是模拟人类行为并代表用户生成响应。为了实现这一目标，Agent首先生成预测响应，然后将其与真实的人类反馈进行比较。如果预测的响应和真实的人类反馈不同，批评者会生成失败信息，随后将其纳入Agent的下一步行动中。在 DEPS 中，智能体首先设计一个计划来完成给定的任务。在计划执行过程中，如果某个操作失败，解释器会生成具体的详细信息来解释失败的原因。然后，Agent会整合这些信息来重新设计计划。在 RoCo 中，智能体首先为多机器人协作任务中的每个机器人提出子任务计划和 3D 路径点路径。然后通过一组环境检查（例如碰撞检测和逆运动学）来验证计划和航路点。如果任何检查失败，反馈将附加到每个Prompt的提示中，并开始另一轮对话。Prompt使用LLM 来讨论和改进他们的计划和航路点，直到他们通过所有验证。在 PREFER 中，Agent首先评估其在数据子集上的性能。如果无法解决某些示例，LLM将被用来生成反映失败原因的反馈信息。根据此反馈，Agent通过迭代改进其行为来改进自身。</p>
+</li>
+<li><p>Crowd-sourcing: 有的研究设计了一种辩论机制，利用群体的智慧来增强智能体的能力。首先，不同的Agent对给定的问题提供不同的回答。如果他们的回答不一致，系统将提示他们合并其他Agent的解决方案并提供更新的响应。这个迭代过程持续进行，直到达成最终的共识答案。在这种方法中，每个智能体的能力通过理解和吸收其他智能体的意见来增强。</p>
+</li>
+<li><p>Experience Accumulation: 在 GITM 中，智能体一开始并不知道如何解决任务。然后，它进行探索，一旦成功完成任务，该任务中使用的操作就会存储到Agent内存中。将来，如果智能体遇到类似的任务，那么就会提取相关的记忆来完成当前的任务。在此过程中，Agent能力的提升来自于专门设计的内存积累和利用机制。在 Voyager 中，作者为智能体配备了一个技能库，库中的每个技能都由可执行代码表示。在智能体与环境的交互过程中，每个技能的代码都会根据环境反馈和智能体自验证结果进行迭代细化。经过一段时间的执行后，智能体可以通过访问技能库成功高效地完成不同的任务。在 MemPrompt 中，要求用户以自然语言提供有关智能体解决问题意图的反馈，并将该反馈存储在内存中。当智能体遇到类似的任务时，它会尝试检索相关记忆以生成更合适的响应。</p>
+</li>
+<li><p>Self-driven Evolution: 在LMA3中，智能体可以自主为自己设定目标，并通过探索环境和接收奖励反馈来逐步提高其能力功能。遵循这种机制，智能体可以根据自己的喜好获取知识并发展能力。在SALLM-MS中，通过将GPT-4等先进的大语言模型集成到多智能体系统中，智能体可以适应和执行复杂的任务，展示先进的通信能力，从而在与环境的交互中实现自我驱动的进化。在CLMTWA中，通过使用大型语言模型作为教师和较弱的语言模型作为学生，教师可以生成和传达自然语言解释，以通过心理理论提高学生的推理能力。教师还可以根据干预的预期效用对学生进行个性化解释，并仅在必要时进行干预。在 NLSOM 中，不同的智能体通过自然语言进行通信和协作，以解决单个智能体无法解决的任务。这可以被视为一种自我驱动学习的形式，利用多个Agent之间的信息和知识交换。然而，与 LMA3、SALLM-MS 和 CLMTWA 等其他模型不同，NLSOM 允许根据任务要求以及其他Agent或环境的反馈动态调整Agent目标、角色、任务和关系。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Comparison"><a href="#Comparison" class="headerlink" title="Comparison"></a>Comparison</h4><ul>
+<li>通过比较上述Agent能力获取策略，我们可以发现，微调方法通过调整模型参数来提高Agent能力，可以融入大量任务特定的知识，但仅适用于开源LLM。无需微调的方法通常基于精细的提示策略或机制工程来增强Agent能力。它们可用于开源和闭源LLM。然而，由于LLM输入上下文窗口的限制，它们无法包含太多的任务信息。另外，提示和机制的设计空间极大，不容易找到最优解。</li>
+</ul>
+<h2 id="LLM-based-Autonomous-Agent-Application"><a href="#LLM-based-Autonomous-Agent-Application" class="headerlink" title="LLM-based Autonomous Agent Application"></a>LLM-based Autonomous Agent Application</h2><ul>
+<li><p>由于强大的语言理解能力、复杂的任务推理和常识理解能力，基于LLM的Agent已显示出影响多个领域的巨大潜力。本节简要总结了以前的研究，根据它们在三个不同领域的应用进行分类：社会科学、自然科学和工程。</p>
+</li>
+<li><p>Social Science</p>
+<ul>
+<li><p>社会科学是科学的分支之一，致力于研究社会以及这些社会中个体之间的关系。基于LLM的Agent可以促进该领域的发展通过利用他们令人印象深刻的类人理解、思考和解决任务的能力。下面，我们讨论基于 LLM Agent可能影响的几个关键领域。</p>
+</li>
+<li><p>Psychology: 对于心理学领域，基于LLM的Agent可以用于进行模拟实验，提供心理健康支持等。例如，作者为LLM分配了不同的背景，并让他们完成心理学实验。从结果中，作者发现LLM可以产生与真实人类研究一致的结果。此外，较大的模型通常比较小的模型可以提供更忠实的模拟结果。一个有趣的发现是，在许多实验中，像ChatGPT和GPT-4这样的模型可以提供过于完美的估计（称为“超精度失真”），这可能会影响下游应用。在一些研究中，作者系统地分析了基于LLM的对话Agent对心理健康支持的有效性。他们从 Reddit 上收集了 120 个帖子，发现此类Agent可以按需帮助用户应对焦虑、社交孤立和抑郁。同时，他们也发现这些药剂有时可能会产生有害物质。</p>
+</li>
+<li><p>Political Science and Economy: 基于LLM的Agent也可用于研究政治学和经济学 。在一些研究中，基于LLM的Agent被用于意识形态检测和预测投票模式。在另外一些研究中，作者重点通过LLM Agent的帮助来理解政治言论的话语结构和说服要素。在其他的研究中，基于LLM的Agent被赋予了特定的特征，如天赋、偏好和个性，以探索模拟场景中的人类经济行为。</p>
+</li>
+<li><p>Social Simulation: 此前，在人类社会中进行实验往往成本高昂、不道德，甚至不可行。随着LLM的不断繁荣，许多人探索用基于LLM的Agent构建虚拟环境来模拟社会现象，例如有害信息的传播等。例如，Social Simulacra 模拟在线社交社区，并探索利用基于Agent的模拟来帮助决策者改善社区法规的潜力。 一些研究研究了社交网络中基于 LLM 的Agent的不同行为特征的潜在影响。 Generative Agents 和 AgentSims在虚拟城镇中构建多个Agent来模拟人类的日常生活。 SocialAI School 采用基于LLM的Agent来模拟和研究儿童发展过程中的基本社会认知技能。 S3构建了一个社交网络模拟器，重点关注信息、情感和态度的传播。 CGMI是多智能体模拟的框架。 CGMI通过树形结构维护Agent的个性并构建认知模型。作者使用 CGMI 模拟了课堂场景。</p>
+</li>
+<li><p>Jurisprudence: 基于LLM的Agent可以为法律决策过程提供帮助，促进更明智的判断。盲判采用多种语言模型来模拟多个法官的决策过程。它收集不同的意见，并通过投票机制整合结果。 ChatLaw 是中国著名的基于LLM的法律模式。它支持数据库和关键字搜索策略来缓解幻觉问题。此外，该模型还采用自我关注机制，通过减轻参考不准确的影响来增强LLM的能力。</p>
+</li>
+<li><p>Research Assistant: 除了特定领域外，基于LLM的Agent人还可以用作一般社会科学研究助理。在一些研究中，基于LLM的Agent用于协助研究人员完成各种任务，例如生成文章摘要、提取关键字和创建脚本。在另外一些研究中，基于LLM的Agent人充当写作助理，他们有能力为社会科学家识别新颖的研究问题。</p>
+</li>
+</ul>
+</li>
+<li><p>Natural Science</p>
+<ul>
+<li><p>自然科学是科学的分支之一，涉及基于观察和实验的经验证据来描述、理解和预测自然现象。随着LLM的不断繁荣，基于LLM的Agent在自然科学领域的应用越来越普遍。接下来，我们将介绍许多具有代表性的领域，其中LLM Agent可以在其中发挥重要作用。</p>
+</li>
+<li><p>Documentation and Data Management: 自然科学研究通常涉及大量文献的收集、组织和综合，这需要大量的奉献精神的时间和人力资源。基于LLM Agent在语言理解和使用互联网和数据库等工具进行文本处理方面表现出了强大的能力，这些功能使Agent能够在与文档和数据管理相关的任务中表现出色。在一些研究领域中，智能体可以有效地查询和利用互联网信息来完成问题回答和实验计划等任务。 ChatMOF 利用LLM从人类编写的文本描述中提取重要信息。然后制定计划应用相关工具来预测金属有机框架的性质和结构。 ChemCrow 利用化学相关数据库来验证化合物表示的精度并识别潜在危险物质。此功能通过确保所涉及数据的准确性来增强科学调查的可靠性和全面性。</p>
+</li>
+<li><p>Experiment Assistant: 基于 LLM  Agent能够独立进行实验，这使其成为支持科学家研究项目的宝贵工具。例如，不分科研引入了一种创新的Agent系统，该系统利用LLM来自动化科学实验的设计、规划和执行。当提供实验目标作为输入时，该系统会访问互联网并检索相关文档以收集必要的信息。随后它利用Python代码进行必要的计算并进行以下实验。 ChemCrow 包含 17 个精心开发的工具，专门用于帮助研究人员进行化学研究。一旦收到输入目标，ChemCrow 就会为实验程序提供有价值的建议，同时还强调与拟议实验相关的任何潜在安全风险。</p>
+</li>
+<li><p>Natural Science Education: 基于 LLM Agent 可以与人类流畅地交流，通常被用来开发基于Agent的教育工具。例如，部分科研团队开发了基于主体的教育系统，以促进学生学习实验设计、方法和分析。这些系统的目标是提高学生的批判性思维和解决问题的能力，同时促进对科学原理的更深入理解。数学Agent可以帮助研究人员探索、发现、解决和证明数学问题。此外，它可以与人类交流并帮助他们理解和使用数学。 其余工作可以利用CodeX的功能自动解决和解释大学水平的数学问题，可以用作教育工具来教授学生和研究人员。 CodeHelp 是一个编程教育Agent。它提供了许多有用的功能，例如设置特定于课程的关键字、监控学生查询以及向系统提供反馈。 EduChat 是一个专门为教育领域设计的基于 LLM Agent。它通过对话为教师、学生和家长提供个性化、公平和富有同理心的教育支持。此外，通过丰富的系统提示，有效解决幻觉问题，无缝适应实际教育场景。 FreeText [109] 是一个利用LLM自动评估学生对开放式问题的回答并提供反馈的Agent。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Engineering"><a href="#Engineering" class="headerlink" title="Engineering"></a>Engineering</h2><ul>
+<li>基于LLM的Agent在协助和增强工程研究和应用方面表现出了巨大的潜力。在本节中，我们回顾并总结了基于LLM的Agent在几个主要工程领域的应用。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403041608744.png" srcset="/img/loading.gif" lazyload alt="Representative applications of LLM-based autonomous agents"></p>
+<ul>
+<li>Civil Engineering: 在土木工程中，基于 LLM 的Agent可用于设计和优化复杂的结构，如建筑物、桥梁、水坝、道路等。一些研究中，提出了一个交互式框架，人类建筑师和Agent可以在 3D 模拟环境中协作构建结构。交互式Agent可以理解自然语言指令、放置块、检测混乱、寻求澄清并结合人类反馈，显示出工程设计中人机协作的潜力。</li>
+<li>Computer Science &amp; Software Engineering: 在计算机科学和软件工程领域，基于 LLM 的Agent提供了自动化编码、测试、调试和文档生成的潜力。 ChatDev 提出了一个端到端框架，其中多个Agent角色通过自然语言对话进行通信和协作，以完成软件开发生命周期。该框架展示了可执行软件系统的高效且经济高效的生成。 ToolBench可用于代码自动完成和代码推荐等任务。 MetaGPT抽象了产品经理、架构师、项目经理和工程师等多种角色，以监督代码生成过程并提高最终输出代码的质量。这使得低成本的软件开发成为可能。</li>
+<li>Industrial Automation: 在工业自动化领域，基于LLM的Agent可以用来实现生产过程的智能规划和控制。一些研究提出了一种新颖的框架，将大型语言模型（LLM）与数字孪生系统集成，以适应灵活的生产需求。该框架利用即时工程技术来创建 LLM Agent，这些Agent可以根据数字孪生提供的信息适应特定任务。这些Agent可以协调一系列原子功能和技能，以完成自动化金字塔内不同级别的生产任务。这项研究展示了将LLM集成到工业自动化系统中的潜力，为更加敏捷、灵活和适应性强的生产流程提供创新解决方案。 IELLM 提出了关于LLM在应对石油和天然气行业挑战方面的有效性的全面案例研究。它专注于各种应用，包括岩石物理建模、声反射测量和连续油管控制。</li>
+<li>Robotics &amp; Embodied Artificial Intelligence: 最近的工作开发了更有效的机器人强化学习Agent和具体人工智能。重点是增强Agent在具体环境中进行规划、推理和协作的能力。具体来说，一些研究工作做了一个用于具体推理和任务规划的统一Agent系统。在该系统中，作者设计了高级命令以改进规划，同时提出低级控制器将命令转换为动作。此外，人们可以利用对话来收集信息以加速优化过程。一部分的研究工作使用Agent进行具体决策和探索。为了克服物理限制，Agent可以利用多种技能生成可执行计划并完成长期任务。在控制策略方面，SayCan 重点研究利用移动机械手机器人的各种操纵和导航技能。它从厨房环境中遇到的典型任务中汲取灵感，提出了一套全面的 551 项技能，涵盖 7 个技能系列和 17 个对象。这些技能包括各种动作，例如拾取、放置、倾倒、抓取和操纵物体等。 TidyBot 是一种实体Agent，旨在个性化家庭清洁任务。它可以通过文本示例了解用户对对象放置和操作方法的偏好。</li>
+<li>为了推动基于LLM Agent的应用，研究人员还引入了许多开源库，基于这些库，开发人员可以根据自己的定制需求快速实现和评估智能体。例如，LangChain 是一个开源框架，可以自动执行编码、测试、调试和文档生成任务。通过将语言模型与数据源集成并促进与环境的交互，LangChain通过自然语言通信和多个Agent角色之间的协作来实现高效且经济高效的软件开发。基于LangChain，XLang 配备了一套全面的工具、完整的用户界面，并支持三种不同的Agent场景，即数据处理、插件使用和WebAgent。 AutoGPT 是一个完全自动化的Agent。它设定一个或多个目标，将它们分解为相应的任务，并循环执行这些任务，直到实现目标。 WorkGPT 是一个类似于AutoGPT和LangChain的Agent框架。通过为其提供一条指令和一组 API，它可以与 AI 进行来回对话，直到指令完成。 GPT-Engineer 、SmolModels 和 DemoGPT 是开源项目，专注于通过提示自动生成代码以完成开发任务。 AGiXT 是一个动态人工智能自动化平台，旨在跨多个提供商协调高效的人工智能命令管理和任务执行。 AgentVerse 是一个多功能框架，可帮助研究人员有效地创建基于 LLM 的定制Agent模拟。 GPT Researcher 是一个实验性应用程序，它利用大型语言模型来有效地开发研究问题、触发网络爬行来收集信息、总结来源和汇总摘要。 BMTools 是一个开源存储库，它通过工具扩展了LLM，并为社区驱动的工具构建和共享提供了一个平台。它支持各种类型的工具，支持使用多个工具同时执行任务，并提供通过 URL 加载插件的简单界面，促进轻松开发并为 BMTools 生态系统做出贡献。</li>
+</ul>
+<blockquote>
+<p>利用基于LLM的Agent来支持上述申请也可能会带来一定的风险和挑战。一方面，LLM本身可能容易受到错觉和其他问题的影响，偶尔会提供错误的答案，导致错误的结论、实验失败，甚至在危险实验中给人类安全带来风险。因此，在实验过程中，用户必须具备必要的专业知识和知识，以保持适当的谨慎。另一方面，基于 LLM 的Agent可能会被用于恶意目的，例如化学武器的开发，因此需要实施安全措施，例如人员调整，以确保负责任和合乎道德的使用。总之，在上面的章节中，我们介绍了基于LLM的自治Agent在三个重要领域的典型应用。为了更清楚地理解，我们在表中总结了之前的工作及其应用之间的对应关系。</p>
+</blockquote>
+<h2 id="LLM-based-Autonomous-Agent-Evaluation"><a href="#LLM-based-Autonomous-Agent-Evaluation" class="headerlink" title="LLM-based Autonomous Agent Evaluation"></a>LLM-based Autonomous Agent Evaluation</h2><ul>
+<li><p>与LLM类似，评估基于LLM的Agent的有效性是一项具有挑战性的任务。本节介绍两种常用的评估策略，即主观评估和客观评估。</p>
+</li>
+<li><p>Subjective Evaluation: 主观评估根据人类判断来衡量Agent能力。它适用于没有评估数据集或很难设计量化指标的场景，例如评估智能体的智能或用户友好性。下面，我们提出两种常用的主观评价策略。</p>
+<ul>
+<li>Human Annotation：在这种方法中，人工评估者直接对不同Agent产生的结果进行评分或排名。例如，在一些研究工作中，作者雇用了许多注释者，并要求他们提供与Agent能力直接相关的五个关键问题的反馈。在其他研究工作中，作者通过要求人们对模型的无害性、诚实性、有帮助性、参与性和公正性进行评分来评估模型的有效性，然后比较不同模型的结果。在部分工作中，作者要求注释者回答他们设计的模型是否能够有效地有助于改进在线社区的规则设计。</li>
+<li>Turing Test：在这种方法中，人类评估者需要区分Agent和真实人类产生的结果。如果在给定的任务中，评估者无法区分智能体和人类的结果，则表明智能体可以在此任务上实现类似人类的表现。在一些工作中，作者对自由格式的党派文本进行了实验，并要求人类评估者猜测响应是来自人类还是基于LLM的Agent。在另一些工作中，人类评估者需要识别行为是由Agent还是真人产生。在某些工作中，作者进行了一项研究，他们收集了不同情况下LLM软件和人类受试者情绪状态的人类注释。他们利用这些注释作为基线来评估LLM的情感鲁棒性。</li>
+</ul>
+<blockquote>
+<p>评论。基于LLM Agent通常旨在为人类服务。因此，主观评价起着至关重要的作用，因为它反映了人类的标准。但这一策略也面临成本高、效率低、人群偏差等问题。为了解决这些问题，许多研究者探索利用LLM作为Agent进行主观评估。例如，在 ChemCrow 中，研究人员使用 GPT 评估实验结果。他们既考虑任务的完成度，又考虑底层流程的准确性。 ChatEval 使用多个Agent以辩论的方式评估候选模型产生的结果。我们相信，随着LLM的进步，这种评估方法会更加可信，并得到更广泛的应用。</p>
+</blockquote>
+</li>
+<li><p>Objective Evaluation: 客观评估是指使用可以随时间计算、比较和跟踪的定量指标来评估基于LLM Agent的能力。与主观评估相反，客观指标旨在为Agent绩效提供具体的、可衡量的见解。进行客观评估需要三个重要方面，即评估指标、协议和基准。</p>
+<ul>
+<li>Metrics: 为了客观地评估Agent的有效性，设计适当的指标非常重要，这可能会影响评估的准确性和全面性。理想的评估指标应该准确反映智能体的质量，并与人类在现实场景中使用它们时的感受保持一致。在现有的工作中，我们可以总结出以下代表性的评估指标。<ul>
+<li>Task success metrics：这些指标衡量智能体完成任务和实现目标的程度。常见指标包括成功率，奖励/分数，覆盖范围和准确度。数值越高表示完成任务的能力越强。</li>
+<li>Human similarity metrics：这些度量量化了Agent行为与人类行为的相似程度。典型的例子包括轨迹/位置精度、对话相似性以及人类反应的模仿。相似度越高表明人体模拟性能越好。</li>
+<li>Efficiency metrics：与上述用于评估Agent有效性的指标相比，这些指标评估Agent效率。典型的指标包括规划长度、开发成本、推理速度和澄清对话的数量。</li>
+</ul>
+</li>
+<li>Protocols: 除了评估指标之外，客观评估的另一个重要方面是如何利用这些指标。在之前的工作中，我们可以确定以下常用的评估协议。<ul>
+<li>Read-world simulation：在这种方法中，Agent在游戏和交互式模拟器等沉浸式环境中进行评估。Agent需要自主执行任务，然后利用任务成功率和人类相似度等指标来根据智能体的轨迹和完成的目标评估智能体的能力。该方法有望评估智能体在现实场景中的实际能力。</li>
+<li>Social evaluation：该方法利用指标来评估基于模拟社会中主体交互的社会智能。人们采用了各种方法，例如评估团队合作技能的协作任务、分析论证推理的辩论以及衡量社交能力的人类研究。这些方法分析连贯性、心理理论和社交智商等品质，以评估智能体在合作、沟通、同理心和模仿人类社会行为等领域的能力。通过使Agent人处于复杂的交互环境中，社会评估为Agent人的更高层次的社会认知提供了有价值的见解。</li>
+<li>Multi-task evalution：在该方法中，人们使用一组来自不同领域的不同任务来评估智能体，可以有效地衡量开放域环境中智能体的泛化能力。</li>
+<li>Software testing：在这种方法中，研究人员通过让Agent执行软件测试任务等任务来评估Agent，例如生成测试用例、重现错误、调试代码以及与开发人员和外部工具交互。然后，我们可以使用测试覆盖率和错误检测率等指标来衡量基于 LLM 的Agent的有效性。</li>
+</ul>
+</li>
+<li>Benchmarks: 考虑到指标和协议，剩下的一个关键方面是选择适当的基准来进行评估。过去，人们在实验中使用了各种基准。例如，许多研究人员使用 ALFWorld 、IGLU 和 Minecraft 等模拟环境作为评估Agent能力的基准。 Tachikuma 是一个基准，利用 TRPG 游戏日志来评估LLM理解和推断与多个角色和新颖物体的复杂交互的能力。 AgentBench 提供了一个全面的框架，用于评估 LLM 作为跨不同环境的Agent。它代表了LLM作为跨不同领域现实世界挑战的Agent人的首次系统评估。 SocKET 是评估LLM社交能力的综合基准，涉及 58 项任务，涵盖幽默和讽刺、情绪和感受、可信度等五类社交信息。 AgentSims 是评估LLM的多功能框架。基于智能体，可以灵活地设计智能体规划、记忆和动作策略，并衡量不同智能体模块在交互环境中的有效性。ToolBench是一个开源项目，旨在支持具有通用工具使用能力的强大LLM的开发。它为基于工具学习的LLM的培训、服务和评估提供了一个开放的平台。 WebShop 开发了一个基准，用于评估基于 LLM 的Agent的产品搜索和检索能力。该基准是使用 118 万个现实世界项目的集合构建的。 Mobile-Env 是一个可扩展的交互平台，可用于评估基于LLM Agent的多步交互能力。 WebArena 提供了一个跨多个域的综合网站环境。其目的是以端到端的方式评估Agent并确定其完成任务的准确性。 GentBench 是一个基准，旨在评估Agent在使用工具完成复杂任务时的能力，包括推理、安全性和效率。 RocoBench 是一个包含六项任务的基准，评估不同场景下的多智能体协作，强调通信和协调策略以评估协作机器人的适应性和泛化性。 EmotionBench 评估 LLM 的情绪评估能力，即他们在遇到特定情况时情绪如何变化。它收集了 400 多种引发八种负面情绪的情况，并使用自我报告量表测量LLM和人类受试者的情绪状态。 PEB 是一个为评估渗透测试场景中基于 LLM 的Agent而定制的基准，包括来自领先平台的 13 个不同目标。它提供了跨不同难度级别的结构化评估，反映了Agent面临的现实挑战。 ClemBench 包含五个对话游戏来评估LLM作为玩家的能力。 E2E 是用于测试聊天机器人准确性和实用性的端到端基准。</li>
+</ul>
+<blockquote>
+<p>客观评估允许使用不同的指标对基于LLM的Agent能力进行定量评估。虽然当前技术无法完美衡量所有类型的Agent能力，但客观评估提供了补充主观评估的重要见解。客观评估基准和方法的持续进展将进一步促进基于LLM Agent的开发和理解。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Related-Surveys"><a href="#Related-Surveys" class="headerlink" title="Related Surveys"></a>Related Surveys</h2><p>随着大型语言模型的蓬勃发展，出现了大量的综合调查，提供了各个方面的详细见解。部分研究广泛介绍了LLM的背景、主要发现和主流技术，涵盖了大量现有著作。另一方面，一些研究主要关注LLM在各种下游任务中的应用以及与其部署相关的挑战。将LLM与人类智力结合起来是一个活跃的研究领域，旨在解决偏见和幻想等问题。 一些研究汇总了现有的人类对齐技术，包括数据收集和模型训练方法。推理是智力的一个重要方面，影响决策、解决问题和其他认知能力。 一些研究介绍了LLM推理能力的研究现状，探索提高和评估其推理能力的方法。 一些研究提出可以通过推理能力和利用工具的能力来增强语言模型，称为增强语言模型（ALM）。他们对 ALM 的最新进展进行了全面审查。随着大型模型的使用变得越来越普遍，评估其性能变得越来越重要。另外一些研究阐明了LLM的评估，解决了评估内容、评估地点以及如何评估其在下游任务中的表现和社会影响。一些研究还讨论了LLM在各种下游任务中的能力和局限性。上述研究涵盖了大型模型的各个方面，包括训练、应用和评估。然而，在本文之前，还没有任何工作专门关注快速新兴且极具前景的基于 LLM 的Agent领域。</p>
+<h2 id="Challenges"><a href="#Challenges" class="headerlink" title="Challenges"></a>Challenges</h2><blockquote>
+<p>虽然之前基于LLM Agent的工作取得了许多显着的成功，但该领域仍处于起步阶段，在其发展过程中还存在一些重大挑战需要解决。下面，我们提出许多有代表性的挑战。</p>
+</blockquote>
+<ul>
+<li>Role-playing Capability: 与传统的LLM不同，Agent通常必须扮演特定的角色（例如程序编码员、研究员和化学家）来完成不同的任务。因此，Agent的角色扮演能力非常重要。尽管LLM可以有效地模拟许多常见的角色，例如电影评论员，但仍然存在他们难以准确捕捉的各种角色和方面。首先，LLM通常是基于网络语料库进行训练的，因此对于网络上很少讨论的角色或新出现的角色，LLM可能无法很好地模拟。此外，之前的研究表明，现有的LLM可能无法很好地模拟人类的认知心理特征，导致对话场景中缺乏自我意识。这些问题的潜在解决方案可能包括微调 LLM 或仔细设计Agent提示/架构。例如，可以首先收集不常见角色或心理特征的真实人类数据，然后利用它来微调LLM。然而，如何确保微调后的模型对于常见角色仍然表现良好可能会带来进一步的挑战。除了微调之外，还可以设计量身定制的Agent提示/架构，以增强 LLM 的角色扮演能力。然而，找到最佳的提示/架构并不容易，因为它们的设计空间太大。</li>
+<li>Generalized Human Alignment: 对于传统的LLM，人类对齐已经进行了很多讨论。在基于LLM Agent领域，特别是当Agent被用于模拟时，我们认为应该更深入地讨论这个概念。为了更好地为人类服务，传统的LLM通常会进行微调，以符合正确的人类价值观，例如特工不应该计划制造炸弹来为社会复仇。然而，当利用Agent进行现实世界模拟时，理想的模拟器应该能够诚实地描绘不同的人类特征，包括具有 2 个不正确值的特征。其实，模拟人的消极方面可能更重要，因为模拟的一个重要目标是发现问题、解决问题，没有消极方面就没有问题解决。例如，为了模拟现实世界的社会，我们可能必须让智能体计划制造炸弹，并观察它如何行动来实施该计划以及其行为的影响。基于这些观察，人们可以采取更好的行动来阻止现实社会中的类似行为。受上述案例的启发，基于Agent的模拟的一个重要问题可能是如何进行广义的人类对齐，即针对不同的目的和应用，Agent应该能够与不同的人类价值观保持一致。然而，现有的强大的LLM（包括 ChatGPT 和 GPT-4）大多与统一的人类价值观保持一致。因此，一个有趣的方向是如何通过设计适当的提示策略来“重新调整”这些模型。</li>
+<li>Prompt Robustness: 为了确保智能体的合理行为，设计者经常将额外的模块（例如内存和规划模块）合并到LLM中。然而，这些模块的加入需要开发更多的提示，以促进一致的操作和有效的沟通。之前的研究强调了LLM的提示缺乏稳健性，因为即使是微小的改变也可能产生截然不同的结果。在构建Agent时，这个问题变得更加明显，因为它们不包含单个提示，而是包含考虑所有模块的提示框架，其中一个模块的提示有可能影响其他模块。此外，不同的LLM的提示框架可能会有很大差异。开发一个可应用于各种LLM的统一且强大的提示框架是一个重要但尚未解决的问题。对于上述问题有两种可能的解决方案<ul>
+<li>通过反复试验手动制作必要的提示元素</li>
+<li>使用 GPT 自动生成提示</li>
+</ul>
+</li>
+<li>Hallucination: 幻觉对LLM提出了根本性挑战，其中模型错误地自信地输出虚假信息。这个问题在自主Agent中也很普遍。例如，一些研究中发现，当代码生成任务期间遇到简单的指令时，Agent可能会表现出幻觉行为。幻觉可能导致严重的后果，例如不正确或误导性的代码、安全风险和道德问题。为了解决这个问题，一种可能的方法是将人类校正反馈纳入人类与Agent交互的循环中。</li>
+<li>Knowledge Boundary: 基于LLM Agent的一个重要应用是模拟不同的现实世界人类行为。分类模拟的研究有着悠久的历史，最近人们的兴趣激增可以归因于LLM所取得的显着进步，它们在模拟人类行为方面表现出了显着的能力。然而，重要的是要认识到LLM的力量可能并不总是有利的。具体来说，理想的模拟应该准确地复制人类知识。在这方面，LLM可以表现出过大的权力，因为他们接受的网络知识库的训练超出了普通人的范围。LLM的巨大能力可以显着影响模拟的有效性。例如，当尝试模拟用户对各种电影的选择行为时，确保LLM假设对这些电影没有先验知识是至关重要的。然而，LLM有可能已经获得了有关这些电影的信息。如果不实施适当的策略，法学硕士可能会根据他们广泛的知识做出决策，即使现实世界的用户无法事先访问这些电影的内容。基于上面的例子，我们可以得出结论，为了构建可信的代理模拟环境，一个重要的问题是如何约束LLM中用户未知知识的利用。</li>
+<li>Efficiency: 由于其自回归架构，LLM通常推理速度较慢。然而，Agent可能需要多次查询每个动作的LLM，例如从内存模块中提取信息、在采取动作之前制定计划等。因此，Agent action的效率很大程度上受到LLM推理速度的影响。使用相同的 API 密钥部署多个Agent会进一步显着增加时间成本。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A0%940%E8%87%AA%E5%AD%A6/">#研0自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Agents Learning-A Survey on Large Language Model based Autonomous Agents</div>
+      <div>https://alexanderliu-creator.github.io/2024/03/02/agents-learning/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年3月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/02/21/suan-fa-gang-mian-shi-hui-zong/" title="算法岗面试汇总">
+                        <span class="hidden-mobile">算法岗面试汇总</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

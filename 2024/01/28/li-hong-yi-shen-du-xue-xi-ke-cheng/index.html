@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202401281948983.jpg">
 <meta property="article:published_time" content="2024-01-28T11:45:14.000Z">
-<meta property="article:modified_time" content="2024-02-11T12:47:48.765Z">
+<meta property="article:modified_time" content="2024-03-04T15:47:31.749Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          7.7k 字
+          36k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          64 分钟
+          297 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：12 小时前
+                    本文最后更新于：15 小时前
                   
                 
               </p>
@@ -470,11 +470,14 @@
 <li><p>Linear Regression不太适用于分类问题哈</p>
 </li>
 </ul>
-<h1 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h1><blockquote>
+<h1 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h1><ul>
+<li>专门用来处理二分类问题</li>
+</ul>
+<blockquote>
 <p>Probabilistic Generative Model -&gt; Logistic Regression</p>
 </blockquote>
 <ul>
-<li><p>MSE没有交叉熵好的理由：使用MSE算出来的梯度，离目标很近，微分是0，离目标很远，微分也是0，几乎学不动orz。很难找到结果，但是Cross-Entropy，距离目标越远，剃度越大，就很容易能够找到很好的结果昂！</p>
+<li><p>MSE没有交叉熵好的理由：使用MSE算出来的梯度，离目标很近，微分是0，离目标很远，微分也是0，几乎学不动orz。很难找到结果，但是Cross-Entropy，距离目标越远，梯度越大，就很容易能够找到很好的结果昂！Changing the loss function can change the difficulty of optimization.</p>
 </li>
 <li><p>Dicriminative vs Generative</p>
 <ul>
@@ -498,21 +501,38 @@
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/39840928/answer/2222150696">AUC</a></p>
 </li>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/28408516">Logistic Regression One</a>, <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/28415991">Logistic Regression Two</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/100763009">Logistic Regression面试手推</a></p>
+</li>
 </ul>
 <h1 id="Multi-class-Classification"><a href="#Multi-class-Classification" class="headerlink" title="Multi-class Classification"></a>Multi-class Classification</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/105722023">Softmax函数与交叉熵</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41888257/article/details/109157970">Softmax是线性模型</a></li>
-<li>Limitation of Logistic Regression: <ul>
+<li><p>二分类使用了Sigmoid，多分类使用了Softmax，使用的损失函数是Cross-entropy。<strong>Minimizing cross-entropy</strong> is equivalent to <strong>maximizing likelihood.</strong></p>
+</li>
+<li><p>Cross-entropy相较于MSE是更加常用于Classfication问题上的，常用到在pytorch里面，Cross-entropy和Softmax是绑定在一起的。只要call Cross-entropy，内部就自动内建了Softmax。</p>
+</li>
+<li><p>One-hot编码？不用one-hot编码可能会造成歧义，例如0,1,2三类，0和2两类的区别从数字层面上来看，会“比较大”。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/105722023">Softmax函数与交叉熵</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://zh.d2l.ai/chapter_linear-networks/softmax-regression.html">D2L Softmax Regression</a></p>
+</li>
+<li><p>Limitation of Logistic Regression: </p>
+<ul>
 <li>Logistic Regression本质上是一个线性分类器，两个class之间的boundary就是一条直线，对于一些特殊的分类情况做不到哈。</li>
 <li>如果你非要想用怎么办？Feature Transformation，按照处理后的feature，把不同的类尽量放在空间中不同的部分，使其使用Logistic Regression可以很好的“线性分类”。Not always easy to find a good transformation to use logistic regression.</li>
 </ul>
 </li>
-<li>怎么办？把很多Logistic Regression Cascade起来，然后自己去学！找一个好的Transformation！</li>
+<li><p>怎么办？把很多Logistic Regression Cascade起来，然后自己去学！找一个好的Transformation！</p>
+</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402091041515.png" srcset="/img/loading.gif" lazyload alt="image-20240209104124234"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403021130641.png" srcset="/img/loading.gif" lazyload></p>
 <blockquote>
-<p>叠加逻辑回归层，使得x特征不断进行Transformation，使其明显易分类</p>
+<p>叠加逻辑回归层，使得x特征不断进行Transformation，使其明显易分类。</p>
 </blockquote>
+<ul>
+<li>为什么二分类用Sigmoid函数，多分类用Softmax函数呢？ -&gt; 本质是一模一样的！</li>
+</ul>
 <h1 id="Machine-Learning-Strategy-General-Guide"><a href="#Machine-Learning-Strategy-General-Guide" class="headerlink" title="Machine Learning Strategy - General Guide"></a>Machine Learning Strategy - General Guide</h1><ul>
 <li><p>Framework of ML: Input -&gt; Function -&gt; Output</p>
 <ol>
@@ -592,6 +612,1029 @@
 </li>
 <li><p>Mismatch: Your training and testing data have different distributions.</p>
 </li>
+</ul>
+<h1 id="类神经网络Train不起来怎么办"><a href="#类神经网络Train不起来怎么办" class="headerlink" title="类神经网络Train不起来怎么办"></a>类神经网络Train不起来怎么办</h1><h2 id="When-gradient-is-small"><a href="#When-gradient-is-small" class="headerlink" title="When gradient is small"></a>When gradient is small</h2><ul>
+<li>Trainging loss. Gradient is close to <strong>zero</strong>, result is not well：<ul>
+<li>一开始loss就不往下走</li>
+<li>loss往下走了，但是收敛后发现。Not small enough</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>例如：卡住的点叫做critical point: local minima/maxima, saddle point等。注意！卡住的点不一定就是local minima昂！！！</p>
+</blockquote>
+<ul>
+<li>critical point如何辨别local minima还是saddle point呢？-&gt; 利用泰勒展开，判断这个点周围的值和它的关系。（这里用到了Hessian矩阵）<ul>
+<li>H is positive definite = All eigen values are positive -&gt; Local minima</li>
+<li>H is negative definite = All eigen values are negative -&gt; Local maxima</li>
+<li>Some eigen values are positive, and some are negative. -&gt; Saddle point</li>
+</ul>
+</li>
+<li>如果是Saddle point，那么还好！可以解决！H may tell us parameter update direction!, 找到负的eigen value，算出eigen vector，这就是此时梯度可以继续减小的方向。<strong>You can escape the saddle point and decrease the loss.</strong> -&gt; This method is seldom used in practice, 运算量太大了。那有什么别的方法，如何逃离saddle point？</li>
+</ul>
+<blockquote>
+<p>微积分 + 线性代数</p>
+</blockquote>
+<ul>
+<li>Saddle Point v.s. Local Minima -&gt; Saddle Point的数量比local minima常见的多！因为feature太多了，导致paddle point非常常见，反而local minima不好找昂！</li>
+</ul>
+<h2 id="Tips-for-training-Batch-and-Momentum"><a href="#Tips-for-training-Batch-and-Momentum" class="headerlink" title="Tips for training: Batch and Momentum"></a>Tips for training: Batch and Momentum</h2><h3 id="Batch"><a href="#Batch" class="headerlink" title="Batch"></a>Batch</h3><ul>
+<li><p>$\theta^{*} = argmin_{\theta}L$，我们只会拿一个Batch的资料，算一个Loss，然后更新一次Parameter。1 epoch = see all the batches once -&gt; <strong>shuffle</strong> after each epoch</p>
+</li>
+<li><p>为什么需要Batch, Small Batch v.s. Large Batch</p>
+<ul>
+<li>Batch size = N (Full Batch) -&gt; Update after seeing all the examples. -&gt; <del>Long time for cooldown</del>, but powerful.</li>
+<li>Batch size = 1 -&gt; Update for each example. -&gt; <del>Short time for cooldown</del>, but noisy.</li>
+<li><strong>Noisy</strong>反而可能会更加有利于<strong>Training</strong>. Smaller batch size has better performance, What’s wrong with large batch size? Optimization Fails. 小的batch带来的噪音，可能有利于“越过”local minima。</li>
+<li>Small batch is better on testing data? 小的batch比大的batch好，overfitting！Why?  -&gt; 好的和坏的local minima，越平滑的local minima越好，平滑才可以困住small batch，big batch很容易就被尖锐的local minima困住了，导致如果测试和训练数据有一定的偏差，效果就不好昂！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402121211398.png" srcset="/img/loading.gif" lazyload alt="image-20240212121151306"></p>
+</li>
+</ul>
+<h3 id="Momentum"><a href="#Momentum" class="headerlink" title="Momentum"></a>Momentum</h3><ul>
+<li>这一步的梯度，加上上一步的方向，加权矢量叠加，然后往后走！</li>
+<li>Movement:movement of last step minus gradient at present. 也有别的说法，例如之前走的所有的加权 + 现在的梯度合起来！但是不管怎么说呢，都是一定程度上保留过去的影响！</li>
+</ul>
+<h2 id="Tips-for-training-Adaptive-Learning-Rate"><a href="#Tips-for-training-Adaptive-Learning-Rate" class="headerlink" title="Tips for training: Adaptive Learning Rate"></a>Tips for training: <strong>Adaptive Learning Rate</strong></h2><blockquote>
+<p>本质上就是一条公式：$\theta_{i}^{t + 1} \leftarrow \theta_{i}^{t} - \frac{\eta^{t}}{\sigma_{i}^{t}}m_{i}^{t}$，每次更新迭代的时候，会根据一些策略，算出具体的本次学习率。</p>
+</blockquote>
+<ul>
+<li><p>Training stuck不一定等于Small gradient，Training Loss不动了，但是可能梯度依然很大！</p>
+</li>
+<li><p>Learning rate can not be one-size-fits-all</p>
+</li>
+<li><p>常见方法，本质是去更新$\sigma_{i}^{t}$，本质是在根据之前的Gradient Descend，对于目前的Learning Rate，进行放缩。</p>
+<ul>
+<li>Root Mean Square -&gt; Used in <strong>Adagrad</strong>，每个gradient有同等的重要性！</li>
+<li>RMSProp -&gt; Learning rate adapts dynamically: smaller learning rate, larger gradient. Larger learning rate, smaller gradient. 加权现在的gradient和之前的影响！</li>
+</ul>
+</li>
+<li><p>Leaning Rate Scheduling，这个是去更新$\eta^{t}$，</p>
+<ul>
+<li>Learning Rate Decay: As the training goes,we are closer to the destination,so we reduce the learning rate.</li>
+<li>Warm Up: Increase and then decrease? At the beginning, the estimate of $\sigma^{t}_{i}$ has large variance.</li>
+</ul>
+</li>
+<li><p>Adam: RMSProp + Momentum，Pytorch里面预设的参数就够好了，可能不需要你再去手动调整了昂！</p>
+</li>
+<li><p>momentum和adaptive learning rate的对比，$\theta_{i}^{t + 1} \leftarrow \theta_{i}^{t} - \frac{\eta^{t}}{\sigma_{i}^{t}}m_{i}^{t}$:</p>
+<ul>
+<li><p>$m_{i}^{t}$，Gradient + Momentum: weighted sum of the previous gradients. <strong>Consider direction</strong>，你的小球往哪儿滚！</p>
+</li>
+<li><p>$\sigma_{i}^{t}$: root mean square of the gradients. <strong>Only magnitude</strong>，只考虑learning rate的大小！</p>
+</li>
+<li><p>$\eta^{t}$: Learning rate sheduling，随着时间的变化进行调整！</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Pokemon-demo带给我们的别的启示"><a href="#Pokemon-demo带给我们的别的启示" class="headerlink" title="Pokemon demo带给我们的别的启示"></a>Pokemon demo带给我们的别的启示</h1><blockquote>
+<p> <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5?p=17&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">Pokemon Demo Plus</a>，看看这个哈！</p>
+</blockquote>
+<ul>
+<li><p>Result</p>
+<ul>
+<li>The following discussion is <strong>model-agnostic</strong>.</li>
+<li>In the following discussion, we don’t have assumption about <strong>data distribution.</strong></li>
+<li>In the following discussion, we can use any <strong>loss function.</strong></li>
+</ul>
+</li>
+<li><p><strong>这里有一个抽取到好的训练资料和坏的训练资料的计算比例公式，可以详细看看昂！衡量有限数据集上，得到的模型效果和真实世界中的模型效果的Balance。抽取到的数据集，抽取数据集的大小，全部数据的大小和期望的误差等，都会对于这个计算造成影响！</strong></p>
+</li>
+<li><p>Model Complexity -&gt; The number of possible functions you can select</p>
+<ul>
+<li>Answer1: Everything that happens in a computer is discrete.</li>
+<li>Answer2: VC-dimension (not this course)</li>
+</ul>
+</li>
+<li><p>Tradeoff of Model Complexity -&gt; Gradient Descent</p>
+</li>
+</ul>
+<h1 id="New-Optimizers-for-Deep-Learning"><a href="#New-Optimizers-for-Deep-Learning" class="headerlink" title="New Optimizers for Deep Learning"></a>New Optimizers for Deep Learning</h1><ul>
+<li>Now learned<ul>
+<li>SGD: Gradient直接反方向走就ok了</li>
+<li>SGD with momentum(SGDM): 用到momentum，算gradient，然后叠加gradient和momentum，更新momentum的值！</li>
+<li>Adagrad: SGD的学习率，加个分母。Root Mean Square</li>
+<li>RMSProp: 唯一的区别在于，分母的算法不太一样，不是Root Mean Square，而是加权了之前的gradient和当前的gradient。</li>
+<li>Adam: SGDM + RMSProp，综合Momentum和学习率的调整。还采用了类似于de-biasing的技术，保证Momentum的值随着上面加权的变化，不会变的太多，相对稳定！</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Adaptive learning rate: Adagrad, RMSProp and Adam.</p>
+</blockquote>
+<ul>
+<li><p>Adam vs SGDM</p>
+<ul>
+<li>Adam fast training,large generalization gap, unstable</li>
+<li>SGDM stable,little generalization gap,better convergence</li>
+<li>Combinition: Begin with Adam(fast), end with SGDM -&gt; SWATS. Start Training –Adam–&gt; Meet some criteria(Learning rate initialization) –SGDM–&gt; Convergence</li>
+</ul>
+</li>
+<li><p>In the final stage of training,most gradients are small and non-informative,while some mini-batches provide large informative gradient rarely.</p>
+</li>
+<li><p>Towards Improving Adam</p>
+<ul>
+<li>In the final stage of training,most gradients are small and non-informative,while some mini-batches provide large informative gradient rarely.</li>
+<li>Non-informative gradients contribute more than informative gradients</li>
+<li>AMSGrad:<ul>
+<li>Reduce the influence of non-informative gradients</li>
+<li>Remove de-biasing due to the max operation</li>
+<li>Monotonically decreasing learning rate</li>
+<li>Remember Adagrad vs RMSProp?</li>
+<li>AMSGrad only handles large learning rates</li>
+</ul>
+</li>
+<li>AdaBound -&gt; Handle large and small at the same time.</li>
+</ul>
+</li>
+<li><p>Towards Improving SGDM…</p>
+<ul>
+<li>Adaptive learning rate algorithms dynamically<br>adjust learning rate over time</li>
+<li>SGD-type algorithms fix learning rate for all updates…too slow for small learning rates and bad result for large learning rates</li>
+</ul>
+<blockquote>
+<p>There might be a “best” learning rate</p>
+</blockquote>
+<ul>
+<li>LR Range Test</li>
+<li>Cyclical LR<ul>
+<li>learning rate decide by LR range test</li>
+<li>stepsize several epochs</li>
+<li>avoid local minimum by varying learning rate</li>
+</ul>
+</li>
+<li>SGDR</li>
+<li>One-cycle LR: warm-up + annealing + find-tuning</li>
+</ul>
+</li>
+<li><p>Does Adam need warm-up?</p>
+<ul>
+<li>Experiments show that the gradient distribution distorted in the first 10 steps</li>
+<li>Distorted gradient -&gt; distorted EMA squared gradients -&gt; Bad learning rate</li>
+<li>Keep your step size small at the beginning of training helps to reduce the variance of the gradients -&gt; Too big:overshoot and even diverge</li>
+<li>Adam:<ul>
+<li>effective memory size of EMA</li>
+<li>max memory size</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>RAdam vs SWATS</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402132004050.png" srcset="/img/loading.gif" lazyload alt="image-20240213200455960"></p>
+<ul>
+<li><p>k step forward, 1 step back. Lookahead: universal wrapper for all optimizers.</p>
+</li>
+<li><p>Nesterov accelerated gradient(NAG)</p>
+</li>
+<li><p>AdamW &amp; SGDW with momentum(重要的会被使用的)，AdamW在BERT中经常被使用！L2 regurization or weight decay?</p>
+</li>
+<li><p>Something helps optimization…</p>
+<ul>
+<li>Shuffling</li>
+<li>Dropout</li>
+<li>Gradient noise</li>
+</ul>
+<blockquote>
+<p>The more exploration, the better!</p>
+</blockquote>
+<ul>
+<li>Warm-up</li>
+<li>Curriculum learning (Train your model with easy data(e.g.clean voice) first, then difficult data. Perhaps helps to improve generalization)</li>
+<li>Fine-tuning</li>
+</ul>
+<blockquote>
+<p>Teach your model patiently!</p>
+</blockquote>
+<ul>
+<li>Normalization</li>
+<li>Regularization</li>
+</ul>
+</li>
+<li><p>What we learn, SGD &amp; Adam Improvement</p>
+<ul>
+<li>Team SGD<ul>
+<li>SGD</li>
+<li>SGDM</li>
+<li>Learning rate scheduling</li>
+<li>NAG</li>
+<li>SGDWM</li>
+</ul>
+</li>
+<li>Team Adam<ul>
+<li>Adagrad</li>
+<li>RMSProp</li>
+<li>Adam</li>
+<li>AMSGrad, AdaBound(Extreme values of learning rate)</li>
+<li>Learning rate scheduling</li>
+<li>RAdam</li>
+<li>Nadam</li>
+<li>AdamW</li>
+</ul>
+</li>
+<li>Combination<ul>
+<li>SWATS</li>
+</ul>
+</li>
+<li>万能方法<ul>
+<li>Lookahead</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>What we learn, SGD &amp; Adam Comparison</p>
+<ul>
+<li>SGDM<ul>
+<li>Slow</li>
+<li>Better convergence</li>
+<li>Stable</li>
+<li>Smaller generalization gap</li>
+</ul>
+</li>
+<li>Adam<ul>
+<li>Fast</li>
+<li>Possibly non-convergence</li>
+<li>Unstable</li>
+<li>Larger generalization gap</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Advices</p>
+<ul>
+<li>SGDM<ul>
+<li>Computer vision<ul>
+<li>image classification</li>
+<li>segmentation</li>
+<li>object detection</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Adam<ul>
+<li>NLP<ul>
+<li>QA</li>
+<li>machine translation</li>
+<li>summary</li>
+</ul>
+</li>
+<li>Speech synthesis</li>
+<li>GAN</li>
+<li>Reinforcement learning</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Universal Optimizer? No Way!!!</p>
+</li>
+</ul>
+<h1 id="Why-Deep-Learning"><a href="#Why-Deep-Learning" class="headerlink" title="Why Deep Learning"></a>Why Deep Learning</h1><ul>
+<li>Activation Function<ul>
+<li>Hard Sigmoid -&gt; ReLU</li>
+<li>Sigmoid</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Piecewise linear = constant + sum of a set of Sigmoid/Hard Sigmoid function</p>
+</blockquote>
+<ul>
+<li>Why “Deep”, not “Fat”? Deeper is Better! -&gt; 实验看出来确实，原理呢？One hidden layer can represent any function. However, using deep structure is more <strong>effective</strong>. Deep只需要较少的参数 or 较少的训练参数，就能够达到比较好的效果。</li>
+</ul>
+<blockquote>
+<p>Analogy: Logic Circuits, parity check就是这个样子的昂！</p>
+<p>Analogy: Programming. Don’t put everything in your main function.</p>
+</blockquote>
+<ul>
+<li>Comparison<ul>
+<li>Deep: k layers, 2k neurons, $2^k$ pieces.</li>
+<li>Shallow: 1 layer, $2^k$ neurons,  $2^k$ pieces.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>复杂模型，大量资料和Overfitting之间是有取舍的昂！！！</p>
+</blockquote>
+<ul>
+<li>Deep networks outperforms shallow ones when the required functions are <strong>complex ard regular</strong>. （Image, speech, etc. have the characteristics）</li>
+</ul>
+<h1 id="Network-Architecture"><a href="#Network-Architecture" class="headerlink" title="Network Architecture"></a>Network Architecture</h1><h2 id="CNN"><a href="#CNN" class="headerlink" title="CNN"></a>CNN</h2><ul>
+<li><p>Fully connected —&gt; too many parameters.</p>
+</li>
+<li><p>Simplification Way</p>
+<ul>
+<li>看一小部分的图片就足够啦！不一定每个neruon要去看全部的图片昂！Receptive Field我们自己安排！但是有一些Typical Setting<ul>
+<li>一般要看就看全部的channel哈。</li>
+<li>Kernel size就是我们看的区域的大小，一般都是3x3，7x7或者9x9就算比较大的啦！</li>
+<li>Each receptive field has a set of neurons</li>
+<li>stride用来移动kernel的昂！一般都是1或者2，不希望太大哈。太大不利于检测一些特征。</li>
+<li>如果超出范围了怎么办呢？Padding，补充为0！</li>
+<li>按照上面的配置，整张扫过去！</li>
+</ul>
+</li>
+<li>The Same patterns appear in different regions.<ul>
+<li>不同的receptive field可以共享参数！虽然看到的receptive field可能是不一样的，但是参数是一模一样的！输入不同，所以输出不同！</li>
+<li>Two neurons with the same receptive field would not share parameters.</li>
+<li>Each receptive field has a set of neurons (e.g.,64 neurons). Each receptive field has the neurons with the same set of parameters. 同组的参数就叫做filter！</li>
+</ul>
+</li>
+<li>Pooling<ul>
+<li>主要是做Subsampling，减少运算量，Subsampling the pixels will not change the object. 例如可以在一个pixel小矩阵中，拿掉一些信息，表达的还是同一个物体，但是会小！</li>
+<li>Max Pooling，没有要Learn的东西。相当于特征压缩一样？可能对于图片有损害，对于图片非常微细的东西。</li>
+<li>Convolution之后往往就要接上Pooling，这两者往往交替使用。</li>
+<li>近些年用的也少了，因为算力在不断增加捏！有很多压根不用Pooling捏！</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Receptive Field + Parameter Sharing = Convolutional Layer, Some patterns are much smaller than the whole image. The same patterns appear in different regions.</p>
+</li>
+<li><p>图片通过filter，产出的结果就是feature map。channels的数量是由filter的数量决定的啦！通过不同层之间，filter层之间的叠加，相当于一张图片，在不断的进行”Transformation”，生成新的图像，最终拿到结果 -&gt; Each filter convolves over the input image. Filter就相当于是Neruon！</p>
+</li>
+<li><p>常见方法：Convolution + Pooling + Flatten + Fully Connected Layers(Softmax) -&gt; Classification</p>
+</li>
+<li><p>Alpha Go就是可以用CNN来做！下围棋其实也可以当作一个19 x 19的分类问题！或者说看作一个图片也可以哇！而且！下围棋和图片也有点类似，局部就可以做出很多决策！像围棋这种场景，Pooling来进行Subsampling就不适用，围棋很精细，不能丢失哪怕一点点信息哈！</p>
+</li>
+<li><p>More Applications: Speech, NLP. 如果这么使用的话，CNN的特性是不是符合你的应用场景，不能硬用哈。可以改一改，或者用别的，总之要符合！</p>
+</li>
+<li><p>CNN is not invariant to scaling and rotation(we need data augmentation). 放大后的图像，向量输入进去之后，CNN看起来可能就和原来完全不一样，这就是为啥我们要使用data augumentation. 那有没有能处理的呢？还真有！Spatial Transformer Layer</p>
+</li>
+</ul>
+<h2 id="Spatial-Transformer"><a href="#Spatial-Transformer" class="headerlink" title="Spatial Transformer"></a>Spatial Transformer</h2><ul>
+<li>这个layer就可以专门做scaling and rotation, 本质也是一个NN，End-to-end learn的昂！就放在CNN前面，和CNN一起训练就行！</li>
+<li>Image Transformation: Expansion, Compression, Translation. 6 parameters to describe the affine transformation. 本质是线性代数那一套，乘法和加法嘛！对于原始pixel的每一个(x, y)，乘上一个2 x 2matrix，再加上一个2 x 1的matrix，六个参数，就可以完成一个矩阵的转换！</li>
+<li>但是上面的转换，不一定work，如果算出来是一个处于“中间”的点呢？<strong>Interpolation</strong>，这样才能用Gradient Descent去解哈！</li>
+<li>Spatial Transformer可以混合使用，不同的conv之间也可以，不同的conv之间，甚至用多个Spatial Transformer都可以的昂！</li>
+</ul>
+<h2 id="Self-Attention"><a href="#Self-Attention" class="headerlink" title="Self-Attention"></a>Self-Attention</h2><ul>
+<li><p>Input is <strong>a vector</strong> -&gt; Input is <strong>a set of vectors</strong></p>
+</li>
+<li><p>如何用向量表示词汇：</p>
+<ul>
+<li>One-hot Encoding: 有问题，忽视了不同词汇之间的关系！One-hot就是假设词汇之间没有任何关系的！</li>
+<li>Word Embedding: 给每一个词汇一个向量，近义词之间可能是有一定向量关系的！</li>
+</ul>
+</li>
+<li><p>Output</p>
+<ul>
+<li>Each vector has a label</li>
+<li>The whole sentence has a label</li>
+<li>Seq2seq</li>
+</ul>
+</li>
+<li><p>Each vector has a label -&gt; Sequence Labeling</p>
+<ul>
+<li>Is it possible to consider the context? -&gt; 一次不要只丢进去一个值，应该是一个值带上前后context，把一个”window”里面的东西都丢进去昂！</li>
+<li>但是仍然不够好，How to consider the whole sequence? -&gt; Self-attention</li>
+</ul>
+</li>
+<li><p>Self-attention作为一个中间层，所有的输入都过这个层，然后拿到输出昂！Self-attention就可以考虑整个sequence昂！Self-Attention的使用也可以叠加，例如和Fully Connected Network交替使用。</p>
+<ul>
+<li><p>Graph</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402141953193.png" srcset="/img/loading.gif" lazyload alt="Self-attention Architecture"></p>
+</li>
+<li><p>Self-attention details:</p>
+<ul>
+<li><p>Input could be either <strong>input</strong> or a <strong>hidden layer</strong>.</p>
+</li>
+<li><p>Each output takes all the inputs into consideration.</p>
+</li>
+<li><p>Steps:</p>
+<ol>
+<li>根据Input，算出来其他的向量和当前向量的relevance。如何计算这个relevance呢？-&gt; Dot-product/Additive等等！Dot-product是最常用的昂！</li>
+<li>当前输入和其他所有的输入（包括自己），算一个关联性，然后塞进Softmax里面（也可以是别的）。</li>
+<li>然后根据上面拿到的关联性，从每个Input抽取重要的咨询（乘上attention的分数），然后加起来。谁的attention的值更大，谁的值就被多抽出来一些捏！</li>
+</ol>
+</li>
+<li><p>计算过程中，所有的Output的向量是可以并行计算的哈，可以一次就被计算出来哈！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402142028411.png" srcset="/img/loading.gif" lazyload alt="Self-attention Calculation"></p>
+</li>
+</ul>
+</li>
+<li><p>线性代数！</p>
+</li>
+</ul>
+<p>$$<br>I\ is \ input\ matrix \<br>Q = W^q I \<br>K = W^k I \<br>V = W^v I \<br>\<br>A = K^T Q \<br>A^{‘} = softmax(A)，这个就是我们传说中的Attention Matrix \<br>O = VA^{‘} \<br>O\ is\ output\ matrix<br>$$</p>
+<ul>
+<li>Q, W, V是未知的，需要我们找出来的，其他都不需要学习哈！</li>
+</ul>
+</li>
+<li><p>If input sequence is length L, attention matrix size is L x L，L很大的话，计算量就很大，就不容易处理或者处理！ -&gt; Truncated Self-attention，可能只看一部分，就有足够的效果！</p>
+</li>
+<li><p>Self-attention for image</p>
+<ul>
+<li>一张图片的一个pixel，由RGB，可以看作是一个三维的vector，其实也是一个vector set呀，那就可以用self-attention啦！</li>
+</ul>
+</li>
+<li><p>Self-attention v.s. CNN</p>
+<ul>
+<li>Self-attention考虑全局整个图片。Self-attention is the complex version of CNN. 而且这个Attention，是模型自动学出来的昂！</li>
+<li>CNN是考虑receptive field，self-attention that can only attends in a receptive field. CNN is simplified self-attention.</li>
+<li>Paper “On the Replationship between Self-Attention and Convolutional Layers”, CNN是一种特殊的Self-attention, Self-attention可以做到和CNN一样的效果。子集！</li>
+<li>这也就意味着，Self-Attention更加复杂！更多的训练资料，效果会比CNN更好！能表达的function set更大。</li>
+</ul>
+</li>
+<li><p>Self-attention for Graph:</p>
+<ul>
+<li>Consider <strong>edge</strong>: only attention to connected nodes</li>
+<li>edge本身就是attention的一种体现形式啊，也许你可以直接用edge来实现attention对不，没有连接的节点我们就认为它没有attention呗！Attention Matrix</li>
+<li>This is one type of Graph Neural Network(GNN).</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Papers:</p>
+<ul>
+<li>Long Range Arena: A Benchmark for Efficient Transformers</li>
+<li>Efficient Transformers: A Survey</li>
+</ul>
+</blockquote>
+<ul>
+<li>有时候广义的Transformer，讲的就是Self-attention。如何减少Self-attention的运算量，也是将来的一个重点！</li>
+</ul>
+<h3 id="Multi-head-Self-Attetion"><a href="#Multi-head-Self-Attetion" class="headerlink" title="Multi-head Self-Attetion"></a>Multi-head Self-Attetion</h3><blockquote>
+<p>Different types of relevance</p>
+</blockquote>
+<ul>
+<li>Q就是用来找Attention的捏！不同的Q，可以找到不同的Attention信息！所以Multi-head，可以有多个不同的Q，找到不同的相关性！Q, W, V是配套的哈，多个Q，意味着对应计算的W, V也都多个！</li>
+<li>计算的时候，Multi-head分别计算哈，并行！</li>
+</ul>
+<h3 id="Positional-Encoding"><a href="#Positional-Encoding" class="headerlink" title="Positional Encoding"></a>Positional Encoding</h3><ul>
+<li>No position information in self-attention.</li>
+<li>Each position has a unique positional vector $e^i$，用这个$e^i$加上原先的输入$a^{i}$，就ok啦！</li>
+<li><strong>hand-crafted</strong>是可能有很多问题的，例如：sin, cos。没有定数，甚至可以是<strong>learned from data</strong>的捏！</li>
+</ul>
+<h2 id="RNN"><a href="#RNN" class="headerlink" title="RNN"></a>RNN</h2><blockquote>
+<p>RNN的角色可以用Self-attention取代哈，不细讲！</p>
+</blockquote>
+<ul>
+<li>RNN也是适用于Input Sequence的情况，有一个类似于Memory的Matrix，记录记忆信息！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402142109518.png" srcset="/img/loading.gif" lazyload alt="image-20240214210324321"></p>
+<ul>
+<li>RNN也可以是双向的哈，从某种程度上来说，双向RNN也和Self-attention一样，考虑了整个sequence的信息！</li>
+<li>RNN vs. Self-attention<ul>
+<li>如果前后的Input隔的比较远，信息要存在memory里面，逐步从前传递到后面，可能还会遗忘，就不好考虑哈！</li>
+<li>Self-attention没有这个问题，不管多远的前后input，直接一把算，都一样，天涯若比邻！</li>
+<li>RNN没办法并行哈，前后顺序，没办法平行处理！但是Self-attention是可以的哈！并行运算，嘎嘎快！</li>
+<li>很多research都逐步把RNN改为self-attention了哈！</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Paper: “Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention”</p>
+</blockquote>
+<ul>
+<li>Recurrent Neural Network，输入sequence是有先后顺序的哈！不是简简单单，就能够调换顺序的，和图像识别之类的不一样的昂！</li>
+<li>Network also can be deep! 中间存的”memory”可以很多昂！</li>
+<li>Elman Network &amp; Jordan Network</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402172057803.png" srcset="/img/loading.gif" lazyload alt="image-20240217205749687"></p>
+<blockquote>
+<p>Jordan Network传说可以得到较好的结果，因为Jordan可以看到存的是输出，输出是有target的，存的东西相对清楚。但是Elman在中间，难控制学到了什么。</p>
+</blockquote>
+<h3 id="Bidirectional-RNN"><a href="#Bidirectional-RNN" class="headerlink" title="Bidirectional RNN"></a>Bidirectional RNN</h3><ul>
+<li>Bidirectional RNN: 双向去train！双向可以同时看到前面和后面的内容！</li>
+</ul>
+<h3 id="LSTM"><a href="#LSTM" class="headerlink" title="LSTM"></a>LSTM</h3><blockquote>
+<p>Long Short-term Memory</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402180843008.png" srcset="/img/loading.gif" lazyload alt="image-20240218084350813"></p>
+<ul>
+<li>4个input:  Original Input + 3 Signals to control different gates，这几个Signal对应的f是sigmoid function，好处是从0到1，代表“门被打开的程度”。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402180858777.png" srcset="/img/loading.gif" lazyload alt="image-20240218085859716"></p>
+<blockquote>
+<p>forget gate在打开的时候，代表是记得。在关闭的时候，代表的是遗忘。可以看看视频昂，原教程这个部分后面会有很多的计算例子捏！</p>
+</blockquote>
+<ul>
+<li>LSTM有点像是，把普通的NN里面的神经元，都换成了上面提到的这种结构(LSTM Cell)。同一个Input，接入LSTM cell的时候，需要四组参数，才能接的进去！所以LSTM需要的参数量是四倍昂！！！</li>
+<li>Multi-layer LSTM</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402180945722.png" srcset="/img/loading.gif" lazyload alt="image-20240218094501665"></p>
+<ul>
+<li><p>LSTM vs RNN: 其实就是一种RNN。类似，拿Input算了很多东西，更新留存的Memory内容！</p>
+</li>
+<li><p>如何训练呢？</p>
+<ul>
+<li>Loss function: arrive(other) Taipei(dest) on(other) November(time) 2nd(time)，丢入每个词，就和对应的reference vector算一个cross entropy作为loss就行。注意，按照顺序丢，不能打散昂，前后顺序很重要！</li>
+<li>Learning: Backpropagation through time(BPTT), BPTT considers time information. Gradient Descent去training。</li>
+<li>Unfortunately, RNN-based network is not always easy to learn. RNN error surface is really rough, the error surface is either very flat or very steep. -&gt; Clipping, 当gradient太大的时候，就截断！不要太大啦！</li>
+<li>Why the problem happens? -&gt; 随着输入sequence变长(time sequence)，memory对于后续的单元的作用是“叠加”的，同一个参数$w$，经过了多次传递（累乘），例如1000次，就变成了$w^{1000}$，导致在Gradient Descent的过程中，梯度变化特别大。</li>
+<li>LSTM -&gt; Can deal with gradient vanishing(not gradient explode)，LSTM更新Memory的时候，不是“每次覆盖”，而是“累加更新”。<ul>
+<li>Memory and input are added. </li>
+<li>The influence never disappears unless forget gate is closed. -&gt; No Gradient vanishing(If forget gate is opened.)，传言：确保forget gate绝大多数情况下，都是open，只有少数才是close去遗忘。只要记得就是add，只要忘记就是multiply。</li>
+<li>Gated Recurrent Unit (GRU): 只有两个gate，参数少，不容易overfitting，更加robust。simpler than LSTM，input gate和forget gate联动。精神：旧的不去，新的不来！不遗忘，新的就进不来！</li>
+</ul>
+</li>
+<li>Helpful Techniques handling gradient vanishing<ul>
+<li>Clockwise RNN</li>
+<li>Structurally Constrained Recurrent Network(SCRN)</li>
+<li>Vanilla RNN Initialized with Identity matrix ReLU activation<br>function [Quoc V.Le,arXiv’15]</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>RNN applications</p>
+<ul>
+<li>One2one: slot label</li>
+<li>Many2one:<ul>
+<li>Sentiment Analysis</li>
+<li>Key Term Extraction</li>
+</ul>
+</li>
+<li>Many2many:<ul>
+<li>Both input and output are both sequences,but the output<br>is shorter.(Speech Recognition). Tricks: Trimming, extra “null”, CTC.</li>
+<li>Machine Translation(No Limitation)<ul>
+<li>Machine translation alignment</li>
+<li>Speech translation alignment</li>
+</ul>
+</li>
+<li>Both input and output are both sequences <strong>with different</strong><br><strong>lengths</strong> -&gt; <strong>Sequence to sequence learning</strong></li>
+</ul>
+</li>
+<li>Beyond Sequence<ul>
+<li>Syntactic parsing</li>
+<li>Sequence-to-sequence Auto-encoder Text: To understand the meaning of a word sequence, the order of the words can not be ignored.</li>
+<li>Sequence-to-sequence Auto-encoder Speech: Dimension reduction for a sequence with variable length</li>
+<li>Sequence-to-sequence Auto-encoder: The RNN encoder and decoder are jointly trained. Input -&gt; RNN Encoder -&gt; RNN Decoder -&gt; Output(Compared with Input)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Attention-based-Model"><a href="#Attention-based-Model" class="headerlink" title="Attention-based Model"></a>Attention-based Model</h3><blockquote>
+<p>Reading Comprehension</p>
+</blockquote>
+<ul>
+<li>Machine’s Head Controller -&gt; Neural Turing Machine</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402182137326.png" srcset="/img/loading.gif" lazyload alt="image-20240218213737132"></p>
+<ul>
+<li>甚至可以结合CNN一起用，CNN把一个图片分成若干个region，每个region有一个vector，然后DNN/RNN有一个Reading Head Controller，可以来做特征的读取与处理。</li>
+<li>其他问题：Speech Question Answering(TOFEL)，Architecture</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402182145918.png" srcset="/img/loading.gif" lazyload alt="image-20240218214541864"></p>
+<blockquote>
+<p>The Unreasonable Effectiveness of Recurrent Neural Networks: <a target="_blank" rel="noopener" href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/">http://karpathy.github.io/2015/05/21/rnn-effectiveness/</a><br>Understanding LSTM Networks: <a target="_blank" rel="noopener" href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">http://colah.github.io/posts/2015-08-Understanding-LSTMs/</a></p>
+</blockquote>
+<h3 id="Deep-amp-Structured"><a href="#Deep-amp-Structured" class="headerlink" title="Deep &amp; Structured"></a>Deep &amp; Structured</h3><ul>
+<li>RNN,LSTM<ul>
+<li>Unidirectional RNN does not consider the whole sequence</li>
+<li>Cost and error not always related</li>
+<li><strong>Deep</strong></li>
+</ul>
+</li>
+<li>HMM, CRF, Structured Perceptron/SVM<ul>
+<li>Using Viterbi, so consider the whole sequence？</li>
+<li>Can explicitly consider the label dependency: Cost is the upper bound of error.</li>
+</ul>
+</li>
+<li>也可以二者混合使用，先过RNN/DNN/LSTM -&gt; 再去HMM, CRF, Structured Perceptron/SVM，结合二者的优势！Semantic Tagging: Bi-directional LSTM CRF/Structured SVM</li>
+</ul>
+<h2 id="GNN"><a href="#GNN" class="headerlink" title="GNN"></a>GNN</h2><ul>
+<li><p>应用场景：</p>
+<ul>
+<li>分类</li>
+<li>药物研发 -&gt; Generation的工作</li>
+<li>很多不像是graph的，也可以用GNN来做。例如人际关系图！</li>
+</ul>
+</li>
+<li><p>Problems</p>
+<ul>
+<li>How do we utilize the structures and relationship to help our model?</li>
+<li>What if the graph is larger,like 20k nodes?</li>
+<li>What if we don’t have the all the labels?</li>
+</ul>
+</li>
+<li><p>How to embed node into a feature space using convolution?（想用类CNN的想法，来处理GNN，“扫描Graph”）</p>
+<ul>
+<li>Solution 1:Generalize the concept of convolution(corelation)to<br>graph -&gt; Spatial-based convolution</li>
+<li>Solution 2: Back to the definition of convolution in signal processing -&gt; Spectral-based convolution</li>
+</ul>
+</li>
+<li><p>Tasks,Dataset,and Benchmark</p>
+<ul>
+<li>Tasks<ul>
+<li>Semi-supervised node classification</li>
+<li>Regression</li>
+<li>Graph classification</li>
+<li>Graph representation learning</li>
+<li>Link prediction</li>
+</ul>
+</li>
+<li>Common dataset<ul>
+<li>CORA:citation network.2.7k nodes and 5.4k links</li>
+<li>TU-MUTAG:188 molecules with 18 nodes on average</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Spatial-based GNN</p>
+<ul>
+<li>Terminology:<ul>
+<li>Aggregate:用neighbor feature update下一層的hidden state(类似于CNN的kernel，用周围的值更新中间的值，也有点Pagerank的意思在里面。)</li>
+<li>Readout:把所有nodes的feature集合起來代表整個graph</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>NN4G</p>
+<ul>
+<li><p>Aggregate: 将节点周围的value相加，乘上一个矩阵，再加上自己原本的值乘上一个矩阵，来进行学习和更新。<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402192211133.png" srcset="/img/loading.gif" lazyload alt="image-20240219221146927"></p>
+</li>
+<li><p>Readout: 每一层相加，再乘上一个矩阵，得到一个输出。代表整个Graph的一个feature。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402192220313.png" srcset="/img/loading.gif" lazyload alt="image-20240219222002207"></p>
+</li>
+</ul>
+</li>
+<li><p>DCNN: 把距离为$d$的节点，和当前节点的值加起来（按照距离，比如距离为1，距离为2之类的）。每一层叠起来，然后乘上一个矩阵，就拿到feature了！</p>
+</li>
+<li><p>DGC: 和上面类似，但是拿到数据之后，不是叠起来，而是加起来昂！</p>
+</li>
+<li><p>MoNET (Mixture Model Networks)</p>
+<ul>
+<li>Define a measure on node distances</li>
+<li>Use weighted sum(mean)instead of simply summing up (averaging) neighbor features.</li>
+</ul>
+<blockquote>
+<p>点和点之间的距离，不一定是边数啊！我们定义一把！</p>
+</blockquote>
+</li>
+<li><p>GraphSAGE: AGGREGATION:mean,max-pooling,or LSTM</p>
+</li>
+<li><p>GAT: Graph Attention Networks，Attention是当前节点，给它的周围邻居的attention，然后算出来结果昂！</p>
+</li>
+<li><p>GIN：Graph Isomorphism Network</p>
+</li>
+<li><p>Resources: <strong>DEEP GRAPH LIBRARY</strong></p>
+</li>
+</ul>
+<h2 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h2><blockquote>
+<p>Seq2seq的model, Input a sequence,output a sequence. The output length is determined by model.</p>
+</blockquote>
+<ul>
+<li>application<ul>
+<li>speech recognition</li>
+<li>machine translation</li>
+<li>speech translation</li>
+</ul>
+</li>
+<li>Seq2seq is really powerful.</li>
+</ul>
+<h3 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h3><ul>
+<li>Transfomer Encoder Block:</li>
+</ul>
+<blockquote>
+<p>Inputs -&gt; Input Embedding -&gt; Add Positional Encoding -&gt; <strong>(Multi-Head Attention -&gt; Add &amp; Norm -&gt; Feed Forward Network -&gt; Add &amp; Norm) x N</strong> -&gt; Output</p>
+<ul>
+<li>“Add” is just the same “residual” concept in residual network.</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402222221724.png" srcset="/img/loading.gif" lazyload alt="image-20240222222142180"></p>
+<blockquote>
+<ul>
+<li>Some papers <ul>
+<li>on Layer Normalization in the Transformer Architecture, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2002.04745">https://arxiv.org/abs/2002.04745</a></li>
+<li>PowerNorm:Rethinking BatchNormalization in Transformers, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2003.07845">https://arxiv.org/abs/2003.07845</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="Decoder"><a href="#Decoder" class="headerlink" title="Decoder"></a>Decoder</h3><blockquote>
+<p>Encoder Output + Input -&gt; Decoder Blocker -&gt; Softmax -&gt; Output(max possiblity word in distribution)</p>
+</blockquote>
+<ul>
+<li>First input is a special token(BOS, begin of sentence), next input is the output of this input.（问题：一步错，步步错）</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402231940951.png" srcset="/img/loading.gif" lazyload alt="Transformer Decoder Architecture"></p>
+<ul>
+<li><p>Self-attention -&gt; Masked Self-attention, 当前位置的输入，看不到之后的输入，没办法计算后面的attention，只能和前面的位置算attention。很直觉感觉很对哇！Decoder的输出是一个一个产生的，看不到后面的内容很正常啊！！！</p>
+</li>
+<li><p>Autoregressive Decoder: 必须自己知道，输出的长度是多少捏！怎么解决？用一个特殊的输出当作结束(EOS, end of sentence)！也就解决了这个问题！！！</p>
+</li>
+<li><p>Decoder Non-autoregressive(<strong>NAT</strong>)，Autoregressive model也缩写为(<strong>AT</strong>)，AT产生是one by one。NAT产生是一次就是一句话，每次吃一排input，然后产生一排output。那咋知道长度呢？How to decide the output length for NAT decoder?</p>
+<ul>
+<li>Another predictor for output length</li>
+<li>Output a very long sequence,ignore tokens after END</li>
+</ul>
+</li>
+<li><p>NAT’s Advantage: <strong>parallel</strong>, <strong>controllable output length</strong></p>
+</li>
+<li><p>NAT’s Disadvantage: usually worse than AT(Why? <strong>Multi-modality</strong>)</p>
+</li>
+</ul>
+<h3 id="Encoder-Decoder"><a href="#Encoder-Decoder" class="headerlink" title="Encoder + Decoder"></a>Encoder + Decoder</h3><ul>
+<li>Cross-Attention: Encoder提供了两个箭头，Decoder提供了一个箭头。Decoder利用Cross-Attention，用到了Encoder的输出！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402231947328.png" srcset="/img/loading.gif" lazyload alt="image-20240223194711277"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402231948190.png" srcset="/img/loading.gif" lazyload alt="image-20240223194832037"></p>
+<blockquote>
+<p>q来自于Decoder，k和v来自于Encoder，这个步骤就叫做cross-attention</p>
+</blockquote>
+<ul>
+<li>Cross-Attention can do many things，也不一定就要和这一层Cross啊，可以一个Decoder和很多Encoder做cross，也可以所有的Decoder和所有的Encoder做cross。总之就是，技巧和idea很多！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402231954696.png" srcset="/img/loading.gif" lazyload alt="image-20240223195457641"></p>
+<h3 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h3><ul>
+<li>模型的输出本质是一个distribution，正确的输出可以表示为一个one-hot，loss就是cross-entropy，感觉就和分类很像啊！minimize cross entropy就好！（注意，这里还有个BOS和EOS，EOS也是作为正确答案做cross entropy的昂）</li>
+<li>Decoder的输入是正确答案昂！会不断从正确答案的输入，进行输出，并且和正确的输出做对比算loss。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402232000835.png" srcset="/img/loading.gif" lazyload alt="image-20240223200013780"></p>
+<blockquote>
+<p><strong>Teacher Forcing</strong>: using the ground truth as input.</p>
+</blockquote>
+<ul>
+<li>训练的时候，Decoder偷看到正确答案了，Inference的时候不行啊，mismatch！</li>
+<li>Tips:<ul>
+<li>Copy Mechanism: 有些任务也许不一定是需要自己输出，从输入里面<strong>复制内容</strong>出来就行，机器不需要创造，只是Copy就可以。例如Chat-bot，复制摘要等。Pointer Network 和 <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1603.06393">Incorporating Copying Mechanism in Sequence-to-Sequence Learning</a></li>
+<li>Guided Attention: 输入有些东西可能没有看到，我想要它一定要看到，或者按照什么顺序去看，引导注意力！！In some tasks,input and output are monotonically aligned. For example, speech recognition,TTS,etc. (Monotonic Attention, Location-aware Attention)</li>
+<li>Beam Search: 束搜索！不要老贪心，多看看！有时候有用，有时候没有用（可以多增加一些随机性！）Randomness is needed for decoder when generating sequence in some tasks (e.g.,sentence completion,TTS)。确定任务就不要，创造性的就要！Accept that nothing is perfect. True beauty lies in the cracks of imperfection.</li>
+<li>Optimizing Evaluation Metrics? BLEU score v.s. Cross-Entropy, BLEU Score来作为loss不好，因为不好微分，但是助教拿这个看效果怎么办捏？How to do the optimization? When you don’t know how to optimize,just use reinforcement learning (RL)!<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1511.06732">https://arxiv.org/abs/1511.06732</a></li>
+<li>测试看到的是自己的输出，训练看到的是完全正确的，This is a mismatch called <strong>exposure bias</strong>. 一步错，步步错怎么办？训练的时候，输入加一些错误的东西，学的时候就知道错的该怎么处理！<strong>Scheduled Sampling</strong>，会伤害到Transformer并行化的能力！<ul>
+<li>Original Scheduled Sampling <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1506.03099">https://arxiv.org/abs/1506.03099</a></li>
+<li>Scheduled Sampling for Transformer <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1906.07651">https://arxiv.org/abs/1906.07651</a></li>
+<li>Parallel Scheduled Sampling <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1906.04331">https://arxiv.org/abs/1906.04331</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Attention-Variant"><a href="#Attention-Variant" class="headerlink" title="Attention Variant"></a>Attention Variant</h2><ul>
+<li><p>Each input has a q,k,v. If sequence length is N, there will be an N x N attention matrix. How to make self-attention efficient? </p>
+</li>
+<li><p>Notice</p>
+<ul>
+<li>Self-attention is only a module in a larger network.</li>
+<li>Self-attention <strong>dominates</strong> computation <strong>when N is large</strong>.</li>
+<li>Usually developed for image processing. 只有在input sequence长的时候才有用。短的话，其实和Transformer(或者其他应用self-attention的模型等)其他计算部分相比，self-attention部分计算的开销没有那么大，效果也就不太显著啦！</li>
+</ul>
+</li>
+<li><p>Efficient</p>
+<ul>
+<li><p>Skip Some Calculations with Human Knowledge. Can we fill in some values with human knowledge? </p>
+<ul>
+<li>Local Attention/Truncated Attention</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402251643277.png" srcset="/img/loading.gif" lazyload alt="local attention"></p>
+<blockquote>
+<p>Attention在很小的范围内，不就和CNN一样了吗？可以啊，可能效果不那么好，但是效率高了呀！</p>
+</blockquote>
+<ul>
+<li>Stride Attention</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402251645416.png" srcset="/img/loading.gif" lazyload alt="stride attention"></p>
+<ul>
+<li>Global Attention: Add special token into original sequence<ul>
+<li>Attend to every token -&gt; collect global information</li>
+<li>Attended by every token -&gt; it knows global information</li>
+<li>Can be done by: assign some tokens as “special tokens” / add some extra tokens as “special tokens”</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402251650130.png" srcset="/img/loading.gif" lazyload alt="gobale tokens"></p>
+<ul>
+<li>使用场景？选哪个呢？小孩子才做选择，全都用！Different heads use different patterns.可以在multi-head self-attention里面，都综合使用，不同的head有不同的attention的模式和方式！综合不同的pattern！</li>
+<li>Famous way: Longformer, Big Bird.</li>
+</ul>
+</li>
+<li><p>Can we only focus on Critical Parts? -&gt; </p>
+<ul>
+<li>Data-driven methods help you find the large values and set the small values directly to 0. How to quickly estimate the portion with small attention weights?<ul>
+<li>Reformer: <a target="_blank" rel="noopener" href="https://openreview.net/forum?id=rkgNKkHtvB">https://openreview.net/forum?id=rkgNKkHtvB</a></li>
+<li>Routing Transformer: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2003.05997">https://arxiv.org/abs/2003.05997</a></li>
+<li>Clustering(based on similarity) on query and key -&gt; approximate&amp;fast, clustering可以加速！简单的clustering可能效果就太差了，达不到我们的目的！</li>
+<li>Belong to the same cluster, then calculate attention weight. Not the same cluster, set to 0.</li>
+</ul>
+</li>
+<li>Learnable Patterns，直接学出来！<ul>
+<li>Sinkhorn Sorting Network. A grid should be skipped or not is decided by another learned module.</li>
+<li>Input sequence -&gt; NN -&gt; Sequence Array v.s. Attention Matrix). Learning ! ! !</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Do we need full attention matrix?</p>
+<ul>
+<li>Many redundant columns. Linformer <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2006.04768">https://arxiv.org/abs/2006.04768</a>. Many columns are <strong>Low Rank</strong>.</li>
+<li>Keys -&gt; Get K Representative Keys</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402251704542.png" srcset="/img/loading.gif" lazyload alt="image-20240225170449437"></p>
+<ul>
+<li>Reduce number of keys: <ul>
+<li>Compressed Attention, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1801.10198">https://arxiv.org/abs/1801.10198</a>, CNN conv attentions</li>
+<li>Linformer: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2006.04768">https://arxiv.org/abs/2006.04768</a>, Matrix multiply to get fewer attentions. (Linear combination of N vectors)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Attention Mechanism is three-matrix Multiplication, </p>
+<ul>
+<li>Origin: $(d + d^{‘}) * N^{2}$, Now: $2d{‘}dN$，本质是$O = V * K^{T} * Q$， $(d + d^{‘}) * N^{2}$往往 &gt;&gt; $2d{‘}dN$，因为$N$往往远大于$d$，改变矩阵乘法的顺序！（去掉中间的Softmax才能work）</li>
+<li>放回Softmax应该怎么做呢？Realization: Efficient attention, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1812.01243.pdf">https://arxiv.org/pdf/1812.01243.pdf</a>. Linear Transformer, <a target="_blank" rel="noopener" href="https://linear-transformers.com/">https://linear-transformers.com/</a>. Random Feature Attention, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2103.02143.pdf">https://arxiv.org/pdf/2103.02143.pdf</a>. Performer, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2009.14794.pdf">https://arxiv.org/pdf/2009.14794.pdf</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Do we need g and k to compute attention? Synthesizer!</p>
+</li>
+<li><p>Attention-free?</p>
+</li>
+</ul>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5?p=34&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd%EF%BC%8C%E8%BF%99%E9%87%8C%E5%A5%BD%E5%A4%9A%E6%95%B0%E5%AD%A6%E6%8E%A8%E5%AF%BC%EF%BC%8C%E7%9C%8B%E7%9C%8B%E8%BF%99%E4%B8%AA%E5%90%A7%E3%80%82%E3%80%82%E3%80%82">https://www.bilibili.com/video/BV1J94y1f7u5?p=34&amp;vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd，这里好多数学推导，看看这个吧。。。</a></p>
+</blockquote>
+<h2 id="Non-Autoregressive-Sequence-Generation"><a href="#Non-Autoregressive-Sequence-Generation" class="headerlink" title="Non-Autoregressive Sequence Generation"></a>Non-Autoregressive Sequence Generation</h2><blockquote>
+<p>Autoregressive model太慢了！</p>
+</blockquote>
+<ul>
+<li><p>Non-autoregressive model(mostly by Transformer), predict output length &amp; feed position embedding</p>
+<ul>
+<li>一个input可能对应多个output，导致输出出错，multi-modality problem!</li>
+</ul>
+</li>
+<li><p>Vanilla NAT(Non-Autoregressive Translation)</p>
+<ul>
+<li>Predict <strong>fertility</strong> as latent variable &amp; Copy input words</li>
+<li>Represents sentence-level “plan” before writing Y</li>
+</ul>
+<blockquote>
+<p>每个输入测一下“影响的输出有几个”，然后直接copy对应的次数，放到输出Decoder的Input位置</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202402251921935.png" srcset="/img/loading.gif" lazyload alt="image-20240225192151873"></p>
+</li>
+<li><p>Fertility</p>
+<ol>
+<li>Labels comes from external aligner</li>
+<li>Observing attention weights in auto-regressive models</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>Fine-tune (after NAT model converges): Updating fertility classifier with REINFORCE</p>
+</blockquote>
+<ul>
+<li><p>Sequence-level knowledge distillation</p>
+<ul>
+<li>Process<ul>
+<li>Input -&gt; 小的model -&gt; 学习learning target</li>
+<li>Input -&gt; 大的model -&gt; Output(Learning target)</li>
+</ul>
+</li>
+<li>Teacher:Autoregressive model,Student:Non-autoregressive model</li>
+<li>Construct new corpus by autoregressive teacher model</li>
+<li>Teacher’s greedy decode output as student’s training target</li>
+</ul>
+</li>
+<li><p>Noisy Parallel Decoding (NPD)</p>
+<ol>
+<li>Sample several fertilitie sequences</li>
+<li>Generate sequences</li>
+<li>Score by a autoregressive model</li>
+</ol>
+</li>
+<li><p>Evolution of NAT</p>
+<ul>
+<li>Vanilla NAT</li>
+<li>Iterative Refinement</li>
+<li>Insertion-based</li>
+<li>Insert + Delete</li>
+<li>CTC-based</li>
+</ul>
+</li>
+<li><p>NAT with Iterative Refinement: Encoder -&gt; Decoder_1 -&gt; Decoder_2，每一步都进行一些设计，不断促进model的学习</p>
+</li>
+<li><p>Mask-Predict: 每次把预测的不是很好的位置的word(概率低)，给MASK住，塞进网络再来看结果。效果好不好，可能可以用另外一个比较强大的model来判断昂！</p>
+</li>
+<li><p>Insertion Transformer: 判断要不要插入一个字，插入什么字？Training -&gt; shuffled</p>
+</li>
+<li><p>Multiple target words to predict</p>
+</li>
+<li><p>KERMIT</p>
+</li>
+</ul>
+<h2 id="Pointer-Network"><a href="#Pointer-Network" class="headerlink" title="Pointer Network"></a>Pointer Network</h2><blockquote>
+<p>解决硬train一发的问题</p>
+</blockquote>
+<ul>
+<li>Seq2seq做不了！</li>
+<li>Pointer Network可以让输出从输入中copy一部分的词汇过来！</li>
+</ul>
+<h2 id="GAN"><a href="#GAN" class="headerlink" title="GAN"></a>GAN</h2><h3 id="GAN-Training"><a href="#GAN-Training" class="headerlink" title="GAN Training"></a>GAN Training</h3><blockquote>
+<p>Generative Adversarial Network</p>
+<p>Vector -&gt; NN Generator -&gt; NN Discriminator -&gt; Scalar(打分)</p>
+</blockquote>
+<ul>
+<li>Especially for the tasks needs “creativity’(The same input has different outputs.)</li>
+<li>Unconditional generation: simple distribution(Low-dim vector sample) -&gt; <strong>Generator</strong> -&gt; Complex Distribution，generator本质就是从一个低纬的向量，生成一个高纬的向量。</li>
+<li>我们要训练的东西：<ul>
+<li>Generator: 一个nn，生成图片。</li>
+<li>Discriminator: It is a neural network(that is,a function). Image -&gt; Discriminator -&gt; Scalar(Larger means real smaller value fake)</li>
+<li>这俩架构都可以自己设计捏！例如Discriminator用CNN就挺好！</li>
+</ul>
+</li>
+<li>Basic Idea of GAN: This is where the term “adversarial”comes from. 对抗！Algorithm：<ul>
+<li>Initialize generator and discriminator</li>
+<li>In each training iteration:<ul>
+<li>Step 1: <strong>Fix generator G,and update discriminator D.</strong> Discriminator learns to assign high scores to real objects<br>and low scores to generated objects. D会拿到G的输出，然后对比真实的数据进行训练，要能区分G生成的数据。</li>
+<li>Step 2: <strong>Fix discriminator D,and update generator G.</strong> Generator learns to “fool” the discriminator. G会把自己的输入塞进D中，让D的打分越高越好，这样来训练G。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>反复交替训练D和G，就可以一直做的越来越好！</p>
+</blockquote>
+<ul>
+<li>除了Anime之外，Photorealistic也是work的昂！例如Progressive GAN</li>
+</ul>
+<h3 id="Theory-behind-GAN"><a href="#Theory-behind-GAN" class="headerlink" title="Theory behind GAN"></a>Theory behind GAN</h3><ul>
+<li>Normal Distribution -&gt; Generator -&gt; Output，希望这个output和真实data的output越接近越好！$G^* = argmin_G Div(P_G, P_{data})$，这两个之间的divergence应该怎么算呢？怎么判断两张图是不是类似呢？怎么去计算呢？</li>
+</ul>
+<blockquote>
+<p>Although we do not know the distributions of $P_G$ and $P_{data}$, we can sample from them. GAN告诉我们，只要你知道怎么sample，就有办法算divergence。</p>
+</blockquote>
+<ul>
+<li>Discriminator就是做这个事儿的，从$P_G$和$P_{data}$里面，把数据抽出来，然后打分做判断。</li>
+</ul>
+<p>$$<br>Training: D^* = arg max_D V(D,G) \<br>Objective\ Function\ for\ D:\ V(G,D) = E_{y-P_{data}}[logD(y)] + E_{y-P_G}[log(1-D(y))]<br>$$</p>
+<blockquote>
+<p>希望V越大越好捏！其实感觉这个loss，就是binary classifier的想法，negative cross entry! 希望把分对的分数提高，把分错的分数降低！感觉就像是那个Training classifier: minimize cross entropy.</p>
+</blockquote>
+<ul>
+<li>Small divergence -&gt; hard to discriminate, small $max_DV(D,G)$. Large divergence -&gt; easy to discriminate. 不知道怎么计算Divergence，没事儿！$max_DV(D,G)$就可以看作和$Div(P_G, P_{data})$相关！因此问题又转换为了$G^* = argmin_G max_DV(G,D))$。GAN的训练过程，就是在做这件事儿昂！！！</li>
+<li>Tips for GAN Training: <ul>
+<li>JS divergence is not suitable, $P_G$和$P_{data}$是有很大的overlap的，JS divergence is <strong>always log2</strong> if two distributions do not overlap. 所以起不到什么实际的作用。有点像，距离最低点远的时候，算出来的loss都是一样的，就没有用！</li>
+<li>Intuition: If two distributions do not overlap,binary classifier achieves 100% accuracy. The accuracy (or loss) means nothing during GAN training.</li>
+</ul>
+</li>
+<li>Wasserstein distance<ul>
+<li>Considering one distribution P as a pile of earth, and another distribution Q as the target.</li>
+<li>The average distance the earth mover has to move the earth.</li>
+<li>There are many possible “moving plans”. Using the “moving plan”with the smallest average distance to define the Wasserstein distance.</li>
+</ul>
+</li>
+<li>WGAN<ul>
+<li>Original WGAN -&gt; Weight</li>
+<li>Improved WGAN -&gt; Gradient Penalty</li>
+<li>Spectral Normalization(SNGAN) -&gt; Keep gradient norm smaller than 1 everywhere</li>
+</ul>
+</li>
+<li>GAN is still chanllenging, G and D needs to match each other. Hard to train，其中一个寄了，另外一个就寄了！GAN for sequence Generation也难，Discriminator更新对于G可能会没啥影响，求啥导啊？</li>
+<li>Quality of Image<ul>
+<li>Human evaluation is expensive (and sometimes unfair/unstable).</li>
+<li>How to evaluate the quality of the generated images automatically?（用一些神经网络或者别的技术处理，例如vgg看看效果之类的）</li>
+</ul>
+</li>
+<li>Diversity — Model Collapse / Model Dropping. Inception Score(IS): Good quality, large diversity -&gt; Large IS.</li>
+<li>Fréchet Inception Distance(FID): <strong>red</strong> points:real images, <strong>blue</strong> points:generated images. <strong>FID</strong> = Frechet distance between the two <strong>Gaussians</strong>. <strong>Smaller is better</strong>.</li>
+</ul>
+<h3 id="Conditional-Generator"><a href="#Conditional-Generator" class="headerlink" title="Conditional Generator"></a>Conditional Generator</h3><h4 id="Supervised-Learning"><a href="#Supervised-Learning" class="headerlink" title="Supervised Learning"></a>Supervised Learning</h4><blockquote>
+<p>Text-to-image, Supervised Learning, 你要告诉NN，什么样的IO是对的！</p>
+</blockquote>
+<ul>
+<li>Condition x(Prompt) + z(Normal Distribution)</li>
+<li>如何训练呢？需要<strong>paired</strong>的data，Condition + Picture都要看！只有图片好 + 图片和文字相匹配，才会给高分昂！！！故意配一些错的，让GAN学学！</li>
+<li>不只txt2img，也可以image translation(<strong>pix2pix</strong>)，sound2img</li>
+<li>Talking head generation</li>
+</ul>
+<h4 id="Unsupervised-Learning"><a href="#Unsupervised-Learning" class="headerlink" title="Unsupervised Learning"></a>Unsupervised Learning</h4><blockquote>
+<p>Unlabeled资料如何使用？Still need some paired data.</p>
+</blockquote>
+<ul>
+<li>例如Image Style Transfer，Photo -&gt; Anime，没有任何成对的资料。Can we learn the mapping without any paired data?<br><strong>Unsupervised Conditional Generation</strong></li>
+<li>直接从X和Y直接Sample，然后进行训练就好，但是这里有个问题，就是我生成的图片可以和Y很像，如何和X建立联系呢？如何强化输入和输出的关系呢（参考txt2img）</li>
+<li>Cycle GAN -&gt; Train两个generator，一个是x到y，一个是y还原回x。要求还原回来的，和原始的输入，as close as possible, <strong>Cycle consistency</strong>. <strong>“Related”</strong> to input, so possible to construct.</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403021133874.png" srcset="/img/loading.gif" lazyload alt="image-20240302113358663"></p>
+<blockquote>
+<p>类似的，Cycle GAN也可以用于Text Style Transfer. <strong>minimize the reconstruction error</strong></p>
+</blockquote>
+<h3 id="Theory-behind-GAN-optional"><a href="#Theory-behind-GAN-optional" class="headerlink" title="Theory behind GAN(optional)"></a>Theory behind GAN(optional)</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5/?p=41">Option1</a>, <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5/?p=42">Option2</a>, <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5/?p=43">Option3</a></p>
+</blockquote>
+<h2 id="PixelRNN"><a href="#PixelRNN" class="headerlink" title="PixelRNN"></a>PixelRNN</h2><blockquote>
+<p>Generative Model</p>
+</blockquote>
+<ul>
+<li>To create an image, generating a pixel each time</li>
+</ul>
+<h2 id="VAE"><a href="#VAE" class="headerlink" title="VAE"></a>VAE</h2><blockquote>
+<p>Generative Model</p>
+</blockquote>
+<ul>
+<li>Auto-encoder: Input -&gt; NN Encoder -&gt; Coder -&gt; NN Decoder -&gt; Output</li>
+<li>VAE: Input -&gt; NN Encoder(From a normal distribution, $c_i = exp(\delta_i) \times\ e_i + m_i$) -&gt; NN Decoder -&gt; Output, Minimize reconstruction error.</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403042313961.png" srcset="/img/loading.gif" lazyload alt="Auto-encoder &amp; VAE Architecture"></p>
+<blockquote>
+<p>Writing Poetry: sentence -&gt; NN Encoder -&gt; <strong>code</strong> -&gt; NN Decoder -&gt; sentence</p>
+</blockquote>
+<ul>
+<li>Why VAE? Intuitive Reason. Back to what we want to do -&gt; Estimate the probability distribution.(<strong>Gaussian Mixture Mode</strong>l)</li>
 </ul>
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
 <li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5/?vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">【2022】最新 李宏毅大佬的深度学习与机器学习</a></li>
@@ -686,6 +1729,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2024/02/21/suan-fa-gang-mian-shi-hui-zong/" title="算法岗面试汇总">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">算法岗面试汇总</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
