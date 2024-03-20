@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202401281948983.jpg">
 <meta property="article:published_time" content="2024-01-28T11:45:14.000Z">
-<meta property="article:modified_time" content="2024-03-04T15:47:31.749Z">
+<meta property="article:modified_time" content="2024-03-18T13:13:08.122Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          36k 字
+          44k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          297 分钟
+          368 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：15 小时前
+                    本文最后更新于：2 天前
                   
                 
               </p>
@@ -1522,6 +1522,28 @@
 <li>Seq2seq做不了！</li>
 <li>Pointer Network可以让输出从输入中copy一部分的词汇过来！</li>
 </ul>
+<h2 id="PixelRNN-Optional"><a href="#PixelRNN-Optional" class="headerlink" title="PixelRNN(Optional)"></a>PixelRNN(Optional)</h2><blockquote>
+<p>Generative Model</p>
+</blockquote>
+<ul>
+<li>To create an image, generating a pixel each time</li>
+</ul>
+<h2 id="VAE-Optional"><a href="#VAE-Optional" class="headerlink" title="VAE(Optional)"></a>VAE(Optional)</h2><blockquote>
+<p>Generative Model</p>
+</blockquote>
+<ul>
+<li>Auto-encoder: Input -&gt; NN Encoder -&gt; Coder -&gt; NN Decoder -&gt; Output</li>
+<li>VAE: Input -&gt; NN Encoder(From a normal distribution, $c_i = exp(\delta_i) \times\ e_i + m_i$) -&gt; NN Decoder -&gt; Output, Minimize reconstruction error.</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403042313961.png" srcset="/img/loading.gif" lazyload alt="Auto-encoder &amp; VAE Architecture"></p>
+<blockquote>
+<p>Writing Poetry: sentence -&gt; NN Encoder -&gt; <strong>code</strong> -&gt; NN Decoder -&gt; sentence</p>
+</blockquote>
+<ul>
+<li>Why VAE? Intuitive Reason. Back to what we want to do -&gt; Estimate the probability distribution.(<strong>Gaussian Mixture Mode</strong>l)</li>
+<li>Conditonal VAE: Generate style similar results</li>
+<li>Problem of VAE: 没有学习怎样产生。VAE may just memorize the existing images,instead of<br>generating new images. 它能做的只有模仿！</li>
+</ul>
 <h2 id="GAN"><a href="#GAN" class="headerlink" title="GAN"></a>GAN</h2><h3 id="GAN-Training"><a href="#GAN-Training" class="headerlink" title="GAN Training"></a>GAN Training</h3><blockquote>
 <p>Generative Adversarial Network</p>
 <p>Vector -&gt; NN Generator -&gt; NN Discriminator -&gt; Scalar(打分)</p>
@@ -1566,6 +1588,15 @@
 </blockquote>
 <ul>
 <li>Small divergence -&gt; hard to discriminate, small $max_DV(D,G)$. Large divergence -&gt; easy to discriminate. 不知道怎么计算Divergence，没事儿！$max_DV(D,G)$就可以看作和$Div(P_G, P_{data})$相关！因此问题又转换为了$G^* = argmin_G max_DV(G,D))$。GAN的训练过程，就是在做这件事儿昂！！！</li>
+</ul>
+<blockquote>
+<p>GAN很难Train，还有CycleGAN，就是既然两个分布不好train，那么：</p>
+<ol>
+<li>转两次，判断原来的分布和预测的分布的相似程度。然后去算一把loss（类似cycle GAN），然后对中间状态加以限制。类似于形式，Discriminator之类的，来限制我们所需要的Output的形式和内容。</li>
+<li>先用现有的数据，pre-train一发，尽量把两个分布拉近。等到”warm up”之后，再来KL散度！就可以train起来了！</li>
+</ol>
+</blockquote>
+<ul>
 <li>Tips for GAN Training: <ul>
 <li>JS divergence is not suitable, $P_G$和$P_{data}$是有很大的overlap的，JS divergence is <strong>always log2</strong> if two distributions do not overlap. 所以起不到什么实际的作用。有点像，距离最低点远的时候，算出来的loss都是一样的，就没有用！</li>
 <li>Intuition: If two distributions do not overlap,binary classifier achieves 100% accuracy. The accuracy (or loss) means nothing during GAN training.</li>
@@ -1616,27 +1647,327 @@
 <h3 id="Theory-behind-GAN-optional"><a href="#Theory-behind-GAN-optional" class="headerlink" title="Theory behind GAN(optional)"></a>Theory behind GAN(optional)</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5/?p=41">Option1</a>, <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5/?p=42">Option2</a>, <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5/?p=43">Option3</a></p>
 </blockquote>
-<h2 id="PixelRNN"><a href="#PixelRNN" class="headerlink" title="PixelRNN"></a>PixelRNN</h2><blockquote>
-<p>Generative Model</p>
-</blockquote>
-<ul>
-<li>To create an image, generating a pixel each time</li>
+<h2 id="Flow-based-Generative-Models"><a href="#Flow-based-Generative-Models" class="headerlink" title="Flow-based Generative Models"></a>Flow-based Generative Models</h2><ul>
+<li>Autoregressive model<ul>
+<li>Component-by-component(Autoregressive model)</li>
+<li>Autoencoder</li>
+<li>Generative Adversarial Network(GAN)</li>
 </ul>
-<h2 id="VAE"><a href="#VAE" class="headerlink" title="VAE"></a>VAE</h2><blockquote>
-<p>Generative Model</p>
-</blockquote>
-<ul>
-<li>Auto-encoder: Input -&gt; NN Encoder -&gt; Coder -&gt; NN Decoder -&gt; Output</li>
-<li>VAE: Input -&gt; NN Encoder(From a normal distribution, $c_i = exp(\delta_i) \times\ e_i + m_i$) -&gt; NN Decoder -&gt; Output, Minimize reconstruction error.</li>
+</li>
+<li>Generative Models<ul>
+<li>Component-by-component(<strong>Auto-regressive Model</strong>)<ul>
+<li>What is the best order for the components?</li>
+<li><strong>Slow</strong> generation</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403042313961.png" srcset="/img/loading.gif" lazyload alt="Auto-encoder &amp; VAE Architecture"></p>
+</li>
+<li>Variational Auto-encoder<ul>
+<li>Optimizing a lower bound</li>
+</ul>
+</li>
+<li>Generative Adversarial Network<ul>
+<li>Unstable training</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>A generator G is a network. The network defines a probability distribution $p_G$。Normal Distribution $\pi(z)$ -&gt; Generator G -&gt; $p_G(x)$，什么样的G是好的呢？我们想$p_G(x)$的效果和$p_{data}(x)$越近越好。Maximize这俩的likelihood，等同于minimize $p_G$和$p_{data}$的KL散度。Flow-based model directly optimizes the objective function. </li>
+<li>Math background: Jacobian,Determinant,Change of Variable Theorem.</li>
+</ul>
+<h1 id="Self-supervised-Learning"><a href="#Self-supervised-Learning" class="headerlink" title="Self-supervised Learning"></a>Self-supervised Learning</h1><ul>
+<li>GPT和Bert的能力不同，Bert是Encoder，侧重于理解。GPT是Decoder，侧重是生成。Bert是客观题，GPT是主观题！</li>
+</ul>
+<h2 id="Bert"><a href="#Bert" class="headerlink" title="Bert"></a>Bert</h2><h3 id="Training-amp-Tasks"><a href="#Training-amp-Tasks" class="headerlink" title="Training &amp; Tasks"></a>Training &amp; Tasks</h3><ul>
+<li><p>Self-supervised，不用主动去进行标注，例如数据集，想办法让模型自己做supervised learning。从没有用到label这个角度上讲，这也是unsupervised learning。</p>
+</li>
+<li><p>Bert本质上就是一个Transformer的Encoder，一般用在NLP上，输入就是一个Sequence，输出也是一个sequence。</p>
+</li>
+<li><p>Bert的训练：</p>
+<ul>
+<li>Masked token prediction：训练的时候，Masking Input, Random. Randomly masking some tokens. 本质还是在做一个分类的问题，预测mask的词（类别）！</li>
+<li>Next sentence prediction: 这也是Bert可以执行的，[CLS] Sentence 1 [SEP] Sentence 2，输出是True/False，判断这两句话是不是连在一起的。This approach is not helpful, RoBERTa &amp; SOP, 都是更加有用的任务！</li>
+</ul>
+</li>
+<li><p>训练完之后，可以很神奇用在不同的downstream tasks上：</p>
+<ul>
+<li>The tasks we care</li>
+<li>We have a little bit labeled data</li>
+<li>把Bert拿过来，再训练一下，就可以用来做不同的任务。这件事儿就叫做fine-tune. Fine-tune之前，产生Bert的过程，就叫做Pre-train（这个就类似于胚胎干细胞）。Pre-train是Self-supervised，Fine-tune是Supervised，所以合起来就是semi-supervised（半监督学习）。</li>
+</ul>
+</li>
+<li><p>How to use BERT:</p>
+<ul>
+<li>Case 1: Input: sequence, output: class. Example: Sentiment analysis. [CLS] sentence -&gt; [CLS]对应位置加上Linear，单个的Output。</li>
+<li>Case 2: Input\output are sequence, length same as input. Example: POS tagging，主打一个一对一。</li>
+<li>Case 3: Input: two sequences, output: class. Example: Natural Language Inference(NLI)，两个句子，一个是premise，一个是hypothesis。从premise -&gt; hypothesis，吐出这两个句子之间的关系。</li>
+<li>Case 4: Extraction-based QA, 答案一定出现在文章里面。Input: Document和Query，Output: two integers(start, end)，这个Output就是一个字符串的范围，这里面的就是答案！[CLS] question [SEP] document，fine-tune的时候，就可以不动Bert模型的主体参数了捏！</li>
+</ul>
+</li>
+<li><p>Pre-training a seq2seq model: 成对的sequence，把sequence“弄坏”，再还原回来，就可以train起来，让encoder -&gt; decoder学到东西。</p>
+</li>
+</ul>
+<h3 id="Why-does-BERT-work"><a href="#Why-does-BERT-work" class="headerlink" title="Why does BERT work"></a>Why does BERT work</h3><ul>
+<li>The tokens with similar meaning have similar embedding.</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403061428718.png" srcset="/img/loading.gif" lazyload alt="Same word in differient sentences have different meanings"></p>
 <blockquote>
-<p>Writing Poetry: sentence -&gt; NN Encoder -&gt; <strong>code</strong> -&gt; NN Decoder -&gt; sentence</p>
+<p>由于BERT里面的Self-Attention的存在，Embedding考虑了上下文的信息，是不一样的！”You shall know a word by the company it keeps”</p>
 </blockquote>
 <ul>
-<li>Why VAE? Intuitive Reason. Back to what we want to do -&gt; Estimate the probability distribution.(<strong>Gaussian Mixture Mode</strong>l)</li>
+<li>在word之前，这种想法早就有了。Word Embedding技术！CBOW！CBOW很简单，就是简单几层Transform！<strong>Contextualized word embedding</strong>！</li>
 </ul>
-<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<h3 id="Multi-lingual-BERT"><a href="#Multi-lingual-BERT" class="headerlink" title="Multi-lingual BERT"></a>Multi-lingual BERT</h3><ul>
+<li>Training a BERT model by many different languages. 神奇！拿英文的QA做Fine-tune，它可以学到中文的东西？？？？</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403061438914.png" srcset="/img/loading.gif" lazyload alt="image-20240306143800735"></p>
+<blockquote>
+<p>Cross-lingual alignment? 不同语言的embedding，相似含义的，可能是类似的！数据量变大，效果更好！！！</p>
+</blockquote>
+<ul>
+<li>太强了，很震惊！！！甚至可以跨语言，算出difference的vector，把英文加上中英的这个differnce vector，Bert甚至可以输出中文？？？语言之间的差异，还是“藏”在了Bert里面！这种difference可能就是不同向量之间的距离。</li>
+</ul>
+<h2 id="GPT"><a href="#GPT" class="headerlink" title="GPT"></a>GPT</h2><ul>
+<li>Transformer的Decoder，Predict Next Token，预测接下来要出现的内容是什么。就训练就完了！Decoder用的是那个Mask的Attention，看不到后面的，可以看到前面的。</li>
+<li>How to use GPT? 也可以和Bert一样，接一个简单的classifier。GPT有一个更狂的想法，seq2seq！”Few-shot”/“One-shot”/“Zero-shot” Learning(no gradient learning), <strong>“In-context” Learning</strong>。</li>
+<li>Beyond Text<ul>
+<li>Image - SimCLR</li>
+<li>Image - BYOL</li>
+<li>Speech - Bert</li>
+</ul>
+</li>
+<li>Benchmark: GLUE/Speech GLUE</li>
+</ul>
+<h2 id="Smaller-Model"><a href="#Smaller-Model" class="headerlink" title="Smaller Model"></a>Smaller Model</h2><ul>
+<li>Network Compression<ul>
+<li>Network Pruning</li>
+<li>Knowledge Distillation</li>
+<li>Parameter Quantization</li>
+<li>Architecture Design</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Excellent reference: <a target="_blank" rel="noopener" href="http://mitchgordon.me/machine/learning/2019/11/18/all-the-ways-to-compress-BERT.html">http://mitchgordon.me/machine/learning/2019/11/18/all-the-ways-to-compress-BERT.html</a></p>
+</blockquote>
+<ul>
+<li>Transformer-XL:Segment-Level Recurrence with State Reuse<ul>
+<li>Reformer</li>
+<li>Longformer</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Reduce the complexity of self-attention</p>
+</blockquote>
+<h2 id="Fine-tune"><a href="#Fine-tune" class="headerlink" title="Fine-tune"></a>Fine-tune</h2><ul>
+<li><p>Input: </p>
+<ul>
+<li>One sentence</li>
+<li>Multiple sentences</li>
+</ul>
+</li>
+<li><p>Output:</p>
+<ul>
+<li>one class</li>
+<li>class for each token</li>
+<li>copy from input</li>
+<li>general sequence</li>
+</ul>
+</li>
+<li><p>在当前的model上，再接上一层NN，根据不同的Output，接上不同的NN，来实现不同的功能！接上NN的时候，例如seq2seq，如果一个纯空白的task-specific decoder，效果可能就不好，都有pre-train就好了。用pre-train的model，当作decoder，auto-regressive one-by-one gen，好像就可以不用Encoder -&gt; task-specific Decoder(v1)，而是可以直接Encoder当成Decoder来用(v2)！！！</p>
+</li>
+<li><p>How to fine-tune</p>
+<ol>
+<li>Pre-trained Model训练完就不动了，Model当作Feature Extractor来用，就fix住就行。</li>
+<li>Task-specific和Pre-trained Model接起来，一起Fine-tune，当作一个巨大的Model. A gigantic model for down-stream tasks.</li>
+</ol>
+<blockquote>
+<p>2的效果，往往比1好哦！</p>
+</blockquote>
+</li>
+<li><p>针对不同的下游任务，每个模型fine-tune，都要存一份，那太大，太浪费了！！！ -&gt; Adapter，我不调整个模型，就调整一部分！其他不动！存就存Adapter就可以，不用存一个完整的Model。</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403061540056.png" srcset="/img/loading.gif" lazyload alt="Adapters v.s. Fine-tine top layers"></p>
+<ul>
+<li>Weighted Features: 联合不同层的参数！用不同层抽取出来的不同参数，做一个组合的特征！这都可以学！</li>
+<li>Why Pre-train Models? 这些models带给我们比较好的performance。而且Training loss也是比较快的下降！</li>
+</ul>
+<h2 id="Pre-train"><a href="#Pre-train" class="headerlink" title="Pre-train"></a>Pre-train</h2><ul>
+<li><p>Pre-train过程中，Attention都很多种玩法</p>
+<ul>
+<li>Context Vector(CoVe)，Pre-training by Translation, 是一个Encoder-Decoder的架构，sentence pair的Input, output，就可以end2end训练出模型。sentence pair难搞, supervised-learning -&gt; self-supervised learning</li>
+<li>ElMo是双向的，考虑两边的context - Predict Next Token(Bidirectional)，但是用的是LSTM，并且“不会交汇”。单独拿两边的值的LSTM结果出来，汇总下，吐个result出来！</li>
+<li>Bert不是predict next token，而是把某些token给mask掉，然后预测这个mask是啥。Bert用attention的时候，是没有限制的，可以同时attention到前面和后面的内容。—&gt; 和CBOW的思想一模一样好吧！拿某个点周围的数据，然后算个output出来。只不过CBOW过于简单罢了，通常左右20个，预测中间昂！(Using context to predict the missing token)</li>
+</ul>
+</li>
+<li><p>Bert pre-train过程中要masking input，怎么mask呢？</p>
+<ul>
+<li>Original Bert Input: 一次盖住一个token</li>
+<li>Whole Word Masking(WWM): 一次盖住一整个word所有的token</li>
+<li>Phrase-level &amp; Entity-level: 一次盖住好几个Word，一次盖住一个Entity</li>
+<li>SpanBert: 每次随机盖住一排token，盖住几个呢？给了个概率分布，赌呗！</li>
+<li>SpanBert-Span Boundary Objective(SBO): 根据被盖住的tokens左右两边的embedding，去预测被盖住范围内的东西。SBO还有个Input是数字，代表预测被masked的tokens中，第几个位置的token。</li>
+</ul>
+</li>
+<li><p>Other Networks</p>
+<ul>
+<li><p>XLNet</p>
+<ul>
+<li>Transformer-XL，Attention随机选取一些前后文的token，然后预测Mask的word。</li>
+</ul>
+</li>
+<li><p>Bert cannot talk? —&gt; Given partial sequence,predict the next token. Limited to autoregressive model. MASS/BART: The pre-train model is a typical seg2seg model.</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>MAsked Sequence to Sequence pre-training (MASS)</li>
+<li>Bidirectional and Auto-Regressive Transformers (BART)</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>UniLM: 同时又是Encoder、Decoder和Seq2seq LM.</p>
+</li>
+<li><p>ELECTRA: 改一些token，ELECTRA去判断哪些是有问题的！这个token最好是语法没错，语意有点点差别的感觉。生成数据？Bert可以生成这种数据！（有GAN那味儿了！）</p>
+</li>
+<li><p>Sentence整个可以做一个embedding吗？”You shall know a sentence by the company it keeps?” Skip Thought -&gt; Quick Thought. NSP:Next sentence prediction</p>
+</li>
+<li><p>Robustly optimized BERT approach (RoBERTa), SOP:Sentence order prediction.</p>
+</li>
+<li><p>T5-Comparison</p>
+<ul>
+<li>Transfer Text-to-Text Transformer(T5)</li>
+<li>Colossal Clean Crawled Corpus(C4)</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>试了各种Pretraining的方法！</p>
+</blockquote>
+<ul>
+<li>Knowledge: Bert + External Knowledge(Knowledge Graph) —&gt; ERNIE</li>
+<li>Audio Graph</li>
+</ul>
+</li>
+</ul>
+<h2 id="Auto-encoder"><a href="#Auto-encoder" class="headerlink" title="Auto-encoder"></a>Auto-encoder</h2><blockquote>
+<p>很早了，其实也类似Self-supervised Learning, Pre-train! 感觉SD那边用的多！！！</p>
+</blockquote>
+<ul>
+<li><p>Basic Idea of Auto-encoder</p>
+<ul>
+<li><p>Input -&gt; NN Encoder -&gt; vector -&gt; NN Decoder -&gt; Output，让Output和Input越接近越好！GAN！这个思路好CycleGAN！</p>
+</li>
+<li><p>不需要标注资料，unsupervised learning的方法。</p>
+</li>
+<li><p>这个vector被称为Embedding, Representation, Code。vector可以当作是 new feature for downstream tasks！图片 -&gt; vector，可以看作压缩！我就说我见过。。。这个玩意儿在Stable Diffusion里面，Pixel Space -&gt; Latent Space用的就是AutoEncoder。。。High dim -&gt; Low dim</p>
+</li>
+<li><p>More Dimension Reduction: PCA, t-SNE</p>
+</li>
+<li><p>De-noising Auto-encoder: Input -&gt; Add noise -&gt; NN Encoder -&gt; vector -&gt; NN Decoder -&gt; Output(As close as possible to Input)</p>
+</li>
+<li><p>Bert也可以这样看啊！Bert就是de-noising auto-encoder，然后Noise就是Input(with masked token)，Bert的输出就是Embedding，接一个NN(Decoder)，Recontruction，还原被盖住的地方，拿到Output，要求这个Output和masked token尽可能的像！</p>
+</li>
+</ul>
+</li>
+<li><p>Feature Disentanglement：</p>
+<ul>
+<li>可以用来把不同模态的数据提取出来！Encoder就可以抽取！！！对于这个vector，就有很多操作可以做啦！</li>
+<li>Application: Voice Conversion</li>
+</ul>
+</li>
+<li><p>Discrete Latent Representation</p>
+<ul>
+<li>vector可以是Real numbers，也可以是Binary(可以代表某种特征的有或者没有)，也可能是one-hot，可以作为分类问题哇，unsupervised分类，例如MNIST！</li>
+<li>Vector Quantized Variational Auto-encoder (VQVAE)，类似self-attention，让vector去“选” codebook中的向量，作为塞入NN Decoder的输入！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403150945411.png" srcset="/img/loading.gif" lazyload alt="image-20240315094551297"></p>
+<ul>
+<li>Representation有多种，Text也可以作为Representation哇！Encoder -&gt; Decoder中间的vector看不懂啊？咋办！Discriminator！</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202403150948639.png" srcset="/img/loading.gif" lazyload alt="image-20240315094810462"></p>
+<ul>
+<li>Tree as Embedding<ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1806.07832">https://arxiv.org/abs/1806.07832</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1904.03746">https://arxiv.org/abs/1904.03746</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>More Applications</p>
+<ul>
+<li><p>With some modification,we have variational auto-encoder(VAE).</p>
+</li>
+<li><p>Encoder可以当作Compression来用，Decoder可以当作Generator来用。</p>
+</li>
+<li><p>Anomaly Detection</p>
+<ul>
+<li>Fraud Detection<ul>
+<li>Training data:credit card transactions,x:fraud or not</li>
+<li>Ref: <a target="_blank" rel="noopener" href="https://www.kaggle.com/ntnu-testimon/paysim1/home">https://www.kaggle.com/ntnu-testimon/paysim1/home</a></li>
+<li>Ref: <a target="_blank" rel="noopener" href="https://www.kaggle.com/mlg-ulb/creditcardfraud/home">https://www.kaggle.com/mlg-ulb/creditcardfraud/home</a></li>
+</ul>
+</li>
+<li>Network Intrusion Detection<ul>
+<li>Training data:connection, x:attack or not</li>
+<li>Ref: <a target="_blank" rel="noopener" href="http://kdd.ics.uci.edu/databases/kddcup99/kddcup99.html">http://kdd.ics.uci.edu/databases/kddcup99/kddcup99.html</a></li>
+</ul>
+</li>
+<li>Cancer Detection<ul>
+<li>Training data:normal cells, x:cancer or not?</li>
+<li>Ref: <a target="_blank" rel="noopener" href="https://www.kaggle.com/uciml/breast-cancer-wisconsin-data/home">https://www.kaggle.com/uciml/breast-cancer-wisconsin-data/home</a></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Binary Classification?</li>
+<li>We only have one class.</li>
+<li>Training auto-encoder</li>
+</ul>
+</blockquote>
+</li>
+<li><p>More about Anomaly Detection</p>
+<ul>
+<li>Part 1: <a target="_blank" rel="noopener" href="https://youtu.be/gDp2LXGnVLQ">https://youtu.be/gDp2LXGnVLQ</a></li>
+<li>Part 2: <a target="_blank" rel="noopener" href="https://youtu.be/cYrNjLxkoXs">https://youtu.be/cYrNjLxkoXs</a></li>
+<li>Part 3: <a target="_blank" rel="noopener" href="https://youtu.be/ueDlm2FkCnw">https://youtu.be/ueDlm2FkCnw</a></li>
+<li>Part 4: <a target="_blank" rel="noopener" href="https://youtu.be/XwkHOUPbcOQ">https://youtu.be/XwkHOUPbcOQ</a></li>
+<li>Part 5: <a target="_blank" rel="noopener" href="https://youtu.be/Fh1xFBktRLQ">https://youtu.be/Fh1xFBktRLQ</a></li>
+<li>Part 6: <a target="_blank" rel="noopener" href="https://youtu.be/LmFWzmn2rFY">https://youtu.be/LmFWzmn2rFY</a></li>
+<li>Part 7: <a target="_blank" rel="noopener" href="https://youtu.be/6W8FqUGYyDo">https://youtu.be/6W8FqUGYyDo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Unsupervised-Learning-1"><a href="#Unsupervised-Learning-1" class="headerlink" title="Unsupervised Learning"></a>Unsupervised Learning</h1><h2 id="Clustering-amp-Dimension-Reduction"><a href="#Clustering-amp-Dimension-Reduction" class="headerlink" title="Clustering &amp; Dimension Reduction"></a>Clustering &amp; Dimension Reduction</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5?p=55">Vedio is here</a>, hard</p>
+</blockquote>
+<ul>
+<li><p>Clustering</p>
+<blockquote>
+<p>Pre: How many clusters?</p>
+</blockquote>
+<ul>
+<li>k-means</li>
+<li>Hierarchical Agglomerative Clustering(HAC): Build a tree due to similarity and pick a threshold</li>
+</ul>
+</li>
+<li><p>Distributed Representation</p>
+<ul>
+<li>Clustering: an object must belong to one cluster</li>
+<li>Distributed representation(Dimension Reduction)</li>
+</ul>
+</li>
+<li><p>Dimension Reduction</p>
+<ul>
+<li>Feature Selection</li>
+<li>Principle component analysis</li>
+</ul>
+</li>
+</ul>
+<h2 id="Generation"><a href="#Generation" class="headerlink" title="Generation"></a>Generation</h2><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
 <li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5/?vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">【2022】最新 李宏毅大佬的深度学习与机器学习</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/ninehills/blog/issues/97">NLP学习路线</a></li>
 </ol>
