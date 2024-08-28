@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202401281948983.jpg">
 <meta property="article:published_time" content="2024-01-28T11:45:14.000Z">
-<meta property="article:modified_time" content="2024-03-18T13:13:08.122Z">
+<meta property="article:modified_time" content="2024-03-25T03:22:06.425Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="研0自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          44k 字
+          47k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          368 分钟
+          396 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 天前
+                    本文最后更新于：5 个月前
                   
                 
               </p>
@@ -1942,7 +1942,7 @@
 </li>
 </ul>
 <h1 id="Unsupervised-Learning-1"><a href="#Unsupervised-Learning-1" class="headerlink" title="Unsupervised Learning"></a>Unsupervised Learning</h1><h2 id="Clustering-amp-Dimension-Reduction"><a href="#Clustering-amp-Dimension-Reduction" class="headerlink" title="Clustering &amp; Dimension Reduction"></a>Clustering &amp; Dimension Reduction</h2><blockquote>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5?p=55">Vedio is here</a>, hard</p>
+<p>Vedio is <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5?p=55">here</a> and <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5?p=56">here</a>, hard.</p>
 </blockquote>
 <ul>
 <li><p>Clustering</p>
@@ -1966,8 +1966,147 @@
 <li>Principle component analysis</li>
 </ul>
 </li>
+<li><p>这两节课主要在讲</p>
+<ul>
+<li>PCA</li>
+<li>t-SNE(Neighbor Embedding)</li>
 </ul>
-<h2 id="Generation"><a href="#Generation" class="headerlink" title="Generation"></a>Generation</h2><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+</li>
+</ul>
+<h1 id="Explainable-Machine-Learning"><a href="#Explainable-Machine-Learning" class="headerlink" title="Explainable Machine Learning"></a>Explainable Machine Learning</h1><ul>
+<li><p>Tradeoff between Interpretable and Powerful. </p>
+</li>
+<li><p>Goal of Explainable ML: Reasons that <strong>make people comforatble</strong>. </p>
+<ul>
+<li>Local Explanation: Why do you think this image is a cat?</li>
+<li>Global Explanation: What does a “cat”look like? (not referred to a specific image)</li>
+</ul>
+</li>
+<li><p>Local Explanation</p>
+<ul>
+<li>Noisy Gradient</li>
+<li>Gradient Saturation</li>
+<li>Integrated Gradient</li>
+</ul>
+</li>
+<li><p>How a network processes the input data?</p>
+<ul>
+<li>Visualization(PCA, t-SNE等等) -&gt; Plot on figure<ul>
+<li>某个层拿出来，看看效果</li>
+<li>Attention看看</li>
+</ul>
+</li>
+<li>Probing（探针看看！！！）</li>
+</ul>
+</li>
+<li><p>Global Explanation</p>
+</li>
+<li><p>Outlook: </p>
+<ul>
+<li>Using an interpretable model to mimic the behavior of an uninterpretable model. </li>
+<li>Local Interpretable Model-Agnostic Explanations(LIME)</li>
+</ul>
+</li>
+</ul>
+<h1 id="Adversial-Attack"><a href="#Adversial-Attack" class="headerlink" title="Adversial Attack"></a>Adversial Attack</h1><h2 id="Attack-amp-Approach"><a href="#Attack-amp-Approach" class="headerlink" title="Attack &amp; Approach"></a>Attack &amp; Approach</h2><ul>
+<li><p>Motivation: Are networks robust to the inputs that are built to fool them? -&gt; Useful for spam classification, malware detection,network intrusion detection,etc.</p>
+</li>
+<li><p>Example Attack</p>
+<ul>
+<li>Non-targeted: 让输出不是正确的输出就行 -&gt; 对应的Input，离output越大越好。（input改动也越小越好）</li>
+<li>Targeted: 输出指定的Output =&gt; 对应的Input，离output越大越好的同时，离对应的target越小越好。（input改动也越小越好）</li>
+</ul>
+</li>
+<li><p>Non-perceivable如何实现？</p>
+<ul>
+<li>Need to consider human perception</li>
+<li>上面说的，两个图片之间的区别，本质上就是X’ - X，算一个”Distance”。L2和L-Infinity都可以算，但是为了让“人眼”看起来更像，L-Infinity看起来会更好！这个就是loss的一部分昂！</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>综合上面的说法，除了我们的Loss Function之外，Non-perceivable是这个Loss Function的另外一个<strong>Constraint</strong>条件，限制我们的Input的取值范围！</p>
+</blockquote>
+<ul>
+<li>Attack approach<ul>
+<li>Update <em><strong>input</strong></em>, not <em><strong>parameters</strong></em></li>
+<li>Gradient Descent<ul>
+<li>Start from original image $x^0$</li>
+<li>For t 1 to T, <ul>
+<li>$x^t = x^{t-1} - \eta\times gradient$</li>
+<li>if $d(x^0, x) &gt; \epsilon$ (符合human non-perceivable的最小范围)，$x^t = fix(x^t)$，只要超出了“方框”，就找一个最近的，把这个点拉回来！（这个就叫做fix昂！）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>常见的Attack approach都差不多，但是要么是optimization method不一样，要么是constraints不一样。e.g. Fast Gradient Sign Method(FGSM), Iterative FGSM</li>
+</ul>
+</li>
+</ul>
+<h2 id="White-Box-amp-Black-Box"><a href="#White-Box-amp-Black-Box" class="headerlink" title="White Box &amp; Black Box"></a>White Box &amp; Black Box</h2><ul>
+<li><p>White Box v.s. Black Box</p>
+<ul>
+<li>White Box: 知道模型参数后再进行攻击。（和上面的一样，知道模型参数之后，就可以算Gradient来更新我们自己的Input了！）</li>
+<li>Black Box: You cannot obtain model parameters in most online APl.</li>
+</ul>
+</li>
+<li><p>Black Box Attack method: </p>
+<ul>
+<li>We have training data: If you have the training data of the target network. Train a proxy network yourself. -&gt; 用proxy network来模仿Network Black的行为，这两者会有一定程度相似，只要对proxy network攻击就相当于对Black Box进行攻击。</li>
+<li>What if we do not know the training data? 用Black Network来“造”数据集，丢一堆进去，拿出来结果。然后再重复上面“We have training data”的做法就好。好好好，这么玩儿是吧orz</li>
+<li>Non-targeted在黑箱场景中比较容易成功，而targeted不太容易成功。</li>
+</ul>
+</li>
+<li><p>Why the attack is so easy! Why? -&gt; Adversarial Examples Are Not Bugs. They Are Features.</p>
+</li>
+<li><p>More: </p>
+<ul>
+<li>One pixel attack</li>
+<li>Universal Adversarial Attack</li>
+</ul>
+</li>
+<li><p>More attacks</p>
+<ul>
+<li><p>Beyond Images</p>
+<ul>
+<li>Speech processing (Detect synthesized speech)</li>
+<li>Natural language processing</li>
+</ul>
+</li>
+<li><p>Attack in the physical world</p>
+<ul>
+<li>An attacker would need to find perturbations that generalize beyond a single image.</li>
+<li>Extreme differences between adjacent pixels in the perturbation are unlikely to be accurately captured by cameras.</li>
+<li>It is desirable to craft perturbations that are comprised mostly of colors reproducible by the printer.</li>
+</ul>
+</li>
+<li><p>Adversarial Reprogramming: “寄生”，我可以通过植入特定的pixel之类的，强迫模型输出特定的值，做一些“不太合法”的工作。</p>
+<ul>
+<li>“Backdoor” in Model: 训练的时候就展开攻击！数据甚至都是对的，但是能够影响对于别的一些特定资料，输出特定的输出。留下“后门”。Be careful of unknown dataset ……</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Defensive"><a href="#Defensive" class="headerlink" title="Defensive"></a>Defensive</h2><ul>
+<li>Passive Defense<ul>
+<li>在模型前面加一个filter，让攻击图片less harmful。这个Filter可能很简单可能就有用喔，比如让图片轻微模糊一点！（但是可能会有一点副作用昂！）</li>
+<li>Image Compression: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1704.01155">https://arxiv.org/abs/1704.01155</a>, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1802.06816">https://arxiv.org/abs/1802.06816</a></li>
+<li>Generator: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1805.06605">https://arxiv.org/abs/1805.06605</a></li>
+<li>Randomization: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1711.01991%E3%80%82%E9%97%AE%E9%A2%98%EF%BC%9A%E4%B8%80%E6%97%A6%E5%88%AB%E4%BA%BA%E7%9F%A5%E9%81%93%E4%BA%86%EF%BC%8C%E6%A8%A1%E7%B3%8A%E5%8C%96%E8%BF%99%E4%B8%AAFilter%E4%B9%9F%E5%8F%AF%E4%BB%A5%E7%9C%8B%E4%BD%9C%E6%98%AF%E7%BD%91%E7%BB%9C%E7%9A%84%E4%B8%80%E5%B1%82%E5%95%8A%EF%BC%8C%E9%87%8D%E6%96%B0%E5%86%8D%E8%AE%AD%E7%BB%83%E5%B0%B1%E8%A1%8C%EF%BC%81%E4%B8%80%E6%97%A6%E8%A2%AB%E5%8F%91%E7%8E%B0%EF%BC%8C%E5%BE%88%E5%BF%AB%E5%B0%B1%E6%B2%A1%E7%94%A8%E4%BA%86%E6%8D%8F%EF%BC%81%E9%9A%8F%E6%9C%BA%E9%98%B2%E5%BE%A1%EF%BC%8C%E4%BC%9A%E6%AF%94%E4%B8%8A%E9%9D%A2%E7%9A%84%E5%A5%BD%EF%BC%81%E5%88%AB%E4%BA%BA%E7%9F%A5%E9%81%93%E4%BA%86%E4%BD%A0%E7%9A%84%E9%9A%8F%E6%9C%BA%E7%9A%84%E5%88%86%E5%B8%83%EF%BC%8C%E5%85%B6%E5%AE%9E%E4%B9%9F%E4%BC%9A%E6%9C%89%E4%B8%80%E4%BA%9B%E5%8D%B1%E9%99%A9%E6%98%82%EF%BC%81">https://arxiv.org/abs/1711.01991。问题：一旦别人知道了，模糊化这个Filter也可以看作是网络的一层啊，重新再训练就行！一旦被发现，很快就没用了捏！随机防御，会比上面的好！别人知道了你的随机的分布，其实也会有一些危险昂！</a></li>
+</ul>
+</li>
+<li>Proactive Defense<ul>
+<li>Adversarial Training: 训练的时候，就进行攻击。把攻击的图片，标成正确的label，训练就够猛！Find the problem -&gt; Fix it! 可以看作是Data Augmentation，也可以用这样的方法，产生更多的资料，让模型更加robust捏！</li>
+<li>问题：<ul>
+<li>很难deal with new algorithm，如果考虑不到新的algorithm，可能就没有Augmented那种攻击的情况哇！</li>
+<li>吃运算资源，数据集大就不太好做。。。有一些研究就是： Adversarial Training for Free!<br><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1904.12843">https://arxiv.org/abs/1904.12843</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
 <li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1J94y1f7u5/?vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">【2022】最新 李宏毅大佬的深度学习与机器学习</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/ninehills/blog/issues/97">NLP学习路线</a></li>
 </ol>
@@ -2061,9 +2200,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/02/21/suan-fa-gang-mian-shi-hui-zong/" title="算法岗面试汇总">
+                      <a href="/2024/02/21/suan-fa-gang-mian-shi-hui-zong-1/" title="算法岗面试汇总-1">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">算法岗面试汇总</span>
+                        <span class="hidden-mobile">算法岗面试汇总-1</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     

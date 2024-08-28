@@ -1,0 +1,2095 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tuzi.png">
+  <link rel="icon" href="/img/tuzi.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Alexander Liu">
+  <meta name="keywords" content="分布式系统,后端研发,数据协同">
+  
+    <meta name="description" content="学点新东西，拖了很久的Recommended System，启动！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Recommendation System">
+<meta property="og:url" content="https://alexanderliu-creator.github.io/2024/08/16/recommendation-system/index.html">
+<meta property="og:site_name" content="兔の博客">
+<meta property="og:description" content="学点新东西，拖了很久的Recommended System，启动！">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image.covertness.cn/keras_recommender/recommend.png">
+<meta property="article:published_time" content="2024-08-16T08:05:18.000Z">
+<meta property="article:modified_time" content="2024-08-28T16:44:00.573Z">
+<meta property="article:author" content="Alexander Liu">
+<meta property="article:tag" content="自学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://image.covertness.cn/keras_recommender/recommend.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Recommendation System - 兔の博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"alexanderliu-creator.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>兔的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background_post.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Recommendation System"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Alexander Liu
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-16 16:05" pubdate>
+          2024年8月16日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          21k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          172 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Recommendation System</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>学点新东西，拖了很久的Recommended System，启动！</p>
+<span id="more"></span>
+
+<h1 id="Shuseng-Wang的公开课"><a href="#Shuseng-Wang的公开课" class="headerlink" title="Shuseng Wang的公开课"></a>Shuseng Wang的公开课</h1><h2 id="Basic-Recommendation-System-Knowledge"><a href="#Basic-Recommendation-System-Knowledge" class="headerlink" title="Basic Recommendation System Knowledge"></a>Basic Recommendation System Knowledge</h2><h3 id="Conversion-process-indicators-and-experiment-process"><a href="#Conversion-process-indicators-and-experiment-process" class="headerlink" title="Conversion process, indicators and experiment process"></a>Conversion process, indicators and experiment process</h3><ul>
+<li><p>用户在小红书中，推荐算法帮助用户进行的转化流程</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408261731997.png" srcset="/img/loading.gif" lazyload alt="image-20240826173111801"></p>
+<ul>
+<li>不同系统不一样，淘宝/Youtube前两步都是Impression等，但是抖音就不一样。</li>
+</ul>
+</li>
+<li><p>重要指标：</p>
+<ul>
+<li><p>短期消费指标</p>
+<ul>
+<li>点击率 = 点击次数/曝光次数</li>
+<li>点赞率 = 点赞次数/点击次数</li>
+<li>收藏率 = 收藏次数/点击次数</li>
+<li>转发率 = 转发次数/点击次数</li>
+<li>阅读完成率 = 滑动到底次数/点击次数×f(笔记长度)</li>
+</ul>
+</li>
+<li><p>长期消费指标</p>
+<ul>
+<li>多样性等 -&gt; 用户粘性</li>
+</ul>
+</li>
+<li><p>最重要的指标—北极星指标</p>
+<ul>
+<li>用户规模：日活用户数(DAU)、月活用户数(MAU)。</li>
+<li>消费：人均使用推荐的时长、人均阅读笔记的数量。</li>
+<li>发布：发布渗透率、人均发布量。</li>
+</ul>
+<blockquote>
+<p>北极星指标比其他指标更重要！当发生冲突时，以北极星指标为准。北极星指标 都是线上指标，只能上线了才能获得。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>实验流程：</p>
+<ul>
+<li>离线实验：收集历史数据，在历史数据上做训练、测试。算法没有部署到产品中，没有跟用户交互。</li>
+<li>小流量AB测试：把算法部署到实际产品中，用户实际跟算法做交互。</li>
+<li>全流量上线：小流量AB后，效果好，逐渐放量推全。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Recommendation-system-workflow"><a href="#Recommendation-system-workflow" class="headerlink" title="Recommendation system workflow"></a>Recommendation system workflow</h3><ul>
+<li><p>链路概览：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408261742594.png" srcset="/img/loading.gif" lazyload alt="image-20240826174256556"></p>
+<ul>
+<li>召回：从数据库中，通过多条召回通道进行召回，每条召回通道取回几十到几百篇笔记，总共召回几千篇笔记。</li>
+<li>粗排：用规模比较小的机器学习模型给几千篇笔记逐一打分，按照分数和排序做截断，保留分数最高的几百篇笔记。</li>
+<li>精排：用大规模的深度神经网络给几百篇笔记逐一打分，分数反映出用户对笔记的兴趣。可以截断，也可以不截断（小红书就是不做截断）。带着精排的分数，进入重排。</li>
+<li>重排：根据精排分数和多样性分数做随机抽样，得到几十篇内容。然后把相似内容打散，插入广告和运营内容。</li>
+</ul>
+</li>
+<li><p>召回：</p>
+<ul>
+<li><p>召回通道：协同过滤、双塔模型、关注的作者、等等</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408261751566.png" srcset="/img/loading.gif" lazyload alt="image-20240826175126527"></p>
+</li>
+<li><p>小红书有几十个召回通道，每个通道返回几十上百篇笔记。将所有召回通道的内容融合后，会去重，并过滤（例如去掉用户不喜欢的作者的笔记，不喜欢的话题）</p>
+</li>
+</ul>
+</li>
+<li><p>粗排/精排：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408262118372.png" srcset="/img/loading.gif" lazyload alt="image-20240826211819332"></p>
+<ul>
+<li><p>[几千] → 粗排 → [几百] → 精排 → [几百]</p>
+</li>
+<li><p>粗排模型小，速度快；精排用的模型大，计算量大，打分更可靠。</p>
+</li>
+<li><p>用粗排做筛选，再用精排 — 平衡计算量和准确性。</p>
+</li>
+<li><p>每篇笔记都有一个分数，表示用户对于笔记的兴趣有多高。（可以用于排序）</p>
+</li>
+<li><p>排序本质上就是输入一批特征，得到一批结果，融合得到一个最终的打分：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408262127991.png" srcset="/img/loading.gif" lazyload alt="image-20240826212722962"></p>
+</li>
+<li><p>这一步骤的结果其实已经可以较好展示给用户了，但是此时结果还是不足，还有一些调整。</p>
+</li>
+</ul>
+</li>
+<li><p>重排（主要是考虑多样性）：</p>
+<ul>
+<li>做多样性抽样（比如 MMR、DPP），从几百篇中选出几十篇，抽样依据：精排分数、多样性。</li>
+</ul>
+</li>
+<li><p>用规则打散相似笔记，不能把内容过于相似的笔记，排在相邻的位置上。减少一个页面中的同质化内容。</p>
+<ul>
+<li>插入广告、运营推广内容，根据生态要求调整排序（例如：不能同时出很多美女图片）</li>
+</ul>
+</li>
+<li><p>总结</p>
+</li>
+<li><ul>
+<li>召回：用多条通道，取回几千篇笔记</li>
+<li>粗排：用小规模神经网络，给几千篇笔记打分，选出分数最高的几百篇</li>
+<li>精排：用大规模神经网络，给几百篇笔记打分</li>
+<li>重排：做多样性抽样、规则打散、插入广告和运营笔记</li>
+</ul>
+</li>
+<li><blockquote>
+<p>召回和粗排是个大漏斗，这俩过滤掉的页面是最多的，从所有数据 -&gt; 几千 -&gt; 几百，这直接是对数量级的降维打击。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="A-x2F-B-Test"><a href="#A-x2F-B-Test" class="headerlink" title="A/B Test"></a>A/B Test</h3><ul>
+<li><p>A/B 测试举例</p>
+</li>
+<li><ul>
+<li>召回团队实现了一种 GNN 召回通道，离线实验结果正向。（离线不等于上线哈）</li>
+<li>线上的小流量 A/B 测试，不影响大多数用户的体验，考察新的召回通道对线上指标的影响。</li>
+<li>模型中有一些参数，比如 GNN 的深度取值，需要用 A/B 测试选取最优参数。（可以同时开多组实验，查看不同参数的效果）</li>
+</ul>
+</li>
+<li><p>随机分桶（把用户分成小份儿，方便A/B test）</p>
+<ul>
+<li><p>用户数量足够大的情况下，各个桶中用户的表现数据都是一样的哈（在所有的桶的环境都一样的条件下。）。</p>
+</li>
+<li><p>Case:</p>
+<ul>
+<li><p>分b=10个桶，每个桶中有10%的用户。</p>
+</li>
+<li><p>首先用哈希函数把用户D映射成某个区间内的整数，然后把这些整数均匀随机分成b个桶。</p>
+</li>
+<li><p>改变部分桶的策略，进行实验对照：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408262139999.png" srcset="/img/loading.gif" lazyload alt="image-20240826213934890"></p>
+</li>
+<li><p>计算每个桶的业务指标，比如DAU、人均使用推荐的时长、点击率、等等。</p>
+</li>
+<li><p>如果某个实验组指标显著优于对照组，则说明对应的策略有效，值得推全。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>分层实验</p>
+<ul>
+<li>流量不够用怎么办？</li>
+<li>信息流产品的公司有很多部门和团队，大家都需要做A/B测试。推荐系统（召回、粗排、精排、重排)，用户界面，广告等。根本就不够用呀。如果把用户随机分成10组，1组做对照，9组做实验，那么只能同时做9组实验。</li>
+<li>分层实验<ul>
+<li>分层实验：召回、粗排、精排、重排、用户界面、广告..（例如GNN召回通道属于召回层)</li>
+<li>同层互斥：GNN实验占了召回层的4个桶，其他召回实验只能用剩余的6个桶</li>
+<li>不同层正交：每一层<strong>独立随机</strong>对用户做分桶。每一层都可以独立用100%的用户做实验</li>
+</ul>
+</li>
+<li>正交是啥？假设上层10%的用户在测试，下层也有10%的用户在测试。由于每一层都是独立随机打散的，意味着受到上层10%影响的用户，在下层也会被随机均匀打散到10个桶中，意味着1/10 * 1/10，只有1%的用户，会同时收到上层+下层的影响，通常来说用户界面实验和召回实验的效果不容易相互增强或者相互抵消，所以这种多层影响是allow的！</li>
+<li>为什么不能所有都正交，同层也正交呢？<ul>
+<li>如果所有实验都正交，则可以同时做无数组实验。</li>
+<li>同类的策略（例如精排模型的两种结构）天然互斥，对于一个用户，只能用其中一种。</li>
+<li>同类的策略（例如添加两条召回通道）效果会相互增强(1+1&gt;2)或相互抵消（1+1&lt;2)。互斥可以避免同类策略相互干扰。</li>
+<li>不同类型的策略（例如添加召回通道、优化粗排模型)，通常不会相互干扰（1+1=2)，可以作为正交的两层。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Holdout机制（查收推荐部门，整体性能提升的时候用的，不能简单叠加各层收益昂）</p>
+<ul>
+<li><p>每个实验（召回、粗排、精排、重排)独立汇报对业务指标的提升。但是公司考察一个部门（比如推荐系统）在一段时间内对业务指标总体的提升。因此需要Holdout机制来考察。</p>
+</li>
+<li><p>取 10% 的用户作为holdout桶，推荐系统使用剩余 90% 的用户做实验，两者互斥。10% holdout 桶 vs 90% 实验桶的diff(需要归一化)为整个部门的业务指标收益。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408262311641.png" srcset="/img/loading.gif" lazyload alt="image-20240826231108596"></p>
+</li>
+<li><p>每个考核周期结束之后，清除holdout桶，让推全实验从 90% 用户扩大到 100% 用户。</p>
+</li>
+<li><p>重新随机划分用户，得到holdout桶和实验桶开始下一轮考核周期。新的holdout桶与实验桶各种业务指标的diff接近0，随着召回、粗排、精排、重排实验上线和推全，diff会逐渐扩大。</p>
+</li>
+</ul>
+</li>
+<li><p>推全</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408270024241.png" srcset="/img/loading.gif" lazyload alt="image-20240827002432208"></p>
+<ul>
+<li>例如在重排中，如果在10%的用户上，可以提高1%Holdout和实验桶的diff。推全后，这个diff就会扩大至九倍。和A/B test得到的结论一致。注意这里是新建了一层，新的这层会与其他层正交昂！！！</li>
+</ul>
+</li>
+<li><p>反转实验</p>
+<ul>
+<li><p>有的指标（，点击、交互)立刻收到新策略影响，有的指标（留存）有滞后性，需要长期观测。</p>
+</li>
+<li><p>实验观测到显著收益后尽快推全新策略。目的是腾出桶供其他实验使用，或需要基于新策略做后续的开发。</p>
+</li>
+<li><p>用反转实验解决上述矛盾，既可以尽快推全，也可以长期观测实验指标在推全的新层中开一个旧策略的桶，长期观测实验指标。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408270018324.png" srcset="/img/loading.gif" lazyload alt="image-20240827001839280"></p>
+</li>
+<li><p>在推全的过程中，留一部分用户保持原样用于长期对比。可以在类似于清除holdout桶的时候，完成反转桶的清理。</p>
+</li>
+<li></li>
+</ul>
+</li>
+<li><p>总结</p>
+<ul>
+<li>分层实验：同层互斥，不同层正交。把容易相互增强（或抵消）的实验放在同一层，让它们的用户互斥</li>
+<li>Holdout: 保留10%的用户，完全不受实验影响，可以考察整个部门对业务指标的贡献。</li>
+<li>实验推全：新建一个推全层，与其他层正交</li>
+<li>反转实验：在新的推全层上，保留一个小的反转桶，使用引旧策略。长期观测新旧策略的dff</li>
+</ul>
+</li>
+</ul>
+<h2 id="Recall"><a href="#Recall" class="headerlink" title="Recall"></a>Recall</h2><h3 id="ItemCF"><a href="#ItemCF" class="headerlink" title="ItemCF"></a>ItemCF</h3><h4 id="Concept"><a href="#Concept" class="headerlink" title="Concept"></a>Concept</h4><ul>
+<li>思想：<ul>
+<li>I love A.</li>
+<li>A is similar with B(I haven’t watched B before.)</li>
+<li>I love B.</li>
+</ul>
+</li>
+<li>一个case：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271114384.png" srcset="/img/loading.gif" lazyload alt="image-20240827111407332"></p>
+<blockquote>
+<p>在上面这幅图中，就是每条路径上的like和similarity相乘，再把不同路径的值都想加。</p>
+</blockquote>
+<ul>
+<li><p>物品相似度如何判断？</p>
+<ul>
+<li><p>两个物品的受众重合度越高，两个物品越相以。例如：喜欢《射雕英雄传》和《神雕侠侣》的读者重合度很高，可以认为《射雕英雄传》和《神雕侠侣》相似。本质上就是沟通Item -&gt; User的倒排关系，然后根据不同的Item的User集合的关系，判断“受众重合度”。</p>
+</li>
+<li><p>计算相似度公式：</p>
+<ul>
+<li><p>喜欢$i_1$的用户集合：$$\mathcal{W}_1$$</p>
+</li>
+<li><p>喜欢$i_2$的用户集合：$$\mathcal{W}_2$$</p>
+</li>
+<li><p>交集：$$\mathcal{V}=\mathcal{W}_1\cap\mathcal{W}_2$$</p>
+</li>
+<li><p>不考虑物品的喜欢程度的情况下，喜欢就是1，不喜欢就是0，公式为：$$sim(i_1,i_2)=\frac{|\mathcal{V}|}{\sqrt{|\mathcal{W}_1|·|\mathcal{W}_2|}}$$</p>
+</li>
+<li><p>如果考虑喜欢程度的话，我们在意的“受众重合度”，因此公式里面，用于计算的也是交集中的受众：$$sim(i_1, i_2) = \frac{\sum_{v\in{\mathcal{V}}}like(v, i_1)\ .\ like(v, i_2)}{\sqrt{\sum_{u_1\in\mathcal{W_1}}like^2(u_1, i_1)}\sqrt{\sum_{u_2\in\mathcal{W_2}}like^2(u_2, i_2)}}$$</p>
+<blockquote>
+<p>本质就是余弦相似度hhhh，得到一个0-1之间的分数。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>ItemCF的基本思想：</p>
+<ul>
+<li>如果用户喜欢物品item1,而且物品item1与item2相似，那么用户很可能喜欢物品item2。</li>
+<li>从用户历史行为记录中，我们知道用户对itemj的兴趣，还知道itemj与候选物品的相似度。</li>
+<li>每个物品表示为一个稀疏向量，向量每个元素对应一个用户，相似度 sim 就是两个向量夹角的余弦。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Recall-Process"><a href="#Recall-Process" class="headerlink" title="Recall Process"></a>Recall Process</h4><ul>
+<li><p>建立 “用户→物品” 的索引</p>
+<ul>
+<li><p>记录每个用户最近点击、交互过的物品D</p>
+</li>
+<li><p>给定任意用户D,可以找到他近期感兴趣的物品列表</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271422077.png" srcset="/img/loading.gif" lazyload alt="image-20240827142229041"></p>
+</li>
+</ul>
+</li>
+<li><p>建立 “物品→物品” 的索引（计算量较大）</p>
+<ul>
+<li><p>计算物品之间两两相似度</p>
+</li>
+<li><p>对于每个物品，索引它最相似的k个物品</p>
+</li>
+<li><p>给定任意物品D,可以快速找到它最相似的k个物品</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271422848.png" srcset="/img/loading.gif" lazyload alt="image-20240827142248800"></p>
+</li>
+</ul>
+</li>
+<li><p>线上召回</p>
+<ul>
+<li>给定用户D，通过“用户→物品”索引，找到用户近期感兴趣的物品列表(last-n)</li>
+<li>对于last-n列表中每个物品，通过“物品→物品”的索引，找到top-k相似物品</li>
+<li>对于取回的相似物品（最多有k个)，用公式预估用户对物品的兴趣分数</li>
+<li>返回分数最高的100个物品，作为推荐结果</li>
+</ul>
+</li>
+<li><p>索引的意义在于<strong>避免枚举所有的物品</strong>。<strong>用索引，离线计算量大，线上计算量小</strong>。</p>
+<ul>
+<li>记录用户最近感兴趣的m=200个物品</li>
+<li>取回每个物品最相似的k=10个物品</li>
+<li>给取回的k=2000个物品打分（用户对物品的兴趣）</li>
+<li>返回分数最高的100个物品作为ItemCF通道的输出</li>
+</ul>
+</li>
+<li><p>Top-k相似：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271426482.png" srcset="/img/loading.gif" lazyload alt="image-20240827142556072"></p>
+<ul>
+<li>取回的 item 中有重复的，就去重，并把分数加起来</li>
+</ul>
+</li>
+</ul>
+<h3 id="Swing"><a href="#Swing" class="headerlink" title="Swing"></a>Swing</h3><blockquote>
+<p>Swing是ItemCF的一个变体，在工业界很常用。Swing和ItemCF很像，唯一区别在于如何定义相似度。</p>
+</blockquote>
+<ul>
+<li><p>ItemCF的不足之处：如果重合的用户是一个小圈子</p>
+<ul>
+<li><p>两篇笔记被碰巧分享到了一个微信群里面，造成问题：两篇笔记的受众完全不同，但很多用户同时交互过这两篇笔记，导致系统错误判断两篇笔记相似度很高。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271429361.png" srcset="/img/loading.gif" lazyload alt="image-20240827142959328"></p>
+<blockquote>
+<p>受众完全不一样，但是因为小圈子，导致很多相同的用户交互过这两篇完全受众不同的笔记。导致笔记的相似度被系统错判。认为两篇笔记完全相同。</p>
+</blockquote>
+</li>
+<li><p>解决该问题，就要降低小圈子用户的权重。少量相关用户交互不同的物品，说服力较低。但大量不相关的用户同时交互两个物品，则说明两个物品的受众真的相同。</p>
+</li>
+</ul>
+</li>
+<li><p>建模：</p>
+<ul>
+<li>用户 $$u_1$$ 喜欢的物品记作集合 $$\mathcal{J}_1$$</li>
+<li>用户 $$u_2$$ 喜欢的物品记作集合 $$\mathcal{J}_2$$</li>
+<li>两个用户的重合度：$$overlap(u_1,u_2)=|\mathcal{J}_1\cap\mathcal{J}_2|$$</li>
+<li>$$u_1 和 u_2 $$的重合度高，则他们可能来自一个小圈子，要降低他们的权重</li>
+<li>喜欢物品 $$i_1$$ 的用户记作集合 $$\mathcal{W}_1$$</li>
+<li>喜欢物品 $$i_2$$ 的用户记作集合 $$\mathcal{W}_2$$</li>
+<li>定义交集 $$\mathcal{V}=\mathcal{W}_1\cap\mathcal{W}_2$$</li>
+<li>两个物品的相似度：$sim(i_1,i_2)=\sum_{u_1\in \mathcal{V}}\sum_{u_2\in \mathcal{V}}\frac{1}{α+overlap(u_1,u_2)}$<ul>
+<li>$α$ 是超参数</li>
+<li>$overlap(u_1,u_2)$ 表示两个用户的重合度<ul>
+<li>重合度高，说明两人是一个小圈子的，那么他两对物品相似度的贡献就比较小</li>
+<li>重合度小，两人不是一个小圈子的，他两对物品相似度的贡献就比较大</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Summary</p>
+<ul>
+<li>Swing 与 ItemCF 唯一的区别在于物品相似度</li>
+<li>ItemCF：两个物品重合的用户比例高，则判定两个物品相似</li>
+<li>Swing：额外考虑重合的用户是否来自一个小圈子<ul>
+<li>同时喜欢两个物品的用户记作集合 $\mathcal{V}$</li>
+<li>对于 $\mathcal{V}$ 中的用户 $u_1$ 和 $u_2$，重合度记作 $overlap(u_1,u_2)$</li>
+<li>两个用户重合度大，则可能来自一个小圈子，权重降低</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="UserCF"><a href="#UserCF" class="headerlink" title="UserCF"></a>UserCF</h3><h4 id="Concept-1"><a href="#Concept-1" class="headerlink" title="Concept"></a>Concept</h4><ul>
+<li>找和我相似的用户，推荐我没看过的，他们看过的笔记。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271439465.png" srcset="/img/loading.gif" lazyload alt="image-20240827143950420"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271441122.png" srcset="/img/loading.gif" lazyload alt="image-20240827144111017"></p>
+<ul>
+<li><p>预估用户对候选物品的兴趣：$$\sum_jsim(user,user_j)×like(user_j,item)$$</p>
+</li>
+<li><p>如何计算用户相似度？</p>
+<ul>
+<li><p>用户 $u_1$ 喜欢的物品记作集合 $\mathcal{J}_1$</p>
+</li>
+<li><p>用户 $u_2$ 喜欢的物品记作集合 $\mathcal{J}_2$</p>
+</li>
+<li><p>定义交集 $I=\mathcal{J}_1\cap\mathcal{J}_2$</p>
+</li>
+<li><p>两个用户的相似度：$sim(u_1,u_2)=\frac{|I|}{\sqrt{|\mathcal{J}_1|·|\mathcal{J}_2|}}$</p>
+</li>
+<li><p>之前的公式中，交集意味着，交集中的每一个元素，都是同等的权重（为1）。降低热门物品的权重，热门的大家都喜欢看，没那么相似，如何去掉热门物品呢？</p>
+<ul>
+<li><p>降低热门物品权重后：$sim(u_1,u_2)=\frac{{\sum_{l\in{I}} \frac{1}{\log{(1+n_l)}}}}{\sqrt{|\mathcal{J}_1|·|\mathcal{J}_2|}}$</p>
+</li>
+<li><p>分子中的$n_l$代表的是喜欢商品 l 的用户数量，反映物品的热门程度。</p>
+</li>
+<li><p>物品越热门，$\frac{1}{\log{(1+n_l)}}$ 越小，对相似度的贡献就越小。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Recall-Process-1"><a href="#Recall-Process-1" class="headerlink" title="Recall Process"></a>Recall Process</h4><ul>
+<li><p>事先做离线计算</p>
+<ul>
+<li><p>建立“用户 → 物品”的索引</p>
+<ul>
+<li><p>记录每个用户最近点击、交互过的物品 ID</p>
+</li>
+<li><p>给定任意用户 ID，可以找到他近期感兴趣的物品列表</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271452292.png" srcset="/img/loading.gif" lazyload alt="image-20240827145245247"></p>
+</li>
+</ul>
+</li>
+<li><p>建立“用户 → 用户”的索引（计算量大）</p>
+<ul>
+<li><p>对于每个用户，索引他最相似的 k 个用户</p>
+</li>
+<li><p>给定任意用户 ID，可以快速找到他最相似的 k 个用户</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271453402.png" srcset="/img/loading.gif" lazyload alt="image-20240827145319362"></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>线上做召回</p>
+<ul>
+<li><p>给定用户 ID，通过“用户 → 用户”索引，找到 top-k 相似用户</p>
+</li>
+<li><p>对于每个 top-k 相似用户，通过“用户 → 物品”索引，找到用户近期感兴趣的物品列表（last-n）</p>
+</li>
+<li><p>对于取回的 $nk$ 个相似物品，用公式预估用户对每个物品的兴趣分数</p>
+</li>
+<li><p>返回分数最高的 100 个物品，作为召回结果</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271455610.png" srcset="/img/loading.gif" lazyload alt="image-20240827145534570"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Vector-Recall-Pre-Knowledge"><a href="#Vector-Recall-Pre-Knowledge" class="headerlink" title="Vector Recall Pre Knowledge"></a>Vector Recall Pre Knowledge</h3><h4 id="Discrete-feature-processing"><a href="#Discrete-feature-processing" class="headerlink" title="Discrete feature processing"></a>Discrete feature processing</h4><ul>
+<li><p>处理过程</p>
+<ul>
+<li>建立字典：类别 -&gt; 序号。</li>
+<li>向量化：序号映射为向量。<ul>
+<li>One-hot编码：把序号映射成高维稀疏向量。</li>
+<li>Embedding：把序号映射成低维稠密向量。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>One-hot：</p>
+<ul>
+<li><p>男女：男 -&gt; 1，女 -&gt; 2。未知 -&gt; [0, 0]，男 -&gt; [0, 1]，女 -&gt; [1, 0]。</p>
+</li>
+<li><p>国籍：200维表示。中国 -&gt; 1，美国 -&gt; 2，印度 -&gt; 3。未知 -&gt; 0 -&gt; [0, 0, … , 0]，中国 -&gt; 1 -&gt; [1, 0, … , 0]，美国 -&gt; 2 -&gt; [0, 1, … , 0]，印度 -&gt; 3 -&gt; [0, 0, 1, … , 0]</p>
+</li>
+<li><p>局限：</p>
+<ul>
+<li>单词编码，几万太大了。笔记有几亿篇，向量超大。类别数量太大时，通常不用one-hot编码。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Embedding：</p>
+<ul>
+<li><p>国籍：中国 -&gt; 1，美国 -&gt; 2，…。Embedding映射为低维向量，例如4 x 1。</p>
+</li>
+<li><p>参数数量：向量维度 x 类别数量。例如4 x 1的矩阵，总共200个国家，因此总共的参数数量就是4 x 200 = 800个向量（每个国家一个单独的嘛！）。</p>
+</li>
+<li><p>输入是美国的序号2，输出是一个vector，对应整个4 x 200的参数矩阵的第二列。可以使用Pytorch之类的库实现哈。</p>
+</li>
+<li><p>Embedding本质就是：参数矩阵 x One-hot vector，本质就是在一个大参数矩阵中，把你对应的那一列给抽取出来！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271507256.png" srcset="/img/loading.gif" lazyload alt="image-20240827150759148"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Matrix-Completion"><a href="#Matrix-Completion" class="headerlink" title="Matrix Completion"></a>Matrix Completion</h4><p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271549131.png" srcset="/img/loading.gif" lazyload alt="image-20240827154953078"></p>
+<ul>
+<li><p>训练（这一块儿与传统Machine Learning并无区别）</p>
+<ul>
+<li>基本想法<ul>
+<li>用户 embedding 参数矩阵记作 $\bold{A}$。第 $u$ 号用户对应矩阵第 $u$ 列，记作向量 $\bold{a}_u$</li>
+<li>物品 embedding 参数矩阵记作 $\bold{B}$。第 $i$ 号物品对应矩阵第 $i$ 列，记作向量 $\bold{b}_i$</li>
+<li>内积 $\left\langle \bold{a}_u,\bold{b}_i \right\rangle$ 是第 $u$ 号用户对第 $i$ 号物品兴趣的预估值</li>
+<li>训练模型的目的是学习矩阵 $\bold{A}$ 和 $\bold{B}$，使得预估值拟合真实观测的兴趣分数</li>
+</ul>
+</li>
+<li>数据集<ul>
+<li>数据集：（用户 ID，物品 ID，真实兴趣分数）的集合，记作 $\Omega={(u,i,y) }$</li>
+<li>数据集中的兴趣分数是系统记录的，比如：<ul>
+<li>曝光但是没有点击 → 0 分</li>
+<li>点击、点赞、收藏、转发 → 各算 1 分</li>
+<li>分数最低是 0，最高是 4</li>
+</ul>
+</li>
+<li>训练的目的就是让模型的输出拟合真实兴趣分数</li>
+</ul>
+</li>
+<li>训练<ul>
+<li>把用户 ID、物品 ID 映射成向量。<ul>
+<li>第 $u$ 号用户 → 向量 $\bold{a}_u$</li>
+<li>第 $i$ 号物品 → 向量 $\bold{b}_i$</li>
+</ul>
+</li>
+<li>求解优化问题，得到参数 $\bold{A}$ 和 $\bold{B}$$\min_{\bold{A},\bold{B}}\sum_{(u,i,y)\in\Omega}(y- \left\langle \bold{a}_u,\bold{b}_i \right\rangle)^2$<ul>
+<li>找到使得 真实兴趣分数 $y$ 与 模型输出 $\left\langle \bold{a}_u,\bold{b}_i \right\rangle$ 间 差别 最小的 $\bold{A}$ 和 $\bold{B}$</li>
+<li>求最小化常用的方法就是随机梯度下降，每次更新矩阵 $\bold{A}$ 和 $\bold{B}$ 的一列</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>为什么叫做矩阵补充？</p>
+<ul>
+<li>矩阵是稀疏矩阵，而拿到的神经网络在训练好了之后，则可以对任意User, Item（矩阵中的任意行、任意列做计算/补全）。</li>
+<li>矩阵中只有少数位置是绿色，大多数位置是灰色（即大部分物品没有曝光给用户）而我们用绿色位置训练出的模型，可以预估所有灰色位置的输出，即把矩阵的元素补全。</li>
+<li>把矩阵元素补全后，我们只需选出对应用户一行中分数较高的 物品 推荐给 用户 即可。</li>
+</ul>
+</li>
+<li><p>生产中没有使用，效果不好</p>
+<ul>
+<li>缺点 1：仅用 ID embedding，没利用物品、用户属性<ul>
+<li>物品属性：类目、关键词、地理位置、作者信息</li>
+<li>用户属性：性别、年龄、地理定位、感兴趣的类目</li>
+<li>双塔模型可以看做矩阵补充的升级版，双塔模型不仅使用 ID，还结合各种属性。</li>
+</ul>
+</li>
+<li>缺点 2：负样本的选取方式不对<ul>
+<li>样本：用户—物品的二元组，记作 $(u,i)$</li>
+<li>正样本：曝光之后，有点击、交互。（正确的做法）</li>
+<li>负样本：曝光之后，没有点击、交互。（错误的做法）</li>
+</ul>
+</li>
+<li>缺点 3：做训练的方法不好<ul>
+<li>内积 $\left\langle \bold{a}_u,\bold{b}_i \right\rangle$ 不如余弦相似度。工业界普遍使用余弦相似度而不是内积。</li>
+<li>用平方损失（回归），不如用交叉熵损失（分类）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Online-Service"><a href="#Online-Service" class="headerlink" title="Online Service"></a>Online Service</h4><ul>
+<li>模型存储<ul>
+<li>训练得到矩阵 $\bold{A}$ 和 $\bold{B}$<ul>
+<li>$\bold{A}$ 的每一列对应一个用户</li>
+<li>$\bold{B}$ 的每一列对应一个物品</li>
+</ul>
+</li>
+<li>把矩阵 $\bold{A}$ 的列存储到 key-value 表<ul>
+<li>key 是用户 ID，value 是 $\bold{A}$ 的一列</li>
+<li>给定用户 ID，返回一个向量（用户的 embedding）</li>
+</ul>
+</li>
+<li>矩阵 $\bold{B}$ 的存储和索引比较复杂</li>
+</ul>
+</li>
+<li>线上服务<ul>
+<li>把用户 ID 作为 key，查询 key-value 表，得到该用户的 embedding 向量，记作 $\bold{a}$</li>
+<li>最近邻查找：查找用户最有可能感兴趣的 $k$ 个物品，作为召回结果<ul>
+<li>第 𝑖 号物品的 embedding 向量记作 $\bold{b}_i$</li>
+<li>内积 $\left\langle \bold{a}_u,\bold{b}_i \right\rangle$ 是用户对第 𝑖 号物品兴趣的预估</li>
+<li>返回内积最大的 $k$ 个物品</li>
+</ul>
+</li>
+<li>如果枚举所有物品，时间复杂度正比于物品数量。</li>
+<li>最近邻查找的计算量太大，不现实，下面讲解如何加速最近邻查找。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Approximate-nearest-neighbor-search"><a href="#Approximate-nearest-neighbor-search" class="headerlink" title="Approximate nearest neighbor search"></a>Approximate nearest neighbor search</h4><ul>
+<li><p>支持最近邻查找的系统</p>
+<ul>
+<li>系统：Milvus、Faiss、HnswLib、等等，快速最近邻查找的算法已经被集成到这些系统中。</li>
+<li>衡量最近邻的标准：<ul>
+<li>欧式距离最小（L2 距离）</li>
+<li>向量内积最大（内积相似度），矩阵补充用的就是内积相似度</li>
+<li>向量夹角余弦最大（cosine 相似度），最常用</li>
+<li>对于不支持的系统：把所有向量作归一化（让它们的二范数等于 1），此时内积就等于余弦相似度</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>数据预处理：把数据据划分为多个区域</p>
+<ul>
+<li>划分后，每个区域用一个向量表示，这些向量的长度都是 1</li>
+<li>例如图中蓝色区域用蓝色箭头向量表示</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271544724.png" srcset="/img/loading.gif" lazyload alt="image-20240827154447667"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271545065.png" srcset="/img/loading.gif" lazyload alt="image-20240827154525903"></p>
+<blockquote>
+<p>朴素的想法哈哈哈哈，空间换时间，先定区，再去区内查找，就少了很多检索花费的时间啦！比暴力枚举比较好太多了！</p>
+</blockquote>
+<h3 id="Twin-tower-model"><a href="#Twin-tower-model" class="headerlink" title="Twin tower model"></a>Twin tower model</h3><h4 id="Concept-2"><a href="#Concept-2" class="headerlink" title="Concept"></a>Concept</h4><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271554903.png" srcset="/img/loading.gif" lazyload alt="image-20240827155400855" style="zoom:50%;">
+
+<ul>
+<li>用户离散特征：例如所在城市、感兴趣的话题等。<ul>
+<li>对每个离散特征，单独使用一个 Embedding 层得到一个向量。</li>
+<li>对于性别这种类别很少的离散特征，直接用 one-hot 编码。</li>
+<li>用户连续特征：年龄、活跃程度、消费金额等，也有对应的处理方法。</li>
+</ul>
+</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271552188.png" srcset="/img/loading.gif" lazyload alt="image-20240827155217140" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271552110.png" srcset="/img/loading.gif" lazyload alt="image-20240827155247008" style="zoom:50%;">
+
+<ul>
+<li><p>双塔模型：左塔提取用户特征，右塔提取物品特征。与矩阵补充的区别在于，使用了除 ID 外的多种特征作为双塔的输入。</p>
+</li>
+<li><p>双塔模型的训练</p>
+<ul>
+<li>Pointwise：独立看待每个正样本、负样本，做简单的二元分类</li>
+<li>Pairwise：每次取一个正样本、一个负样本。</li>
+<li>Listwise：每次取一个正样本、多个负样本。</li>
+<li>正负样本的选择<ul>
+<li>正样本：用户点击的物品</li>
+<li>负样本可能有很多指标和标准：<ul>
+<li>没有被召回的？</li>
+<li>召回但是被粗排、精排淘汰的？</li>
+<li>曝光但是未点击的？</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Pointwise</p>
+<ul>
+<li>把召回看做二元分类任务</li>
+<li>对于正样本，鼓励 $\cos{(\bold{a},\bold{b})}$ 接近 +1</li>
+<li>对于负样本，鼓励 $\cos{(\bold{a},\bold{b})}$ 接近 −1</li>
+<li>控制正负样本数量为 1: 2 或者 1: 3（经验hhhh）</li>
+</ul>
+</li>
+<li><p>Pairwise</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271602798.png" srcset="/img/loading.gif" lazyload alt="image-20240827160208748"></p>
+<blockquote>
+<p>两个物品塔是相同的，它们共享参数。</p>
+</blockquote>
+<ul>
+<li><p>基本想法：鼓励 $\cos{(\bold{a},\bold{b}^+)}$ 大于 $\cos{(\bold{a},\bold{b}^-)}$，两者只差越大越好！！！</p>
+<ul>
+<li>如果  $\cos{(\bold{a},\bold{b}^+)}$ 大于  $\cos{(\bold{a},\bold{b}^-)}+m$，则没有损失。 $m$ 是超参数，需要调</li>
+<li>否则，损失等于  $\cos{(\bold{a},\bold{b}^-)}+m-\cos{(\bold{a},\bold{b}^+)}$</li>
+</ul>
+</li>
+<li><p>Triplet hinge loss: $L(\bold{a},\bold{b}^+,\bold{b}^-)=\max{\{ 0,\cos{(\bold{a},\bold{b}^-)}+m-\cos{(\bold{a},\bold{b}^+)}\}}$</p>
+</li>
+<li><p>Triplet logistic loss:<br>  ○ Loss function: $L(\bold{a},\bold{b}^+,\bold{b}^-)=\log{( 1+\exp{[\sigma·(\cos{(\bold{a},\bold{b}^-)}-\cos{(\bold{a},\bold{b}^+))}])}}$<br>  ○ $\sigma$ 是大于 0 的超参数，控制损失函数的形状，需手动设置</p>
+</li>
+</ul>
+</li>
+<li><p>Listwise</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271648153.png" srcset="/img/loading.gif" lazyload alt="image-20240827164809096" style="zoom:50%;">
+
+<ul>
+<li>一条数据包含：<ul>
+<li>一个用户，特征向量记作 $\bold{a}$</li>
+<li>一个正样本，特征向量记作 $\bold{b}^+$</li>
+<li>多个负样本，特征向量记作 $\bold{b}^-_1,…,\bold{b}^-_n$</li>
+</ul>
+</li>
+<li>鼓励 $\cos{(\bold{a},\bold{b}^+)}$ 尽量大，鼓励 $\cos{(\bold{a},\bold{b}^-_1)},…,\cos{(\bold{a},\bold{b}^-_n)}$ 尽量小。</li>
+<li>正样本 $y^+=1$，即鼓励 $s^+$ 趋于 1，负样本 $y^-_1=…=y^-_n=0$，即鼓励 $s^-_1…s^-_n$ 趋于 0，用 $y$ 和 $s$ 的交叉熵作为损失函数，意思是鼓励 $\rm Softmax$ 的输出 $s$ 接近标签 $y$。</li>
+</ul>
+</li>
+<li><p><strong>错误的模型设计</strong>：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408271651186.png" srcset="/img/loading.gif" lazyload alt="image-20240827165104138"></p>
+<ul>
+<li>用户和物品的向量在进入神经网络前就拼接起来了，和双塔模型有很大区别。</li>
+<li>双塔模型是在后期输出相似度时才进行融合。</li>
+<li>用户（或物品）自身特征的拼接没有影响，依然保持了用户（或物品）的独立性。而一旦用户和物品进行拼接，此时的输出就特定于该 用户（或物品）了</li>
+<li>这种前期融合的模型，不适用于召回<ul>
+<li>因为得在召回前，把每个用户向量对应的所有物品向量挨个拼接了送入神经网络</li>
+<li>假设有一亿个物品，每给用户做一次召回，就得跑一亿遍。</li>
+</ul>
+</li>
+<li>这种模型通常用于排序，在几千个候选物品中选出几百个</li>
+<li>以后看到这种模型就要意识到 —— 这是排序模型，不是召回模型</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>我的一些thoughts：<ul>
+<li>因为<strong>如果是输入后的，保存的是embedding和对应的索引，但是，如果是输入之前的，每次都要重新计算</strong>。换句话说，在线推荐的时候，其实在模型参数固定的情况下，用户塔和物品塔拿到的Embedding结果，是可以离线算出来的。在线召回的时候只需要计算“相似度”，这个是很快很快的。但是如果“拼接 + 塞入神经网络”，每次在线召回的时候，对每个用户的所有物品，都要过一次神经网络，这个计算量是很大的。</li>
+<li>以及，当上面不是神经网络的时候，可以用类似于最似近邻查找的方法。在Embedding的空间中分区分块，快速找到结果。而神经网络杜绝了这种可能性，每次都要一对一重新计算，这个计算量也是很大的。</li>
+<li>综上：需要遍历的数据量增多 + 每一次计算的时间增长，使得这种模型设计不适用于在线召回。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="Positive-and-negative-samples"><a href="#Positive-and-negative-samples" class="headerlink" title="Positive and negative samples"></a>Positive and negative samples</h4><ul>
+<li><p>正样本：曝光而且有点击的用户一物品二元组。(用户对物品感兴趣)。问题：少部分物品占据大部分点击’导致正样本大多是热门物品。</p>
+</li>
+<li><p>解决方案：过采样冷门物品，或降采样热门物品</p>
+<ul>
+<li>过采样(up-sampling)：一个样本出现多次</li>
+<li>降采样(down-sampling)：一些样本被抛弃</li>
+</ul>
+</li>
+<li><p>如何选择负样本：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408272321209.png" srcset="/img/loading.gif" lazyload alt="image-20240827232116145"></p>
+</li>
+<li><p>简单负样本：全体物品</p>
+<ul>
+<li>未被召回的物品，大概率是用户不感兴趣的。</li>
+<li>未被召回的物品约等于全体物品（几亿里面抽取几千个，相当于就是全体物品用户都不care，小概率事件约等于不发生）</li>
+<li>从全体物品中做抽样，作为负样本。</li>
+<li>均匀抽样 or 非均匀抽样？<ul>
+<li>均匀抽样：对冷门物品不公平（绝大多数商品都是冷门物品）<ul>
+<li>正样本大多是热门物品。</li>
+<li>如果均匀抽样产生负样本，负样本大多是冷门物品。</li>
+<li>结果：热门物品更热，冷门物品更冷。</li>
+</ul>
+</li>
+<li>非均抽采样：目的是打压热门物品<ul>
+<li>负样本抽样概率与热门程度(点击次数)正相关。</li>
+<li>抽样概率 正比于 $(点击次数)^{0.75}$。0.75是经验值。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>简单负样本：Batch内负样本</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408272330612.png" srcset="/img/loading.gif" lazyload alt="image-20240827233004480"></p>
+<ul>
+<li>用户和自己batch内，自己没有点击的物品构成负样本。一个batch内有n个正样本。一个用户和 n-1 个物品组成负样本。这个batch内一共有 n(n-1) 个负样本。</li>
+<li>都是简单负样本。（因为第一个用户不喜欢第二个物品。)</li>
+<li>Batch内负样本存在的问题<ul>
+<li>一个物品出现在batch内的概率 正比于 点击次数</li>
+<li>物品成为负样本的概率本该是正比于点击次数的0.75次方，但这里实际是点击次数。热门物品成为负样本的概率过大，即对热门物品打压太狠了，容易造成偏差。</li>
+<li>下面这篇论文讲了如何修正偏差：Xinyang Yi et al. Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations. In RecSys, 2019.</li>
+</ul>
+</li>
+<li>修正偏差：<ul>
+<li>物品 i 被抽样到的概率：$p_i$ 正比于 点击次数</li>
+<li>预估用户对物品 $i$ 的兴趣：$cos(a,b_i)$</li>
+<li>做训练的时候，将兴趣调整为：$cos(a,b_i)一log\ p_i$<ul>
+<li>这样纠偏，避免过度打压热门物品</li>
+<li>训练结束后，在线上做召回时，还是用$cos(a,b_i)$作为兴趣</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>困难负样本：</p>
+<ul>
+<li>被粗排淘汰的物品（比较困难）<ul>
+<li>这些物品被召回，说明和用户兴趣有关；又被粗排淘汰，说明用户对物品兴趣不大</li>
+<li>而在对正负样本做二元分类时，这些困难样本容易被分错（被错误判定为正样本）</li>
+</ul>
+</li>
+<li>精排分数靠后的物品（非常困难)<ul>
+<li>能够进入精排，说明物品比较符合用户兴趣，但不是用户最感兴趣的</li>
+</ul>
+</li>
+<li>对正负样本做二元分类：<ul>
+<li>全体物品（简单）分类准确率高</li>
+<li>被粗排淘汰的物品（比较困难）容易分错</li>
+<li>精排分数靠后的物品（非常困难）更容易分错</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>训练数据</p>
+<ul>
+<li>混合几种负样本</li>
+<li>50% 的负样本是全体物品（简单负样本）</li>
+<li>50% 的负样本是没通过排序的物品（困难负样本）—&gt; 即在粗排、精排淘汰的物品</li>
+</ul>
+</li>
+<li><p>常见错误：把曝光但是没有点击的样本作为负样本</p>
+<ul>
+<li><p>工业界已经踩过雷，并且作为教训。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408272349884.png" srcset="/img/loading.gif" lazyload alt="image-20240827234953842"></p>
+</li>
+<li><p>训练<strong>召回模型不能</strong>用这类负样本。训练<strong>排序模型才能</strong>用这类负样本。</p>
+</li>
+</ul>
+</li>
+<li><p>选择负样本的原理：</p>
+<ul>
+<li>召回的目标：快速找到用户可能感兴趣的物品。即区分用户 <strong>不感兴趣</strong> 和 <strong>可能感兴趣</strong> 的物品，而不是区分 <strong>比较感兴趣</strong> 和 <strong>非常感兴趣</strong> 的物品</li>
+<li>全体物品（easy ）：绝大多数是用户根本不感兴趣的。</li>
+<li>被排序淘汰（hard ）：用户可能感兴趣，但是不够感兴趣。</li>
+<li>有曝光没点击（没用）：用户感兴趣，可能碰巧没有点击<ul>
+<li>曝光没点击的物品已经非常符合用户兴趣了，甚至可以拿来做召回的正样本。</li>
+<li><strong>可以作为排序的负样本，不能作为召回的负样本</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Online-recalls-and-updates"><a href="#Online-recalls-and-updates" class="headerlink" title="Online recalls and updates"></a>Online recalls and updates</h4><ul>
+<li><p>线上召回：</p>
+<ul>
+<li><p>双塔模型的召回</p>
+<ul>
+<li><p><strong>离线</strong>存储：把物品向量 $\bold{b}$ 存入向量数据库</p>
+<ul>
+<li><p>完成训练之后，用物品塔计算每个物品的特征向量 $\bold{b}$</p>
+</li>
+<li><p>把几亿个物品向量 $\bold{b}$ 存入向量数据库（比如 Milvus、Faiss、HnswLib ）</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408281123907.png" srcset="/img/loading.gif" lazyload alt="image-20240828112328846" style="zoom:50%;">
+</li>
+<li><p>向量数据库建索引，以便加速最近邻查找</p>
+</li>
+</ul>
+</li>
+<li><p>线上召回：查找用户最感兴趣的 $k$ 个物品</p>
+<ul>
+<li><p>给定用户 ID 和画像，线上用神经网络现算（实时计算）用户向量 $\bold{a}$。</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408281124181.png" srcset="/img/loading.gif" lazyload alt="image-20240828112425139" style="zoom:50%;">
+</li>
+<li><p>最近邻查找：</p>
+<ul>
+<li>把向量 $\bold{a}$ 作为 query，调用向量数据库做最近邻查找</li>
+<li>返回余弦相似度最大的 $k$ 个物品，作为召回结果</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>为什么事先存储物品向量 $\bold{b}$，线上现算用户向量 $\bold{a}$？</p>
+<ul>
+<li>为了拿到用户的实时特征啊，离线存储可能推的就不是用户当前喜欢的了，物品特征变化很小或者不变，但是用户特征变化很快</li>
+<li>每做一次召回，用到一个用户向量 $\bold{a}$，几亿物品向量 $\bold{b}$（线上算物品向量的代价过大）</li>
+<li><strong>用户兴趣动态变化，而物品特征相对稳定</strong>（可以离线存储用户向量，但不利于推荐效果）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>模型更新</p>
+<ul>
+<li><p>全量更新</p>
+<ul>
+<li>全量更新：每天凌晨，用昨天全天的数据训练模型</li>
+<li>在昨天模型参数的基础上做训练（不是重新随机初始化）</li>
+<li>用昨天的数据，训练 1 epoch，即每天数据只用一遍</li>
+<li>发布新的 <strong>用户塔神经网络</strong> 和 <strong>物品向量</strong>，存入向量数据库并建立索引。供线上召回使用</li>
+<li>全量更新对数据流、系统的要求比较低。不需要实时数据流，对数据生成速度没有要求，延迟一两个小时也没关系。只需要凌晨批处理就行。每天只发布一次，对系统要求也低。</li>
+</ul>
+</li>
+<li><p>增量更新：</p>
+<ul>
+<li>做 online learning 更新模型参数，用户兴趣会随时发生变化。小时级别的增量更新，对数据流和系统要求都很高，实时收集线上数据，做流式处理，生成 TFRecord 文件。</li>
+<li>对模型做 online learning，增量更新 ID Embedding 参数<strong>（不更新神经网络其他部分的参数）</strong>。即锁住全连接层的参数，只更新 Embedding 层的参数，只有全量更新才更新全连接层，这是出于工程实现的考量。</li>
+<li>发布用户 ID Embedding，供用户塔在线上计算用户向量，最新的ID Embedding会捕捉到用户最新的兴趣点，对推荐很有帮助。 -&gt; 其实用户的ID Embedding变了，在Item Embedding空间中的位置就变了，最近邻搜索到的结果就会不一样昂！</li>
+</ul>
+</li>
+<li><p>双管齐下：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408281136556.png" srcset="/img/loading.gif" lazyload alt="image-20240828113623416" style="zoom:50%;">
+
+<ul>
+<li>可以只增量，不全量吗？<ul>
+<li>试过了，效果不好。小时级数据有偏；分钟级数据偏差更大。</li>
+<li>增量更新：按照数据从早到晚的顺序，做1 epoch训练。</li>
+<li>全量更新：random shuffle一天的数据，做1 epoch训练。（Shuffle就是为了消除偏差）<strong>随机打乱</strong>优于<strong>按顺序排列数据</strong>，全量训练优于增量训练。</li>
+<li>可以试试分钟学ID，小时学全部特征嵌入，但不学神经网络，按天学神经网络。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Summmary"><a href="#Summmary" class="headerlink" title="Summmary"></a>Summmary</h4><ul>
+<li><p>双塔模型</p>
+<ul>
+<li>用户塔、物品塔各输出一个向量，两个向量的余弦。相似度作为兴趣的预估值。</li>
+<li>三种训练的方式：pointwise pairwise、listwise。</li>
+<li>正样本：用户，点击过的物品。</li>
+<li>负样本：全体物品（简单)、被排序淘汰的物品（困难)</li>
+</ul>
+</li>
+<li><p>召回</p>
+<ul>
+<li>做完训练，把物品向量存储到向量数据库，供线上最近邻查找。</li>
+<li>线上召回时，给定用户D、用户画像，调用用户塔，现算用户向量a。</li>
+<li>把a作为query，查询向量数据库，找到余弦相似度最高的k个物品向量，返回k个物品ID。</li>
+</ul>
+</li>
+<li><p>更新模型</p>
+<ul>
+<li>全量更新：今天凌晨，用昨天的数据训练整个神经网络，做1 epoch的随机梯度下降。</li>
+<li>增量更新：用实时数据训练神经网络，只更新ID Embedding,锁住全连接层。</li>
+<li>实际的系统：<ul>
+<li><strong>全量更新</strong> &amp; <strong>增量更新</strong>相结合。</li>
+<li>每隔几十分钟，发布最新的用户ID Embedding，供用户塔在线上计算用户向量。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Twin-Tower-Self-supervised-Learning"><a href="#Twin-Tower-Self-supervised-Learning" class="headerlink" title="Twin Tower + Self-supervised Learning"></a>Twin Tower + Self-supervised Learning</h4><ul>
+<li><p>自监督学习的目的：把物品塔训练的更好。</p>
+</li>
+<li><p>双塔模型的问题</p>
+<ul>
+<li><p>推荐系统的头部效应严重：</p>
+<ul>
+<li>少部分物品占据大部分点击。</li>
+<li>大部分物品的点击次数不高。</li>
+</ul>
+</li>
+<li><p>高点击物品的表征学得好，长尾物品的表征学得不好。</p>
+</li>
+<li><p>自监督学习：做data augmentation，更好地学习长尾物品的向量表征。</p>
+<blockquote>
+<p>参考：Tiansheng Yao et al.Self-supervised Learning for Large-scale Item Recommendations. In CIKM,2021.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="Listwise-Training"><a href="#Listwise-Training" class="headerlink" title="Listwise Training"></a>Listwise Training</h5><ul>
+<li><p>训练方式</p>
+<ul>
+<li><p>Listwise上面提到过，一个Batch里面，一个用户自己感兴趣的为正样本，和其他用户感兴趣的构成负样本。</p>
+<ul>
+<li>一个batch包含正样本：$(a_1, b_1), (a_2, b_2), … , (a_n, b_n)$</li>
+<li>负样本${(a_i, b_j)}$，对于所有的i不等于j。</li>
+<li>训练的时候，鼓励$cos(a_i, b_i)$尽量大，鼓励$cos(a_i, b_j)$尽量小。</li>
+</ul>
+</li>
+<li><p>损失函数：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408282129071.png" srcset="/img/loading.gif" lazyload alt="image-20240828212955898" style="zoom:50%;"></li>
+</ul>
+</li>
+<li><p>纠偏：</p>
+<ul>
+<li><p>Batch类负样本会过度打压负样本，要纠偏。</p>
+</li>
+<li><p>物品j被抽样到的概率$p_j$正比于点击次数。做训练的时候，预估用户 i 对物品 j 的兴趣：$cos(a_i, b_j) - log\ p_{j}$，训练结束后，在线上做召回的时候则不用纠偏，直接用余弦相似度即可。</p>
+<blockquote>
+<p>参考：Xinyang Yi et al.Sampling-Bias-Corrected Neural Modeling for Large<br>Corpus Item Recommendations.In RecSys,2019.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>训练双塔模型：</p>
+<ul>
+<li>从点击数据中随机抽取个用户一物品二元组，组成一个batch。</li>
+<li>双塔损失函数：$L_{main}[i] = -log(\frac{exp(cos(a_i, b_i)-log\ p_i)}{\sum_{j=1}^{n}exp(cos(a_i, b_j))-log\ p_{j}})$，这个地方i为对应的第i个用户。</li>
+<li>做梯度下降，减少损失函数：$\frac{1}{n}\sum_{i=1}^{n}L_{main}[i]$，这里指的是一个batch中，所有n个用户在双塔函数上的损失的平均值。</li>
+</ul>
+</li>
+<li><p>同时训练用户塔和物品塔。</p>
+</li>
+</ul>
+<h5 id="Self-supervised-Learning"><a href="#Self-supervised-Learning" class="headerlink" title="Self-supervised Learning"></a>Self-supervised Learning</h5><ul>
+<li><p>用于训练物品塔。</p>
+</li>
+<li><p>对于不同的item，分别做多种变换，会得到多个特征，但是从广义上讲，应该满足：</p>
+<ul>
+<li>同一个物品即使做了不同的变换，在经过物品塔后，也应该拿到相似的Embedding，越相似越好。</li>
+<li>不同的物品，不管做了什么样的变换，他们的Embedding都不应该相似，越不同越好。</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408282321098.png" srcset="/img/loading.gif" lazyload alt="image-20240828232136028" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408282322501.png" srcset="/img/loading.gif" lazyload alt="image-20240828232232458" style="zoom:50%;">
+
+<ul>
+<li>物品i的两个向量表征$b_{i}^{‘}$和$b_{i}^{‘’}$有较高的相似度，物品i和j的向量表征$b_j^{‘}$和$b_j^{‘’}$有较低的相似度。鼓励$cos(b_{i}^{‘}, b_{i}^{‘’})$尽量大，$cos(b_{i}^{‘}, b_{j}^{‘’})$尽量小。</li>
+</ul>
+</li>
+<li><p>自监督学习常用的特征变换</p>
+<ul>
+<li>Random mask<ul>
+<li>随机选一些离散特征（比如类目)，把它们遮住。</li>
+<li>例：某物品的类目特征是U={数码，摄影}，之前有可能是分别搞出来embedding，然后加和平均之类的。现在是直接遮住！</li>
+<li>Mask后的类目特征是U’={default}，意思是默认的缺失值，然后对于Default做Embedding。相当于物品的类目特征直接整个被“丢掉”了。</li>
+</ul>
+</li>
+<li>Dropout(仅对多值离散特征生效)<ul>
+<li>一个物品可以有多个类目，那么类目是一个多值离散特征。Dropout：随机丢弃特征中50%的值。</li>
+<li>例：某物品的类目特征是U={美妆，摄影}。Dropout后的类目特征是U’={美妆}。</li>
+</ul>
+</li>
+<li>互补特征(complementary)<ul>
+<li>假设物品一共有4种特征：ID,类目，关键词，城市。正常做法：四个特征的值分别做Embedding，然后拼起来输入物品塔，得到物品的向量表征。</li>
+<li>随机分成两组：{ID, 关键词}和{类目，城市}。</li>
+<li>{ID,default,关键词，default} -&gt; 物品表征，{default,类目，default,城市} -&gt; 物品表征。由于是同一个物品的表征，鼓励上面两个向量相似，cos大。</li>
+</ul>
+</li>
+<li>Mask一组关联的特征<ul>
+<li>为啥这么做？特征之间有较强的关联，遮住一个特征并不会损失太多信息。模型可以从其他强关联特征中，学到遮住的特征。最好是把关联特征一次全都遮住。</li>
+<li>e.g.<ul>
+<li>受众性别：U={男，女，中性}，类目：V={美妆，数码，足球，摄影，科技，…}</li>
+<li>u=女 和 v=美妆 同时出现的概率 p(u,v) 大，u=女 和 v=数码 同时出现的概率p(u,v)小。这里性别和类目的关联就很强。</li>
+<li>p(u)：某特征取值为u的概率。p(男性)=20%，p(女性)=30%。p(中性)=50%</li>
+<li>p(u,v)：某特征取值为u, 另一个特征取值为v, 同时发生的概率。p(女性，美妆)=3%，p(女性，数码)=0.1%</li>
+<li>离线计算特征两两之间的关联，用互信息（mutual<br>information)衡量：$MI(\mathcal{U}, \mathcal{V}) = \sum_{u\in\mathcal{U}}\sum_{v\in\mathcal{V}}p(u,v)\times log\frac{p(u,v)}{p(u).p(v)}$，两种特征关联强，p(u, v)就比较大，MI就会大。</li>
+</ul>
+</li>
+<li>设一共有k种特征。离线计算特征两两之间MI，得到k x k的矩阵。随机选一个特征作为种子，找到种子最相关的k/2种特征。Mαsk种子及其相关的k/2种特征，保留其余的k/2种特征。</li>
+<li>优缺点：<ul>
+<li>好处：比random mask、dropout、互补特征等方法<br>效果更好。</li>
+<li>坏处：方法复杂，实现的难度大，不容易维护。每添加一个新的特征，都要重新算一遍所有特征的MI。对于业界来讲，ROI太低了！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>训练模型：</p>
+<ul>
+<li><p>从全体物品中均匀抽样，得到m个物品作为一个batch。</p>
+</li>
+<li><p>做两类特征变换，物品塔输出两组向量：b1’, b2’, …, bm’和b1’’, b2’’, …, bm’’。</p>
+</li>
+<li><p>第i个item的损失函数：$L_{self}[i] = -log(\frac{exp(cos(b_i^{‘}, b_i^{‘’}))}{\sum_{j=1}^{m}exp(cos(b_i^{‘}, b_j^{‘’}))})$</p>
+</li>
+<li><p>示意图：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408290008208.png" srcset="/img/loading.gif" lazyload alt="image-20240829000816141"></p>
+</li>
+<li><p>做梯度下降，减少自监督学习的损失：$\frac{1}{m}\sum_{i=1}^{m}L_{self}[i]$，算一个Batch数据Loss的平均值。</p>
+</li>
+</ul>
+</li>
+<li><p>Summary</p>
+<ul>
+<li><p>双塔模型学不好低曝光物品的向量表征。</p>
+</li>
+<li><p>自监督学习</p>
+<ul>
+<li>对物品做随机特征变换。</li>
+<li>相同物品的特征向量相似度高，不同物品的特征向量相似度低。</li>
+<li>实验效果：低曝光物品、新物品的推荐变得更准。</li>
+</ul>
+</li>
+<li><p>训练模型：</p>
+<ul>
+<li><p>对点击做随机抽样，得到n对用户一物品二元组，作为batch</p>
+</li>
+<li><p>从全体物品中均匀抽样，得到m个物品作为一个batch</p>
+</li>
+<li><p>做梯度下降，使得损失减小：$\frac{1}{n}\sum_{i=1}^{n}L_{main}[i] + \alpha.\frac{1}{m}\sum_{j=1}^{m}L_{self}[j]$</p>
+<blockquote>
+<p>前半部分是双塔模型的损失，后半部分是自监督学习的损失。中间的$\alpha$是超参数，决定了自监督学习的作用。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Deep-Retrieval"><a href="#Deep-Retrieval" class="headerlink" title="Deep Retrieval"></a>Deep Retrieval</h3><ul>
+<li>经典的双塔模型把用户、物品表示为向量，线上做最近邻查找。Deep Retrieval 把物品表征为路径(path)，线上查找用户最匹配的路径。Deep Retrieval类似于阿里的TDM。</li>
+<li>Outline<ul>
+<li>索引：<ul>
+<li>路径 → List&lt;物品&gt;</li>
+<li>物品 → List&lt;路径&gt;</li>
+</ul>
+</li>
+<li>预估模型：神经网络预估用户对路径的兴趣</li>
+<li>线上召回：用户→路径→物品。</li>
+<li>训练：<ul>
+<li>学习神经网络参数。</li>
+<li>学习物品表征（物品 -&gt; 路径）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Concept-3"><a href="#Concept-3" class="headerlink" title="Concept"></a>Concept</h4><ul>
+<li>物品可以用路径来表示：</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408281724855.png" srcset="/img/loading.gif" lazyload alt="image-20240828172418708"></p>
+<ul>
+<li><p>索引：</p>
+<ul>
+<li>item -&gt; List<path><ul>
+<li>训练的时候使用。</li>
+<li>一个物品多条路径</li>
+<li>用三个节点表示一条路径：path = [a, b, c]</li>
+</ul>
+</path></li>
+<li>path -&gt; List<item><ul>
+<li>线上召回的时候使用。</li>
+<li>一条路径对应多个物品</li>
+</ul>
+</item></li>
+</ul>
+</li>
+<li><p>Deep Retrieval原理</p>
+<ul>
+<li><p>本质是一种神经网络，预估模型，预估用户对路径的兴趣分数。可以根据用户特征召回多条路径。</p>
+</li>
+<li><p>预估用户对路径的兴趣</p>
+<ul>
+<li><p>条件概率，朴素贝叶斯，用户喜欢a -&gt; 用户喜欢a的情况下喜欢a,b -&gt; 用户喜欢a,b的情况下喜欢a,b,c</p>
+</li>
+<li><p>算法流程：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408281730760.png" srcset="/img/loading.gif" lazyload alt="image-20240828173002629"></p>
+<blockquote>
+<p>这里的每一层神经网络，都不共享参数的哈！论文中使用的是beam search。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>线上召回：</p>
+<ul>
+<li><p>用户 -&gt; 路径 -&gt; 物品，流程</p>
+<ul>
+<li>第一步：给定用户特征，用beam search召回一批路径。</li>
+<li>第二步：利用索“path→List(item)”, 召回一批物品，每条路径对应多个物品。</li>
+<li>第三步：对物品做打分和排序，选出一个子集。打分没有限制，小的排序模型就行，例如双塔模型。</li>
+</ul>
+</li>
+<li><p>Beam Search</p>
+<ul>
+<li><p>假设有3层，每层K个节点，那么一共有K^3条路径。用神经网络给所有K3条路径打分，计算量太大。</p>
+</li>
+<li><p>用beam search,可以减小计算量。需要设置超参数beam size。Beam_size = 1就是贪心，越大，全局效果越好！一个Demo：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408281737951.png" srcset="/img/loading.gif" lazyload alt="image-20240828173731824" style="zoom:50%;"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>训练：</p>
+<ul>
+<li><p>同时学习神经网络参数和物品表征。</p>
+<ul>
+<li>神经网络p(a,b,c | x)预估用户对路径[a,b,c]的兴趣</li>
+<li>把一个物品表征为多条路径{[a,b,c]},建立索引<ul>
+<li>item -&gt; List(path),</li>
+<li>path -&gt; List(item)。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>训练只用正样本(user, item): click(user, item) = 1，用户点过就算正样本。</p>
+</li>
+<li><p>神经网络参数：</p>
+<ul>
+<li>这个神经网络用来表征用户对于物品多感兴趣，物品表征为J条路径：[a1, b1, c1], …, [aj, bj, cj]</li>
+<li>用户对路径a, b, c感兴趣。如果用户点击过物品，说明用户对这个物品的所有J条路径感兴趣，这时候就应该让$\sum_{j=1}^{J}p(a_j, b_j, c_j\ | \ x)$变大。</li>
+<li>损失函数：$loss = -log(\sum_{j=1}^{J}p(a_j, b_j, c_j\ | \ x))$</li>
+</ul>
+</li>
+<li><p>学习物品表征：</p>
+<ul>
+<li><p>用户user对路径path=[a,b,c]的兴趣记作 $p(path | user)=p(a,b,c | x)$.</p>
+</li>
+<li><p>item与path的相关性：$score(item, path) = \sum_{user}p(path|user)\times click(user, item)$，第一项是用户对于路径的兴趣，神经网络预估，click点击了就是1，没点击就是0。</p>
+</li>
+<li><p>根据Score选出J条路径，作为item的表征。</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408281751022.png" srcset="/img/loading.gif" lazyload alt="image-20240828175121870" style="zoom:50%;">
+
+<blockquote>
+<p>通过用户为“中介”，串联路径和物品的关系。</p>
+</blockquote>
+</li>
+<li><p>选出J条路径$\pi = {path1,…,path}$,作为物品的表征。</p>
+</li>
+<li><p>损失函数（选择与item高度相关的path)：<br>$loss(item,\pi)=-log(\sum_{j=1}^{J}score(item,path_{j}))$</p>
+</li>
+<li><p>正则项（避免过多的item集中在一条path上)：<br>$reg(path_j)=(number\ of\ items\ on\ path )^4$</p>
+</li>
+<li><p>贪心算法更新路径：每次固定j-1条路径，并从从来没有被选中的路径中，选出一条新作为新的path，$argmin_{path_l}loss(item, \pi) + \alpha\times{reg(path_l)}$</p>
+<blockquote>
+<p>较高的分数score，而且路径上的物品不会太多。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h4><ul>
+<li><p>更新神经网络</p>
+<ul>
+<li>神经网络判断<strong>用户对路径</strong>的兴趣<br>$p(path \ | \ x)$.</li>
+<li>训练所需的数据<ul>
+<li>“物品→路径”的索引</li>
+<li>用户点击过的物品。</li>
+</ul>
+</li>
+<li>如果用户点击过物品，且物品对应路径path，则更新神经网络参<br>数使$p(path|x)$变大</li>
+</ul>
+</li>
+<li><p>更新物品表征</p>
+<ul>
+<li>判断物品与路径的相关性：<ul>
+<li>物品 ← 用户 → 路径</li>
+<li>用户点击过物品（物品 ← 用户）</li>
+<li>神经网络的打分（用户 → 路径）</li>
+</ul>
+</li>
+<li>让每个物品关联J条路径<ul>
+<li>物品和路径要有很高的相关性。</li>
+<li>一条路径上不能有过多的物品。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>在线召回：用户 -&gt; 路径 -&gt; 物品</p>
+<ul>
+<li>根据神经网络，给定用户的特征，可以算出对于路径的感兴趣程度。</li>
+<li>Beam search召回最高的 s 条路径。</li>
+<li>根据上面物品表征过程中建立的索引，根据路径，查找到路径上的n个物品。</li>
+<li>一共召回 s x n 个物品，排序，返回分数高的若干物品。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>Deep Retrieval本质：路径作为用户和物品的中介。双塔本质：用向量表征作为用户和物品的中介。</strong></p>
+</blockquote>
+<ul>
+<li>离线训练<ul>
+<li>同时学习 用户—路径，物品—路径的关系。</li>
+<li>用户—路径：<ul>
+<li>一个物品被表征为J条路径，存储在物品 -&gt; 路径的索引上。（现有数据：物品 -&gt; 路径）</li>
+<li>如果用户点击过物品，则更新神经网路参数，分数变大。（现有数据：用户 -&gt; 物品）</li>
+<li>可以训练模型，学习：用户 -&gt; 路径的兴趣，使得用户对于感兴趣的物品，对应的路径的加和增大。</li>
+</ul>
+</li>
+<li>物品—路径：<ul>
+<li>上面神经网络线训出来了，这个时候就可以用来判断，任意的用户对于任意的路径的感兴趣程度。（现有数据：用户 -&gt; 路径）</li>
+<li>如果用户还点击过物品。（现有数据：用户 -&gt; 物品）</li>
+<li>可以学习到：路径和物品的关系，感兴趣的path和实际点击过的物品，这两者关联性高。</li>
+<li>寻找与Item相关的 J 条路径，且避免一条路径上的物品过多。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Other-recall-channels"><a href="#Other-recall-channels" class="headerlink" title="Other recall channels"></a>Other recall channels</h3><h4 id="GeoHash"><a href="#GeoHash" class="headerlink" title="GeoHash"></a>GeoHash</h4><ul>
+<li><p>GeoHash 召回</p>
+<ul>
+<li><p>用户可能对附近发生的事感兴趣</p>
+</li>
+<li><p>GeoHash：对经纬度的编码，大致表示地图上一个长方形区域</p>
+</li>
+<li><p>索引：GeoHash → 优质笔记列表（按时间倒排）</p>
+</li>
+<li><p>这条召回通道没有个性化（正因为如此，才需要有优质笔记列表）</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408282044255.png" srcset="/img/loading.gif" lazyload alt="image-20240828204435194" style="zoom:50%;">
+</li>
+<li><p>根据用户定位的 GeoHash，取回该地点最新的 $k$ 篇优质笔记</p>
+</li>
+<li><p>同城召回</p>
+<ul>
+<li>用户可能对同城发生的事感兴趣</li>
+<li>索引： 城市 → 优质笔记列表（按时间倒排）</li>
+<li>这条召回通道没有个性化</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Author"><a href="#Author" class="headerlink" title="Author"></a>Author</h4><ul>
+<li>作者召回<ul>
+<li>关注作者召回<ul>
+<li>用户对关注的作者发布的笔记感兴趣。索引：<ul>
+<li>用户 → 关注的作者</li>
+<li>作者 → 发布的笔记</li>
+</ul>
+</li>
+<li>召回： 用户 → 关注的作者 → 最新的笔记</li>
+</ul>
+</li>
+<li>有交互的作者召回<ul>
+<li>如果用户对某笔记感兴趣（点赞、收藏、转发），那么用户可能对该作者的其他笔记感兴趣</li>
+<li>索引： 用户 → 有交互的作者，作者列表需要定期更新，加入最新交互的作者，删除长期未交互的作者</li>
+<li>召回： 用户 → 有交互的作者 → 最新的笔记</li>
+</ul>
+</li>
+<li>相似作者召回<ul>
+<li>如果用户喜欢某作者，那么用户喜欢相似的作者</li>
+<li>索引：作者 → 相似作者（$k$ 个作者）<ul>
+<li>作者相似度的计算类似于 ItemCF 中判断两个物品的相似度</li>
+<li>例如两个作者的粉丝有很大重合，则认定两个作者相似</li>
+</ul>
+</li>
+<li>召回：用户 → 感兴趣的作者 → 相似作者 → 最新的笔记<br>（$n$ 个作者）  （$nk$ 个作者）（$nk$ 篇笔记）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h4><ul>
+<li>缓存召回<ul>
+<li>想法：复用前 $n$ 次推荐精排的结果</li>
+<li>背景：<ul>
+<li>精排输出几百篇笔记，送入重排</li>
+<li>重排做多样性抽样，选出几十篇</li>
+<li>精排结果一大半没有曝光，被浪费</li>
+</ul>
+</li>
+<li>精排前 50，都是用户非常感兴趣的，但是没有曝光而已，值得再次尝试。缓存起来，作为一条召回通道。</li>
+</ul>
+</li>
+<li>缓存大小固定，需要退场机制<ul>
+<li>一旦笔记成功曝光，就从缓存退场</li>
+<li>如果超出缓存大小，就移除最先进入缓存的笔记</li>
+<li>笔记最多被召回 10 次，达到 10 次就退场</li>
+<li>每篇笔记最多保存 3 天，达到 3 天就退场</li>
+<li>上面这里介绍的规则都比较简单粗暴，还能够有更多的策略，再来细化规则。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Exposure-filter-amp-Bloom-filter"><a href="#Exposure-filter-amp-Bloom-filter" class="headerlink" title="Exposure filter &amp; Bloom filter"></a>Exposure filter &amp; Bloom filter</h3><ul>
+<li><p>曝光过滤问题：</p>
+<ul>
+<li><p>如果用户看过某个物品，则不再把该物品曝光给该用户。</p>
+</li>
+<li><p>对于每个用户，记录已经曝光给他的物品。（小红书只召回1个月以内的笔记，因此只需要记录每个用户最近1个月的曝光历史。)</p>
+</li>
+<li><p>对于每个召回的物品，判断它是否已经给该用户曝光过，排除掉曾经曝光过的物品。</p>
+</li>
+<li><p>一位用户看过几个物品，本次召回r个物品，如果暴力对比，需要O(nr)的时间。</p>
+<blockquote>
+<p>小红书为例子，用户一个月n的量级在几千，每次召回r的量级也在几千。如果nr的话，暴力对比的计算量太大了。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>Bloom Filter：</p>
+<ul>
+<li><p>Bloom filter判断一个物品ID是否在已曝光的物品集合中。</p>
+</li>
+<li><p>如果判断为no，那么该物品一定不在集合中。</p>
+</li>
+<li><p>如果判断为yes，那么该物品很可能在集合中。（可能误伤，错误判断未曝光物品为已曝光，将其过滤掉。)</p>
+</li>
+<li><p>Bloom filter把物品集合表征为一个m维二进制向量。每个用户有一个曝光物品的集合，表征为一个向量，需要m bit的存储。Bloom filter有k个哈希函数，每个哈希函数把物品D映射成介于 0 和 m-1 之间的整数。</p>
+</li>
+<li><p>Demo</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408282103922.png" srcset="/img/loading.gif" lazyload alt="image-20240828210356743" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408282104368.png" srcset="/img/loading.gif" lazyload alt="image-20240828210456206" style="zoom:50%;">
+</li>
+<li><p>曝光过滤的链路：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408282108553.png" srcset="/img/loading.gif" lazyload alt="image-20240828210835389" style="zoom:50%;">
+
+<blockquote>
+<p>实时流处理要足够快哈，不然用户刷着刷着，很容易就出现重复了。这一块儿挂了/延时特别大，其实也是比较常见的情况。</p>
+</blockquote>
+</li>
+<li><p>缺点</p>
+<ul>
+<li>Bloom filter只支持添加物品，不支持删除物品。从集合中移除物品，无法消除它对向量的影响。</li>
+<li>每天都需要从物品集合中移除年龄大于1个月的物品(超龄物品不可能被召回，没必要把它们记录在Bloom filter,降低n可以降低误伤率。)，这种场景Bloom Filter用起来就有点困难。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Sort"><a href="#Sort" class="headerlink" title="Sort"></a>Sort</h2><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1PS4y1A7za/?vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">Shusen Wang的公开课</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/wangshusen/RecommenderSystem">Shuseng Wang的笔记</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.yuque.com/yuejiangliu/recommended-system-in-the-industry/overview">同学对于Shuseng的课做的很全很全的笔记</a>，参考了许多内容，很有价值！</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%87%AA%E5%AD%A6/">#自学</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Recommendation System</div>
+      <div>https://alexanderliu-creator.github.io/2024/08/16/recommendation-system/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Alexander Liu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/03/huggingface-nlp-course/" title="HuggingFace-NLP-Course">
+                        <span class="hidden-mobile">HuggingFace-NLP-Course</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
