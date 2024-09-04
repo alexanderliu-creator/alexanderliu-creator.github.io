@@ -27,15 +27,6 @@
 <meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210123193847.png">
 <meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210123201201.png">
 <meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210124100232.png">
-<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210125153013.png">
-<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210125163201.png">
-<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210125211821.png">
-<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210126153943.png">
-<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210127094350.png">
-<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210127103346.png">
-<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210127110750.png">
-<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210127215015.png">
-<meta property="og:image" content="https://gitee.com/alexs-rabbit/picture/raw/master/20210130220858.png">
 <meta property="article:published_time" content="2021-02-20T08:05:21.000Z">
 <meta property="article:modified_time" content="2021-04-03T02:07:15.000Z">
 <meta property="article:author" content="Alexander Liu">
@@ -100,7 +91,7 @@
 
 
   
-<meta name="generator" content="Hexo 6.2.0">
+<meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
 </head>
@@ -257,7 +248,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          8.8k 字
+          9.8k 字
         
       </span>
     
@@ -268,7 +259,7 @@
         
         
         
-          74 分钟
+          82 分钟
         
       </span>
     
@@ -516,23 +507,31 @@
 </li>
 <li><p><code>data.info()</code>查看数据基本情况</p>
 </li>
-<li><p>```python</p>
-<h1 id="填补年龄"><a href="#填补年龄" class="headerlink" title="填补年龄"></a>填补年龄</h1><p>Age = data.loc[:,”Age”].values.reshape(-1,1)</p>
-<h1 id="特征矩阵必须二维，通过reshape转换为二维"><a href="#特征矩阵必须二维，通过reshape转换为二维" class="headerlink" title="特征矩阵必须二维，通过reshape转换为二维"></a>特征矩阵必须二维，通过reshape转换为二维</h1><p>Age[:20] #查看前20行</p>
-<p>from sklearn.impute import SimpleImputer<br>imp_mean = SimpleInputer()<br>imp_median = SimpleInputer(stategy=”median”)<br>imp_0 = SimpleInputer(strategy=”constant”,fill_value=0)</p>
-<p>imp_mean = imp_mean.fit_transform(Age)<br>imp_median = imp_median.fit_transform(Age)<br>imp_0 = imp_0.fit_transform(Age)</p>
-<p>data.loc[:,”Age”] = imp_median</p>
-<figure class="highlight dockerfile"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><br>- 非常重要的，pandas导出的数据有.loc方法，可以用来提取和锁定特定的数据<br><br>- 编码和哑向量：<br><br>  - 因为不能为文字，机器学习处理的只能为数字，以此要对于文字信息进行编码处理，将文字类型转换为数值型<br><br>  - ```python<br>    <span class="hljs-keyword">from</span> sklearn.preprocessing import LabelEncoder<br>    <br>    y = data.iloc[:,-<span class="hljs-number">1</span>] <span class="hljs-comment">#特殊矩阵必须二维，而标签允许一维</span><br>    <br>    le = LabelEncoder()<br>    le = le.fit(y)<br>    <span class="hljs-keyword">label</span><span class="language-bash"> = le.transform(y)</span><br>    <span class="hljs-comment"># 这里将label成功转换为了0,1,2数值型</span><br>    le.classes_ <span class="hljs-comment">#这个属性只有在fit之后才能看到哦</span><br>    <br>    <span class="hljs-comment"># 可以一步完成，但是这样是看不到属性的</span><br>    <span class="hljs-keyword">label</span><span class="language-bash"> = le.fit_transform(y)</span><br>    <br>    le.inverse_transform(<span class="hljs-keyword">label</span><span class="language-bash">)<span class="hljs-comment">#使用inverse_transform也可以逆转</span></span><br>    <br>    data.iloc[:,-<span class="hljs-number">1</span>] = <span class="hljs-keyword">label</span><span class="language-bash"> <span class="hljs-comment">#让标签等于我们处理后的结果</span></span><br>    <br>    <br>    极简写法：<br>    data.iloc[:,-<span class="hljs-number">1</span>] = LabelEncoder().fit_transform(data.iloc[:,-<span class="hljs-number">1</span>])<br></code></pre></td></tr></tbody></table></figure>
+<li><pre><code class="python"># 填补年龄
+Age = data.loc[:,"Age"].values.reshape(-1,1)
+# 特征矩阵必须二维，通过reshape转换为二维
+Age[:20] #查看前20行
 
-<p>  上面是标签专用型</p>
-<ul>
-<li>下面是特征专用型</li>
-</ul>
+from sklearn.impute import SimpleImputer
+imp_mean = SimpleInputer()
+imp_median = SimpleInputer(stategy="median")
+imp_0 = SimpleInputer(strategy="constant",fill_value=0)
+
+imp_mean = imp_mean.fit_transform(Age)
+imp_median = imp_median.fit_transform(Age)
+imp_0 = imp_0.fit_transform(Age)
+
+data.loc[:,"Age"] = imp_median
+<figure class="highlight pf"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs pf"><br>- 非常重要的，pandas导出的数据有.loc方法，可以用来提取和锁定特定的数据<br><br>- 编码和哑向量：<br><br>  - 因为不能为文字，机器学习处理的只能为数字，以此要对于文字信息进行编码处理，将文字类型转换为数值型<br><br>  - ```python<br>    <span class="hljs-keyword">from</span> sklearn.preprocessing import LabelEncoder<br>    <br>    y = data.iloc[:,-<span class="hljs-number">1</span>] <span class="hljs-comment">#特殊矩阵必须二维，而标签允许一维</span><br>    <br>    le = LabelEncoder()<br>    le = le.fit(y)<br>    <span class="hljs-keyword">label</span> = le.transform(y)<br>    <span class="hljs-comment"># 这里将label成功转换为了0,1,2数值型</span><br>    le.classes_ <span class="hljs-comment">#这个属性只有在fit之后才能看到哦</span><br>    <br>    <span class="hljs-comment"># 可以一步完成，但是这样是看不到属性的</span><br>    <span class="hljs-keyword">label</span> = le.fit_transform(y)<br>    <br>    le.inverse_transform(<span class="hljs-keyword">label</span>)<span class="hljs-comment">#使用inverse_transform也可以逆转</span><br>    <br>    data.iloc[:,-<span class="hljs-number">1</span>] = <span class="hljs-keyword">label</span> <span class="hljs-comment">#让标签等于我们处理后的结果</span><br>    <br>    <br>    极简写法：<br>    data.iloc[:,-<span class="hljs-number">1</span>] = LabelEncoder().fit_transform(data.iloc[:,-<span class="hljs-number">1</span>])<br></code></pre></td></tr></tbody></table></figure>
+
+  上面是标签专用型
+
+- 下面是特征专用型
+
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.preprocessing <span class="hljs-keyword">import</span> OrdinaryEncoder<br><br>data_ = data.copy()<br><br>OrdinalEncoder().fit(data_.iloc[:,<span class="hljs-number">1</span>:-<span class="hljs-number">1</span>]).categories_<br><br>data_.iloc[:,<span class="hljs-number">1</span>:-<span class="hljs-number">1</span>] = OrdinalEncoder().fit_transform(data_.iloc[:,<span class="hljs-number">1</span>:-<span class="hljs-number">1</span>])<br><br>data_.head()<br><br></code></pre></td></tr></tbody></table></figure>
 
-<ul>
-<li>sklearn只接受数值型！！！</li>
-</ul>
+- sklearn只接受数值型！！！
+</code></pre>
 </li>
 </ul>
 <h3 id="独热编码，创建哑向量："><a href="#独热编码，创建哑向量：" class="headerlink" title="独热编码，创建哑向量："></a>独热编码，创建哑向量：</h3><ul>
@@ -575,159 +574,209 @@ newdata.columns = ["Age","Survived","Female","Male","Embarked_C","Embarked_Q","E
 <li>strategy</li>
 </ul>
 </li>
-<li><p>```python<br>from sklearn.preprocessing import KBinsDiscretizer</p>
-<p>X=data.iloc[:,0].values.reshape(-1,1)</p>
-<p>est = KBinsDiscretizer(n_bins=3,encode=”ordinal”,strategy=”uniform”)<br>est.fit_transform(X)</p>
-<p>set(est.fit_transform(X).ravel())<br>est = KBinsDiscretizer(n_bins=3,encode=”onehot”,strategy=”uniform”)<br>est.fit_transform(X).toarray()</p>
-<figure class="highlight clean"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs clean"><br>  按照排序和你要的方式，来把数据分箱<br><br>## 逻辑回归<br><br>### Sigmoid函数：<br><br></code></pre></td></tr></tbody></table></figure></li>
+<li><pre><code class="python">from sklearn.preprocessing import KBinsDiscretizer
+
+X=data.iloc[:,0].values.reshape(-1,1)
+
+est = KBinsDiscretizer(n_bins=3,encode="ordinal",strategy="uniform")
+est.fit_transform(X)
+
+
+set(est.fit_transform(X).ravel())
+est = KBinsDiscretizer(n_bins=3,encode="onehot",strategy="uniform")
+est.fit_transform(X).toarray()
+<figure class="highlight clean"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs clean"><br>  按照排序和你要的方式，来把数据分箱<br><br>## 逻辑回归<br><br>### Sigmoid函数：<br><br></code></pre></td></tr></tbody></table></figure>
+</code></pre>
+</li>
 </ul>
 <p>回归本质也是线性分类器，本质时线性方法<br>Sigmoid函数本质为所有S型函数 </p>
-<p>```</p>
-<p>$ \frac{1}{1+e^{-z}} $这个东西很有意思，将任意连续型函数压缩到[0,1]之间，Sigmoid函数只是无限趋近于0，1。<br>$$<br>g(z) = f(x) = \frac{1}{1+e^{-\theta^{T}x}}<br>$$<br>z就是逻辑回归的时候，那一组向量，线性回归的结果。</p>
-<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210125153013.png" srcset="/img/loading.gif" lazyload alt="image-20210125153006311"></p>
-<ul>
-<li>形似几率$\frac{y(x)}{1-y(x)}$, 对于形似几率取对数，就可以看出结果就是回归方程。</li>
-<li><code>logistic regression</code>为对数几率回归。</li>
-<li>逻辑回归的优点：<ul>
-<li>线性拟合关系拟合效果好到发狂。</li>
-<li>逻辑回归计算快</li>
-<li>返回结果不是0，1。可以以小数形式呈现的类概率的数字。</li>
-<li>抗噪音能力强！</li>
-</ul>
-</li>
-<li>本质为返回对数几率的，在线性数据上表现优异的分类器</li>
-<li>数学目的：求最优化参数$\theta$的值，并且基于$\theta$和特征矩阵计算出逻辑回归的结果</li>
-<li>损失函数是用于评估模型训练的参数在训练集上的拟合结果，损失小，说明拟合程度高，说明参数优秀。只有求解参数目的的函数才有损失函数。这个玩意儿，天生欠拟合，就类似于树天生过拟合一样。</li>
-<li>对于逻辑回归中过拟合的控制，通过正则化来实现。</li>
-<li>正则化有两种：<ul>
-<li><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210125163201.png" srcset="/img/loading.gif" lazyload alt="image-20210125163154665"></li>
-<li>C为超参数，n为方程中特征的总数，也为方程中总的参数。$\theta_{0}$为截距，通常不参与正则化。</li>
-<li><code>penalty 和 C</code></li>
-<li><code>L1:   solver="liblinear"，L2可以用别的，默认为L2哦</code></li>
-<li><code>C越小的话，1/C越大，对于模型的惩罚也就越重</code></li>
-<li>L1 与 L2的区别：<ul>
-<li>L1会将参数压缩为0，本质是特征选择，掌握了参数矩阵的稀疏性。数据量大，维度高。</li>
-<li>L2只会让参数尽量小</li>
-<li>两个换着来看</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="回归本质："><a href="#回归本质：" class="headerlink" title="回归本质："></a>回归本质：</h3><p>通过模型选择的方式和方法，去使得损失函数最小。</p>
-<h2 id="K-Means聚类算法"><a href="#K-Means聚类算法" class="headerlink" title="K-Means聚类算法"></a>K-Means聚类算法</h2><h3 id="无监督学习概念："><a href="#无监督学习概念：" class="headerlink" title="无监督学习概念："></a>无监督学习概念：</h3><p>只需要特征矩阵，不需要标签y，聚类就是典型代表</p>
-<p>可以大幅度的压缩数据量</p>
-<h3 id="聚类和分类的区别："><a href="#聚类和分类的区别：" class="headerlink" title="聚类和分类的区别："></a>聚类和分类的区别：</h3><p>分类人为给了类，根据给定的数据和标签进行学习</p>
-<p>分类本质是由数据分出不同的组，机器自己探索各组数据是否有联系。</p>
-<ul>
-<li><p>算法输出不一样：</p>
-<p>分类结果是确定的，分类的优劣是客观的，不是根据业务或算法要求决定。</p>
-<p>聚类出来的结果是没有固定结果的，聚类结果不确定，不一定能反应真实分类，更具不同的业务需求，结果可能好，可能坏，没有客观的评价。</p>
-</li>
-<li><p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210125211821.png" srcset="/img/loading.gif" lazyload alt="image-20210125211814566"></p>
-</li>
-</ul>
-<h3 id="K-Means"><a href="#K-Means" class="headerlink" title="K-Means:"></a>K-Means:</h3><ul>
-<li>K-Means算法将一组N个样本的特征矩阵X划分为k个无交集的簇，直观上簇是一组一组聚集在一起的数据，一个簇中就认为是同一类，簇就是结果表示。</li>
-<li></li>
-</ul>
-<p>![image-20210126105126519](C:\Users\Alexander Liu\AppData\Roaming\Typora\typora-user-images\image-20210126105126519.png)</p>
-<ul>
-<li>K这个参数是我们用来决定簇的数量</li>
-<li>损失函数只有在求解参数的时候才会有的，本质是用来衡量模型的拟合效果的，通过使得损失函数的值最小，求解参数。</li>
-<li><code>accuracy</code>用于衡量分类效果的指标准确度，不能最小化accuracy来求解某个模型中需要的信息。因此决策树啊，knn啊，是没有损失函数的</li>
-<li>![image-20210126112402394](C:\Users\Alexander Liu\AppData\Roaming\Typora\typora-user-images\image-20210126112402394.png)</li>
-</ul>
-<h3 id="评价指标："><a href="#评价指标：" class="headerlink" title="评价指标："></a>评价指标：</h3><ul>
-<li><p>想法：</p>
-<p>聚类的目标是确保：簇内差异小，簇外差异大。</p>
-</li>
-<li><p><code>inertia</code>不适合作为指标，第一，没有大小的明确标准，第二，当数据量比较大的时候，要花很长的时间来进行计算。第三，有交互，圆环之类的效果都很差，只有独立一簇一簇的比较好用。</p>
-</li>
-<li><p>轮廓系数才是我们用于衡量的指标。</p>
-</li>
-</ul>
-<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210126153943.png" srcset="/img/loading.gif" lazyload alt="image-20210126153943426"></p>
-<ul>
-<li>同时比较簇内元素的相似度，和簇之间元素的差异度这两件事儿。范围为(-1,1)</li>
-<li>卡林斯基-哈拉巴斯指数，标签未知时的评估指数</li>
-</ul>
-<h2 id="SVM支持向量机"><a href="#SVM支持向量机" class="headerlink" title="SVM支持向量机"></a>SVM支持向量机</h2><ul>
-<li><p>找出超平面（比所在空间小一维的空间）</p>
-</li>
-<li><p>拥有更大的边际的决策变量，泛化误差更小。</p>
-</li>
-</ul>
-<h3 id="损失函数："><a href="#损失函数：" class="headerlink" title="损失函数："></a>损失函数：</h3><ul>
-<li>w的方向垂直于我们的决策边界</li>
-<li>SVM第一层理解，本质就是损失函数是如何得到的</li>
-</ul>
-<h3 id="决策可视化："><a href="#决策可视化：" class="headerlink" title="决策可视化："></a>决策可视化：</h3><p>见代码</p>
-<h3 id="核函数："><a href="#核函数：" class="headerlink" title="核函数："></a>核函数：</h3><p>用于寻找能把数据完美分割的超平面</p>
-<p><code>kernel = "linear"</code>这个就是线性核函数，适用于线性分割的情况</p>
-<p>不同的情况换不同的核</p>
-<ul>
-<li>总共有四类：<ul>
-<li>linear , 线性核( 线性 )</li>
-<li>poly ， 多项式核( 偏线性 )</li>
-<li>sigmoid , 双曲正切核(  非线性 )</li>
-<li>rbf , 高斯径向基( 偏非线性 )</li>
-</ul>
-</li>
-</ul>
-<h3 id="小技巧："><a href="#小技巧：" class="headerlink" title="小技巧："></a>小技巧：</h3><p>升高维度，可以提供一种思想来把数据用超平面来分割开嗷！</p>
-<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210127094350.png" srcset="/img/loading.gif" lazyload alt="image-20210127094342680"></p>
-<ul>
-<li><p>这个表还是蛮重要的，一些参数的调整</p>
-</li>
-<li><p>比如对于<code>rbf</code>的调整，可以通过反复带入不同的参数来进行调整</p>
-</li>
-<li><p>支持向量机的网格搜索比较友好，好用嗷！！！</p>
-</li>
-<li><p>这个东西叫软边界，参数C为惩罚项，针对少部分错的数据的调节。</p>
-<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210127103346.png" srcset="/img/loading.gif" lazyload alt="image-20210127103345932"></p>
-</li>
-</ul>
-<h2 id="多元线性回归"><a href="#多元线性回归" class="headerlink" title="多元线性回归"></a>多元线性回归</h2><h3 id="参数含义："><a href="#参数含义：" class="headerlink" title="参数含义："></a>参数含义：</h3><p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210127110750.png" srcset="/img/loading.gif" lazyload alt="image-20210127110749899"></p>
-<ul>
-<li>线性回归几乎无法调优，内部的计算都已经完成，如果想要调优请参考别的模型，这个不就是概率论里面学的那个鬼东西嘛orz</li>
-</ul>
-<h3 id="模型评估指标："><a href="#模型评估指标：" class="headerlink" title="模型评估指标："></a>模型评估指标：</h3><ul>
-<li><ol>
-<li>是否预测了正确的数值，例如 ( RSS，但是这个参数有缺陷，没有明显的衡量指标，就是数据本身的MSE究竟是多少才算拟合效果好呢？其实是没有明确的指标的。）</li>
-</ol>
-<p>我们这儿模型中还有一个比较好的指标叫做均方误差, MSE，这个玩意儿在RSS的基础上除掉了样本数量。</p>
-<ol start="2">
-<li>是否拟合到了足够的信息</li>
-</ol>
-</li>
-<li><p>调用详情见代码</p>
-</li>
-</ul>
-<h3 id="几个大坑："><a href="#几个大坑：" class="headerlink" title="几个大坑："></a>几个大坑：</h3><ol>
-<li>均方误差为负？？？是损失的衡量，凡是带有损失含义的指标，都是负数。真正的均方误差应该为它去掉负号。</li>
-<li>相同的评估指标，不同的结果。分类和回归的算法不同所带来的坑。这里就是输入的，建议查看下模型中的各个参数填的究竟是什么，同一个方法再不同的模型底下参数顺序可能不一样的嗷。</li>
-<li><code>R的平方</code>可以是负的，自己去看原理和逻辑。</li>
-</ol>
-<h2 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h2><h3 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h3><p>本质都只是类概率，或者是置信度，不是真正的概率。</p>
-<p>置信度和真正的概率有挺大的区别的。朴素贝叶斯是为了用上真正的概率的。</p>
-<p>朴素贝叶斯是根正苗红的概率论与数理统计的内容。</p>
-<p>贝叶斯是一个不建模的算法（有监督但是不建模）</p>
-<h3 id="小技巧与贝叶斯的小特点："><a href="#小技巧与贝叶斯的小特点：" class="headerlink" title="小技巧与贝叶斯的小特点："></a>小技巧与贝叶斯的小特点：</h3><p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210127215015.png" srcset="/img/loading.gif" lazyload alt="image-20210127215007977"></p>
-<ul>
-<li><p>这里取巧了，因为分母的计算量非常大。我们比较分子的大小，哪个大我们就认为最终出现的结果是啥。(MAP)</p>
-</li>
-<li><p>本质上假设各个特征之间是相互独立的，简化计算过程，就非常的朴素orz，因此叫朴素贝叶斯。也因此，朴素贝叶斯挺不准的orz。</p>
-</li>
-<li><p>数据数量一般要求比特征数量要多嗷！！！</p>
-</li>
-<li><p>贝叶斯不好调优</p>
-</li>
-<li><p>贝叶斯分类</p>
-<p><img src="https://gitee.com/alexs-rabbit/picture/raw/master/20210130220858.png" srcset="/img/loading.gif" lazyload alt="image-20210130220857876"></p>
-</li>
-<li></li>
-</ul>
+<pre><code class="hljs">
+$ \frac{1}{1+e^{-z}} $这个东西很有意思，将任意连续型函数压缩到[0,1]之间，Sigmoid函数只是无限趋近于0，1。
+$$
+g(z) = f(x) = \frac{1}{1+e^{-\theta^{T}x}}
+$$
+z就是逻辑回归的时候，那一组向量，线性回归的结果。
+
+![image-20210125153006311](https://gitee.com/alexs-rabbit/picture/raw/master/20210125153013.png)
+
+- 形似几率$\frac{y(x)}{1-y(x)}$, 对于形似几率取对数，就可以看出结果就是回归方程。
+- `logistic regression`为对数几率回归。
+- 逻辑回归的优点：
+  - 线性拟合关系拟合效果好到发狂。
+  - 逻辑回归计算快
+  - 返回结果不是0，1。可以以小数形式呈现的类概率的数字。
+  - 抗噪音能力强！
+- 本质为返回对数几率的，在线性数据上表现优异的分类器
+- 数学目的：求最优化参数$\theta$的值，并且基于$\theta$和特征矩阵计算出逻辑回归的结果
+- 损失函数是用于评估模型训练的参数在训练集上的拟合结果，损失小，说明拟合程度高，说明参数优秀。只有求解参数目的的函数才有损失函数。这个玩意儿，天生欠拟合，就类似于树天生过拟合一样。
+- 对于逻辑回归中过拟合的控制，通过正则化来实现。
+- 正则化有两种：
+  - ![image-20210125163154665](https://gitee.com/alexs-rabbit/picture/raw/master/20210125163201.png)
+  - C为超参数，n为方程中特征的总数，也为方程中总的参数。$\theta_{0}$为截距，通常不参与正则化。
+  - `penalty 和 C`
+  - `L1:   solver="liblinear"，L2可以用别的，默认为L2哦`
+  - `C越小的话，1/C越大，对于模型的惩罚也就越重`
+  - L1 与 L2的区别：
+    - L1会将参数压缩为0，本质是特征选择，掌握了参数矩阵的稀疏性。数据量大，维度高。
+    - L2只会让参数尽量小
+    - 两个换着来看
+
+### 回归本质：
+
+通过模型选择的方式和方法，去使得损失函数最小。
+
+
+
+## K-Means聚类算法
+
+### 无监督学习概念：
+
+只需要特征矩阵，不需要标签y，聚类就是典型代表
+
+可以大幅度的压缩数据量
+
+### 聚类和分类的区别：
+
+分类人为给了类，根据给定的数据和标签进行学习
+
+分类本质是由数据分出不同的组，机器自己探索各组数据是否有联系。
+
+- 算法输出不一样：
+
+  分类结果是确定的，分类的优劣是客观的，不是根据业务或算法要求决定。
+
+  聚类出来的结果是没有固定结果的，聚类结果不确定，不一定能反应真实分类，更具不同的业务需求，结果可能好，可能坏，没有客观的评价。
+
+- ![image-20210125211814566](https://gitee.com/alexs-rabbit/picture/raw/master/20210125211821.png)
+
+  
+
+### K-Means:
+
+- K-Means算法将一组N个样本的特征矩阵X划分为k个无交集的簇，直观上簇是一组一组聚集在一起的数据，一个簇中就认为是同一类，簇就是结果表示。
+- 
+
+![image-20210126105126519](C:\Users\Alexander Liu\AppData\Roaming\Typora\typora-user-images\image-20210126105126519.png)
+
+- K这个参数是我们用来决定簇的数量
+- 损失函数只有在求解参数的时候才会有的，本质是用来衡量模型的拟合效果的，通过使得损失函数的值最小，求解参数。
+- `accuracy`用于衡量分类效果的指标准确度，不能最小化accuracy来求解某个模型中需要的信息。因此决策树啊，knn啊，是没有损失函数的
+- ![image-20210126112402394](C:\Users\Alexander Liu\AppData\Roaming\Typora\typora-user-images\image-20210126112402394.png)
+
+### 评价指标：
+
+- 想法：
+
+  聚类的目标是确保：簇内差异小，簇外差异大。
+
+- `inertia`不适合作为指标，第一，没有大小的明确标准，第二，当数据量比较大的时候，要花很长的时间来进行计算。第三，有交互，圆环之类的效果都很差，只有独立一簇一簇的比较好用。
+
+- 轮廓系数才是我们用于衡量的指标。
+
+![image-20210126153943426](https://gitee.com/alexs-rabbit/picture/raw/master/20210126153943.png)
+
+- 同时比较簇内元素的相似度，和簇之间元素的差异度这两件事儿。范围为(-1,1)
+- 卡林斯基-哈拉巴斯指数，标签未知时的评估指数
+
+
+
+## SVM支持向量机
+
+- 找出超平面（比所在空间小一维的空间）
+
+- 拥有更大的边际的决策变量，泛化误差更小。
+
+### 损失函数：
+
+- w的方向垂直于我们的决策边界
+- SVM第一层理解，本质就是损失函数是如何得到的
+
+### 决策可视化：
+
+见代码
+
+### 核函数：
+
+用于寻找能把数据完美分割的超平面
+
+`kernel = "linear"`这个就是线性核函数，适用于线性分割的情况
+
+不同的情况换不同的核
+
+- 总共有四类：
+  - linear , 线性核( 线性 )
+  - poly ， 多项式核( 偏线性 )
+  - sigmoid , 双曲正切核(  非线性 )
+  - rbf , 高斯径向基( 偏非线性 )
+
+### 小技巧：
+
+升高维度，可以提供一种思想来把数据用超平面来分割开嗷！
+
+![image-20210127094342680](https://gitee.com/alexs-rabbit/picture/raw/master/20210127094350.png)
+
+- 这个表还是蛮重要的，一些参数的调整
+
+- 比如对于`rbf`的调整，可以通过反复带入不同的参数来进行调整
+
+- 支持向量机的网格搜索比较友好，好用嗷！！！
+
+- 这个东西叫软边界，参数C为惩罚项，针对少部分错的数据的调节。
+
+  ![image-20210127103345932](https://gitee.com/alexs-rabbit/picture/raw/master/20210127103346.png)
+
+## 多元线性回归
+
+### 参数含义：
+
+![image-20210127110749899](https://gitee.com/alexs-rabbit/picture/raw/master/20210127110750.png)
+
+- 线性回归几乎无法调优，内部的计算都已经完成，如果想要调优请参考别的模型，这个不就是概率论里面学的那个鬼东西嘛orz
+
+### 模型评估指标：
+
+- 1. 是否预测了正确的数值，例如 ( RSS，但是这个参数有缺陷，没有明显的衡量指标，就是数据本身的MSE究竟是多少才算拟合效果好呢？其实是没有明确的指标的。）
+
+  我们这儿模型中还有一个比较好的指标叫做均方误差, MSE，这个玩意儿在RSS的基础上除掉了样本数量。
+
+  2. 是否拟合到了足够的信息
+
+- 调用详情见代码
+
+### 几个大坑：
+
+1. 均方误差为负？？？是损失的衡量，凡是带有损失含义的指标，都是负数。真正的均方误差应该为它去掉负号。
+2. 相同的评估指标，不同的结果。分类和回归的算法不同所带来的坑。这里就是输入的，建议查看下模型中的各个参数填的究竟是什么，同一个方法再不同的模型底下参数顺序可能不一样的嗷。
+3. `R的平方`可以是负的，自己去看原理和逻辑。
+
+## 朴素贝叶斯
+
+### 原理：
+
+本质都只是类概率，或者是置信度，不是真正的概率。
+
+置信度和真正的概率有挺大的区别的。朴素贝叶斯是为了用上真正的概率的。
+
+朴素贝叶斯是根正苗红的概率论与数理统计的内容。
+
+贝叶斯是一个不建模的算法（有监督但是不建模）
+
+### 小技巧与贝叶斯的小特点：
+
+![image-20210127215007977](https://gitee.com/alexs-rabbit/picture/raw/master/20210127215015.png)
+
+- 这里取巧了，因为分母的计算量非常大。我们比较分子的大小，哪个大我们就认为最终出现的结果是啥。(MAP)
+- 本质上假设各个特征之间是相互独立的，简化计算过程，就非常的朴素orz，因此叫朴素贝叶斯。也因此，朴素贝叶斯挺不准的orz。
+- 数据数量一般要求比特征数量要多嗷！！！
+
+- 贝叶斯不好调优
+
+- 贝叶斯分类
+
+  ![image-20210130220857876](https://gitee.com/alexs-rabbit/picture/raw/master/20210130220858.png)
+
+- 
+</code></pre>
 
                 
               </div>
@@ -829,9 +878,9 @@ newdata.columns = ["Age","Survived","Female","Male","Embarked_C","Embarked_Q","E
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/02/20/python-duo-xian-cheng-zi-xue/" title="Python多线程">
+                      <a href="/2021/02/20/mysql-zi-xue/" title="mySQL数据库">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Python多线程</span>
+                        <span class="hidden-mobile">mySQL数据库</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     

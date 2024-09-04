@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://image.covertness.cn/keras_recommender/recommend.png">
 <meta property="article:published_time" content="2024-08-16T08:05:18.000Z">
-<meta property="article:modified_time" content="2024-08-28T16:44:00.573Z">
+<meta property="article:modified_time" content="2024-09-04T08:58:40.369Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -86,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 6.2.0">
+<meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
 </head>
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          21k 字
+          28k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          172 分钟
+          230 分钟
         
       </span>
     
@@ -500,7 +500,6 @@
 </li>
 <li><p>在推全的过程中，留一部分用户保持原样用于长期对比。可以在类似于清除holdout桶的时候，完成反转桶的清理。</p>
 </li>
-<li></li>
 </ul>
 </li>
 <li><p>总结</p>
@@ -1639,7 +1638,431 @@
 </ul>
 </li>
 </ul>
-<h2 id="Sort"><a href="#Sort" class="headerlink" title="Sort"></a>Sort</h2><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<h2 id="Sort"><a href="#Sort" class="headerlink" title="Sort"></a>Sort</h2><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408301050257.png" srcset="/img/loading.gif" lazyload alt="image-20240830105024176" style="zoom:50%;">
+
+<blockquote>
+<ul>
+<li>本节内容集中在粗排和精排，它们的原理基本相同，只是粗排模型小，用的特征少，效果差一些。</li>
+<li>粗排的目的是做快速的初步筛选，<strong>如果不用粗排，直接对于几千篇笔记用很大的精排模型，计算代价承受不住</strong>。（这里还有一致性的问题，参考<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2318414">这篇博客</a>）。</li>
+<li>流程<ul>
+<li>召回：很多召回通道，从几亿 -&gt; 几千。</li>
+<li>粗排给笔记打分，几千 -&gt; 几百。精排对于选出的几百篇笔记打分，不做截断，让几百篇笔记带着精排的分数直接进入重排。</li>
+<li>重排做多样性抽样，并且打散相似内容。最终只有几十篇笔记被选中，展示给用户。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="Multi-objective-ranking-model"><a href="#Multi-objective-ranking-model" class="headerlink" title="Multi-objective ranking model"></a>Multi-objective ranking model</h3><ul>
+<li><p>用户—笔记的交互：</p>
+<ul>
+<li>排序的主要依据是用户对笔记的兴趣，而兴趣都反映在 用户—笔记 的交互中。<ul>
+<li>对于每篇笔记，系统记录： <ul>
+<li>曝光次数（number of impressions）</li>
+<li>点击次数（number of clicks）</li>
+<li>点赞次数（number of likes）</li>
+<li>收藏次数（number of collects）</li>
+<li>转发次数（number of shares）</li>
+</ul>
+</li>
+<li>点击率 = 点击次数 / <strong>曝光</strong>次数 </li>
+<li>点赞率 = 点赞次数 / <strong>点击</strong>次数 </li>
+<li>收藏率 = 收藏次数 / <strong>点击</strong>次数 </li>
+<li>转发率 = 转发次数 / <strong>点击</strong>次数 （少见行为，远少于上面的点赞和收藏，转发到外部平台可以引流！）</li>
+<li>排序的依据 <ul>
+<li>排序模型预估点击率、点赞率、收藏率、转发率等多种分数</li>
+<li>融合这些预估分数（比如加权和）</li>
+<li>根据融合的分数做排序、截断。保留分数高的笔记，淘汰分数低的笔记。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>多目标模型：</p>
+<ul>
+<li><p>模型结构：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408301105126.png" srcset="/img/loading.gif" lazyload alt="image-20240830110542925" style="zoom:50%;">
+
+<blockquote>
+<p>统计特征包括”用户统计特征”和”物品统计特征”，”场景特征” 是随着用户请求传过来的。</p>
+</blockquote>
+</li>
+<li><p>损失函数：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408301122397.png" srcset="/img/loading.gif" lazyload alt="image-20240830112209205"></p>
+<blockquote>
+<p>实际数据其实是0/1（二元分类），用户是否点击/点赞这样的指标，然后和我们神经网路输出的possibility做比较，得到损失，</p>
+</blockquote>
+</li>
+<li><p>训练：让预估值接近真实目标值 </p>
+<ul>
+<li>总的损失函数： $\sum^4_{i=1}{α_i·\rm{CrossEntropy}(y_i,p_i)}$ </li>
+<li>对损失函数求梯度，做梯度下降更新参数 </li>
+<li>困难：类别不平衡，即正样本数量显著少于负样本 <ul>
+<li>每 100 次曝光，约有 10 次点击、90 次无点击</li>
+<li>每 100 次点击，约有 10 次收藏、90 次无收藏</li>
+<li>不平衡的影响在于：太多负样本用处不大，白白浪费计算资源。</li>
+</ul>
+</li>
+<li>解决方案：负样本降采样（down-sampling） <ul>
+<li>保留一小部分负样本</li>
+<li>让正负样本数量平衡，节约计算量。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>预估值校准</p>
+<ul>
+<li>做了降采样后训练出的预估点击率会大于真实点击率。</li>
+<li>正样本、负样本数量为 $n_+$ 和 $n_-$，对负样本做降采样，抛弃一部分负样本 。</li>
+<li>使用 $\alpha . n_-$ 个负样本，$\alpha$是采样率，在[0, 1] 之间。由于负样本变少，<strong>预估点击率大于真实点击率</strong>。 采样的负样本越少，对于点击率的高估越大。</li>
+<li>校准公式： <ul>
+<li>真实点击率：$p_{true} = \frac{n_+}{n_- +n_+}$</li>
+<li>预估点击率：$p_{pred} = \frac{n_+}{n_+ +\alpha . n_-}$</li>
+<li>可以得到校准公式，从pred -&gt; true: $p_{true} = \frac{\alpha.p_{pred}}{(1-p_{pred}) + \alpha.p_{pred}}$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>参考文献：1. Xinran He et al. Practical lessons from predicting clicks on ads at Facebook. In the 8th International Workshop on Data Mining for Online Advertising.</p>
+</blockquote>
+<h3 id="Multi-gate-Mixture-of-Experts-MMoE"><a href="#Multi-gate-Mixture-of-Experts-MMoE" class="headerlink" title="Multi-gate Mixture-of-Experts(MMoE)"></a>Multi-gate Mixture-of-Experts(MMoE)</h3><ul>
+<li><p>模型结构：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408301154142.png" srcset="/img/loading.gif" lazyload alt="image-20240830115413945"></p>
+<ul>
+<li><p>三个神经网络结构相同，但是不共享参数。专家神经网络的数量是超参数，实践中通常用 4 个或 8 个。</p>
+</li>
+<li><p>把特征向量输入左侧的神经网络，再通过 Softmax 输出 $p_1,p_2,p_3$ 分别对应 3 个专家神经网络。用 $p_1,p_2,p_3$ 作为权重，对 3 个专家神经网络的输出 $x_1,x_2,x_3$ 进行加权平均。</p>
+</li>
+<li><p>采取同样方法，将特征向量输入右侧的神经网络，得到的 $q_1,q_2,q_3$ 可以与专家神经网络的输出组成另一个预估值的输入。</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408301156238.png" srcset="/img/loading.gif" lazyload alt="image-20240830115605036" style="zoom:50%;">
+
+<blockquote>
+<p>每一个指标，都会有一组专门的权重，负责处理多个Experts的输出，并最终输出这个指标的预估值。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>极化现象（Polarization）</p>
+<ul>
+<li><p>专家神经网络在实践中的问题。</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408301158642.png" srcset="/img/loading.gif" lazyload alt="image-20240830115838439" style="zoom:50%;">
+
+<blockquote>
+<p>不同的权重，在多个指标下，使得某个神经网络没有被用到，或者用到的特别少。就相当于没有对专家做融合嘛，没有起到MoE的优势。</p>
+</blockquote>
+</li>
+<li><p>解决极化问题的方法：</p>
+<ul>
+<li>如果有 $n$ 个“专家”，那么每个 softmax 的输入和输出都是 $n$ 维向量 </li>
+<li>在<strong>训练</strong>时，对 softmax 的输出使用 dropout <ul>
+<li>Softmax 输出的 $n$ 个数值被 mask 的概率都是 10% </li>
+<li>每个“专家”被随机丢弃的概率都是 10% </li>
+<li>由于每个“专家”都可能被丢弃，<strong>神经网络在训练过程中没法过度依赖某个“专家”</strong>，神经网络就会尽量避免极化的发生。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>实际应用场景中，MMoE用上了不一定会有提升。博主聊过，MMoE没效果的原因很多情况下不清楚，有可能是设计/应用场景的原因。很有可能是试过了但是不work！</p>
+</li>
+</ul>
+<blockquote>
+<p>参考文献：</p>
+<ul>
+<li>Jiaqi Ma et al.Modeling Task Relationships in Multi-task Learning with Multi-gate Mixture-of-Experts.In KDD,2018.</li>
+<li>Zhe Zhao et al.Recommending What Video to Watch Next:A Multitask Ranking System.In RecSys, 2019.</li>
+</ul>
+</blockquote>
+<h3 id="Fusion-of-estimated-scores"><a href="#Fusion-of-estimated-scores" class="headerlink" title="Fusion of estimated scores"></a>Fusion of estimated scores</h3><ul>
+<li><p>简单的加权：$p_{click}+w_1·p_{like}+w_2·p_{collect}+…$</p>
+</li>
+<li><p>点击率乘以其他项的加权和 $p_{click}·(1+w_1·p_{like}+w_2·p_{collect}+…)$ </p>
+<ul>
+<li>$p_{click}=\frac{点击}{曝光}$，$p_{like}=\frac{点赞}{点击}$</li>
+<li>所以 $p_{click}·p_{like}=\frac{点赞}{曝光}$（类似于贝叶斯的想法）</li>
+</ul>
+</li>
+<li><p>海外某短视频 APP 的融分公式 : $(1+w_{1}\cdot p_{time})^{\alpha_{1}}\ \cdot\ \ (1+w_{2}\cdot p_{like})^{\alpha_{2}}\ \cdots$，这里$\omega_1,\ \alpha_1$都是超参数。</p>
+</li>
+<li><p>国内某短视频 APP （老铁）的融分公式 </p>
+<ul>
+<li>根据预估时长 $p_{time}$，对 $n$ 篇候选视频做排序 </li>
+<li>如果某视频排名第 $r_{time}$，则它得分 $\frac{1}{r^\alpha _{time} +\beta}$</li>
+<li>对点击、点赞、转发、评论等预估分数做类似处理 </li>
+<li>最终融合分数： $\frac{w_{1}}{r_{\mathrm{time}}^{\alpha_{1}}+\beta_{1}}\ +\ \frac{w_{2}}{r_{\mathrm{click}}^{\alpha_{2}}+\beta_{2}}\ +\ \frac{w_{3}}{r_{\mathrm{like}}^{\alpha_{3}}+\beta_{3}}\ +\ \cdots$ </li>
+<li>公式特点在于 — 不是用预估的分数，而是使用预估的排名。</li>
+</ul>
+</li>
+<li><p>某电商的融分公式 </p>
+<ul>
+<li>电商的转化流程：曝光 → 点击 → 加购物车 → 付款 </li>
+<li>模型预估：$p_{click}$、$p_{cart}$、$p_{pay}$ </li>
+<li>最终融合分数： $p_{\mathrm{cilck}}^{\alpha_{1}}\ \times\ \ p_{\mathrm{cart}}^{\alpha_{2}}\ \times\ \ p_{\mathrm{pay}}^{\alpha_{3}}\ \times\ \mathrm{price}^{\alpha_{4}}$ </li>
+<li>假如 $\alpha_{1}=\alpha_{2}=\alpha_{3}=\alpha_{4}=1$ 那该公式就是电商的营收，有明确的物理意义。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Video-play-modeling"><a href="#Video-play-modeling" class="headerlink" title="Video play modeling"></a>Video play modeling</h3><ul>
+<li><p>视频播放时长</p>
+<ul>
+<li><p>图文 vs. 视频 </p>
+<ul>
+<li>图文笔记排序的主要依据：点击、点赞、收藏、转发、评论…… </li>
+<li>视频排序的依据还有播放时长和完播 ，对于视频来说，播放时长与完播的重要性大于点击。</li>
+<li>直接用回归拟合播放时长效果不好。建议用 YouTube 的时长建模</li>
+</ul>
+<blockquote>
+<p>参考：Paul Covington, Jay Adams, &amp; Emre Sargin. Deep Neural Networks for YouTube Recommendations. In RecSys, 2016.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>模型：</p>
+<ul>
+<li><p>模型结构：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408301718769.png" srcset="/img/loading.gif" lazyload alt="image-20240830171820544" style="zoom:50%;">
+</li>
+<li><p>每个全连接层对应一个目标，假设最右边的输出对应播放时长 $z$， 对 $z$ 做 Sigmoid 变换得到 $p$，然后让 $p$ 拟合 $y$，它们的交叉熵作为损失函数。 $y$ 是我们定义的，其中的 $t$ 是用户实际观看时长，$t$ 越大则 $y$ 越大。目标就是要让p逼近于y。</p>
+</li>
+<li><p>观察公式发现</p>
+<ul>
+<li><p>如果 $p=y$，那么 $\exp{(z)}=t$ ，即 $\exp{(z)}$ 就是播放时长的预估值。</p>
+</li>
+<li><p>总结视频播放时长建模 </p>
+<ul>
+<li>把最后一个全连接层的输出记作 $z$。设 $p=sigmoid(z)$ </li>
+<li>实际观测的播放时长记作 $t$。（如果没有点击，则 $t = 0$） </li>
+<li>做训练：最小化交叉熵损失 $-\left({\frac{t}{1+t}}\cdot\log p+{\frac{1}{1+t}}\cdot\log(1-p)\right)$</li>
+<li>实践中可以去掉分母 $1+t$，就等于给损失函数做加权，权重是<strong>播放时长</strong>。</li>
+<li>做推理：把 $exp(z)$ 作为播放时长的预估。最终把 $exp(z)$ 作为融分公式中的一项。</li>
+</ul>
+<blockquote>
+<p>说白了就是想训练一个能够预估视频播放时长的模型呗。然后这个指标就成为我们预估视频质量分数的一个指标！</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>视频完播</p>
+<ul>
+<li><p>回归方法 </p>
+<ul>
+<li>视频长度 10 分钟，实际播放 4 分钟，则实际播放率为 𝑦 = 0.4</li>
+<li>让预估播放率 $p$ 拟合 $y$：$\textstyle{loss}=y\cdot\log p+(1-y)\cdot\log(1-p)$</li>
+<li>线上预估完播率，模型输出 $p$ = 0.73，意思是预计播放 73%</li>
+</ul>
+</li>
+<li><p>二元分类方法 </p>
+<ul>
+<li>自定义完播指标，比如完播 80% </li>
+<li>例：视频长度 10 分钟，播放 &gt; 8 分钟作为正样本，播放 &lt; 8 分钟作为负样本 </li>
+<li>做二元分类训练模型：播放 &gt; 80% vs 播放 &lt; 80% </li>
+<li>线上预估完播率，模型输出 $p$ = 0.73，意思是$\mathbb{P}(播放&gt;80%)=0.73$</li>
+</ul>
+</li>
+<li><p>不能直接把完播率当作指标，视频越长，完播率越低。利好与短视频，对长视频不公平！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202408301726200.png" srcset="/img/loading.gif" lazyload alt="image-20240830172618942"></p>
+<blockquote>
+<p>拟合完播率，统一量纲，让它make sense！</p>
+</blockquote>
+<ul>
+<li>预估完播率，然后做调整，$p_{finish} = \frac{预估完播率}{f(视频长度)}$，这里的$f$就是上面的拟合曲线。</li>
+<li>可以把这里的$p_{finish}$作为融分公式中的一项。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Characteristics-of-ranking-models"><a href="#Characteristics-of-ranking-models" class="headerlink" title="Characteristics of ranking models"></a>Characteristics of ranking models</h3><ul>
+<li><p>用户画像（User Profile） </p>
+<ul>
+<li>用户 ID（在召回、排序中做 embedding，用户 ID 本身不携带任何信息，但模型学到的 ID embedding 对召回和排序有很重要的影响） </li>
+<li>人口统计学属性：性别、年龄</li>
+<li>账号信息：新老、活跃度……（模型需要专门针对 新用户 和 低活跃 用户做优化）</li>
+<li>感兴趣的类目、关键词、品牌（对排序很有用）</li>
+</ul>
+</li>
+<li><p>物品画像（Item Profile） </p>
+<ul>
+<li>物品 ID（在召回、排序中做 embedding，非常重要） </li>
+<li>发布时间（或者年龄，越久越没价值，尤其是时效性低的信息） </li>
+<li>GeoHash（经纬度编码）、所在城市 </li>
+<li>标题、类目、关键词、品牌…… （通常对于这些离散的信息做Embedding）</li>
+<li>字数、图片数、视频清晰度、标签数…… （笔记自带属性，反映笔记的质量）</li>
+<li>内容信息量、图片美学…… （算法打的分数，事先用人工标注的数据训练 NLP 和 CV 模型，然后用模型打分）</li>
+</ul>
+</li>
+<li><p>用户统计特征 </p>
+<ul>
+<li>用户最近 30 天（7 天、1 天、1 小时）的曝光数、点击数、点赞数、收藏数……(划分各种时间粒度，可以反映用户的 实时、短期、中长期 兴趣)</li>
+<li>按照笔记图文/视频分桶。（比如最近 7 天，该用户对图文笔记的点击率、对视频笔记的点击率。可以反映用户对两类笔记的偏好）</li>
+<li>按照笔记类目分桶。（比如最近 30 天，用户对美妆笔记的点击率、对美食笔记的点击率、对科技数码笔记的点击率，反映用户对哪个类目更感兴趣。）</li>
+</ul>
+</li>
+<li><p>笔记统计特征 </p>
+<ul>
+<li>笔记最近 30 天（7 天、1 天、1 小时）的曝光数、点击数、点赞数、收藏数……（划分时间粒度，可以提前发现哪些笔记过时了）</li>
+<li>按照用户性别分桶、按照用户年龄分桶…… </li>
+<li>作者特征：发布笔记数、粉丝数、消费指标（曝光数、点击数、点赞数、收藏数）</li>
+</ul>
+</li>
+<li><p>场景特征（Context） </p>
+<ul>
+<li>用户定位 GeoHash（经纬度编码）、城市</li>
+<li>当前时刻（分段，做 embedding）<ul>
+<li>一个人在同一天不同时刻的兴趣是变化的。</li>
+<li>而且可以反推用户是在上班路上、公司、家里</li>
+</ul>
+</li>
+<li>是否是周末、是否是节假日 </li>
+<li>手机品牌、手机型号、操作系统 <ul>
+<li>安卓用户和苹果用户的 点击率、点赞率 等数据差异很大</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>特征处理 </p>
+<ul>
+<li>离散特征：做 embedding <ul>
+<li>用户 ID、笔记 ID、作者 ID</li>
+<li>类目、关键词、城市、手机品牌</li>
+</ul>
+</li>
+<li>连续特征： 做分桶，变成离散特。年龄、笔记字数、视频长度。</li>
+</ul>
+</li>
+<li><p>其他变换 </p>
+<ul>
+<li>曝光数、点击数、点赞数等数值具有长尾效应，做 $\log{(1+x)}$。</li>
+<li>转化为点击率、点赞率等值，并做平滑。</li>
+</ul>
+</li>
+<li><p>特征覆盖率</p>
+<ul>
+<li>很多特征无法覆盖 100% 样本 </li>
+<li>例：很多用户不填年龄，因此用户年龄特征的覆盖率远小于 100% </li>
+<li>例：很多用户设置隐私权限，APP 不能获得用户地理定位，因此场景特征有缺失 </li>
+<li>提高特征覆盖率，可以让精排模型更准 </li>
+<li>想各种办法提高特征覆盖率，并考虑特征缺失时默认值如何设置</li>
+</ul>
+</li>
+<li><p>数据服务：</p>
+<ul>
+<li><p>三个数据源：用户画像（User Profile）、物品画像（Item Profile）、统计数据。三个数据源都存储在内存数据库中。</p>
+</li>
+<li><p>线上服务的时候，排序服务器会从三个数据源取回所需要的数据，然后把读取的数据做处理，作为特征喂给模型。模型就能够预估出点击率、点赞率等指标。</p>
+</li>
+<li><p>整体流程图：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409031945827.png" srcset="/img/loading.gif" lazyload alt="image-20240903194553567" style="zoom:50%;">
+</li>
+<li><p>用户画像数据库压力小（每次只读 1 个用户），物品画像数据库压力非常大（每次读几千个物品） 。工程实现时，用户画像中的特征可以很多很大，但尽量不往物品画像中塞很大的向量。</p>
+</li>
+<li><p>由于用户和物品画像较为静态，甚至可以把用户和物品画像缓存在排序服务器本地，加速读取 </p>
+</li>
+<li><p>收集了排序所需特征后，将特征打包发给 TF Serving，Tensorflow 给笔记打分并把分数返回排序服务器 </p>
+</li>
+<li><p>排序服务器依据融合的分数、多样性分数、业务规则等给笔记排序，并把排名最高的几十篇返回主服务器</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Rough-Sort"><a href="#Rough-Sort" class="headerlink" title="Rough Sort"></a>Rough Sort</h3><blockquote>
+<p>上面这些精排用的多，下面讲讲粗排</p>
+</blockquote>
+<ul>
+<li><p>粗排 vs 粗排：</p>
+<ul>
+<li><p>粗排：给几千篇笔记打分，单次推理代价必须小，预估的准确性不高。</p>
+</li>
+<li><p>精排：给几百篇笔记打分，单次推理代价很大，预估的准确性更高。</p>
+</li>
+</ul>
+</li>
+<li><p>模型简介：</p>
+<ul>
+<li><p>精排模型：</p>
+<ul>
+<li><p>模型结构：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409041540091.png" srcset="/img/loading.gif" lazyload alt="image-20240904154000877" style="zoom:50%;">
+</li>
+<li><p>直接对各种特征做concatenation，塞入shared bottom中，意思是它被多个任务共享。再接上多个头，得到每个指标。</p>
+</li>
+<li><p>开销主要在shared button，它很大，模型很复杂。</p>
+</li>
+<li><p>前期融合：先对所有特征做 concatenation，再输入神经网络。</p>
+</li>
+<li><p>线上推理代价大：如果有 $n$ 篇候选笔记，整个大模型要做 $n$ 次推理。</p>
+</li>
+</ul>
+</li>
+<li><p>双塔模型：</p>
+<ul>
+<li><p>模型结构：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409041543695.png" srcset="/img/loading.gif" lazyload alt="image-20240904154333541" style="zoom:50%;">
+</li>
+<li><p>物品塔在训练结束后，物品其实就可以直接过物品塔，然后存储到向量数据库中了。线上不需要用物品塔做计算。</p>
+</li>
+<li><p>线上只需要用到用户塔，每做一次推荐，用户塔只做一次推理，得到一个向量。而且本身塔的结构较为简单，计算代价很小，适合做召回。</p>
+</li>
+<li><p>后期融合：把用户、物品特征分别输入不同的神经网络，不对用户、物品特征做融合 。</p>
+</li>
+<li><p>线上计算量小： </p>
+<ul>
+<li>用户塔只需要做一次线上推理，计算用户表征 $\bold{a}$</li>
+<li>物品表征 $\bold{b}$ 事先储存在向量数据库中，物品塔在线上不做推理</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>后期融合模型不如前期融合模型准确 </p>
+<ul>
+<li>预估准确性不如精排模型</li>
+<li><strong>后期融合模型用于召回，前期融合模型用于精排</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>粗排的三塔模型：</p>
+<ul>
+<li><p>小红书粗排用的三塔模型，效果介于双塔和精排之间。[参考文献](参考文献：Zhe Wang et al. COLD: Towards the Next Generation of Pre-Ranking System. In DLP-KDD, 2020.)</p>
+</li>
+<li><p>模型结构：<br><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409041625217.png" srcset="/img/loading.gif" lazyload alt="image-20240904162557057"></p>
+</li>
+<li><p>交叉特征：用户特征与物品特征做交叉。</p>
+</li>
+<li><p>对 3 个塔输出的向量做Concatenation 和 Cross（交叉）得到 1 个向量。</p>
+</li>
+<li><p>与前期融合在最开始对各类特征做融合不同，三塔模型在塔输出的位置做融合。</p>
+</li>
+<li><p>模型各个部分的计算量：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409041628118.png" srcset="/img/loading.gif" lazyload alt="image-20240904162827961" style="zoom:50%;">
+
+<ul>
+<li>通常来说，交叉塔必须足够小（通常只有一层，参数也小），速度够快。</li>
+</ul>
+</li>
+<li><p>有 $n$ 个物品，模型上层需要做 $n$ 次推理，粗排推理的大部分计算量在模型上层：这个环节无法利用缓存节省计算量，三塔模型节省的是对物品推理的计算量。</p>
+</li>
+<li><p>三塔模型的推理 </p>
+<ul>
+<li>从多个数据源取特征：1 个用户的画像、统计特征。$n$ 个物品的画像、统计特征</li>
+<li>用户塔：只做 1 次推理 </li>
+<li>物品塔：未命中缓存时需要做推理 。（最坏情况下，需要做n次推理，但实际上缓存命中率非常高，99%都能命中缓存，不需要做推理。给几千个候选物品做粗排，物品塔只需要做几十次推理。）</li>
+<li>交叉塔：必须做 $n$ 次推理 </li>
+<li>上层网络做 $n$ 次推理，给 $n$ 个物品打分 </li>
+<li><strong>粗排模型的设计理念就是尽量减少推理的计算量，使得模型可以线上对几千篇笔记打分</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
 <li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1PS4y1A7za/?vd_source=ff957cd8fbaeb55d52afc75fbcc87dfd">Shusen Wang的公开课</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/wangshusen/RecommenderSystem">Shuseng Wang的笔记</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.yuque.com/yuejiangliu/recommended-system-in-the-industry/overview">同学对于Shuseng的课做的很全很全的笔记</a>，参考了许多内容，很有价值！</li>

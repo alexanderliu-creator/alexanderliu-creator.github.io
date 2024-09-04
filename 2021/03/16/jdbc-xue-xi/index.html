@@ -93,7 +93,7 @@
 
 
   
-<meta name="generator" content="Hexo 6.2.0">
+<meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 <link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
 </head>
@@ -261,7 +261,7 @@
         
         
         
-          158 分钟
+          157 分钟
         
       </span>
     
@@ -367,40 +367,100 @@
 <ul>
 <li><p>example 1:</p>
 <ul>
-<li><p>```java<br>package org.example;</p>
-<p>import java.sql.Connection;<br>import java.sql.DriverManager;<br>import java.sql.SQLException;<br>import java.sql.Statement;</p>
-<p>import com.mysql.cj.jdbc.Driver;</p>
-<p>public class JDBCTest01 {<br>public static void main(String[] args){<br>    //外面这里的才是全局，要习惯<br>    Statement stmt = null;<br>    Connection conn = null;<br>    //注册驱动<br>    try {<br>        DriverManager.registerDriver(new Driver());<br>        //获取连接(打开通道)<br>        String url = “jdbc:mysql://localhost/mysqllearning?serverTimezone=GMT%2B8”;<br>        String username = “root”;<br>        String password = “xxx”;<br>        conn = DriverManager.getConnection(url,username,password);<br>        System.out.println(“数据库连接对象：”+conn);<br>        //数据库连接对象：com.mysql.cj.jdbc.ConnectionImpl@4f6ee6e4<br><br><br><br><br>        /<em>url: 统一资源定位服务，网络中某个资源的绝对路径，包括：协议,IP,PORT,资源名</em>/<br><br>        /*<br>        * jdbc:mysql:// 协议<br>        * 127.0.0.1   IP地址，这儿用localhost也可以的<br>        * 3306   mysql端口号<br>        * 后面那个是表名<br>        * <em>/<br><br>        /</em><br>        * 什么是协议？通信协议是通信前就订好了的数据传送格式<br>        * 数据包具体怎么传数据，格式提前定好的<br>        * */<br><br><br><br><br><br>        //获取操作对象<br>        stmt = conn.createStatement();<br><br><br>        //执行sql<br>//            String sql = “insert into dept(deptno,dname,loc) values(50,’人事部’,’beijing’)”;<br>//            int count = stmt.executeUpdate(sql);<br>//            //专门执行DML语句<br>//            //返回值是“影响数据库中的记录条数”<br>//            System.out.println(count==1?”保存成功”:”保存失败”);</p>
-<p>//            String sql = “delete from dept where deptno = 50”;<br>//            //返回值是影响数据库中高的记录条数<br>//            int count = stmt.executeUpdate(sql);<br>//            System.out.println(count==1?”删除成功”:”删除失败”);</p>
-<pre><code class="hljs">        //处理查询结果集
-        //释放资源
+<li><pre><code class="java">package org.example;
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }finally{
-        //为了保证资源一定释放，释放资源写在finally里面
-        //遵循从小到大依次关闭
-        //分别对其try...catch...，这样才能保证能够两个都执行到
-        if(stmt != null){
-            try {
-                stmt.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import com.mysql.cj.jdbc.Driver;
+
+public class JDBCTest01 {
+    public static void main(String[] args){
+        //外面这里的才是全局，要习惯
+        Statement stmt = null;
+        Connection conn = null;
+        //注册驱动
+        try {
+            DriverManager.registerDriver(new Driver());
+            //获取连接(打开通道)
+            String url = "jdbc:mysql://localhost/mysqllearning?serverTimezone=GMT%2B8";
+            String username = "root";
+            String password = "xxx";
+            conn = DriverManager.getConnection(url,username,password);
+            System.out.println("数据库连接对象："+conn);
+            //数据库连接对象：com.mysql.cj.jdbc.ConnectionImpl@4f6ee6e4
+
+
+
+
+            /*url: 统一资源定位服务，网络中某个资源的绝对路径，包括：协议,IP,PORT,资源名*/
+
+            /*
+            * jdbc:mysql:// 协议
+            * 127.0.0.1   IP地址，这儿用localhost也可以的
+            * 3306   mysql端口号
+            * 后面那个是表名
+            * */
+
+            /*
+            * 什么是协议？通信协议是通信前就订好了的数据传送格式
+            * 数据包具体怎么传数据，格式提前定好的
+            * */
+
+
+
+
+
+            //获取操作对象
+            stmt = conn.createStatement();
+
+
+            //执行sql
+//            String sql = "insert into dept(deptno,dname,loc) values(50,'人事部','beijing')";
+//            int count = stmt.executeUpdate(sql);
+//            //专门执行DML语句
+//            //返回值是“影响数据库中的记录条数”
+//            System.out.println(count==1?"保存成功":"保存失败");
+
+//            String sql = "delete from dept where deptno = 50";
+//            //返回值是影响数据库中高的记录条数
+//            int count = stmt.executeUpdate(sql);
+//            System.out.println(count==1?"删除成功":"删除失败");
+
+
+            //处理查询结果集
+            //释放资源
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally{
+            //为了保证资源一定释放，释放资源写在finally里面
+            //遵循从小到大依次关闭
+            //分别对其try...catch...，这样才能保证能够两个都执行到
+            if(stmt != null){
+                try {
+                    stmt.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
-        if(conn != null){
-            try {
-                conn.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
+
     }
-
 }
+
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs java"><br>- example <span class="hljs-number">2</span>:<br><br>  - ```java<br>    <span class="hljs-keyword">package</span> org.example;<br>    <br>    <span class="hljs-keyword">import</span> com.mysql.cj.jdbc.Driver;<br>    <br>    <span class="hljs-keyword">import</span> java.sql.Connection;<br>    <span class="hljs-keyword">import</span> java.sql.DriverManager;<br>    <span class="hljs-keyword">import</span> java.sql.SQLException;<br>    <span class="hljs-keyword">import</span> java.sql.Statement;<br>    <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JDBCTest02</span> {<br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {<br>            <span class="hljs-type">Statement</span> <span class="hljs-variable">stmt</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>            <span class="hljs-type">Connection</span> <span class="hljs-variable">conn</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>    <br>    <br>            <span class="hljs-comment">//注册驱动（告诉要连接哪个数据库）</span><br>    <br>            <span class="hljs-keyword">try</span> {<br>                <span class="hljs-comment">//注册驱动</span><br>                DriverManager.registerDriver(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Driver</span>());<br>                <span class="hljs-comment">//获取连接(打开通道)</span><br>                <span class="hljs-type">String</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> <span class="hljs-string">"jdbc:mysql://localhost/mysqllearning?serverTimezone=GMT%2B8"</span>;<br>                <span class="hljs-type">String</span> <span class="hljs-variable">username</span> <span class="hljs-operator">=</span> <span class="hljs-string">"root"</span>;<br>                <span class="hljs-type">String</span> <span class="hljs-variable">password</span> <span class="hljs-operator">=</span> <span class="hljs-string">"xxx"</span>;<br>                conn = DriverManager.getConnection(url, username, password);<br>                System.out.println(<span class="hljs-string">"数据库连接对象："</span> + conn);<br>    <br>                <span class="hljs-comment">//获取对象</span><br>                stmt = conn.createStatement();<br>    <br>                <span class="hljs-comment">//执行sql语句</span><br>                <span class="hljs-type">String</span> <span class="hljs-variable">sql</span> <span class="hljs-operator">=</span> <span class="hljs-string">"update dept set dname='销售部' loc='天津' where depno=20"</span>;<br>                <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> stmt.executeUpdate(sql);<br>                System.out.println(count==<span class="hljs-number">1</span>?<span class="hljs-string">"更新成功"</span>:<span class="hljs-string">"更新失败"</span>);<br>    <br>    <br>            } <span class="hljs-keyword">catch</span> (SQLException e) {<br>                e.printStackTrace();<br>            }<span class="hljs-keyword">finally</span>{<br>                <span class="hljs-keyword">try</span> {<br>                    stmt.close();<br>                } <span class="hljs-keyword">catch</span> (SQLException throwables) {<br>                    throwables.printStackTrace();<br>                }<br>    <br>                <span class="hljs-keyword">try</span> {<br>                    conn.close();<br>                } <span class="hljs-keyword">catch</span> (SQLException throwables) {<br>                    throwables.printStackTrace();<br>                }<br>            }<br>        }<br>    }<br>    <br></code></pre></td></tr></tbody></table></figure>
 </code></pre>
-<p>}</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs java"><br>- example <span class="hljs-number">2</span>:<br><br>  - ```java<br>    <span class="hljs-keyword">package</span> org.example;<br>    <br>    <span class="hljs-keyword">import</span> com.mysql.cj.jdbc.Driver;<br>    <br>    <span class="hljs-keyword">import</span> java.sql.Connection;<br>    <span class="hljs-keyword">import</span> java.sql.DriverManager;<br>    <span class="hljs-keyword">import</span> java.sql.SQLException;<br>    <span class="hljs-keyword">import</span> java.sql.Statement;<br>    <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JDBCTest02</span> {<br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {<br>            <span class="hljs-type">Statement</span> <span class="hljs-variable">stmt</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>            <span class="hljs-type">Connection</span> <span class="hljs-variable">conn</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>    <br>    <br>            <span class="hljs-comment">//注册驱动（告诉要连接哪个数据库）</span><br>    <br>            <span class="hljs-keyword">try</span> {<br>                <span class="hljs-comment">//注册驱动</span><br>                DriverManager.registerDriver(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Driver</span>());<br>                <span class="hljs-comment">//获取连接(打开通道)</span><br>                <span class="hljs-type">String</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> <span class="hljs-string">"jdbc:mysql://localhost/mysqllearning?serverTimezone=GMT%2B8"</span>;<br>                <span class="hljs-type">String</span> <span class="hljs-variable">username</span> <span class="hljs-operator">=</span> <span class="hljs-string">"root"</span>;<br>                <span class="hljs-type">String</span> <span class="hljs-variable">password</span> <span class="hljs-operator">=</span> <span class="hljs-string">"xxx"</span>;<br>                conn = DriverManager.getConnection(url, username, password);<br>                System.out.println(<span class="hljs-string">"数据库连接对象："</span> + conn);<br>    <br>                <span class="hljs-comment">//获取对象</span><br>                stmt = conn.createStatement();<br>    <br>                <span class="hljs-comment">//执行sql语句</span><br>                <span class="hljs-type">String</span> <span class="hljs-variable">sql</span> <span class="hljs-operator">=</span> <span class="hljs-string">"update dept set dname='销售部' loc='天津' where depno=20"</span>;<br>                <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> stmt.executeUpdate(sql);<br>                System.out.println(count==<span class="hljs-number">1</span>?<span class="hljs-string">"更新成功"</span>:<span class="hljs-string">"更新失败"</span>);<br>    <br>    <br>            } <span class="hljs-keyword">catch</span> (SQLException e) {<br>                e.printStackTrace();<br>            }<span class="hljs-keyword">finally</span>{<br>                <span class="hljs-keyword">try</span> {<br>                    stmt.close();<br>                } <span class="hljs-keyword">catch</span> (SQLException throwables) {<br>                    throwables.printStackTrace();<br>                }<br>    <br>                <span class="hljs-keyword">try</span> {<br>                    conn.close();<br>                } <span class="hljs-keyword">catch</span> (SQLException throwables) {<br>                    throwables.printStackTrace();<br>                }<br>            }<br>        }<br>    }<br>    <br></code></pre></td></tr></tbody></table></figure></li>
+</li>
 </ul>
 </li>
 <li><p>JDBC中的语句不用写分号。</p>
@@ -615,46 +675,88 @@ public class Login {
 <h1 id="PreparedStatement完成insert-delete-update"><a href="#PreparedStatement完成insert-delete-update" class="headerlink" title="PreparedStatement完成insert delete update"></a>PreparedStatement完成insert delete update</h1><ul>
 <li><p>无非编译往上了一些嘛，然后传入值运行都是一样的。</p>
 </li>
-<li><p>```java<br>package org.example;</p>
-<p>import java.sql.*;<br>import java.util.ResourceBundle;</p>
-<p>public class JDBCTest07 {<br>public static void main(String[] args) {<br>    //数据准备<br>    ResourceBundle bundle = ResourceBundle.getBundle(“jdbc”);<br>    String url = bundle.getString(“url”);<br>    String driver = bundle.getString(“driver”);<br>    String username = bundle.getString(“username”);<br>    String password = bundle.getString(“password”);<br><br>    //搭架子<br>    Connection conn = null;<br>    PreparedStatement ps = null;<br><br>    try {<br>        //1. 注册驱动<br>        Class.forName(driver);<br><br>        //2. 建立连接<br>        conn = DriverManager.getConnection(url,username,password);<br><br>        //3. 获取prepared操作对象<br>//            String sql = “insert into dept(deptno,dname,loc) values(?,?,?)”;<br>//            ps = conn.prepareStatement(sql);<br>//<br>//            ps.setInt(1,60);<br>//            ps.setString(2,”销售部”);<br>//            ps.setString(3,”上海”);</p>
-<p>//            String sql = “update dept set dname = ? , loc = ? where deptno = ?”;<br>//<br>//<br>//            ps = conn.prepareStatement(sql);<br>//            ps.setString(1,”研发一部”);<br>//            ps.setString(2,”北京”);<br>//            ps.setInt(3,60);</p>
-<pre><code class="hljs">        String sql = "delete from dept where deptno = ?";
+<li><pre><code class="java">package org.example;
 
-        ps = conn.prepareStatement(sql);
-        ps.setInt(1,60);
+import java.sql.*;
+import java.util.ResourceBundle;
 
 
-        //4. 执行sql语句
-        int count = ps.executeUpdate();
-        System.out.println("Affect "+count+" rows!!!");
+public class JDBCTest07 {
+    public static void main(String[] args) {
+        //数据准备
+        ResourceBundle bundle = ResourceBundle.getBundle("jdbc");
+        String url = bundle.getString("url");
+        String driver = bundle.getString("driver");
+        String username = bundle.getString("username");
+        String password = bundle.getString("password");
 
-    } catch (ClassNotFoundException e) {
-        e.printStackTrace();
-    } catch (SQLException throwables) {
-        throwables.printStackTrace();
-    }finally{
-        if (ps!=null){
-            try {
-                ps.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        //搭架子
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            //1. 注册驱动
+            Class.forName(driver);
+
+            //2. 建立连接
+            conn = DriverManager.getConnection(url,username,password);
+
+            //3. 获取prepared操作对象
+//            String sql = "insert into dept(deptno,dname,loc) values(?,?,?)";
+//            ps = conn.prepareStatement(sql);
+//
+//            ps.setInt(1,60);
+//            ps.setString(2,"销售部");
+//            ps.setString(3,"上海");
+
+//            String sql = "update dept set dname = ? , loc = ? where deptno = ?";
+//
+//
+//            ps = conn.prepareStatement(sql);
+//            ps.setString(1,"研发一部");
+//            ps.setString(2,"北京");
+//            ps.setInt(3,60);
+
+            String sql = "delete from dept where deptno = ?";
+
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,60);
+
+
+            //4. 执行sql语句
+            int count = ps.executeUpdate();
+            System.out.println("Affect "+count+" rows!!!");
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }finally{
+            if (ps!=null){
+                try {
+                    ps.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+
+            if(conn!=null){
+                try {
+                    conn.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         }
 
-        if(conn!=null){
-            try {
-                conn.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
     }
 
+
 }
+
+<figure class="highlight gradle"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><br><br><br># JDBC控制事务<br><br>- JDBC事务时自动提交的，只要执行任意一条DML语句，自动提交一次，这是JDBC默认的事务行为。这个称为JDBC的自动提交机制。<br><br>- 但是实际开发过程中，DML多条执行一个功能，所以事务要改的。<br><br>- alt / ctrl + 鼠标选中多行，这两者有不同的效果。<br><br>- 重点代码<br><br>  - `conn.setAutoCommit(flase);`<br>  - `conn.commit();`<br>  - `conn.rollback();`<br><br>- 源码：<br><br>  ```java<br>  <span class="hljs-keyword">package</span> org.example;<br>  <br>  <span class="hljs-keyword">import</span> java.sql.*;<br>  <span class="hljs-keyword">import</span> java.util.ResourceBundle;<br>  <br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * JDBC事务机制</span><br><span class="hljs-comment">   * */</span><br>  <br>  <br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> JDBCTest09 {<br>      <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(String[] args) {<br>          ResourceBundle bundle = ResourceBundle.getBundle(<span class="hljs-string">"jdbc"</span>);<br>          String url = bundle.getString(<span class="hljs-string">"url"</span>);<br>          String driver = bundle.getString(<span class="hljs-string">"driver"</span>);<br>          String username = bundle.getString(<span class="hljs-string">"username"</span>);<br>          String password = bundle.getString(<span class="hljs-string">"password"</span>);<br>  <br>          Connection conn = <span class="hljs-keyword">null</span>;<br>          PreparedStatement ps = <span class="hljs-keyword">null</span>;<br>  <span class="hljs-comment">//        ResultSet rs = null;</span><br>  <br>          <span class="hljs-keyword">try</span> {<br>              <span class="hljs-comment">//注册驱动</span><br>              <span class="hljs-keyword">Class</span>.forName(driver);<br>  <br>              <span class="hljs-comment">//建立连接</span><br>              conn = DriverManager.getConnection(url,username,password);<br>              conn.setAutoCommit(<span class="hljs-keyword">false</span>); <span class="hljs-comment">//设置自动提交事务为false</span><br>              System.out.<span class="hljs-keyword">println</span>(<span class="hljs-string">"数据库连接成功！设置自动提交事务成功！"</span>);<br>  <br>              <span class="hljs-comment">//获取操作对象</span><br>              String sql = <span class="hljs-string">"update emp set ename=? where job=?"</span>;<br>              ps = conn.prepareStatement(sql);<br>  <br>              <span class="hljs-comment">//执行数据库语句</span><br>              ps.setString(<span class="hljs-number">1</span>,<span class="hljs-string">"tutu"</span>);<br>              ps.setString(<span class="hljs-number">2</span>,<span class="hljs-string">"xixi"</span>);<br>              <span class="hljs-keyword">int</span> <span class="hljs-keyword">count</span> = ps.executeUpdate();<br>  <br>              <span class="hljs-comment">//执行数据库语句</span><br>              ps.setString(<span class="hljs-number">1</span>,<span class="hljs-string">"lele"</span>);<br>              ps.setString(<span class="hljs-number">2</span>,<span class="hljs-string">"hehe"</span>);<br>              <span class="hljs-keyword">count</span> += ps.executeUpdate();<br>  <br>              System.out.<span class="hljs-keyword">println</span>(<span class="hljs-keyword">count</span>);<br>  <br>              <span class="hljs-comment">//程序走到这里说明程序运行正常</span><br>              System.out.<span class="hljs-keyword">println</span>(<span class="hljs-string">"程序运行正常，接下来提交事务嗷！！！"</span>);<br>              conn.commit(); <span class="hljs-comment">//事务提交</span><br>  <br>          } <span class="hljs-keyword">catch</span> (Exception e) {<br>              System.out.<span class="hljs-keyword">println</span>(<span class="hljs-string">"问题出现了！！！"</span>);<br>              <span class="hljs-keyword">if</span>(conn!=<span class="hljs-keyword">null</span>){<br>                  <span class="hljs-keyword">try</span> {<br>                      conn.rollback(); <span class="hljs-comment">//回滚事务</span><br>                  } <span class="hljs-keyword">catch</span> (SQLException throwables) {<br>                      throwables.printStackTrace();<br>                  }<br>              }<br>              e.printStackTrace();<br>          }<br>          <span class="hljs-keyword">finally</span>{<br>              <span class="hljs-keyword">if</span>(ps!=<span class="hljs-keyword">null</span>){<br>                  <span class="hljs-keyword">try</span> {<br>                      ps.close();<br>                  } <span class="hljs-keyword">catch</span> (SQLException throwables) {<br>                      throwables.printStackTrace();<br>                  }<br>              }<br>  <br>              <span class="hljs-keyword">if</span>(conn!=<span class="hljs-keyword">null</span>){<br>                  <span class="hljs-keyword">try</span> {<br>                      conn.close();<br>                  } <span class="hljs-keyword">catch</span> (SQLException throwables) {<br>                      throwables.printStackTrace();<br>                  }<br>              }<br>          }<br>      }<br>  }<br>  <br></code></pre></td></tr></tbody></table></figure>
 </code></pre>
-<p>}</p>
-<figure class="highlight gradle"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><br><br><br># JDBC控制事务<br><br>- JDBC事务时自动提交的，只要执行任意一条DML语句，自动提交一次，这是JDBC默认的事务行为。这个称为JDBC的自动提交机制。<br><br>- 但是实际开发过程中，DML多条执行一个功能，所以事务要改的。<br><br>- alt / ctrl + 鼠标选中多行，这两者有不同的效果。<br><br>- 重点代码<br><br>  - `conn.setAutoCommit(flase);`<br>  - `conn.commit();`<br>  - `conn.rollback();`<br><br>- 源码：<br><br>  ```java<br>  <span class="hljs-keyword">package</span> org.example;<br>  <br>  <span class="hljs-keyword">import</span> java.sql.*;<br>  <span class="hljs-keyword">import</span> java.util.ResourceBundle;<br>  <br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * JDBC事务机制</span><br><span class="hljs-comment">   * */</span><br>  <br>  <br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> JDBCTest09 {<br>      <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(String[] args) {<br>          ResourceBundle bundle = ResourceBundle.getBundle(<span class="hljs-string">"jdbc"</span>);<br>          String url = bundle.getString(<span class="hljs-string">"url"</span>);<br>          String driver = bundle.getString(<span class="hljs-string">"driver"</span>);<br>          String username = bundle.getString(<span class="hljs-string">"username"</span>);<br>          String password = bundle.getString(<span class="hljs-string">"password"</span>);<br>  <br>          Connection conn = <span class="hljs-keyword">null</span>;<br>          PreparedStatement ps = <span class="hljs-keyword">null</span>;<br>  <span class="hljs-comment">//        ResultSet rs = null;</span><br>  <br>          <span class="hljs-keyword">try</span> {<br>              <span class="hljs-comment">//注册驱动</span><br>              <span class="hljs-keyword">Class</span>.forName(driver);<br>  <br>              <span class="hljs-comment">//建立连接</span><br>              conn = DriverManager.getConnection(url,username,password);<br>              conn.setAutoCommit(<span class="hljs-keyword">false</span>); <span class="hljs-comment">//设置自动提交事务为false</span><br>              System.out.<span class="hljs-keyword">println</span>(<span class="hljs-string">"数据库连接成功！设置自动提交事务成功！"</span>);<br>  <br>              <span class="hljs-comment">//获取操作对象</span><br>              String sql = <span class="hljs-string">"update emp set ename=? where job=?"</span>;<br>              ps = conn.prepareStatement(sql);<br>  <br>              <span class="hljs-comment">//执行数据库语句</span><br>              ps.setString(<span class="hljs-number">1</span>,<span class="hljs-string">"tutu"</span>);<br>              ps.setString(<span class="hljs-number">2</span>,<span class="hljs-string">"xixi"</span>);<br>              <span class="hljs-keyword">int</span> <span class="hljs-keyword">count</span> = ps.executeUpdate();<br>  <br>              <span class="hljs-comment">//执行数据库语句</span><br>              ps.setString(<span class="hljs-number">1</span>,<span class="hljs-string">"lele"</span>);<br>              ps.setString(<span class="hljs-number">2</span>,<span class="hljs-string">"hehe"</span>);<br>              <span class="hljs-keyword">count</span> += ps.executeUpdate();<br>  <br>              System.out.<span class="hljs-keyword">println</span>(<span class="hljs-keyword">count</span>);<br>  <br>              <span class="hljs-comment">//程序走到这里说明程序运行正常</span><br>              System.out.<span class="hljs-keyword">println</span>(<span class="hljs-string">"程序运行正常，接下来提交事务嗷！！！"</span>);<br>              conn.commit(); <span class="hljs-comment">//事务提交</span><br>  <br>          } <span class="hljs-keyword">catch</span> (Exception e) {<br>              System.out.<span class="hljs-keyword">println</span>(<span class="hljs-string">"问题出现了！！！"</span>);<br>              <span class="hljs-keyword">if</span>(conn!=<span class="hljs-keyword">null</span>){<br>                  <span class="hljs-keyword">try</span> {<br>                      conn.rollback(); <span class="hljs-comment">//回滚事务</span><br>                  } <span class="hljs-keyword">catch</span> (SQLException throwables) {<br>                      throwables.printStackTrace();<br>                  }<br>              }<br>              e.printStackTrace();<br>          }<br>          <span class="hljs-keyword">finally</span>{<br>              <span class="hljs-keyword">if</span>(ps!=<span class="hljs-keyword">null</span>){<br>                  <span class="hljs-keyword">try</span> {<br>                      ps.close();<br>                  } <span class="hljs-keyword">catch</span> (SQLException throwables) {<br>                      throwables.printStackTrace();<br>                  }<br>              }<br>  <br>              <span class="hljs-keyword">if</span>(conn!=<span class="hljs-keyword">null</span>){<br>                  <span class="hljs-keyword">try</span> {<br>                      conn.close();<br>                  } <span class="hljs-keyword">catch</span> (SQLException throwables) {<br>                      throwables.printStackTrace();<br>                  }<br>              }<br>          }<br>      }<br>  }<br>  <br></code></pre></td></tr></tbody></table></figure></li>
+</li>
 </ul>
 <h1 id="Java工具类的封装"><a href="#Java工具类的封装" class="headerlink" title="Java工具类的封装"></a>Java工具类的封装</h1><ul>
 <li><p>封装一条语句没有必要，因为你调用的时候都要一条语句来调用orz。</p>
