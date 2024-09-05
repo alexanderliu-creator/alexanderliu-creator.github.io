@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409041705783.png">
 <meta property="article:published_time" content="2024-08-16T08:05:18.000Z">
-<meta property="article:modified_time" content="2024-09-04T09:06:03.762Z">
+<meta property="article:modified_time" content="2024-09-05T07:44:49.196Z">
 <meta property="article:author" content="Alexander Liu">
 <meta property="article:tag" content="自学">
 <meta name="twitter:card" content="summary_large_image">
@@ -86,9 +86,9 @@
 
 
   
-<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
-
+<meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="兔の博客" type="application/atom+xml">
 </head>
 
 
@@ -243,7 +243,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          28k 字
+          32k 字
         
       </span>
     
@@ -254,7 +254,7 @@
         
         
         
-          230 分钟
+          265 分钟
         
       </span>
     
@@ -2057,6 +2057,250 @@
 <li>交叉塔：必须做 $n$ 次推理 </li>
 <li>上层网络做 $n$ 次推理，给 $n$ 个物品打分 </li>
 <li><strong>粗排模型的设计理念就是尽量减少推理的计算量，使得模型可以线上对几千篇笔记打分</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Feature-Crossover"><a href="#Feature-Crossover" class="headerlink" title="Feature Crossover"></a>Feature Crossover</h2><h3 id="Factorized-Machine-FM"><a href="#Factorized-Machine-FM" class="headerlink" title="Factorized Machine (FM)"></a>Factorized Machine (FM)</h3><blockquote>
+<p>FM 以前在召回和排序都很常用，现在用得少了，主要了解一下思想。特征交叉有必要，可以让模型变得很准确！</p>
+</blockquote>
+<ul>
+<li><p>线性模型</p>
+<ul>
+<li>有 $d$ 个特征，记作 $\mathbf{x}=\left[x_{1},\cdot\cdot\cdot,x_{d}\right]$ </li>
+<li>线性模型：$p\ =\ b\ +\textstyle{\sum_{i=1}^{d}}w_{i}x_{i}$ ，$b$ 是偏移项 bias</li>
+<li>模型有 $d+1$ 个参数：${\bf w}=\left[{\bf w}<em>{1},\cdot\cdot\cdot,{\bf w}</em>{d}\right]$ 和 $b$ </li>
+<li>预测是特征的加权和（只有加，没有乘） ，即特征之间没有交叉</li>
+</ul>
+</li>
+<li><p>二阶交叉特征</p>
+<ul>
+<li><p>有 $d$ 个特征，记作 $\mathbf{x}=\left[x_{1},\cdot\cdot\cdot,x_{d}\right]$ </p>
+</li>
+<li><p>线性模型 + 二阶交叉特征： $p=b+\sum_{i=1}^{d},w_{i}x_{i}+\sum_{i=1}^{d}\sum_{j=i+1}^{d}u_{ij}x_ix_j$ ，公式中的 $x_ix_j$ 就是两个特征的交叉，$u_{ij}$ 是权重。（例如：房子大小和每平米价格，交叉明显对于价格的预估更准确！）</p>
+</li>
+<li><p>模型有 $O(d^2)$ 个参数 ，$d$ 较大时，参数数量过多，且容易出现过拟合。减少参数！</p>
+</li>
+<li><p>减少参数的方式：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051338394.png" srcset="/img/loading.gif" lazyload alt="image-20240905133843250"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051340493.png" srcset="/img/loading.gif" lazyload alt="image-20240905134019447"></p>
+<ul>
+<li>Factorized Machine (FM)： $p=b+\sum_{i=1}^{d},w_{i}x_{i}+\sum_{i=1}^{d}\sum_{j=i+1}^{d}(\bold{v}_i^T\bold{v}_j)x_ix_j$ </li>
+<li>使用矩阵 $\bold{V}\bold{V}^T$ 来近似矩阵 $\bold{U}$</li>
+<li>FM 模型有 $O(kd)$ 个参数（$k\ll d$，是一个超参数），参数量从 $O(d^2)$ 降低到了 $O(kd)$ 。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>总结：</p>
+<ul>
+<li>FM 是线性模型的替代品，能用线性回归、逻辑回归的场景，都可以用 FM。</li>
+<li>FM 使用二阶交叉特征，表达能力比线性模型更强</li>
+<li>通过做近似 $u_{ij}\approx\bold{v}_i^T\bold{v}_j$，FM 把二阶交叉权重的数量从 $O(d^2)$ 降低到 $O(kd)$</li>
+<li>早期的推荐系统通常使用LR，在LR中用FM做特征交叉，流行了很长一段时间。但是现在工业界里面，FM的这种做法已经过时了。小红书里面早都下掉了FM。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>参考文献：Steffen Rendle.Factorization machines. In ICDM, 2010.</p>
+</blockquote>
+<h3 id="Deep-amp-Cross-Networks-DCN"><a href="#Deep-amp-Cross-Networks-DCN" class="headerlink" title="Deep &amp; Cross Networks (DCN)"></a>Deep &amp; Cross Networks (DCN)</h3><blockquote>
+<p>Deep &amp; Cross Networks (DCN) 译作“深度交叉网络”，可以用于召回双塔模型、粗排三塔模型、精排模型。DCN 由一个深度网络和一个交叉网络组成，交叉网络的基本组成单元是交叉层 (Cross Layer)。这节课最重点的部分就是交叉层。</p>
+</blockquote>
+<ul>
+<li><p>双塔/三塔的每一个塔，精排多目标排序模型的shared bottom，排序MMoE模型的每一个神经专家网络。都可以使用任意的网络结构，最简单就是全连接，但是也可以用更加复杂/有效的网络结构。</p>
+</li>
+<li><p>交叉层（Cross Layer）</p>
+<ul>
+<li><p>网络结构：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051351856.png" srcset="/img/loading.gif" lazyload alt="image-20240905135123684" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051354349.png" srcset="/img/loading.gif" lazyload alt="image-20240905135414247" style="zoom:50%;">
+</li>
+<li><p>Hadmamard Product是逐元素相乘，要求矩阵的shape完全一致！有点类似于 ResNet 中的 跳跃链接 Skip Connection，防止梯度消失。每个交叉层的输入和输出都是向量，并且形状相同。</p>
+</li>
+</ul>
+</li>
+<li><p>交叉网络（Cross Network）</p>
+<ul>
+<li><p>交叉网络由多个交叉层堆叠而来：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051356638.png" srcset="/img/loading.gif" lazyload alt="image-20240905135628439" style="zoom:50%;">
+</li>
+<li><p>参考文献：这节课介绍的是 Cross Network V2，于2021年提出。老版本的 Cross Network是在2017年提出的。参考文献：</p>
+<ul>
+<li>Ruoxi Wang et al. DCN V2: Improved Deep &amp; Cross Network and Practical Lessons for Web-scale Learning to Rank Systems. In WWW, 2021.</li>
+<li>Ruoxi Wang et al. Deep &amp; Cross Network for Ad Click Predictions. In ADKDD, 2017.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>深度交叉网络DCN</p>
+<ul>
+<li><p>网络结构：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051359502.png" srcset="/img/loading.gif" lazyload alt="image-20240905135929323"></p>
+</li>
+<li><p>把 全连接网络、交叉网络、全连接层 拼到一起，就是 深度交叉网络 DCN。</p>
+</li>
+<li><p>比简单的全连接神经网络效果更好，被业界普遍接受，可以用于召回或者是排序。</p>
+</li>
+<li><p>召回、排序模型中的各种 塔、神经网络、专家网络 都可以是 DCN。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="LHUC-PPNet"><a href="#LHUC-PPNet" class="headerlink" title="LHUC(PPNet)"></a>LHUC(PPNet)</h3><blockquote>
+<p>LHUC 这种神经网络结构，可以用于<strong>精排</strong>。LHUC 的起源是语音识别，后来被应用到推荐系统，快手将其称为 PPNet，现在已经在业界广泛落地。视频中遗漏一个细节：将LHUC用于推荐系统，门控神经网络（2 x sigmoid）的梯度不要传递到用户ID embedding特征，需要对其做 stop gradient。</p>
+</blockquote>
+<ul>
+<li><p>参考文献：</p>
+<ul>
+<li>Pawel Swietojanski, Jinyu Li, &amp; Steve Renals. Learning hidden unit contributions for unsupervised acoustic model adaptation. IEEE/ACM Transactions on Audio, Speech, and Language Processing, 2016.</li>
+<li>快手落地万亿参数推荐精排模型，2021。链接：<a target="_blank" rel="noopener" href="https://ai.51cto.com/art/202102/644214.html">https://ai.51cto.com/art/202102/644214.html</a></li>
+</ul>
+</li>
+<li><p>说话者的特征：例如说话者的 ID，年龄，性别 等</p>
+</li>
+<li><p>处理说话者的特征的神经网络</p>
+<ul>
+<li><p>网络结构：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051413260.png" srcset="/img/loading.gif" lazyload alt="image-20240905141342199" style="zoom:50%;">
+</li>
+<li><p>内部包含多个全连接层</p>
+</li>
+<li><p>下半部分的神经网络是由多个全连接层组成，激活函数是 Sigmoid 乘以 2，Sigmoid作用于每个元素上，Sigmoid输出的每个元素都介于[0, 2]。部分值大于 1，部分值小于 1，就可以拿去作为放缩因子，放大某些特征，缩小某些特征，实现个性化。</p>
+</li>
+</ul>
+</li>
+<li><p>在推荐系统中：</p>
+<ul>
+<li><p>模型结构：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051424520.png" srcset="/img/loading.gif" lazyload alt="image-20240905142412351"></p>
+</li>
+<li><p>只是简单的把输入的特征活成了用户特征&amp;物品特征。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="SENet-amp-Bilinear-Cross"><a href="#SENet-amp-Bilinear-Cross" class="headerlink" title="SENet &amp; Bilinear Cross"></a>SENet &amp; Bilinear Cross</h3><blockquote>
+<p>参考文献：</p>
+<ol>
+<li>Jie Hu, Li Shen, and Gang Sun. Squeeze-and-Excitation Networks. In CVPR, 2018.</li>
+<li>Tongwen Huang, Zhiqi Zhang, and Junlin Zhang. FiBiNET: Combining Feature Importance and Bilinear feature Interaction for Click-Through Rate Prediction. In RecSys, 2019.</li>
+</ol>
+</blockquote>
+<ul>
+<li><p>SENet</p>
+<ul>
+<li><p>首先，把所有的m维离散的特征，做Embedding（假设dimension为k）会得到很多的向量(m x k)，接下来SENet如何对这些Embedding做操作呢？</p>
+</li>
+<li><p>第一部分：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051437184.png" srcset="/img/loading.gif" lazyload alt="image-20240905143711999" style="zoom:50%;">
+
+<ul>
+<li>$r$ 是压缩比列，设置为大于 1 的数。再用FC + Sigmoid，恢复出m维的向量。这个向量的元素都介于0和1之间。</li>
+<li>原文中是按照特征通道的数量来进行压缩的，压缩后每个多维的特征通道变成一个实数，这个实数某种程度上具有全局的感受野。</li>
+<li>给我的感觉其实就是attention哈哈哈哈哈，本质就是提取出里面的特征，再去算出来对每一个部分的“重视程度”。</li>
+</ul>
+</li>
+<li><p>第二部分：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051446616.png" srcset="/img/loading.gif" lazyload alt="image-20240905144602553" style="zoom:50%;">
+
+<ul>
+<li>每个特征乘上对应这个特征的权重，拿到一个m x k的output。</li>
+<li>使用右侧的 $m$ 维向量对左边矩阵的行做加权，赋予原始的Embedding对应的权重。</li>
+<li>例如：学习发现物品 ID 对任务的重要性不高，就给物品 ID embedding 降权。</li>
+</ul>
+</li>
+<li><p>整体框架：</p>
+<ul>
+<li><p>其实对于这m个特征，他们的Embedding向量维度可以不同，不会影响SENet。</p>
+</li>
+<li><p>框架图：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051449747.png" srcset="/img/loading.gif" lazyload alt="image-20240905144934594"></p>
+</li>
+<li><p>红色和蓝色的向量形状完全相同。</p>
+</li>
+</ul>
+</li>
+<li><p>$m$ 个离散特征的 Embedding 向量维度可以不同。</p>
+</li>
+<li><p>SENet 本质是对离散特征做 field-wise 加权。Field 举例： </p>
+<ul>
+<li>用户 ID Embedding 是 64 维向量。64 个元素算一个 field，获得相同的权重。</li>
+<li>对于每一个Embedding，都对应了一个val（m x 1）权重，这个权重会作用于这个Embedding的每一个元素上，因此是field-wise的！</li>
+</ul>
+</li>
+<li><p>如果有 $m$ 个 fields，那么权重向量是 $m$ 维。</p>
+</li>
+</ul>
+</li>
+<li><p>Field间特征交叉</p>
+<ul>
+<li><p>最简单的特征交叉方法：</p>
+<ul>
+<li>内积：假设m个fields，m x m，共得到$m ^ 2$个实数。$f_{ij} = x_{i}^{T} \times x_j$，还好，因为m就几十个。顶多产出几百个/几千个数字。</li>
+<li>哈达玛乘积：假设m个fields，m x m，共得到$m ^ 2$个向量。$f_{ij} = x_{i} \bigodot x_j$，不太行，m就几十个。会产出几百个/几千个向量，这就有点夸张了。</li>
+<li>两者都需要每个特征的Embedding向量维度一样，都是k维向量，不然算不了。</li>
+<li>像哈达玛这种，就不能这么搞了，参数量太大。如果要用它做特征交叉，必须人工选择 tier 做交叉。</li>
+</ul>
+</li>
+<li><p>Bilinear Cross（内积）</p>
+<ul>
+<li><p>更加先进的特征交叉方法。有内积和哈达玛乘积两种方式。</p>
+</li>
+<li><p>内积方式：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051510780.png" srcset="/img/loading.gif" lazyload alt="image-20240905151005604" style="zoom:50%;">
+</li>
+<li><p>不要求特征形状相同 </p>
+</li>
+<li><p>$m$ fields → $m^2$ 个交叉特征（实数） ，$m$ fields → $m^2/2$ 个参数矩阵。</p>
+</li>
+<li><p>参数矩阵过多，需要人工指定某些相关且重要的特征做交叉，不能对所有特征做两两交叉。</p>
+</li>
+</ul>
+</li>
+<li><p>Bilinear Cross（哈达玛乘积）</p>
+<ul>
+<li><p>哈达玛方式，和上面累死，只不过把点乘那里改为了哈达玛乘积：</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051514787.png" srcset="/img/loading.gif" lazyload alt="image-20240905151418742" style="zoom:50%;">
+</li>
+<li><p>$m$ fields → $m^2$ 个向量</p>
+</li>
+<li><p>在实践中依然需要人工指定某些特征做交叉</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>小结 </p>
+<ul>
+<li>SENet 对离散特征做 field-wise 加权 </li>
+<li>Field 间特征交叉： <ul>
+<li>向量内积</li>
+<li>哈达玛乘积</li>
+<li>Bilinear Cross</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>FiBiNet</p>
+<ul>
+<li><p>模型结构</p>
+<img src="https://cdn.jsdelivr.net/gh/alexanderliu-creator/blog_img/img/202409051519034.png" srcset="/img/loading.gif" lazyload alt="image-20240905151930979" style="zoom:50%;">
+</li>
+<li><p>以前我们就直接把离散特征的 Embedding 拼接后再与连续特征拼接 </p>
+</li>
+<li><p>FiBiNet 多做了一些工作 </p>
+<ul>
+<li>对离散特征的 Embedding 做 Bilinear Cross，得到交叉特征并拼接为 1 个向量 </li>
+<li>用 SENet 对 Embedding 做加权，再对这些向量做 Biliner Cross，得到交叉特征并拼接为 1 个向量。<strong>王老师个人认为这里的两条路径中，下面那条SENet -&gt; Biliner Cross 多余了，小红书没有用，而是直接做了拼接。</strong></li>
+</ul>
+</li>
+<li><p>小红书借鉴了 FiBiNet </p>
+<ul>
+<li>SENet 和 Bilinear Cross 在精排模型上确实有效</li>
+<li>模型结构以及 Bilinear Cross 的实现都与原文区别很大</li>
 </ul>
 </li>
 </ul>
